@@ -14,27 +14,18 @@ raw URL.
 
 **See [ANALYSIS.md](ANALYSIS.md)** for the figures and regional tables.
 
-## What OG-Core needs, and what this repo has
+## What this repo provides
 
-`ogcore.demographics.get_pop_objs()` (>= 0.18.0) accepts four gradient inputs.
-Coverage here so far:
+Two of the gradient inputs `ogcore.demographics.get_pop_objs()` (>= 0.18.0)
+accepts, for every country with a DHS survey:
 
-| OG-Core input | What it does | In this repo? | Where |
+| OG-Core input | What it does | Coverage | Where |
 |---|---|---|---|
-| `fert_gradient` | tilts fertility across income rank | **Yes — 77 countries** | `data/gradient_library_latest.csv`, rows with `indicator == "TFR"` |
-| `infmort_gradient` | tilts infant mortality across income rank | **Yes, via an under-5 proxy — 78 countries** | same file, `indicator == "U5MR"` |
-| `mort_gradient` | tilts adult mortality across income rank, by age | **Evidence memo only — no ready-to-ingest values yet** | [ADULT_MORTALITY.md](ADULT_MORTALITY.md) (surveys cannot measure this; panel/registry estimates collected there) |
-| `imm_pctiles` | places immigrants across income groups | **No — no usable data exists anywhere** (verified July 2026) | — |
+| `fert_gradient` | tilts fertility across income rank | 77 countries | `data/gradient_library_latest.csv`, rows with `indicator == "TFR"` |
+| `infmort_gradient` | tilts infant mortality across income rank | 78 countries (under-5 mortality as the proxy) | same file, `indicator == "U5MR"` |
 
-(`income_percentiles`, the fifth argument, is not data — it is the model's own
-`lambdas` vector.)
-
-So today this repo parameterizes the **fertility** and **child-mortality**
-margins. Adult mortality is the open frontier: the memo has the best available
-estimates (e.g., for South Africa, 5% lower death odds per household asset from
-the national NIDS panel), but turning them into a by-age gradient is calibration
-work, not a file download. The first worked end-to-end example will be the OG-ZAF
-demographics-by-income calibration.
+(`income_percentiles`, the argument that accompanies any gradient, is not data —
+it is the model's own `lambdas` vector.)
 
 ## The file your model ingests
 
@@ -124,7 +115,6 @@ scripts/
   build_analysis.py             regenerate ANALYSIS.md + README numbers from data/
   refresh.py                    all three in order, plus the vintage stamp
 ANALYSIS.md                     the figures and regional tables (generated)
-ADULT_MORTALITY.md              evidence base for the adult-mortality margin
 ```
 
 ## Reproducibility
@@ -150,4 +140,3 @@ data source alongside this repo.
 - U5MR quintile cells are noisy in low-mortality countries (South Africa 2016
   visibly so — see ANALYSIS.md).
 - The under-5 tilt is a proxy for ogcore's *infant* mortality gradient.
-- Adult mortality and immigration: see the coverage table above.
