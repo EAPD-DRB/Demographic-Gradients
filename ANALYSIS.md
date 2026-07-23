@@ -74,3 +74,26 @@ a decaying quantity. South Africa's own fertility gradient flattened between its
 1998 and 2016 surveys.
 
 ![Gradient tilts across survey years](figures/fig4_slopes_over_time.png)
+
+## Adult mortality gradients (census household-deaths modules)
+
+Adult mortality by wealth comes from census microdata, not DHS surveys (see the
+README for why). Households are ranked by an asset index; tilts are on the same
+log-rate-per-unit-rank scale as the tables above. The age pattern — steep at
+prime working ages, fading in old age — is the by-age shape ogcore's
+`mort_gradient` accepts directly.
+
+| Country | Year | Sex | Ages | Measure | Tilt | Poorest/richest | Death records |
+|---|---|---|---|---|---|---|---|
+| Brazil | 2010 | male | 15–29 | mx | −1.41 | 2.98 | 6,876 |
+| Brazil | 2010 | male | 30–44 | mx | −1.54 | 3.42 | 7,328 |
+| Brazil | 2010 | male | 45–59 | mx | −0.77 | 1.84 | 11,251 |
+| Brazil | 2010 | male | 60–74 | mx | −0.13 | 1.05 | 16,459 |
+| Brazil | 2010 | male | 15–59 | 45q15 | −0.99 | 2.19 | 25,455 |
+| Brazil | 2010 | female | 15–29 | mx | −0.99 | 2.19 | 1,881 |
+| Brazil | 2010 | female | 30–44 | mx | −1.23 | 2.79 | 3,312 |
+| Brazil | 2010 | female | 45–59 | mx | −0.97 | 2.26 | 6,896 |
+| Brazil | 2010 | female | 60–74 | mx | −0.25 | 1.23 | 12,161 |
+| Brazil | 2010 | female | 15–59 | 45q15 | −0.98 | 2.28 | 12,089 |
+
+Ranking: household asset index (see README for the income-vs-assets validation). Rebuild with `uv run scripts/build_adult_mortality_brazil.py`.

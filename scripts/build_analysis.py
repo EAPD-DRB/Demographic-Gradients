@@ -176,6 +176,32 @@ a decaying quantity. South Africa's own fertility gradient flattened between its
 
 ![Gradient tilts across survey years](figures/fig4_slopes_over_time.png)
 """
+
+    amr_path = DATA / "adult_mortality_gradients.csv"
+    if amr_path.exists():
+        amr = pd.read_csv(amr_path)
+        doc += """
+## Adult mortality gradients (census household-deaths modules)
+
+Adult mortality by wealth comes from census microdata, not DHS surveys (see the
+README for why). Households are ranked by an asset index; tilts are on the same
+log-rate-per-unit-rank scale as the tables above. The age pattern — steep at
+prime working ages, fading in old age — is the by-age shape ogcore's
+`mort_gradient` accepts directly.
+
+| Country | Year | Sex | Ages | Measure | Tilt | Poorest/richest | Death records |
+|---|---|---|---|---|---|---|---|
+"""
+        for _, r in amr.iterrows():
+            doc += (
+                f"| {r['country']} | {r['year']} | {r['sex']} | {r['age_lo']}–{r['age_hi']} "
+                f"| {r['measure']} | {fmt(r['slope'])} | {r['ratio']:.2f} | {r['n_deaths']:,} |\n"
+            )
+        doc += (
+            f"\nRanking: household asset index (see README for the income-vs-assets"
+            f" validation). Rebuild with `uv run scripts/build_adult_mortality_brazil.py`.\n"
+        )
+
     (ROOT / "ANALYSIS.md").write_text(doc)
     print("wrote ANALYSIS.md")
 

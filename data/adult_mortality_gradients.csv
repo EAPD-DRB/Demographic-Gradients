@@ -1,0 +1,11 @@
+indicator,country,year,sex,measure,age_lo,age_hi,slope,ratio,q1,q2,q3,q4,q5,n_deaths,ranking,source
+AMR,Brazil,2010,male,mx,15,29,-1.4057,2.98,3.589,3.49,2.827,1.907,1.204,6876,asset_index,"IBGE Census 2010 sample microdata, household deaths module"
+AMR,Brazil,2010,male,mx,30,44,-1.545,3.424,5.204,4.686,3.36,2.507,1.52,7328,asset_index,"IBGE Census 2010 sample microdata, household deaths module"
+AMR,Brazil,2010,male,mx,45,59,-0.7734,1.842,8.562,9.793,8.542,7.374,4.649,11251,asset_index,"IBGE Census 2010 sample microdata, household deaths module"
+AMR,Brazil,2010,male,mx,60,74,-0.1277,1.052,19.188,25.02,24.258,22.577,18.232,16459,asset_index,"IBGE Census 2010 sample microdata, household deaths module"
+AMR,Brazil,2010,male,45q15,15,59,-0.9861,2.192,229.9,237.0,198.8,162.5,104.9,25455,asset_index,"IBGE Census 2010 sample microdata, household deaths module"
+AMR,Brazil,2010,female,mx,15,29,-0.9875,2.189,0.942,0.799,0.737,0.529,0.431,1881,asset_index,"IBGE Census 2010 sample microdata, household deaths module"
+AMR,Brazil,2010,female,mx,30,44,-1.2342,2.794,2.322,1.76,1.543,1.141,0.831,3312,asset_index,"IBGE Census 2010 sample microdata, household deaths module"
+AMR,Brazil,2010,female,mx,45,59,-0.9662,2.259,5.761,5.303,4.859,3.972,2.55,6896,asset_index,"IBGE Census 2010 sample microdata, household deaths module"
+AMR,Brazil,2010,female,mx,60,74,-0.249,1.231,14.907,15.05,14.015,13.922,12.111,12161,asset_index,"IBGE Census 2010 sample microdata, household deaths module"
+AMR,Brazil,2010,female,45q15,15,59,-0.9846,2.281,126.9,111.5,101.7,81.3,55.6,12089,asset_index,"IBGE Census 2010 sample microdata, household deaths module"

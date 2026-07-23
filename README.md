@@ -16,16 +16,41 @@ raw URL.
 
 ## What this repo provides
 
-Two of the gradient inputs `ogcore.demographics.get_pop_objs()` (>= 0.18.0)
-accepts, for every country with a DHS survey:
+Three of the gradient inputs `ogcore.demographics.get_pop_objs()` (>= 0.18.0)
+accepts:
 
 | OG-Core input | What it does | Coverage | Where |
 |---|---|---|---|
 | `fert_gradient` | tilts fertility across income rank | 77 countries | `data/gradient_library_latest.csv`, rows with `indicator == "TFR"` |
 | `infmort_gradient` | tilts infant mortality across income rank | 78 countries (under-5 mortality as the proxy) | same file, `indicator == "U5MR"` |
+| `mort_gradient` | tilts adult mortality across income rank, by age | Brazil 2010 (age-band-specific; more countries queued below) | `data/adult_mortality_gradients.csv` |
 
 (`income_percentiles`, the argument that accompanies any gradient, is not data —
 it is the model's own `lambdas` vector.)
+
+## Adult mortality gradients
+
+Adult mortality by wealth cannot come from DHS-type surveys (the dead are not
+interviewed, and sibling reports carry no wealth data). It CAN come from census
+**household deaths modules**: the household outlives the deceased and reports the
+death (age, sex, last 12 months) alongside its assets.
+`data/adult_mortality_gradients.csv` holds these estimates — per country, sex,
+and age band (`measure == "mx"`), plus a 15–59 summary (`measure == "45q15"`) —
+on the same tilt scale as the fertility file.
+
+Brazil 2010 (66,000+ linked death records, built from IBGE's open microdata by
+`scripts/build_adult_mortality_brazil.py`, no registration) establishes the
+method and shows a strong age pattern: tilts of −1.4 to −1.5 at prime working
+ages, fading to near zero by 60–74 — the by-age shape `mort_gradient` accepts
+directly. Households are ranked by an **asset index**, not measured income: a
+death mechanically removes the deceased's earnings from post-death household
+income, while assets are shock-stable (validated on São Paulo, where assets gave
+clean monotonic gradients and income did not).
+
+**Queued** (censuses with mortality modules in IPUMS International; outputs will
+be hosted here in the same schema): South Africa 2001/2007/2011, Ethiopia 2007,
+Malawi 2008, Zambia 2010, Mozambique 2007, Cambodia 2004–2013, Panama 2000/2010,
+El Salvador 2007, and other 2000s+ samples with asset variables.
 
 ## The file your model ingests
 
@@ -114,13 +139,16 @@ Two structural findings (see [ANALYSIS.md](ANALYSIS.md)):
 
 ```
 data/
-  gradient_library_latest.csv   THE INGESTION FILE — one tilt per country/margin
-  gradient_library.csv          same, for every survey (601 rows; time trends)
+  gradient_library_latest.csv   fertility & child mortality — one tilt per
+                                country/margin (most recent survey)
+  adult_mortality_gradients.csv adult mortality tilts by sex and age band
+  gradient_library.csv          every survey (601 rows; time trends)
   dhs_gradients_raw.csv         the underlying quintile-level observations
   dhs_regions.csv               DHS Program country -> region map (for borrowing)
 figures/                        the four figures shown in ANALYSIS.md
 scripts/
   build_gradient_library.py     pull the DHS API on demand, rewrite data/
+  build_adult_mortality_brazil.py  rebuild the Brazil entry from IBGE's open FTP
   make_figures.py               rebuild figures/ from data/
   build_analysis.py             regenerate ANALYSIS.md + README numbers from data/
   refresh.py                    all three in order, plus the vintage stamp
