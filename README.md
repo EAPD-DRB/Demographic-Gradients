@@ -38,19 +38,24 @@ death (age, sex, last 12 months) alongside its assets.
 and age band (`measure == "mx"`), plus a 15–59 summary (`measure == "45q15"`) —
 on the same tilt scale as the fertility file.
 
-Brazil 2010 (66,000+ linked death records, built from IBGE's open microdata by
-`scripts/build_adult_mortality_brazil.py`, no registration) establishes the
-method and shows a strong age pattern: tilts of −1.4 to −1.5 at prime working
-ages, fading to near zero by 60–74 — the by-age shape `mort_gradient` accepts
-directly. Households are ranked by an **asset index**, not measured income: a
-death mechanically removes the deceased's earnings from post-death household
-income, while assets are shock-stable (validated on São Paulo, where assets gave
-clean monotonic gradients and income did not).
+Brazil 2010 (66,000+ linked death records from the census sample microdata)
+establishes the method and shows a strong age pattern: tilts of −1.4 to −1.5 at
+prime working ages, fading to near zero by 60–74 — the by-age shape
+`mort_gradient` accepts directly. Households are ranked by an **asset index**,
+not measured income: a death mechanically removes the deceased's earnings from
+post-death household income, while assets are shock-stable (validated on São
+Paulo, where assets gave clean monotonic gradients and income did not).
 
-**Queued** (censuses with mortality modules in IPUMS International; outputs will
-be hosted here in the same schema): South Africa 2001/2007/2011, Ethiopia 2007,
-Malawi 2008, Zambia 2010, Mozambique 2007, Cambodia 2004–2013, Panama 2000/2010,
-El Salvador 2007, and other 2000s+ samples with asset variables.
+All countries on this margin are built by one universal script from IPUMS
+International extracts (slim variable sets — tens of MB per census; microdata
+stays local per the IPUMS license, and these published aggregates are
+explicitly permitted). **Queued next**, OG-model countries first: **South
+Africa 2001/2007/2011** and **Ethiopia 2007**, with Brazil 2010 rebuilt through
+the same pipeline. Countries whose censuses lack a mortality module
+(Philippines; Indonesia's only sample is 1976) borrow the library range
+instead. Further countries (Malawi 2008, Zambia 2010, Mozambique 2007,
+Cambodia, Panama, El Salvador, ...) can follow once volumes are proven
+manageable.
 
 ## The file your model ingests
 
@@ -148,7 +153,6 @@ data/
 figures/                        the four figures shown in ANALYSIS.md
 scripts/
   build_gradient_library.py     pull the DHS API on demand, rewrite data/
-  build_adult_mortality_brazil.py  rebuild the Brazil entry from IBGE's open FTP
   make_figures.py               rebuild figures/ from data/
   build_analysis.py             regenerate ANALYSIS.md + README numbers from data/
   refresh.py                    all three in order, plus the vintage stamp

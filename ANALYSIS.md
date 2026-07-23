@@ -96,4 +96,4 @@ prime working ages, fading in old age — is the by-age shape ogcore's
 | Brazil | 2010 | female | 60–74 | mx | −0.25 | 1.23 | 12,161 |
 | Brazil | 2010 | female | 15–59 | 45q15 | −0.98 | 2.28 | 12,089 |
 
-Ranking: household asset index (see README for the income-vs-assets validation). Rebuild with `uv run scripts/build_adult_mortality_brazil.py`.
+Ranking: household asset index (see README for the income-vs-assets validation and the build pipeline).

@@ -198,8 +198,8 @@ prime working ages, fading in old age — is the by-age shape ogcore's
                 f"| {r['measure']} | {fmt(r['slope'])} | {r['ratio']:.2f} | {r['n_deaths']:,} |\n"
             )
         doc += (
-            f"\nRanking: household asset index (see README for the income-vs-assets"
-            f" validation). Rebuild with `uv run scripts/build_adult_mortality_brazil.py`.\n"
+            "\nRanking: household asset index (see README for the income-vs-assets"
+            " validation and the build pipeline).\n"
         )
 
     (ROOT / "ANALYSIS.md").write_text(doc)
