@@ -12,9 +12,8 @@ This repo plays the same role for demographic *differentials* that
 [EAPD-DRB/Population-Data](https://github.com/EAPD-DRB/Population-Data) plays for
 population *levels*: a stable mirror the country repos can reference by raw URL.
 
-**Visual report:** [interactive version](https://claude.ai/code/artifact/28e22a84-7bdf-408f-8770-139b178c8e49)
-(hosted; requires access) or open [`gradient_library.html`](gradient_library.html)
-from this repo in any browser — both show all four figures with the numbers below.
+**See [ANALYSIS.md](ANALYSIS.md)** for the figures and regional tables, rendered
+inline on GitHub.
 
 ## The headline numbers (latest survey per country)
 
@@ -71,7 +70,7 @@ scripts/
   make_figures.py               rebuilds figures/ from data/ (uv run, no setup)
 ADULT_MORTALITY.md              the separate evidence base for ADULT mortality
                                 gradients (not measurable by DHS-type surveys)
-gradient_library.html           self-contained visual report (open in a browser)
+ANALYSIS.md                     the figures and regional tables, rendered on GitHub
 ```
 
 ## Reproducibility
