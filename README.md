@@ -12,6 +12,10 @@ This repo plays the same role for demographic *differentials* that
 [EAPD-DRB/Population-Data](https://github.com/EAPD-DRB/Population-Data) plays for
 population *levels*: a stable mirror the country repos can reference by raw URL.
 
+**Visual report:** [interactive version](https://claude.ai/code/artifact/28e22a84-7bdf-408f-8770-139b178c8e49)
+(hosted; requires access) or open [`gradient_library.html`](gradient_library.html)
+from this repo in any browser — both show all four figures with the numbers below.
+
 ## The headline numbers (latest survey per country)
 
 | Margin | Countries | Median tilt | IQR | Median poorest/richest ratio |
