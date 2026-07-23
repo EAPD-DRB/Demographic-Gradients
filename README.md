@@ -39,13 +39,21 @@ Columns: `indicator` (TFR or U5MR), `country`, `year`, **`slope`** (the tilt —
 see below), `ratio` (poorest/richest decile), and `q1..q5` (the five quintile
 values behind it).
 
-The **tilt** (`slope`) is the OLS slope of ln(rate) on wealth-rank percentile
-midpoints (quintiles at 0.10 ... 0.90), i.e. the change in the log rate from the
-bottom to the top of the wealth distribution. Negative = poor higher. It is
-measured on the same log-versus-rank scale as ogcore's gradient arguments, which
-are evaluated at each income group's percentile midpoint; rates in this range are
-small enough that log-rate and log-odds slopes coincide to first order. Confirm
-the sign convention against your ogcore version before use.
+The **tilt** (`slope`) is the OLS slope of ln(rate) on wealth rank measured 0 to
+1 (quintile midpoints at 0.10 ... 0.90), i.e. the change in the log rate from the
+bottom to the top of the wealth distribution. Negative = poor higher.
+
+**Unit conversion for ogcore (verified against ogcore 0.18.0):** ogcore evaluates
+its gradients on a centered percentile-point scale (each income group's midpoint
+lies between −50 and +50), so its slope is per *percentile point* while the
+library's is per *unit of rank* — **divide the library tilt by 100** before
+passing it (see the example below). Sign convention matches (negative = poor
+higher on both sides). ogcore applies the slope through a logistic (log-odds)
+form and re-solves the level so the UN aggregate rates are preserved exactly;
+for rates of these magnitudes the library's log-rate slope and ogcore's log-odds
+slope coincide to first order. The grouping itself needs nothing from this
+library: ogcore derives each group's midpoint from the `lambdas` you pass, so
+any number of income groups, of any sizes, consumes the same tilt.
 
 ## Using it in a country calibration
 
@@ -68,12 +76,14 @@ fert_tilt = lib.query("indicator == 'TFR' and country == 'South Africa'")["slope
 # fert_tilt = ssa["slope"].median()
 
 # 3. Feed it to ogcore (>= 0.18.0) in your Calibration's demographics call.
-#    A scalar applies the same tilt at every age:
+#    Divide by 100: the library tilt is per unit of rank, ogcore's gradient is
+#    per percentile point (see "Unit conversion" above). A scalar applies the
+#    same tilt at every age:
 # pop_dict = demographics.get_pop_objs(
 #     p.E, p.S, p.T, 0, 99,
 #     country_id="710",
 #     income_percentiles=list(p.lambdas),
-#     fert_gradient=fert_tilt,
+#     fert_gradient=fert_tilt / 100,
 # )
 ```
 
