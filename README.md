@@ -12,8 +12,7 @@ This repo plays the same role for demographic *differentials* that
 [EAPD-DRB/Population-Data](https://github.com/EAPD-DRB/Population-Data) plays for
 population *levels*: a stable mirror the country repos can reference by raw URL.
 
-**See [ANALYSIS.md](ANALYSIS.md)** for the figures and regional tables, rendered
-inline on GitHub.
+**See [ANALYSIS.md](ANALYSIS.md)** for the figures and regional tables.
 
 ## The headline numbers (latest survey per country)
 
