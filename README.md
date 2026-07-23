@@ -1,18 +1,94 @@
 # Demographic-Gradients
 
-A borrowable library of **demographic wealth gradients** for the OG-Core country
-model family (OG-USA, OG-ZAF, OG-PHL, OG-IDN, OG-ETH, OG-BRA, ...). It measures how
-fertility and under-5 mortality tilt across the household wealth distribution —
-identically, in 601 DHS surveys across 78 countries — so that a country calibration
-can set OG-Core's income-group demographic gradients (`fert_gradient`,
-`mort_gradient`, ogcore >= 0.18.0) from its own survey, or borrow a defensible
-range when it has no data of its own.
+Income- and wealth-gradients in demographic rates, for the OG-Core country model
+family (OG-USA, OG-ZAF, OG-PHL, OG-IDN, OG-ETH, OG-BRA, ...). Since ogcore 0.18.0
+the model's demographics can vary across the lifetime-income groups; this repo
+collects the measured gradients a country calibration needs to set that up — from
+the country's own survey when it has one, or borrowed from a documented range when
+it doesn't.
 
-This repo plays the same role for demographic *differentials* that
+It plays the same role for demographic *differentials* that
 [EAPD-DRB/Population-Data](https://github.com/EAPD-DRB/Population-Data) plays for
-population *levels*: a stable mirror the country repos can reference by raw URL.
+population *levels*: a stable, reproducible mirror the country repos reference by
+raw URL.
 
 **See [ANALYSIS.md](ANALYSIS.md)** for the figures and regional tables.
+
+## What OG-Core needs, and what this repo has
+
+`ogcore.demographics.get_pop_objs()` (>= 0.18.0) accepts four gradient inputs.
+Coverage here so far:
+
+| OG-Core input | What it does | In this repo? | Where |
+|---|---|---|---|
+| `fert_gradient` | tilts fertility across income rank | **Yes — 77 countries** | `data/gradient_library_latest.csv`, rows with `indicator == "TFR"` |
+| `infmort_gradient` | tilts infant mortality across income rank | **Yes, via an under-5 proxy — 78 countries** | same file, `indicator == "U5MR"` |
+| `mort_gradient` | tilts adult mortality across income rank, by age | **Evidence memo only — no ready-to-ingest values yet** | [ADULT_MORTALITY.md](ADULT_MORTALITY.md) (surveys cannot measure this; panel/registry estimates collected there) |
+| `imm_pctiles` | places immigrants across income groups | **No — no usable data exists anywhere** (verified July 2026) | — |
+
+(`income_percentiles`, the fifth argument, is not data — it is the model's own
+`lambdas` vector.)
+
+So today this repo parameterizes the **fertility** and **child-mortality**
+margins. Adult mortality is the open frontier: the memo has the best available
+estimates (e.g., for South Africa, 5% lower death odds per household asset from
+the national NIDS panel), but turning them into a by-age gradient is calibration
+work, not a file download. The first worked end-to-end example will be the OG-ZAF
+demographics-by-income calibration.
+
+## The file your model ingests
+
+One CSV, one row per country and margin (most recent survey):
+
+```
+https://raw.githubusercontent.com/EAPD-DRB/Demographic-Gradients/main/data/gradient_library_latest.csv
+```
+
+Columns: `indicator` (TFR or U5MR), `country`, `year`, **`slope`** (the tilt —
+see below), `ratio` (poorest/richest decile), and `q1..q5` (the five quintile
+values behind it).
+
+The **tilt** (`slope`) is the OLS slope of ln(rate) on wealth-rank percentile
+midpoints (quintiles at 0.10 ... 0.90), i.e. the change in the log rate from the
+bottom to the top of the wealth distribution. Negative = poor higher. It is
+measured on the same log-versus-rank scale as ogcore's gradient arguments, which
+are evaluated at each income group's percentile midpoint; rates in this range are
+small enough that log-rate and log-odds slopes coincide to first order. Confirm
+the sign convention against your ogcore version before use.
+
+## Using it in a country calibration
+
+```python
+import pandas as pd
+
+LIB = (
+    "https://raw.githubusercontent.com/EAPD-DRB/Demographic-Gradients/"
+    "main/data/gradient_library_latest.csv"
+)
+lib = pd.read_csv(LIB)
+
+# 1. Own data first: the country's own most recent DHS tilt
+fert_tilt = lib.query("indicator == 'TFR' and country == 'South Africa'")["slope"].iloc[0]
+
+# 2. No own survey? Borrow the regional median, and use the regional IQR
+#    as the sensitivity band (regions in data/dhs_regions.csv):
+# regions = pd.read_csv(".../data/dhs_regions.csv")
+# ssa = lib.merge(regions).query("indicator == 'TFR' and region == 'Sub-Saharan Africa'")
+# fert_tilt = ssa["slope"].median()
+
+# 3. Feed it to ogcore (>= 0.18.0) in your Calibration's demographics call.
+#    A scalar applies the same tilt at every age:
+# pop_dict = demographics.get_pop_objs(
+#     p.E, p.S, p.T, 0, 99,
+#     country_id="710",
+#     income_percentiles=list(p.lambdas),
+#     fert_gradient=fert_tilt,
+# )
+```
+
+Either way beats the current default of assuming no gradient at all — the library
+shows a tilt of zero is wrong essentially everywhere. Document which route you
+took (own survey vs borrowed, with the survey year) in your calibration docs.
 
 ## The headline numbers (latest survey per country)
 
@@ -26,80 +102,52 @@ population *levels*: a stable mirror the country repos can reference by raw URL.
 *(601 surveys, 78 countries; DHS API pull of 23 July 2026. Regenerate with
 `uv run scripts/refresh.py`.)*
 
-The **tilt** is the OLS slope of ln(rate) on wealth-rank percentile midpoints
-(quintiles at the 10th...90th percentile) — the same log-scale OG-Core's
-income-group demographics consume. A tilt of −0.79 means the poorest decile's rate
-is about e^(0.79×0.8) ≈ 1.9× the richest decile's. Negative = poor higher.
-
-Two structural findings from the library:
+Two structural findings (see [ANALYSIS.md](ANALYSIS.md)):
 
 1. **The gradients are near-universal**: essentially every country's fertility and
    child-mortality rates decline with wealth rank.
 2. **They are stable**: the pooled median tilt is flat across 35 years of surveys
    (1990–2024). A borrowed gradient is not a decaying quantity.
 
-## How a country repo uses this
-
-1. **Own data first.** If the country has a DHS with wealth-quintile tables (78
-   do), read its own tilt from `data/gradient_library_latest.csv`.
-2. **No own data.** Borrow the regional median as the central value and use the
-   regional IQR as the sensitivity band (see `figures/fig3_slopes_by_region.png`
-   and the regional table in the notebook page). Both beat the current default of
-   assuming no gradient at all — which the library shows is wrong essentially
-   everywhere.
-3. **Mapping to OG-Core.** OG-Core (>= 0.18.0) applies gradients at each
-   lifetime-income group's percentile midpoint and preserves the UN aggregate
-   rates automatically. The quintile-based tilt here is measured on household
-   asset rank — the standard LMIC proxy for economic rank; note the assumption
-   (asset rank ≈ lifetime-income rank) in your calibration docs, and note that no
-   quintile design resolves a top-1% group.
-
 ## Contents
 
 ```
 data/
-  dhs_gradients_raw.csv         quintile-level observations (indicator, country,
-                                survey year, quintile, value)
-  gradient_library.csv          one tilt per survey (601 rows): slope, poorest/
-                                richest ratio, and the five quintile values
-  gradient_library_latest.csv   most recent survey per country (the library view)
-  dhs_regions.csv               DHS Program country -> region map
-figures/
-  fig1_tfr_gradients.png        every country's fertility gradient, individually
-  fig2_u5mr_gradients.png       every country's under-5 mortality gradient
-  fig3_slopes_by_region.png     the distribution of tilts, grouped by region
-  fig4_slopes_over_time.png     tilt stability across 35 years of surveys
+  gradient_library_latest.csv   THE INGESTION FILE — one tilt per country/margin
+  gradient_library.csv          same, for every survey (601 rows; time trends)
+  dhs_gradients_raw.csv         the underlying quintile-level observations
+  dhs_regions.csv               DHS Program country -> region map (for borrowing)
+figures/                        the four figures shown in ANALYSIS.md
 scripts/
-  build_gradient_library.py     rebuilds data/ from the DHS API (uv run, no setup)
-  make_figures.py               rebuilds figures/ from data/ (uv run, no setup)
-ADULT_MORTALITY.md              the separate evidence base for ADULT mortality
-                                gradients (not measurable by DHS-type surveys)
-ANALYSIS.md                     the figures and regional tables, rendered on GitHub
+  build_gradient_library.py     pull the DHS API on demand, rewrite data/
+  make_figures.py               rebuild figures/ from data/
+  build_analysis.py             regenerate ANALYSIS.md + README numbers from data/
+  refresh.py                    all three in order, plus the vintage stamp
+ANALYSIS.md                     the figures and regional tables (generated)
+ADULT_MORTALITY.md              evidence base for the adult-mortality margin
 ```
 
 ## Reproducibility
 
-Everything is rebuilt from public, registration-free sources with two commands:
+Everything rebuilds from public, registration-free sources with one command:
 
 ```
-uv run scripts/build_gradient_library.py
-uv run scripts/make_figures.py
+uv run scripts/refresh.py
 ```
 
 Data source: the [DHS Program indicator API](https://api.dhsprogram.com)
 (indicators `FE_FRTR_W_TFR`, `CM_ECMR_C_U5M`, characteristic "Wealth quintile").
 Wealth quintiles are the DHS household asset index. Surveys with incomplete
-quintets are dropped, never imputed. Data vintage of the committed CSVs:
-API pull of 23 July 2026.
+quintets are dropped, never imputed. When citing, credit the DHS Program as the
+data source alongside this repo.
 
-When citing, credit the DHS Program as the data source alongside this repo.
+## Honest limits
 
-## Scope and honest limits
-
-- **Adult mortality is not in this library and cannot be**: surveys don't observe
-  the dead, and sibling-history methods carry no wealth information. The evidence
-  base for adult-mortality gradients is panel and registry studies, collected in
-  [ADULT_MORTALITY.md](ADULT_MORTALITY.md).
-- Quintiles are household-based cross-sections, not lifetime individual rank.
-- U5MR quintile cells are noisy in low-mortality countries.
-- Immigration by income: no usable source exists, anywhere, as of July 2026.
+- Quintiles are household-based cross-sections, not lifetime individual rank —
+  the standing assumption is that asset rank proxies lifetime-income rank.
+- No quintile design resolves a top-1% income group; tilts there are
+  extrapolation.
+- U5MR quintile cells are noisy in low-mortality countries (South Africa 2016
+  visibly so — see ANALYSIS.md).
+- The under-5 tilt is a proxy for ogcore's *infant* mortality gradient.
+- Adult mortality and immigration: see the coverage table above.
