@@ -1,20 +1,30 @@
 # The gradient library, in figures
 
-Documentation of the data in this repo. Every figure is generated from the CSVs in
-[`data/`](data/) by [`scripts/make_figures.py`](scripts/make_figures.py) and lives
-in [`figures/`](figures/). South Africa is highlighted throughout as the worked
-example; pass `--highlight "<country>"` to the script to feature any other.
+Documentation of the data in this repo. **This file is generated** by
+[`scripts/build_analysis.py`](scripts/build_analysis.py) from the CSVs in
+[`data/`](data/); every number below is computed from the data, not hand-typed,
+so it cannot drift. Figures come from
+[`scripts/make_figures.py`](scripts/make_figures.py) and live in
+[`figures/`](figures/). Regenerate both with `uv run scripts/refresh.py`.
+
+South Africa is highlighted throughout as the worked example; pass
+`--highlight "<country>"` to `make_figures.py` to feature any other.
 
 The **tilt** summarizing each survey is the OLS slope of ln(rate) on wealth-rank
 percentile midpoints (quintiles at the 10th…90th percentile) — the same log scale
 OG-Core's income-group demographics consume. Negative means the poor have higher
-rates; a tilt of −0.79 puts the poorest decile's rate at about e^(0.79×0.8) ≈ 1.9×
-the richest decile's.
+rates; a tilt of −0.79 puts the poorest decile's rate at about
+e^(0.79×0.8) ≈ 1.9× the richest decile's.
+
+Coverage: **601 surveys with complete wealth quintets across
+78 countries** (most recent survey per country used for the library
+view below).
 
 ## Every country, individually
 
 Nearly every line slopes down: the wealth gradient in fertility is close to
-universal. South Africa is both low-fertility and mild-gradient.
+universal. South Africa is both low-fertility and mild-gradient (tilt
+−0.51 in 2016, vs the pooled median of −0.79).
 
 ![Fertility (TFR) by household wealth rank, one line per country](figures/fig1_tfr_gradients.png)
 
@@ -55,12 +65,12 @@ region's median on fertility.
 | Sub-Saharan Africa | 39 | −0.72 | −0.96 to −0.37 | 1.80 |
 | Central Asia | 5 | −0.37 | −0.52 to −0.25 | 1.40 |
 
-## Stability over 35 years of surveys
+## Stability over survey years
 
-All 601 surveys plotted by fieldwork year, with a rolling median. The pooled
-gradient is nearly flat from 1990 to 2024 — wealth gradients are a stable
-structural feature, not an eroding one, so a borrowed gradient is not a decaying
-quantity. South Africa's own fertility gradient flattened between its 1998 and
-2016 surveys.
+All 601 surveys plotted by fieldwork year, with a rolling median. The
+pooled gradient is nearly flat across three and a half decades — wealth gradients
+are a stable structural feature, not an eroding one, so a borrowed gradient is not
+a decaying quantity. South Africa's own fertility gradient flattened between its
+1998 and 2016 surveys.
 
-![Gradient tilts across survey years, 1990–2024](figures/fig4_slopes_over_time.png)
+![Gradient tilts across survey years](figures/fig4_slopes_over_time.png)
