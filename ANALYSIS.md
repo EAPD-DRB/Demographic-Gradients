@@ -81,19 +81,61 @@ Adult mortality by wealth comes from census microdata, not DHS surveys (see the
 README for why). Households are ranked by an asset index; tilts are on the same
 log-rate-per-unit-rank scale as the tables above. The age pattern — steep at
 prime working ages, fading in old age — is the by-age shape ogcore's
-`mort_gradient` accepts directly.
+`mort_gradient` accepts directly, and it replicates across every census
+measured:
 
-| Country | Year | Sex | Ages | Measure | Tilt | Poorest/richest | Death records |
-|---|---|---|---|---|---|---|---|
-| Brazil | 2010 | male | 15–29 | mx | −1.41 | 2.98 | 6,876 |
-| Brazil | 2010 | male | 30–44 | mx | −1.54 | 3.42 | 7,328 |
-| Brazil | 2010 | male | 45–59 | mx | −0.77 | 1.84 | 11,251 |
-| Brazil | 2010 | male | 60–74 | mx | −0.13 | 1.05 | 16,459 |
-| Brazil | 2010 | male | 15–59 | 45q15 | −0.99 | 2.19 | 25,455 |
-| Brazil | 2010 | female | 15–29 | mx | −0.99 | 2.19 | 1,881 |
-| Brazil | 2010 | female | 30–44 | mx | −1.23 | 2.79 | 3,312 |
-| Brazil | 2010 | female | 45–59 | mx | −0.97 | 2.26 | 6,896 |
-| Brazil | 2010 | female | 60–74 | mx | −0.25 | 1.23 | 12,161 |
-| Brazil | 2010 | female | 15–59 | 45q15 | −0.98 | 2.28 | 12,089 |
+![Adult-mortality tilt by age band and country](figures/fig5_amr_age_profile.png)
 
-Ranking: household asset index (see README for the income-vs-assets validation and the build pipeline).
+`linked` is the share of the census's death records that carry a linkable
+household ID; where it is well below 1 (South Africa 2011), rate *levels* are
+meaningless but the tilt is unbiased — the linked deaths' composition matches
+the unlinked on province, urban/rural, sex, and age (checked per sample).
+
+| Country | Year | Sex | Ages | Measure | Tilt | Poorest/richest | Death records | Linked |
+|---|---|---|---|---|---|---|---|---|
+| Brazil | 2010 | male | 15–29 | mx | −1.41 | 2.98 | 6,876 | 100% |
+| Brazil | 2010 | male | 30–44 | mx | −1.54 | 3.42 | 7,328 | 100% |
+| Brazil | 2010 | male | 45–59 | mx | −0.77 | 1.84 | 11,251 | 100% |
+| Brazil | 2010 | male | 60–74 | mx | −0.13 | 1.05 | 16,459 | 100% |
+| Brazil | 2010 | male | 15–59 | 45q15 | −0.99 | 2.19 | 25,455 | 100% |
+| Brazil | 2010 | female | 15–29 | mx | −0.99 | 2.19 | 1,881 | 100% |
+| Brazil | 2010 | female | 30–44 | mx | −1.23 | 2.79 | 3,312 | 100% |
+| Brazil | 2010 | female | 45–59 | mx | −0.97 | 2.26 | 6,896 | 100% |
+| Brazil | 2010 | female | 60–74 | mx | −0.25 | 1.23 | 12,161 | 100% |
+| Brazil | 2010 | female | 15–59 | 45q15 | −0.98 | 2.28 | 12,089 | 100% |
+| South Africa | 2001 | all | 15–29 | mx | −0.91 | 1.97 | 5,939 | 100% |
+| South Africa | 2001 | all | 30–44 | mx | −1.17 | 2.55 | 8,504 | 100% |
+| South Africa | 2001 | all | 45–59 | mx | −0.86 | 1.95 | 5,750 | 100% |
+| South Africa | 2001 | all | 60–74 | mx | −0.32 | 1.28 | 5,489 | 100% |
+| South Africa | 2001 | all | 15–59 | 45q15 | −0.79 | 1.85 | 20,193 | 100% |
+| South Africa | 2001 | male | 15–29 | mx | −0.79 | 1.84 | 2,835 | 100% |
+| South Africa | 2001 | male | 30–44 | mx | −1.13 | 2.56 | 4,564 | 100% |
+| South Africa | 2001 | male | 45–59 | mx | −0.82 | 1.94 | 3,558 | 100% |
+| South Africa | 2001 | male | 60–74 | mx | −0.51 | 1.47 | 2,983 | 100% |
+| South Africa | 2001 | male | 15–59 | 45q15 | −0.70 | 1.77 | 10,957 | 100% |
+| South Africa | 2001 | female | 15–29 | mx | −1.03 | 2.12 | 3,104 | 100% |
+| South Africa | 2001 | female | 30–44 | mx | −1.22 | 2.57 | 3,940 | 100% |
+| South Africa | 2001 | female | 45–59 | mx | −0.94 | 2.02 | 2,192 | 100% |
+| South Africa | 2001 | female | 60–74 | mx | −0.21 | 1.19 | 2,506 | 100% |
+| South Africa | 2001 | female | 15–59 | 45q15 | −0.89 | 1.97 | 9,236 | 100% |
+| South Africa | 2007 | all | 15–29 | mx | −1.21 | 2.35 | 2,421 | 100% |
+| South Africa | 2007 | all | 30–44 | mx | −1.25 | 2.41 | 4,353 | 100% |
+| South Africa | 2007 | all | 45–59 | mx | −1.21 | 2.25 | 2,693 | 100% |
+| South Africa | 2007 | all | 60–74 | mx | −0.56 | 1.41 | 1,963 | 100% |
+| South Africa | 2007 | all | 15–59 | 45q15 | −0.80 | 1.73 | 9,467 | 100% |
+| South Africa | 2007 | male | 15–29 | mx | −1.18 | 2.31 | 1,071 | 100% |
+| South Africa | 2007 | male | 30–44 | mx | −1.15 | 2.27 | 2,207 | 100% |
+| South Africa | 2007 | male | 45–59 | mx | −1.06 | 2.05 | 1,603 | 100% |
+| South Africa | 2007 | male | 60–74 | mx | −0.59 | 1.47 | 1,061 | 100% |
+| South Africa | 2007 | male | 15–59 | 45q15 | −0.68 | 1.60 | 4,881 | 100% |
+| South Africa | 2007 | female | 15–29 | mx | −1.24 | 2.40 | 1,350 | 100% |
+| South Africa | 2007 | female | 30–44 | mx | −1.34 | 2.53 | 2,146 | 100% |
+| South Africa | 2007 | female | 45–59 | mx | −1.40 | 2.51 | 1,090 | 100% |
+| South Africa | 2007 | female | 60–74 | mx | −0.62 | 1.41 | 902 | 100% |
+| South Africa | 2007 | female | 15–59 | 45q15 | −0.92 | 1.87 | 4,586 | 100% |
+| South Africa | 2011 | all | 30–44 | mx | −1.45 | 3.47 | 988 | 10% |
+| South Africa | 2011 | all | 15–59 | 45q15 | −1.14 | 2.63 | 2,245 | 10% |
+| South Africa | 2011 | male | 15–59 | 45q15 | −0.99 | 2.38 | 1,193 | 10% |
+| South Africa | 2011 | female | 15–59 | 45q15 | −1.30 | 2.93 | 1,048 | 10% |
+
+Ranking: household asset index (see README for the income-vs-assets validation and the build pipeline; asset components vary by census and are recorded in `scripts/build_adult_mortality.py`).

@@ -171,6 +171,49 @@ def slopes_over_time(lib, fname, highlight):
     plt.close(fig)
 
 
+def amr_age_profile(fname):
+    """Adult-mortality tilt by age band: the age-fade, across countries."""
+    path = ROOT / "data" / "adult_mortality_gradients.csv"
+    if not path.exists():
+        return False
+    amr = pd.read_csv(path)
+    mx = amr[amr["measure"] == "mx"].copy()
+    if not len(mx):
+        return False
+    mx["agemid"] = (mx["age_lo"] + mx["age_hi"]) / 2
+    mx["series"] = mx["country"] + " " + mx["year"].astype(str)
+    colors = {"Brazil 2010": "#6b6b68", "South Africa 2001": "#7fb0e8", "South Africa 2007": "#2a78d6"}
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.4), dpi=150, sharey=True)
+    for ax, sex, ttl in zip(axes, ["male", "female"], ["Men", "Women"]):
+        sub = mx[mx["sex"] == sex]
+        ends = []
+        for series, g in sub.groupby("series"):
+            g = g.sort_values("agemid")
+            c = colors.get(series, "#1a1a19")
+            ax.plot(g["agemid"], g["slope"], color=c, lw=2.2, marker="o", ms=5, mec=SURF, mew=1)
+            ends.append([series, c, g["agemid"].iloc[-1], g["slope"].iloc[-1]])
+        # dodge end labels that would collide
+        ends.sort(key=lambda e: e[3])
+        for i in range(1, len(ends)):
+            if ends[i][3] - ends[i - 1][3] < 0.09:
+                ends[i][3] = ends[i - 1][3] + 0.09
+        for series, c, x, y in ends:
+            ax.annotate(series, (x, y), xytext=(6, 0), textcoords="offset points",
+                        color=c, fontsize=8.5, va="center")
+        ax.axhline(0, color=GRID, lw=1)
+        ax.grid(True, color=GRID, linewidth=0.6)
+        ax.set_xlabel("age band midpoint")
+        ax.set_title(ttl, fontsize=12, loc="left", pad=10)
+        ax.margins(x=0.22)
+    axes[0].set_ylabel("mortality tilt across wealth rank")
+    fig.suptitle("The adult-mortality gradient fades with age — in every census measured",
+                 fontsize=12, x=0.02, ha="left")
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    fig.savefig(ROOT / "figures" / fname)
+    plt.close(fig)
+    return True
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--highlight", default="South Africa")
@@ -185,7 +228,8 @@ def main():
     spaghetti(latest, "U5MR", "deaths per 1,000 live births", "fig2_u5mr_gradients.png", args.highlight)
     strip_by_region(latest, "fig3_slopes_by_region.png", args.highlight)
     slopes_over_time(lib, "fig4_slopes_over_time.png", args.highlight)
-    print("wrote 4 figures to figures/")
+    n = 4 + int(amr_age_profile("fig5_amr_age_profile.png"))
+    print(f"wrote {n} figures to figures/")
 
 
 if __name__ == "__main__":

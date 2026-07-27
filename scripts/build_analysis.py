@@ -187,19 +187,29 @@ Adult mortality by wealth comes from census microdata, not DHS surveys (see the
 README for why). Households are ranked by an asset index; tilts are on the same
 log-rate-per-unit-rank scale as the tables above. The age pattern — steep at
 prime working ages, fading in old age — is the by-age shape ogcore's
-`mort_gradient` accepts directly.
+`mort_gradient` accepts directly, and it replicates across every census
+measured:
 
-| Country | Year | Sex | Ages | Measure | Tilt | Poorest/richest | Death records |
-|---|---|---|---|---|---|---|---|
+![Adult-mortality tilt by age band and country](figures/fig5_amr_age_profile.png)
+
+`linked` is the share of the census's death records that carry a linkable
+household ID; where it is well below 1 (South Africa 2011), rate *levels* are
+meaningless but the tilt is unbiased — the linked deaths' composition matches
+the unlinked on province, urban/rural, sex, and age (checked per sample).
+
+| Country | Year | Sex | Ages | Measure | Tilt | Poorest/richest | Death records | Linked |
+|---|---|---|---|---|---|---|---|---|
 """
         for _, r in amr.iterrows():
             doc += (
                 f"| {r['country']} | {r['year']} | {r['sex']} | {r['age_lo']}–{r['age_hi']} "
-                f"| {r['measure']} | {fmt(r['slope'])} | {r['ratio']:.2f} | {r['n_deaths']:,} |\n"
+                f"| {r['measure']} | {fmt(r['slope'])} | {r['ratio']:.2f} | {r['n_deaths']:,} "
+                f"| {r.get('linked_share', 1.0):.0%} |\n"
             )
         doc += (
             "\nRanking: household asset index (see README for the income-vs-assets"
-            " validation and the build pipeline).\n"
+            " validation and the build pipeline; asset components vary by census"
+            " and are recorded in `scripts/build_adult_mortality.py`).\n"
         )
 
     (ROOT / "ANALYSIS.md").write_text(doc)

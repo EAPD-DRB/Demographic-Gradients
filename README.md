@@ -23,7 +23,7 @@ accepts:
 |---|---|---|---|
 | `fert_gradient` | tilts fertility across income rank | 77 countries | `data/gradient_library_latest.csv`, rows with `indicator == "TFR"` |
 | `infmort_gradient` | tilts infant mortality across income rank | 78 countries (under-5 mortality as the proxy) | same file, `indicator == "U5MR"` |
-| `mort_gradient` | tilts adult mortality across income rank, by age | Brazil 2010 (age-band-specific; more countries queued below) | `data/adult_mortality_gradients.csv` |
+| `mort_gradient` | tilts adult mortality across income rank, by age | Brazil 2010, South Africa 2001/2007/2011 (age-band-specific) | `data/adult_mortality_gradients.csv` |
 
 (`income_percentiles`, the argument that accompanies any gradient, is not data —
 it is the model's own `lambdas` vector.)
@@ -38,24 +38,33 @@ death (age, sex, last 12 months) alongside its assets.
 and age band (`measure == "mx"`), plus a 15–59 summary (`measure == "45q15"`) —
 on the same tilt scale as the fertility file.
 
-Brazil 2010 (66,000+ linked death records from the census sample microdata)
-establishes the method and shows a strong age pattern: tilts of −1.4 to −1.5 at
-prime working ages, fading to near zero by 60–74 — the by-age shape
-`mort_gradient` accepts directly. Households are ranked by an **asset index**,
-not measured income: a death mechanically removes the deceased's earnings from
-post-death household income, while assets are shock-stable (validated on São
-Paulo, where assets gave clean monotonic gradients and income did not).
+Two countries so far, five censuses, ~98,000 linked death records. Brazil 2010
+(66,000+ linked deaths) establishes the method; South Africa 2001, 2007, and
+2011 (31,900 linked adult deaths across the three) replicate it: working-age
+tilts of −0.7 to −1.5 everywhere, fading toward zero by ages 60–74 — the
+by-age shape `mort_gradient` accepts directly — with the gradient stable
+across the entire arc of South Africa's HIV epidemic and steeper for women
+than men in every South African cell. Households are ranked by an **asset
+index**, not measured income: a death mechanically removes the deceased's
+earnings from post-death household income, while assets are shock-stable
+(validated on São Paulo, where assets gave clean monotonic gradients and
+income did not).
 
-All countries on this margin are built by one universal script from IPUMS
-International extracts (slim variable sets — tens of MB per census; microdata
-stays local per the IPUMS license, and these published aggregates are
-explicitly permitted). **Queued next**, OG-model countries first: **South
-Africa 2001/2007/2011** and **Ethiopia 2007**, with Brazil 2010 rebuilt through
-the same pipeline. Countries whose censuses lack a mortality module
-(Philippines; Indonesia's only sample is 1976) borrow the library range
-instead. Further countries (Malawi 2008, Zambia 2010, Mozambique 2007,
-Cambodia, Panama, El Salvador, ...) can follow once volumes are proven
-manageable.
+South Africa is built by `scripts/build_adult_mortality.py` — the universal
+IPUMS pipeline (slim extracts of ~12 variables, tens of MB per census;
+microdata stays local per the IPUMS license, and these published aggregates
+are explicitly permitted). Sample-specific facts it handles and records:
+asset components vary by census (2001 has no cell-era assets; the `groups`
+column records how many wealth groups each census's asset distribution
+supports), and za2011a links only ~10% of death records (`linked_share`
+column) — levels are then meaningless but the tilt is unbiased, verified by a
+linked-vs-unlinked composition check on province, urban/rural, sex, and age.
+
+**Queued next**: **Ethiopia 2007**, and Brazil 2010 rebuilt through the same
+pipeline. Countries whose censuses lack a mortality module (Philippines;
+Indonesia's only sample is 1976) borrow the library range instead. Further
+countries (Malawi 2008, Zambia 2010, Mozambique 2007, Cambodia, Panama,
+El Salvador, ...) can follow.
 
 ## The file your model ingests
 
@@ -153,6 +162,8 @@ data/
 figures/                        the four figures shown in ANALYSIS.md
 scripts/
   build_gradient_library.py     pull the DHS API on demand, rewrite data/
+  build_adult_mortality.py      the universal IPUMS pipeline: submit slim
+                                extracts, download, estimate the tilts
   make_figures.py               rebuild figures/ from data/
   build_analysis.py             regenerate ANALYSIS.md + README numbers from data/
   refresh.py                    all three in order, plus the vintage stamp
@@ -167,11 +178,22 @@ Everything rebuilds from public, registration-free sources with one command:
 uv run scripts/refresh.py
 ```
 
-Data source: the [DHS Program indicator API](https://api.dhsprogram.com)
-(indicators `FE_FRTR_W_TFR`, `CM_ECMR_C_U5M`, characteristic "Wealth quintile").
-Wealth quintiles are the DHS household asset index. Surveys with incomplete
-quintets are dropped, never imputed. When citing, credit the DHS Program as the
-data source alongside this repo.
+Data sources and required citations:
+
+- Fertility and child mortality: the
+  [DHS Program indicator API](https://api.dhsprogram.com) (indicators
+  `FE_FRTR_W_TFR`, `CM_ECMR_C_U5M`, characteristic "Wealth quintile"). Credit
+  the DHS Program alongside this repo. Wealth quintiles are the DHS household
+  asset index; surveys with incomplete quintets are dropped, never imputed.
+- Adult mortality: census microdata via IPUMS International — cite *Ruggles
+  et al., Integrated Public Use Microdata Series, International. Minneapolis,
+  MN: IPUMS (doi:10.18128/D020.V7.7)* and acknowledge the originating
+  statistical offices (Statistics South Africa; IBGE, Brazil). The adult
+  mortality estimates rebuild only with an IPUMS account (free registration):
+  the extracts come via the API and the supplementary per-death files from
+  https://international.ipums.org/international/mort_fert_mig.shtml — both
+  stay local; only the aggregated tilts here are redistributed, which the
+  license explicitly permits.
 
 ## Honest limits
 
