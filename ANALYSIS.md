@@ -16,9 +16,9 @@ OG-Core's income-group demographics consume. Negative means the poor have higher
 rates; a tilt of −0.79 puts the poorest decile's rate at about
 e^(0.79×0.8) ≈ 1.9× the richest decile's.
 
-Coverage: **601 surveys with complete wealth quintets across
-78 countries** (most recent survey per country used for the library
-view below).
+Coverage: **330 surveys with complete wealth quintets across
+78 countries**, giving 891 country-survey-margin tilts (most
+recent survey per country used for the library view below).
 
 ## Every country, individually
 
@@ -33,6 +33,24 @@ countries. South Africa's non-monotonic top quintiles reflect the small
 child-mortality samples in its 2016 survey.
 
 ![Under-5 mortality by household wealth rank, one line per country](figures/fig2_u5mr_gradients.png)
+
+### Use infant mortality, not under-5, for `infmort_gradient`
+
+The library carries both. They are not interchangeable, and the difference runs
+one way: across the 289 surveys that report both by wealth quintile, the
+under-5 tilt is steeper than the infant tilt by a median
+0.14, and it is steeper in 84% of
+them. The two are strongly correlated (r = 0.94), so the shape of the
+story is the same — but the level is not, and the gap reaches
+0.67 (Nigeria 2018).
+
+The reason is what under-5 mortality includes. Deaths between ages 1 and 4 are
+dominated by diarrhoea, malaria, and malnutrition, which wealth protects against
+strongly; infant deaths lean toward prematurity and birth complications, which it
+protects against much less. Using under-5 as the infant proxy therefore imports
+the steeper child-mortality gradient into a parameter meant to describe infants.
+Prefer `indicator == "IMR"`, and fall back to `"U5MR"` only for the surveys that
+report no infant quintiles.
 
 ## Grouped by region
 
@@ -54,7 +72,18 @@ region's median on fertility.
 | Central Asia | 5 | −0.53 | −0.77 to −0.41 | 1.62 |
 | Oceania | 1 | −0.47 | (single survey) | 1.56 |
 
-**Under-5 mortality tilt by region**
+**Infant mortality tilt by region** — the series `infmort_gradient` should use
+
+| Region | Countries | Median tilt | IQR | Median poorest/richest ratio |
+|---|---|---|---|---|
+| Latin America & Caribbean | 11 | −1.03 | −1.37 to −0.72 | 2.69 |
+| South & Southeast Asia | 12 | −0.99 | −1.35 to −0.72 | 2.26 |
+| North Africa/West Asia/Europe | 10 | −0.75 | −1.06 to −0.55 | 2.06 |
+| Oceania | 1 | −0.72 | (single survey) | 1.74 |
+| Central Asia | 5 | −0.55 | −0.90 to −0.17 | 1.53 |
+| Sub-Saharan Africa | 39 | −0.52 | −0.67 to −0.22 | 1.52 |
+
+**Under-5 mortality tilt by region** — the fallback, and steeper (see below)
 
 | Region | Countries | Median tilt | IQR | Median poorest/richest ratio |
 |---|---|---|---|---|
@@ -67,7 +96,8 @@ region's median on fertility.
 
 ## Stability over survey years
 
-All 601 surveys plotted by fieldwork year, with a rolling median. The
+All 891 country-survey-margin tilts plotted by fieldwork year, with a
+rolling median. The
 pooled gradient is nearly flat across three and a half decades — wealth gradients
 are a stable structural feature, not an eroding one, so a borrowed gradient is not
 a decaying quantity. South Africa's own fertility gradient flattened between its

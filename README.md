@@ -22,7 +22,7 @@ accepts:
 | OG-Core input | What it does | Coverage | Where |
 |---|---|---|---|
 | `fert_gradient` | tilts fertility across income rank | 77 countries | `data/gradient_library_latest.csv`, rows with `indicator == "TFR"` |
-| `infmort_gradient` | tilts infant mortality across income rank | 78 countries (under-5 mortality as the proxy) | same file, `indicator == "U5MR"` |
+| `infmort_gradient` | tilts infant mortality across income rank | 78 countries | same file, `indicator == "IMR"` (fall back to `"U5MR"`) |
 | `mort_gradient` | tilts adult mortality across income rank, by age | 14 countries, 16 censuses (age-band-specific) | `data/adult_mortality_gradients.csv` |
 
 (`income_percentiles`, the argument that accompanies any gradient, is not data —
@@ -98,9 +98,16 @@ One CSV, one row per country and margin (most recent survey):
 https://raw.githubusercontent.com/EAPD-DRB/Demographic-Gradients/main/data/gradient_library_latest.csv
 ```
 
-Columns: `indicator` (TFR or U5MR), `country`, `year`, **`slope`** (the tilt —
-see below), `ratio` (poorest/richest decile), and `q1..q5` (the five quintile
-values behind it).
+Columns: `indicator` (TFR, IMR, or U5MR), `country`, `year`, **`slope`** (the
+tilt — see below), `ratio` (poorest/richest decile), and `q1..q5` (the five
+quintile values behind it).
+
+For `infmort_gradient`, use **`IMR`** — it is the series ogcore's infant
+parameter actually represents. `U5MR` is kept as the fallback for the few
+surveys reporting no infant quintiles, but it is not a neutral substitute:
+across the 289 surveys carrying both, the under-5 tilt is steeper by a median
+0.14, because under-5 bundles in ages 1–4, where deaths are dominated by the
+sharply wealth-graded infectious causes. See [ANALYSIS.md](ANALYSIS.md).
 
 The **tilt** (`slope`) is the OLS slope of ln(rate) on wealth rank measured 0 to
 1 (quintile midpoints at 0.10 ... 0.90), i.e. the change in the log rate from the
@@ -160,11 +167,12 @@ took (own survey vs borrowed, with the survey year) in your calibration docs.
 | Margin | Countries | Median tilt | IQR | Median poorest/richest ratio |
 |---|---|---|---|---|
 | Fertility (TFR) | 77 | **−0.79** | −0.97 to −0.53 | 1.90 |
-| Under-5 mortality | 78 | **−0.82** | −1.16 to −0.54 | 1.96 |
+| Infant mortality | 78 | **−0.64** | −0.96 to −0.39 | 1.70 |
+| Under-5 mortality (fallback) | 78 | **−0.82** | −1.16 to −0.54 | 1.96 |
 | Adult mortality (45q15) | 14 | **−0.36** | −0.69 to −0.14 | 1.32 |
 <!-- END AUTO-GENERATED -->
 
-*(601 surveys, 78 countries; DHS API pull of 23 July 2026. Regenerate with
+*(330 surveys, 78 countries; DHS API pull of 28 July 2026. Regenerate with
 `uv run scripts/refresh.py`.)*
 
 Three structural findings (see [ANALYSIS.md](ANALYSIS.md)):
@@ -212,7 +220,8 @@ Data sources and required citations:
 
 - Fertility and child mortality: the
   [DHS Program indicator API](https://api.dhsprogram.com) (indicators
-  `FE_FRTR_W_TFR`, `CM_ECMR_C_U5M`, characteristic "Wealth quintile"). Credit
+  `FE_FRTR_W_TFR`, `CM_ECMR_C_IMR`, `CM_ECMR_C_U5M`, characteristic "Wealth
+  quintile"). Credit
   the DHS Program alongside this repo. Wealth quintiles are the DHS household
   asset index; surveys with incomplete quintets are dropped, never imputed.
 - Adult mortality: census microdata via IPUMS International — cite *Ruggles
@@ -243,7 +252,10 @@ Data sources and required citations:
   extrapolation.
 - U5MR quintile cells are noisy in low-mortality countries (South Africa 2016
   visibly so — see ANALYSIS.md).
-- The under-5 tilt is a proxy for ogcore's *infant* mortality gradient.
+- Infant mortality is now measured directly rather than proxied by under-5, so
+  the old proxy caveat is gone — but the two differ by a median 0.14 in tilt,
+  so any calibration built on the earlier `U5MR` figures overstates its infant
+  gradient and is worth revisiting.
 - Adult-mortality gradients come from a household's own recall of deaths in
   the past 12 months. Under-reporting is common (capture against national
   death counts runs from 35% in Benin to over 100% where census and UN

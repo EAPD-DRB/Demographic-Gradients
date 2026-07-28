@@ -14,6 +14,7 @@ or figures change:
 (or just run scripts/refresh.py, which chains data -> figures -> analysis).
 """
 
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -45,6 +46,22 @@ def headline(latest, ind):
         "q75": l["slope"].quantile(0.75),
         "ratio": l["ratio"].median(),
     }
+
+
+def imr_vs_u5mr(lib):
+    """How much steeper the U5MR proxy is than the infant series it stands in for."""
+    p = lib.pivot_table(index=["country", "year"], columns="indicator",
+                        values="slope")
+    if "IMR" not in p.columns:
+        return None
+    p = p[["IMR", "U5MR"]].dropna()
+    if not len(p):
+        return None
+    d = p["IMR"] - p["U5MR"]
+    return {"n": len(p), "med_imr": p["IMR"].median(), "med_u5": p["U5MR"].median(),
+            "med_diff": d.median(), "share_flatter": (d > 0).mean(),
+            "r": p["IMR"].corr(p["U5MR"]),
+            "worst": d.abs().idxmax(), "worst_gap": d.abs().max()}
 
 
 def amr_headline():
@@ -103,8 +120,10 @@ def replace_between(text, start, end, new):
 
 def main():
     lib, latest = load()
-    tfr, u5 = headline(latest, "TFR"), headline(latest, "U5MR")
-    n_surveys = len(lib)
+    tfr, u5, imr = headline(latest, "TFR"), headline(latest, "U5MR"), headline(latest, "IMR")
+    # lib has one row per country x year x indicator; a "survey" is a country-year
+    n_surveys = lib.groupby(["country", "year"]).ngroups
+    n_obs = len(lib)
     n_countries = latest["country"].nunique()
 
     # --- README headline table (between markers) ---
@@ -115,7 +134,9 @@ def main():
         "|---|---|---|---|---|\n"
         f"| Fertility (TFR) | {tfr['n']} | **{fmt(tfr['med'])}** | "
         f"{fmt(tfr['q25'])} to {fmt(tfr['q75'])} | {tfr['ratio']:.2f} |\n"
-        f"| Under-5 mortality | {u5['n']} | **{fmt(u5['med'])}** | "
+        f"| Infant mortality | {imr['n']} | **{fmt(imr['med'])}** | "
+        f"{fmt(imr['q25'])} to {fmt(imr['q75'])} | {imr['ratio']:.2f} |\n"
+        f"| Under-5 mortality (fallback) | {u5['n']} | **{fmt(u5['med'])}** | "
         f"{fmt(u5['q25'])} to {fmt(u5['q75'])} | {u5['ratio']:.2f} |"
     )
     amr = amr_headline()
@@ -130,11 +151,15 @@ def main():
         "<!-- END AUTO-GENERATED -->",
         table,
     )
+    # keep the coverage parenthetical in step with the data too
+    readme = re.sub(r"\d[\d,]* surveys, \d+ countries",
+                    f"{n_surveys:,} surveys, {n_countries} countries", readme)
     readme_path.write_text(readme)
     print(f"updated README headline table ({n_surveys} surveys, {n_countries} countries)")
 
     # --- ANALYSIS.md (fully generated) ---
     sa_t, sa_u = sa(latest, "TFR"), sa(latest, "U5MR")
+    cmp_ = imr_vs_u5mr(lib)
     doc = f"""# The gradient library, in figures
 
 Documentation of the data in this repo. **This file is generated** by
@@ -154,8 +179,8 @@ rates; a tilt of {fmt(tfr['med'])} puts the poorest decile's rate at about
 e^({abs(tfr['med']):.2f}×0.8) ≈ {2.718281828 ** (abs(tfr['med']) * 0.8):.1f}× the richest decile's.
 
 Coverage: **{n_surveys} surveys with complete wealth quintets across
-{n_countries} countries** (most recent survey per country used for the library
-view below).
+{n_countries} countries**, giving {n_obs} country-survey-margin tilts (most
+recent survey per country used for the library view below).
 
 ## Every country, individually
 
@@ -170,6 +195,24 @@ countries. South Africa's non-monotonic top quintiles reflect the small
 child-mortality samples in its {sa_u['year']} survey.
 
 ![Under-5 mortality by household wealth rank, one line per country](figures/fig2_u5mr_gradients.png)
+
+### Use infant mortality, not under-5, for `infmort_gradient`
+
+The library carries both. They are not interchangeable, and the difference runs
+one way: across the {cmp_['n']} surveys that report both by wealth quintile, the
+under-5 tilt is steeper than the infant tilt by a median
+{abs(cmp_['med_diff']):.2f}, and it is steeper in {cmp_['share_flatter']:.0%} of
+them. The two are strongly correlated (r = {cmp_['r']:.2f}), so the shape of the
+story is the same — but the level is not, and the gap reaches
+{cmp_['worst_gap']:.2f} ({cmp_['worst'][0]} {cmp_['worst'][1]}).
+
+The reason is what under-5 mortality includes. Deaths between ages 1 and 4 are
+dominated by diarrhoea, malaria, and malnutrition, which wealth protects against
+strongly; infant deaths lean toward prematurity and birth complications, which it
+protects against much less. Using under-5 as the infant proxy therefore imports
+the steeper child-mortality gradient into a parameter meant to describe infants.
+Prefer `indicator == "IMR"`, and fall back to `"U5MR"` only for the surveys that
+report no infant quintiles.
 
 ## Grouped by region
 
@@ -186,7 +229,13 @@ region's median on fertility.
 |---|---|---|---|---|
 {region_table(latest, "TFR")}
 
-**Under-5 mortality tilt by region**
+**Infant mortality tilt by region** — the series `infmort_gradient` should use
+
+| Region | Countries | Median tilt | IQR | Median poorest/richest ratio |
+|---|---|---|---|---|
+{region_table(latest, "IMR")}
+
+**Under-5 mortality tilt by region** — the fallback, and steeper (see below)
 
 | Region | Countries | Median tilt | IQR | Median poorest/richest ratio |
 |---|---|---|---|---|
@@ -194,7 +243,8 @@ region's median on fertility.
 
 ## Stability over survey years
 
-All {n_surveys} surveys plotted by fieldwork year, with a rolling median. The
+All {n_obs} country-survey-margin tilts plotted by fieldwork year, with a
+rolling median. The
 pooled gradient is nearly flat across three and a half decades — wealth gradients
 are a stable structural feature, not an eroding one, so a borrowed gradient is not
 a decaying quantity. South Africa's own fertility gradient flattened between its

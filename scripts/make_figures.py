@@ -90,7 +90,7 @@ def strip_by_region(latest, fname, highlight):
     tfr = latest[latest["indicator"] == "TFR"]
     regions = tfr.groupby("region")["slope"].median().sort_values().index.tolist()
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.8), dpi=150, sharey=True)
-    for ax, ind, ttl in zip(axes, ["TFR", "U5MR"], ["Fertility (TFR)", "Under-5 mortality"]):
+    for ax, ind, ttl in zip(axes, ["TFR", "IMR"], ["Fertility (TFR)", "Infant mortality"]):
         l = latest[latest["indicator"] == ind]
         for yi, rgn in enumerate(regions):
             sub = l[l["region"] == rgn]
@@ -141,8 +141,8 @@ def slopes_over_time(lib, fname, highlight):
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.2), dpi=150, sharey=True)
     for ax, ind, ttl in zip(
         axes,
-        ["TFR", "U5MR"],
-        ["Fertility gradient over survey years", "Under-5 mortality gradient over survey years"],
+        ["TFR", "IMR"],
+        ["Fertility gradient over survey years", "Infant mortality gradient over survey years"],
     ):
         l = lib[lib["indicator"] == ind]
         ax.scatter(l["year"], l["slope"], s=14, color=MUTED, alpha=0.4, edgecolors="none")

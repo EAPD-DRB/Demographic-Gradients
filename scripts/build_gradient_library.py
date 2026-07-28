@@ -4,10 +4,16 @@
 # ///
 """Rebuild the demographic gradient library from the DHS Program public API.
 
-Pulls total fertility (FE_FRTR_W_TFR) and under-5 mortality (CM_ECMR_C_U5M)
-by wealth quintile for every DHS survey, computes one comparable tilt per
-survey (the OLS slope of ln(rate) on wealth-rank percentile midpoints), and
-writes the four CSVs in ../data/.
+Pulls total fertility (FE_FRTR_W_TFR), infant mortality (CM_ECMR_C_IMR) and
+under-5 mortality (CM_ECMR_C_U5M) by wealth quintile for every DHS survey,
+computes one comparable tilt per survey (the OLS slope of ln(rate) on
+wealth-rank percentile midpoints), and writes the four CSVs in ../data/.
+
+IMR is what ogcore's `infmort_gradient` actually represents; U5MR is kept as
+the fallback for surveys that report no infant quintiles. The two are not
+interchangeable - across 289 paired surveys the U5MR tilt is steeper by a
+median 0.15, because under-5 bundles in ages 1-4, where deaths are dominated
+by the sharply wealth-graded infectious causes.
 
 The API is free and public (https://api.dhsprogram.com) — no key, no
 registration. Run:
@@ -15,7 +21,9 @@ registration. Run:
     uv run scripts/build_gradient_library.py
 """
 
+import datetime
 import json
+import re
 import time
 import urllib.request
 from pathlib import Path
@@ -25,7 +33,7 @@ import pandas as pd
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 API = "https://api.dhsprogram.com/rest/dhs"
-INDICATORS = {"FE_FRTR_W_TFR": "TFR", "CM_ECMR_C_U5M": "U5MR"}
+INDICATORS = {"FE_FRTR_W_TFR": "TFR", "CM_ECMR_C_IMR": "IMR", "CM_ECMR_C_U5M": "U5MR"}
 # Wealth-rank percentile midpoint represented by each quintile
 QUINTILE_MIDPOINTS = {
     "Lowest": 0.10,
@@ -122,7 +130,16 @@ def main():
             f"IQR [{l['slope'].quantile(0.25):.3f}, {l['slope'].quantile(0.75):.3f}] "
             f"| median poorest/richest ratio {l['ratio'].median():.2f}"
         )
-    print(f"surveys with complete quintets: {len(lib)}")
+    print(f"surveys with complete quintets: {lib.groupby(['country', 'year']).ngroups} "
+          f"({len(lib)} country-survey-margin tilts)")
+
+    # Stamp the data vintage where the README states it: the script that pulls
+    # owns the stamp, so it cannot drift when this runs outside refresh.py.
+    readme = DATA_DIR.parent / "README.md"
+    today = datetime.date.today().strftime("%-d %B %Y")
+    readme.write_text(re.sub(r"API pull of \d{1,2} \w+ \d{4}",
+                             f"API pull of {today}", readme.read_text()))
+    print(f"stamped data vintage: {today}")
 
 
 if __name__ == "__main__":

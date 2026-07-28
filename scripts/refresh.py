@@ -16,8 +16,6 @@ Each stage is also runnable on its own:
 """
 
 import argparse
-import datetime
-import re
 import subprocess
 import sys
 from pathlib import Path
@@ -41,13 +39,7 @@ def main():
     args = ap.parse_args()
 
     if not args.no_pull:
-        run("build_gradient_library.py")
-        # Stamp the data vintage wherever the README states it
-        readme = ROOT / "README.md"
-        today = datetime.date.today().strftime("%-d %B %Y")
-        text = re.sub(r"API pull of \d{1,2} \w+ \d{4}", f"API pull of {today}", readme.read_text())
-        readme.write_text(text)
-        print(f"stamped data vintage: {today}")
+        run("build_gradient_library.py")  # also stamps the data vintage in the README
 
     run("make_figures.py")
     run("build_analysis.py")
