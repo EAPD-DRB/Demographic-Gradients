@@ -65,20 +65,105 @@ MIN_BAND_DEATHS = 900  # publish a band tilt only above this record count
 
 # Harmonized IPUMS-I codes meaning "owns it"
 YES = {"ELECTRIC": [1], "PHONE": [2], "CELL": [1], "INTERNET": [1],
-       "COMPUTER": [2], "WASHER": [1], "REFRIG": [2], "TV": [20], "RADIO": [2]}
+       "COMPUTER": [2], "WASHER": [1], "REFRIG": [2], "TV": [20], "RADIO": [2],
+       "BATH": [2, 3, 4]}
 BASE_VARS = ["AGE", "SEX", "TOILET", "ELECTRIC", "PHONE", "CELL", "REFRIG", "TV", "RADIO", "COMPUTER"]
 
 # Per-sample configuration. asset_extra: variables beyond BASE_VARS that the
-# census supports. death_weight: column in the supplementary file, or None to
-# use the linked household's HHWT.
+# census supports; drop: BASE_VARS the census lacks (the API 400 names them).
+# death_weight: column in the supplementary file, or None to use the linked
+# household's HHWT. nso: the originating statistical office, cited alongside
+# IPUMS in the source column.
+WISH = ["INTERNET", "AUTOS", "WASHER", "BATH", "MORTNUM"]  # extras to try everywhere
 SAMPLES = {
-    "za2001a": dict(country="South Africa", year=2001, asset_extra=[], death_weight=None),
-    "za2007a": dict(country="South Africa", year=2007, asset_extra=["INTERNET"], death_weight=None),
+    "za2001a": dict(country="South Africa", year=2001, asset_extra=[], death_weight=None,
+                    nso="Statistics South Africa"),
+    "za2007a": dict(country="South Africa", year=2007, asset_extra=["INTERNET"], death_weight=None,
+                    nso="Statistics South Africa"),
     "za2011a": dict(country="South Africa", year=2011,
-                    asset_extra=["INTERNET", "AUTOS", "WASHER", "MORTNUM"], death_weight="wtmort"),
-    # br2010a: queued - the repo's Brazil rows currently come from the same
-    # census via IBGE's open files; the IPUMS rebuild will replace them.
+                    asset_extra=["INTERNET", "AUTOS", "WASHER", "MORTNUM"], death_weight="wtmort",
+                    nso="Statistics South Africa"),
+    "et2007a": dict(country="Ethiopia", year=2007, asset_extra=["MORTNUM"],
+                    drop=["CELL", "REFRIG", "COMPUTER"], death_weight=None,
+                    nso="Central Statistical Agency, Ethiopia"),
+    # br2010a: the repo's Brazil rows come from the same census via IBGE's
+    # open files; this IPUMS rebuild must reproduce them before replacing them.
+    # br2010a: NOT published (publish=False) - the IPUMS mortality supplement
+    # is defective for this sample. It ships 52,393 death records where the
+    # extract's own MORTNUM implies ~110k (weighted 1.007M = 88.5% of
+    # registered deaths, the expected module completeness); the ~52% record
+    # loss is wealth-skewed (q5 rates retain ~1/3 of their IBGE values, q1
+    # ~3/4), so tilts from it are biased, not just noisy. The committed
+    # Brazil rows come from IBGE's open microdata via the retired
+    # build_adult_mortality_brazil.py (git 7600931) and stay authoritative.
+    "br2010a": dict(country="Brazil", year=2010, publish=False,
+                    asset_extra=["INTERNET", "AUTOS", "WASHER", "BATH"],
+                    drop=["TOILET"], death_weight=None,
+                    nso="Instituto Brasileiro de Geografia e Estatistica (IBGE)"),
+    # Comparator set for the borrowing tables. Submitted with the full wish
+    # list; the API's 400s named each census's gaps (recorded below as
+    # asset_extra/drop, from extracts #6-#17, 2026-07-28).
+    "zm2010a": dict(country="Zambia", year=2010, asset_extra=["INTERNET", "AUTOS", "MORTNUM"],
+                    death_weight=None, nso="Central Statistical Office, Zambia"),
+    "mw2008a": dict(country="Malawi", year=2008, asset_extra=["AUTOS", "MORTNUM"],
+                    drop=["CELL", "COMPUTER"], death_weight=None,
+                    nso="National Statistical Office, Malawi"),
+    "mz2007a": dict(country="Mozambique", year=2007, asset_extra=["AUTOS", "MORTNUM"],
+                    drop=["REFRIG"], death_weight=None,
+                    nso="Instituto Nacional de Estatistica, Mozambique"),
+    "ug2002a": dict(country="Uganda", year=2002, asset_extra=["BATH", "MORTNUM"],
+                    drop=["REFRIG", "COMPUTER"], death_weight=None,
+                    nso="Uganda Bureau of Statistics"),
+    "rw2002a": dict(country="Rwanda", year=2002, asset_extra=["INTERNET", "AUTOS", "MORTNUM"],
+                    drop=["REFRIG"], death_weight=None,
+                    nso="National Institute of Statistics of Rwanda"),
+    "sn2002a": dict(country="Senegal", year=2002, asset_extra=["AUTOS", "MORTNUM"],
+                    drop=["CELL"], death_weight=None,
+                    nso="Agence Nationale de la Statistique et de la Demographie, Senegal"),
+    "sl2004a": dict(country="Sierra Leone", year=2004, asset_extra=["AUTOS", "BATH", "MORTNUM"],
+                    death_weight=None, nso="Statistics Sierra Leone"),
+    "ls2006a": dict(country="Lesotho", year=2006, asset_extra=["AUTOS", "MORTNUM"],
+                    drop=["COMPUTER"], death_weight=None,
+                    nso="Bureau of Statistics, Lesotho"),
+    # bj2013a: age arrives as agedyr; the window is deaths since 1 Jan 2012
+    # (~16 months to the May census) - fine for tilts, not for levels.
+    "bj2013a": dict(country="Benin", year=2013, asset_extra=["INTERNET", "AUTOS", "MORTNUM"],
+                    drop=["CELL"], death_weight=None, age_col="agedyr",
+                    nso="Institut National de la Statistique et de l'Analyse Economique, Benin"),
+    # sv2007a: NOT published. The supplement's serials carry a within-dwelling
+    # suffix the extract lacks (flooring links 82.9%), and the unlinked
+    # deaths are wealth-skewed - supplement/MORTNUM capture by wealth group
+    # runs 0.96, 0.76, 0.75, 0.58, 0.69 (rich households' deaths missing),
+    # which would bias the tilt steep. Kept for reference; do not publish.
+    "sv2007a": dict(country="El Salvador", year=2007, publish=False,
+                    asset_extra=["INTERNET", "AUTOS", "WASHER", "MORTNUM"],
+                    drop=["RADIO"], death_weight=None, serial_floor=1000,
+                    nso="Direccion General de Estadistica y Censos, El Salvador"),
+    # np2001a: NOT published - 24% of supplement deaths carry serials that
+    # match no extract household, and the loss is wealth-skewed
+    # (supplement/MORTNUM capture by wealth group: 0.77, 0.79, 0.90, 1.13),
+    # so the tilt is biased flat, not just noisy.
+    "np2001a": dict(country="Nepal", year=2001, publish=False, asset_extra=["MORTNUM"],
+                    drop=["PHONE", "CELL", "REFRIG", "COMPUTER"], death_weight=None,
+                    nso="Central Bureau of Statistics, Nepal"),
+    "kh2008a": dict(country="Cambodia", year=2008, asset_extra=["INTERNET", "AUTOS", "MORTNUM"],
+                    drop=["REFRIG"], death_weight=None,
+                    nso="National Institute of Statistics, Cambodia"),
+    # sd/ss2008a carry their own per-death weight (weightd); the 2008 census
+    # covered both, split here at the 2011 independence boundary.
+    "sd2008a": dict(country="Sudan", year=2008, asset_extra=["AUTOS", "MORTNUM"],
+                    death_weight="weightd", nso="Central Bureau of Statistics, Sudan"),
+    "ss2008a": dict(country="South Sudan", year=2008, asset_extra=["AUTOS", "MORTNUM"],
+                    death_weight="weightd",
+                    nso="Southern Sudan Centre for Census, Statistics and Evaluation"),
 }
+
+# SAMPLE-code country prefixes (ISO numeric, zero-padded to 3 digits) used by
+# find_extract_for(); extend when adding countries.
+CCODE = {"za": "710", "br": "076", "et": "231", "zm": "894", "mw": "454",
+         "mz": "508", "ug": "800", "rw": "646", "sn": "686", "sl": "694",
+         "ls": "426", "bj": "204", "sv": "222", "np": "524", "kh": "116",
+         "sd": "729", "ss": "728"}
 
 
 def api_key():
@@ -92,18 +177,42 @@ def api(path, payload=None):
     req = urllib.request.Request(
         f"{API}{path}", headers={"Authorization": api_key(), "Content-Type": "application/json"},
         data=json.dumps(payload).encode() if payload else None)
-    with urllib.request.urlopen(req, timeout=120) as r:
-        return json.load(r)
+    try:
+        with urllib.request.urlopen(req, timeout=120) as r:
+            return json.load(r)
+    except urllib.error.HTTPError as e:
+        # 400 bodies name the unavailable variables - the per-sample tuning loop
+        body = e.read().decode()
+        sys.stderr.write(body + "\n")
+        try:
+            e.detail = json.loads(body).get("detail", [])
+        except json.JSONDecodeError:
+            e.detail = []
+        raise
 
 
 def cmd_submit(args):
-    for sample, cfg in SAMPLES.items():
-        variables = {v: {} for v in BASE_VARS + cfg["asset_extra"]}
-        body = {"description": f"AMR gradient: {sample}",
-                "dataStructure": {"rectangular": {"on": "P"}}, "dataFormat": "fixed_width",
-                "samples": {sample: {}}, "variables": variables}
-        d = api("/extracts?collection=ipumsi&version=2", body)
-        print(f"{sample}: extract #{d['number']} {d['status']}")
+    for sample in (args.samples or SAMPLES):
+        cfg = SAMPLES[sample]
+        want = [v for v in BASE_VARS if v not in cfg.get("drop", [])] + cfg["asset_extra"]
+        dropped = []
+        while True:
+            body = {"description": f"AMR gradient: {sample}",
+                    "dataStructure": {"rectangular": {"on": "P"}}, "dataFormat": "fixed_width",
+                    "samples": {sample: {}}, "variables": {v: {} for v in want}}
+            try:
+                d = api("/extracts?collection=ipumsi&version=2", body)
+                note = f" (dropped: {', '.join(dropped)} - record in SAMPLES)" if dropped else ""
+                print(f"{sample}: extract #{d['number']} {d['status']}{note}")
+                break
+            except urllib.error.HTTPError as e:
+                # drop the variables the 400 names and retry
+                bad = [v for v in want if any(d.startswith(f"{v}:") or d.endswith(f" {v}")
+                                              for d in getattr(e, "detail", []))]
+                if e.code != 400 or not bad:
+                    raise
+                want = [v for v in want if v not in bad]
+                dropped += bad
 
 
 def cmd_download(args):
@@ -151,7 +260,7 @@ def find_extract_for(sample, extracts_dir):
             line = f.readline()
         s0, s1 = cols["SAMPLE"]
         code = line[s0:s1]
-        want = f"{710 if sample.startswith('za') else 76}{sample[2:6]}01"
+        want = f"{CCODE[sample[:2]]}{sample[2:6]}01"
         if code == want:
             return xml
     return None
@@ -161,23 +270,41 @@ def estimate_sample(sample, cfg, extracts_dir, deaths_dir):
     xml = find_extract_for(sample, extracts_dir)
     assert xml, f"no extract found for {sample} in {extracts_dir}"
     per = load_extract(xml)
-    for c in list(YES) + ["TOILET", "SEX", "AGE", "AUTOS"]:
+    for c in list(YES) + ["TOILET", "SEX", "AGE", "AUTOS", "BATH"]:
         if c in per.columns:
             per[c] = pd.to_numeric(per[c], errors="coerce")
     avail = [c for c in YES if c in per.columns]
+    # rank only households observed on the asset module: et2007a asks assets
+    # (and mortality) on the long form only; collective dwellings are NIU
+    # everywhere. NIU is 0 on all asset vars except AUTOS (9).
+    obs = pd.Series(False, index=per.index)
+    for c in avail + (["TOILET"] if "TOILET" in per.columns else []):
+        obs |= per[c].fillna(0) > 0
+    if "AUTOS" in per.columns:
+        obs |= per["AUTOS"].fillna(9) != 9
+    print(f"  asset universe: {obs.mean():.1%} of persons ({(~obs).sum()} excluded as NIU)")
+    per = per[obs].copy()
     per["assets"] = sum(per[c].isin(YES[c]).astype(int) for c in avail)
     if "AUTOS" in per.columns:
-        per["assets"] += per["AUTOS"].clip(0, 3).where(per["AUTOS"] < 8, 0)
-    per["assets"] += np.select(
-        [per["TOILET"].between(21, 22), per["TOILET"].between(23, 26)], [2, 1], 0)
+        # 7 = "have auto, number unspecified" (e.g. br2010a) - one auto, not clip's 3
+        autos = per["AUTOS"].mask(per["AUTOS"] == 7, 1)
+        per["assets"] += autos.clip(0, 3).where(autos < 8, 0)
+    if "TOILET" in per.columns:
+        per["assets"] += np.select(
+            [per["TOILET"].between(21, 22), per["TOILET"].between(23, 26)], [2, 1], 0)
     per["PERWT"] = per["PERWT"].astype(float) / 100
     per["HHWT"] = per["HHWT"].astype(float) / 100
 
     d = per[per["AGE"].between(15, 59)].sort_values("assets")
     cum = d["PERWT"].cumsum() / d["PERWT"].sum()
     cuts = sorted(set(d.loc[(cum - q).abs().idxmin(), "assets"] for q in [0.2, 0.4, 0.6, 0.8]))
+    # a cut at the distribution's min or max creates a structurally empty edge
+    # group (searchsorted side="right"): e.g. et2007a, where 46% of persons
+    # hold zero assets and the 20% cut lands on 0
+    cuts = [c for c in cuts if d["assets"].min() < c < d["assets"].max()]
     qof = lambda v: np.searchsorted(cuts, v, side="right")
     G = len(cuts) + 1
+    print(f"  groups: {G} (cuts at {cuts}, assets 0-{int(per['assets'].max())})")
     per["q"] = per["assets"].apply(qof)
     gsh = d.assign(q=d["assets"].apply(qof)).groupby("q")["PERWT"].sum().reindex(range(G), fill_value=0)
     gshv = (gsh / gsh.sum()).values
@@ -186,16 +313,27 @@ def estimate_sample(sample, cfg, extracts_dir, deaths_dir):
     hh = per.groupby("SERIAL").agg(assets=("assets", "first"), hhwt=("HHWT", "first")).reset_index()
     hh["SERIAL"] = hh["SERIAL"].astype("int64")
     m = pd.read_stata(Path(deaths_dir) / f"{sample}_mortality.dta", convert_categoricals=False)
-    linked_share = float((m["serial"] > 0).mean())
+    n_all = len(m)
     m = m[m["serial"] > 0]
-    m = m.assign(serial=m["serial"].astype("int64")).merge(hh, left_on="serial", right_on="SERIAL")
+    n_pre = len(m)
+    m = m.assign(serial=m["serial"].astype("int64"))
+    if cfg.get("serial_floor"):
+        m["serial"] = m["serial"] // cfg["serial_floor"] * cfg["serial_floor"]
+    m = m.merge(hh, left_on="serial", right_on="SERIAL")
+    # share of ALL supplement records that reached estimation (anonymized
+    # serials, unmatched households and NIU exclusions all count against it)
+    linked_share = len(m) / max(n_all, 1)
+    print(f"  deaths: {n_all} records, {n_pre} with serial, {len(m)} matched to an "
+          f"asset-universe household (linked_share {linked_share:.1%})")
     m["q"] = m["assets"].apply(qof)
     m["dw"] = m[cfg["death_weight"]] if cfg["death_weight"] else m["hhwt"]
     m["sexd"] = pd.to_numeric(m["sexd"], errors="coerce")
+    if "aged" not in m.columns:
+        m["aged"] = m[cfg["age_col"]]
+    m["aged"] = pd.to_numeric(m["aged"], errors="coerce")
 
     src = ("IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); "
-           "original data: Statistics South Africa" if sample.startswith("za")
-           else "IPUMS International; original data: IBGE")
+           f"original data: {cfg['nso']}")
     rows = []
     for sex, lab in [(None, "all"), (1, "male"), (2, "female")]:
         pp = per if sex is None else per[per["SEX"] == sex]
@@ -231,6 +369,15 @@ def _row(cfg, sex, measure, a0, a1, vals, mids, n, G, linked_share, src):
 def cmd_estimate(args):
     rows = []
     for sample, cfg in SAMPLES.items():
+        if not cfg.get("publish", True):
+            print(f"skipping {sample}: publish=False (see config note)")
+            continue
+        missing = [w for w, ok in [("extract", find_extract_for(sample, args.extracts_dir)),
+                                   ("death file", (Path(args.deaths_dir) / f"{sample}_mortality.dta").exists())]
+                   if not ok]
+        if missing:
+            print(f"skipping {sample}: no {' or '.join(missing)}")
+            continue
         print(f"estimating {sample} ...")
         rows += estimate_sample(sample, cfg, args.extracts_dir, args.deaths_dir)
     new = pd.DataFrame(rows)
@@ -248,6 +395,7 @@ def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("submit")
+    s.add_argument("samples", nargs="*", help="subset of SAMPLES to submit (default: all)")
     d = sub.add_parser("download")
     d.add_argument("numbers", nargs="+", type=int)
     e = sub.add_parser("estimate")
