@@ -200,13 +200,15 @@ def amr_age_profile(fname):
         for series, c, x, y in ends:
             ax.annotate(series, (x, y), xytext=(6, 0), textcoords="offset points",
                         color=c, fontsize=8.5, va="center")
-        ax.axhline(0, color=GRID, lw=1)
         ax.grid(True, color=GRID, linewidth=0.6)
+        # zero is the substantive line: above it the gradient has reversed
+        ax.axhline(0, color="#1a1a19", lw=1, alpha=0.55)
         ax.set_xlabel("age band midpoint")
         ax.set_title(ttl, fontsize=12, loc="left", pad=10)
         ax.margins(x=0.22)
     axes[0].set_ylabel("mortality tilt across wealth rank")
-    fig.suptitle("The adult-mortality gradient fades with age — in every census measured",
+    fig.suptitle("The adult-mortality gradient fades with age in every census — "
+                 "and in the poorest countries it reverses",
                  fontsize=12, x=0.02, ha="left")
     fig.tight_layout(rect=(0, 0, 1, 0.94))
     fig.savefig(ROOT / "figures" / fname)

@@ -180,22 +180,63 @@ a decaying quantity. South Africa's own fertility gradient flattened between its
     amr_path = DATA / "adult_mortality_gradients.csv"
     if amr_path.exists():
         amr = pd.read_csv(amr_path)
-        doc += """
+        n_cens = amr.groupby(["country", "year"]).ngroups
+        doc += f"""
 ## Adult mortality gradients (census household-deaths modules)
 
 Adult mortality by wealth comes from census microdata, not DHS surveys (see the
 README for why). Households are ranked by an asset index; tilts are on the same
-log-rate-per-unit-rank scale as the tables above. The age pattern — steep at
+log-rate-per-unit-rank scale as the tables above. The age pattern — steepest at
 prime working ages, fading in old age — is the by-age shape ogcore's
-`mort_gradient` accepts directly, and it replicates across every census
-measured:
+`mort_gradient` accepts directly, and it holds in every one of the
+{n_cens} censuses measured:
 
 ![Adult-mortality tilt by age band and country](figures/fig5_amr_age_profile.png)
 
-`linked` is the share of the census's death records that carry a linkable
-household ID; where it is well below 1 (South Africa 2011), rate *levels* are
-meaningless but the tilt is unbiased — the linked deaths' composition matches
-the unlinked on province, urban/rural, sex, and age (checked per sample).
+### Read the level off national income, not the region
+
+The *steepness* of the gradient tracks how rich the country is. Across these
+censuses the headline tilt fits
+
+    tilt ≈ 1.25 − 0.24 × ln(GNI per capita)      (r = −0.85)
+
+so doubling income steepens the gradient by about −0.17. In the poorest
+countries the gradient is flat, and at older ages it turns positive: measured
+mortality is *higher* in wealthier households in Ethiopia 2007, Uganda 2002,
+South Sudan 2008 and Mozambique 2007. Two things plausibly drive that, and this
+data cannot separate them. Where almost everyone is poor, the top asset group
+is barely better protected and deaths are infectious and maternal rather than
+the socially graded chronic diseases of middle income. Against that, a frail
+elderly relative often moves into a better-off household before dying, which
+records the death against that household's wealth — a bias no within-census
+check can detect.
+
+HIV does not explain the pattern: excluding South Africa, the correlation
+between the tilt and HIV prevalence is +0.00, Lesotho has the set's highest
+prevalence with a solidly negative tilt, and the reversal is strongest at
+60–74, where HIV mortality is rare.
+
+**For calibration:** borrow by income level rather than by region, and do not
+hold a low-income country's flat tilt fixed across a long transition — as
+income rises the gradient should be expected to steepen toward the middle- and
+high-income values in this table.
+
+### What the columns mean, and what was left out
+
+`linked` is the share of the census's death records that reached estimation.
+Where it is well below 1 (South Africa 2011), rate *levels* are meaningless but
+the tilt is unbiased — the linked deaths' composition matches the unlinked on
+province, urban/rural, sex, and age.
+
+Every sample here passed a completeness check: the supplementary per-death file
+is compared, *within each wealth group*, against the same households' own
+reported death counts (`MORTNUM`). Even record loss cancels out of a tilt;
+wealth-skewed loss does not. Three samples failed and are deliberately absent —
+the IPUMS mortality supplement for Brazil 2010 (holds 48% of the deaths the
+census itself reports, with the loss concentrated in wealthy households; the
+Brazil rows below come from IBGE's own microdata instead), Nepal 2001, and El
+Salvador 2007. Their evidence is recorded in
+`scripts/build_adult_mortality.py`.
 
 | Country | Year | Sex | Ages | Measure | Tilt | Poorest/richest | Death records | Linked |
 |---|---|---|---|---|---|---|---|---|
