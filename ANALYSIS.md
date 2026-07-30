@@ -116,33 +116,86 @@ prime working ages, fading in old age — is the by-age shape ogcore's
 
 ![Adult-mortality tilt by age band and country](figures/fig5_amr_age_profile.png)
 
-### Read the level off national income, not the region
+### The general gradient: what to use when a country has no measurement of its own
 
-The *steepness* of the gradient tracks how rich the country is. Across these
-censuses the headline tilt fits
+Most countries have no measured adult-mortality gradient. The library therefore
+publishes a fallback in
+[`data/general_gradient.csv`](data/general_gradient.csv), and the rule for using
+it is simple: **a country with its own measurement should always prefer it; the
+general gradient is for everyone else.**
 
-    tilt ≈ 1.25 − 0.24 × ln(GNI per capita)      (r = −0.85)
+The steepness of the gradient tracks how rich the country is:
 
-so doubling income steepens the gradient by about −0.17. In the poorest
-countries the gradient is flat, and at older ages it turns positive: measured
-mortality is *higher* in wealthier households in Ethiopia 2007, Uganda 2002,
-South Sudan 2008 and Mozambique 2007. Two things plausibly drive that, and this
-data cannot separate them. Where almost everyone is poor, the top asset group
-is barely better protected and deaths are infectious and maternal rather than
-the socially graded chronic diseases of middle income. Against that, a frail
-elderly relative often moves into a better-off household before dying, which
-records the death against that household's wealth — a bias no within-census
-check can detect.
+    tilt(45q15) = 1.291 − 0.243 × ln(GNI per capita, current US$)
+
+with r = −0.88 across 15 censuses and a 1 SD band of
+±0.16. Doubling income per head steepens the gradient by about
+−0.17.
+
+That rule was chosen by competition, not assertion. Three candidates were each
+judged by leaving one census out of the fit and predicting it — the honest test,
+because a country using the fallback is by definition not in the fit:
+
+| Candidate rule | Mean absolute error |
+|---|---|
+| One tilt for every country (the pooled median, −0.36) | 0.307 |
+| **Read it off national income** | **0.142** |
+| The country's regional median | 0.222 |
+
+Income is wrong by less than half as much as a single global number, and a third
+less than regional medians. So there is a general gradient, and income — not
+region — is what it tracks. It is also most accurate in the middle-income range
+where the countries needing it actually sit, and it reproduces South Africa's own
+census measurement to within a rounding error.
+
+To spread the summary tilt across age bands, which is what ogcore's
+`mort_gradient` accepts, add these pooled offsets:
+
+| Age band | Offset to add | |
+|---|---|---|
+| 15-29 | −0.41 |  |
+| 30-44 | −0.20 |  |
+| 45-59 | 0.15 | least trustworthy |
+| 60-74 | 0.35 | least trustworthy |
+
+Applying an offset this way reproduces a country's own measured band tilt to a
+median ±0.19, so the age shape is a good deal coarser than the level.
+
+**The 45–59 and 60–74 offsets are the least trustworthy numbers in this file.**
+They are positive because in the poorest countries measured mortality rises with
+wealth at older ages, and that may not be real — see the next section. A model
+that only needs working-age mortality should prefer the 15–29 and 30–44 offsets
+and treat the older ones as an upper bound on flatness.
+
+**Do not hold a low-income country's tilt fixed across a long transition.** As
+income rises the gradient should be expected to steepen toward the middle- and
+high-income values in this table.
+
+### The reversal at older ages, and why HIV does not explain it
+
+In the poorest countries the gradient is flat, and at older ages it turns
+positive: measured mortality is *higher* in wealthier households in Ethiopia
+2007, Uganda 2002, South Sudan 2008 and Mozambique 2007. Where almost everyone
+is poor, the top asset group is barely better protected, and deaths are
+infectious and maternal rather than the socially graded chronic diseases of
+middle income. Against that, a frail elderly relative often moves into a
+better-off household before dying, which records the death against that
+household's wealth.
+
+Independent evidence now favours a reporting explanation for at least part of
+it. In DHS sibling histories — a different source, also relying on a
+household's recall of deaths — poorer and less educated respondents report
+*fewer* siblings than richer ones despite having far more children of their own,
+and the deficit grows the further back they are asked to recall. Under-reporting
+of deaths by poorer respondents flattens or reverses a measured gradient in
+exactly this way. That does not prove the census reversal is artefactual, but it
+makes it the more likely reading, and it is why the older-age offsets above
+carry a warning.
 
 HIV does not explain the pattern: excluding South Africa, the correlation
 between the tilt and HIV prevalence is +0.00, Lesotho has the set's highest
 prevalence with a solidly negative tilt, and the reversal is strongest at
 60–74, where HIV mortality is rare.
-
-**For calibration:** borrow by income level rather than by region, and do not
-hold a low-income country's flat tilt fixed across a long transition — as
-income rises the gradient should be expected to steepen toward the middle- and
-high-income values in this table.
 
 ### What the columns mean, and what was left out
 

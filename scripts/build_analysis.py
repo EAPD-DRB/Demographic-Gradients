@@ -48,6 +48,18 @@ def headline(latest, ind):
     }
 
 
+def general_gradient():
+    """The fallback rule and its validation, read from data/ so it cannot drift."""
+    p = DATA / "general_gradient.csv"
+    if not p.exists():
+        return None
+    g = pd.read_csv(p)
+    d = {f"{r['component']}.{r['key']}": r["value"] for _, r in g.iterrows()}
+    d["_ages"] = [(r["key"], r["value"]) for _, r in
+                  g[g["component"] == "age_offset"].iterrows()]
+    return d
+
+
 def imr_vs_u5mr(lib):
     """How much steeper the U5MR proxy is than the infant series it stands in for."""
     p = lib.pivot_table(index=["country", "year"], columns="indicator",
@@ -257,6 +269,23 @@ a decaying quantity. South Africa's own fertility gradient flattened between its
     if amr_path.exists():
         amr = pd.read_csv(amr_path)
         n_cens = amr.groupby(["country", "year"]).ngroups
+        gg = general_gradient() or {}
+        gg_a = gg.get("income_rule.intercept", float("nan"))
+        gg_b = gg.get("income_rule.slope_ln_gni", float("nan"))
+        gg_r = gg.get("income_rule.r", float("nan"))
+        gg_n = gg.get("income_rule.n_censuses", float("nan"))
+        gg_sd = gg.get("income_rule.residual_sd", float("nan"))
+        gg_dbl = gg_b * 0.6931  # effect of doubling income
+        gg_med = gg.get("fallback.pooled_median_tilt", float("nan"))
+        gg_mae_c = gg.get("validation.loo_mae_rule_constant", float("nan"))
+        gg_mae_i = gg.get("validation.loo_mae_rule_income", float("nan"))
+        gg_mae_r = gg.get("validation.loo_mae_rule_region", float("nan"))
+        gg_agemae = gg.get("validation.age_offset_mae", float("nan"))
+        gg_bsign, gg_babs = ("+" if gg_b >= 0 else NEG), abs(gg_b)
+        gg_rf, gg_dblf, gg_medf = fmt(gg_r), fmt(gg_dbl), fmt(gg_med)
+        gg_agerows = "\n".join(
+            f"| {b} | {fmt(v)} | {'least trustworthy' if b in ('45-59', '60-74') else ''} |"
+            for b, v in gg.get("_ages", []))
         doc += f"""
 ## Adult mortality gradients (census household-deaths modules)
 
@@ -269,33 +298,83 @@ prime working ages, fading in old age — is the by-age shape ogcore's
 
 ![Adult-mortality tilt by age band and country](figures/fig5_amr_age_profile.png)
 
-### Read the level off national income, not the region
+### The general gradient: what to use when a country has no measurement of its own
 
-The *steepness* of the gradient tracks how rich the country is. Across these
-censuses the headline tilt fits
+Most countries have no measured adult-mortality gradient. The library therefore
+publishes a fallback in
+[`data/general_gradient.csv`](data/general_gradient.csv), and the rule for using
+it is simple: **a country with its own measurement should always prefer it; the
+general gradient is for everyone else.**
 
-    tilt ≈ 1.25 − 0.24 × ln(GNI per capita)      (r = −0.85)
+The steepness of the gradient tracks how rich the country is:
 
-so doubling income steepens the gradient by about −0.17. In the poorest
-countries the gradient is flat, and at older ages it turns positive: measured
-mortality is *higher* in wealthier households in Ethiopia 2007, Uganda 2002,
-South Sudan 2008 and Mozambique 2007. Two things plausibly drive that, and this
-data cannot separate them. Where almost everyone is poor, the top asset group
-is barely better protected and deaths are infectious and maternal rather than
-the socially graded chronic diseases of middle income. Against that, a frail
-elderly relative often moves into a better-off household before dying, which
-records the death against that household's wealth — a bias no within-census
-check can detect.
+    tilt(45q15) = {gg_a:.3f} {gg_bsign} {gg_babs:.3f} × ln(GNI per capita, current US$)
+
+with r = {gg_rf} across {gg_n:.0f} censuses and a 1 SD band of
+±{gg_sd:.2f}. Doubling income per head steepens the gradient by about
+{gg_dblf}.
+
+That rule was chosen by competition, not assertion. Three candidates were each
+judged by leaving one census out of the fit and predicting it — the honest test,
+because a country using the fallback is by definition not in the fit:
+
+| Candidate rule | Mean absolute error |
+|---|---|
+| One tilt for every country (the pooled median, {gg_medf}) | {gg_mae_c:.3f} |
+| **Read it off national income** | **{gg_mae_i:.3f}** |
+| The country's regional median | {gg_mae_r:.3f} |
+
+Income is wrong by less than half as much as a single global number, and a third
+less than regional medians. So there is a general gradient, and income — not
+region — is what it tracks. It is also most accurate in the middle-income range
+where the countries needing it actually sit, and it reproduces South Africa's own
+census measurement to within a rounding error.
+
+To spread the summary tilt across age bands, which is what ogcore's
+`mort_gradient` accepts, add these pooled offsets:
+
+| Age band | Offset to add | |
+|---|---|---|
+{gg_agerows}
+
+Applying an offset this way reproduces a country's own measured band tilt to a
+median ±{gg_agemae:.2f}, so the age shape is a good deal coarser than the level.
+
+**The 45–59 and 60–74 offsets are the least trustworthy numbers in this file.**
+They are positive because in the poorest countries measured mortality rises with
+wealth at older ages, and that may not be real — see the next section. A model
+that only needs working-age mortality should prefer the 15–29 and 30–44 offsets
+and treat the older ones as an upper bound on flatness.
+
+**Do not hold a low-income country's tilt fixed across a long transition.** As
+income rises the gradient should be expected to steepen toward the middle- and
+high-income values in this table.
+
+### The reversal at older ages, and why HIV does not explain it
+
+In the poorest countries the gradient is flat, and at older ages it turns
+positive: measured mortality is *higher* in wealthier households in Ethiopia
+2007, Uganda 2002, South Sudan 2008 and Mozambique 2007. Where almost everyone
+is poor, the top asset group is barely better protected, and deaths are
+infectious and maternal rather than the socially graded chronic diseases of
+middle income. Against that, a frail elderly relative often moves into a
+better-off household before dying, which records the death against that
+household's wealth.
+
+Independent evidence now favours a reporting explanation for at least part of
+it. In DHS sibling histories — a different source, also relying on a
+household's recall of deaths — poorer and less educated respondents report
+*fewer* siblings than richer ones despite having far more children of their own,
+and the deficit grows the further back they are asked to recall. Under-reporting
+of deaths by poorer respondents flattens or reverses a measured gradient in
+exactly this way. That does not prove the census reversal is artefactual, but it
+makes it the more likely reading, and it is why the older-age offsets above
+carry a warning.
 
 HIV does not explain the pattern: excluding South Africa, the correlation
 between the tilt and HIV prevalence is +0.00, Lesotho has the set's highest
 prevalence with a solidly negative tilt, and the reversal is strongest at
 60–74, where HIV mortality is rare.
-
-**For calibration:** borrow by income level rather than by region, and do not
-hold a low-income country's flat tilt fixed across a long transition — as
-income rises the gradient should be expected to steepen toward the middle- and
-high-income values in this table.
 
 ### What the columns mean, and what was left out
 

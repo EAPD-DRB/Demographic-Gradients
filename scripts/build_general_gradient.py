@@ -164,6 +164,18 @@ def main():
     for band, row in shape.iterrows():
         print(f"   {band:<8}{row['median']:+.3f}   (n={int(row['count'])})")
 
+    # how well does 45q15 + offset reproduce a measured band tilt?
+    a = pd.read_csv(SRC)
+    q = a[(a["measure"] == "45q15") & (a["sex"] == "all")].set_index(["country", "year"])["slope"]
+    mx = a[(a["measure"] == "mx") & (a["sex"] == "all")]
+    offs = shape["median"].to_dict()
+    errs = [abs((q.loc[(r.country, r.year)] + offs[f"{int(r.age_lo)}-{int(r.age_hi)}"]) - r.slope)
+            for r in mx.itertuples()
+            if (r.country, r.year) in q.index and f"{int(r.age_lo)}-{int(r.age_hi)}" in offs]
+    age_mae = float(np.median(errs))
+    print(f"   applying an offset reproduces a measured band tilt to "
+          f"+/-{age_mae:.3f} (median abs error, n={len(errs)})")
+
     # --- write the rule out
     recs = [dict(component="income_rule", key="intercept", value=round(float(a_), 4),
                  note="tilt_45q15 = intercept + slope_ln_gni * ln(GNI per capita, current US$)"),
@@ -180,6 +192,8 @@ def main():
     for band, row in shape.iterrows():
         recs.append(dict(component="age_offset", key=band, value=round(float(row["median"]), 4),
                          note="add to the 45q15 tilt to get this band's tilt"))
+    recs.append(dict(component="validation", key="age_offset_mae", value=round(age_mae, 4),
+                     note="median abs error of (45q15 tilt + offset) vs a measured band tilt"))
     for k in ("constant", "income", "region"):
         s = e[f"err_{k}"].dropna()
         recs.append(dict(component="validation", key=f"loo_mae_rule_{k}",

@@ -23,7 +23,7 @@ accepts:
 |---|---|---|---|
 | `fert_gradient` | tilts fertility across income rank | 77 countries | `data/gradient_library_latest.csv`, rows with `indicator == "TFR"` |
 | `infmort_gradient` | tilts infant mortality across income rank | 78 countries | same file, `indicator == "IMR"` (fall back to `"U5MR"`) |
-| `mort_gradient` | tilts adult mortality across income rank, by age | 14 countries, 16 censuses (age-band-specific) | `data/adult_mortality_gradients.csv` |
+| `mort_gradient` | tilts adult mortality across income rank, by age | 14 countries measured, **any country via the general gradient** | `data/adult_mortality_gradients.csv`; fallback in `data/general_gradient.csv` |
 
 (`income_percentiles`, the argument that accompanies any gradient, is not data —
 it is the model's own `lambdas` vector.)
@@ -56,21 +56,35 @@ microdata, because IPUMS's supplementary death file for that census holds
 only 48% of the deaths the census itself reports and loses them mainly in
 wealthy households.
 
-### Borrow by income level, not by region
+### The general gradient — usable by any country
 
-The steepness of the adult-mortality gradient tracks how rich the country is,
-closely enough to predict (r = −0.88 across these censuses, residual SD 0.16):
+**Own measurement first; the general gradient is the fallback that is always
+available.** It lives in `data/general_gradient.csv`:
 
-    tilt ≈ 1.29 − 0.24 × ln(GNI per capita, current US$)
+    tilt(45q15) = 1.291 − 0.243 × ln(GNI per capita, current US$)      ±0.16
 
-Doubling income per head steepens the gradient by about −0.17. So a country
-without its own census module should borrow from this relationship at its own
-income level rather than from a regional median — and a model running decades
-forward should let the gradient steepen as the country's income path rises,
-not hold today's value fixed. Worked values at 2024 income: Philippines
-−0.75, Indonesia −0.78, Ethiopia −0.41. South Africa is the one case with an
-independent check: its own 2011 census gives −0.80 where the income
-relationship predicts −0.83.
+The rule was picked by competition, each candidate judged by leaving one census
+out of the fit and predicting it — the honest test, since a country using the
+fallback is not in the fit:
+
+| Candidate rule | Mean absolute error |
+|---|---|
+| One tilt for every country (pooled median −0.36) | 0.307 |
+| **Read it off national income** | **0.142** |
+| The country's regional median | 0.221 |
+
+Income is wrong by less than half as much as a single global number and a third
+less than regional medians, so the general gradient is keyed to income rather
+than region. It predicts best in the middle-income range where the countries
+needing it sit (mean error 0.11 above $1,000 per head, 0.17 below), and it
+reproduces South Africa's own census measurement to within a rounding error.
+
+Worked values at 2024 income: **Philippines −0.75, Indonesia −0.78, Ethiopia
+−0.41**. The file also carries by-age offsets, so a model can spread the summary
+tilt across bands, and a pooled median for use where no GNI figure exists.
+
+A model running decades forward should let the gradient steepen as its income
+path rises rather than holding today's value fixed.
 
 Two caveats that matter for anyone borrowing. Eleven of the sixteen censuses
 are African, and there is **no Asian observation at all** — Cambodia 2008's
@@ -194,6 +208,8 @@ data/
   gradient_library_latest.csv   fertility & child mortality — one tilt per
                                 country/margin (most recent survey)
   adult_mortality_gradients.csv adult mortality tilts by sex and age band
+  general_gradient.csv          the fallback adult-mortality gradient (income
+                                rule, by-age offsets, validation errors)
   gradient_library.csv          every survey (601 rows; time trends)
   dhs_gradients_raw.csv         the underlying quintile-level observations
   dhs_regions.csv               DHS Program country -> region map (for borrowing)
@@ -202,6 +218,7 @@ scripts/
   build_gradient_library.py     pull the DHS API on demand, rewrite data/
   build_adult_mortality.py      the universal IPUMS pipeline: submit slim
                                 extracts, download, estimate the tilts
+  build_general_gradient.py     fit + leave-one-out validate the fallback
   make_figures.py               rebuild figures/ from data/
   build_analysis.py             regenerate ANALYSIS.md + README numbers from data/
   refresh.py                    all three in order, plus the vintage stamp
@@ -262,10 +279,16 @@ Data sources and required citations:
   estimates disagree) and cancels out of a tilt only if it is uniform across
   wealth. The published samples are the ones where it is; see the completeness
   check in `scripts/build_adult_mortality.py`.
-- The adult-mortality borrowing relationship rests on sixteen censuses, eleven
-  of them African and none Asian, so its predictions for Asian countries are
+- The general adult-mortality gradient rests on sixteen censuses, eleven of them
+  African and none Asian, so its predictions for Asian countries are
   extrapolation. A predicted tilt carries roughly ±0.16 at one standard
   deviation.
+- Within the by-age offsets, **the 45–59 and 60–74 numbers are the least
+  trustworthy**: they are positive because measured mortality rises with wealth
+  at older ages in the poorest countries, and independent evidence from DHS
+  sibling histories suggests that is at least partly a reporting artefact rather
+  than a real pattern. Prefer the 15–29 and 30–44 offsets where working-age
+  mortality is what matters.
 - Adult tilts are estimated on however many wealth groups a census's asset
   distribution supports (the `groups` column: three where assets are sparse,
   five where they are not), and age bands publish only above 900 death
