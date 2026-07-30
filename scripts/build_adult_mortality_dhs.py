@@ -94,7 +94,11 @@ def sibling_records(ir):
     """Reshape the wide sibling block (mm1_01..mm1_20, ...) to one row per sibling."""
     keep = {"v005": "w", "v008": "interview_cmc", "v190": "wealth"}
     missing = [c for c in keep if c not in ir.columns]
-    assert not missing, f"IR file lacks {missing}"
+    if missing:
+        # DHS-III-era recodes (e.g. ZA 1998) predate v190; DHS ships the wealth
+        # index for those surveys as a separate Wealth Index (WI) file.
+        raise KeyError(f"lacks {missing} - if v190, the survey needs its "
+                       f"separate DHS Wealth Index file")
     base = ir[list(keep)].rename(columns=keep)
     out = []
     for i in range(1, 21):
@@ -268,7 +272,11 @@ def cmd_estimate(args):
         if tag not in PAIRS:
             print(f"skipping {Path(f).name}: not in PAIRS")
             continue
-        r, nat = estimate_file(f, tag)
+        try:
+            r, nat = estimate_file(f, tag)
+        except KeyError as e:
+            print(f"{tag:<10} SKIPPED: {e.args[0]}")
+            continue
         for row in r:
             pub = row["published_35q15"]
             natv = row["national_35q15"]
@@ -285,18 +293,23 @@ def cmd_estimate(args):
 def cmd_unpack(args):
     """Unzip the DHS download packages (outer archive -> inner IR zip -> .dta)."""
     import zipfile
+    # DHS delivers either a package zip wrapping the survey zip, or the survey
+    # zip itself; extract every layer until no zips are left.
     d = Path(os.path.expanduser(args.ir_dir))
     outer = sorted(d.glob("*.ZIP")) + sorted(d.glob("*.zip"))
-    outer = [p for p in outer if not re.match(r"^[A-Z]{2}IR", p.name, re.I)]
     tmp = d / "_tmp"
     tmp.mkdir(exist_ok=True)
     for z in outer:
         with zipfile.ZipFile(z) as f:
             f.extractall(tmp)
-    inner = list(tmp.rglob("*.ZIP")) + list(tmp.rglob("*.zip"))
-    for z in inner:
-        with zipfile.ZipFile(z) as f:
-            f.extractall(tmp)
+    for _ in range(3):  # nesting is at most 2 deep in practice
+        inner = [p for p in list(tmp.rglob("*.ZIP")) + list(tmp.rglob("*.zip"))]
+        if not inner:
+            break
+        for z in inner:
+            with zipfile.ZipFile(z) as f:
+                f.extractall(z.parent)
+            z.unlink()
     moved = 0
     for dta in list(tmp.rglob("*.DTA")) + list(tmp.rglob("*.dta")):
         dta.rename(d / dta.name)
