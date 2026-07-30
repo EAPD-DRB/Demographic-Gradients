@@ -1,0 +1,15 @@
+component,key,value,note
+income_rule,intercept,1.2907,"tilt_45q15 = intercept + slope_ln_gni * ln(GNI per capita, current US$)"
+income_rule,slope_ln_gni,-0.2433,
+income_rule,residual_sd,0.1627,1 SD uncertainty band on a predicted tilt
+income_rule,r,-0.884,
+income_rule,n_censuses,15.0,
+validation,loo_mae_income,0.1416,leave-one-out mean absolute error of the chosen rule
+fallback,pooled_median_tilt,-0.3588,use when GNI is unavailable
+age_offset,15-29,-0.407,add to the 45q15 tilt to get this band's tilt
+age_offset,30-44,-0.2001,add to the 45q15 tilt to get this band's tilt
+age_offset,45-59,0.1467,add to the 45q15 tilt to get this band's tilt
+age_offset,60-74,0.3491,add to the 45q15 tilt to get this band's tilt
+validation,loo_mae_rule_constant,0.3071,
+validation,loo_mae_rule_income,0.1416,
+validation,loo_mae_rule_region,0.2215,
