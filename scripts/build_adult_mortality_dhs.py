@@ -41,6 +41,7 @@ exactly like the IPUMS extracts. Only the aggregated tilts here are published.
 import argparse
 import glob
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -281,14 +282,75 @@ def cmd_estimate(args):
     return 0
 
 
+def cmd_unpack(args):
+    """Unzip the DHS download packages (outer archive -> inner IR zip -> .dta)."""
+    import zipfile
+    d = Path(os.path.expanduser(args.ir_dir))
+    outer = sorted(d.glob("*.ZIP")) + sorted(d.glob("*.zip"))
+    outer = [p for p in outer if not re.match(r"^[A-Z]{2}IR", p.name, re.I)]
+    tmp = d / "_tmp"
+    tmp.mkdir(exist_ok=True)
+    for z in outer:
+        with zipfile.ZipFile(z) as f:
+            f.extractall(tmp)
+    inner = list(tmp.rglob("*.ZIP")) + list(tmp.rglob("*.zip"))
+    for z in inner:
+        with zipfile.ZipFile(z) as f:
+            f.extractall(tmp)
+    moved = 0
+    for dta in list(tmp.rglob("*.DTA")) + list(tmp.rglob("*.dta")):
+        dta.rename(d / dta.name)
+        moved += 1
+    print(f"unpacked {len(outer)} packages -> {moved} .dta files in {d}")
+    for p in sorted(d.glob("*.DTA")) + sorted(d.glob("*.dta")):
+        print(f"   {p.name}  {p.stat().st_size/1e6:.1f} MB")
+    return 0
+
+
+def cmd_compare(args):
+    """Sibling-based tilts vs the census-based tilts, where both exist."""
+    if not OUT.exists():
+        print(f"no {OUT} - run estimate first")
+        return 1
+    dhs = pd.read_csv(OUT)
+    cen = pd.read_csv(ROOT / "data" / "adult_mortality_gradients.csv")
+    cen = cen[(cen["measure"] == "45q15") & (cen["sex"].isin(["male", "female"]))]
+    cen = cen.groupby(["country", "sex"], as_index=False).agg(
+        census_tilt=("slope", "mean"), census_year=("year", "first"))
+    d = dhs[dhs["publishable"] == True] if "publishable" in dhs.columns else dhs
+    d = d[pd.to_numeric(d["slope"], errors="coerce").notna()].copy()
+    d["slope"] = pd.to_numeric(d["slope"])
+    m = d.merge(cen, on=["country", "sex"], how="inner", suffixes=("", "_c"))
+    if not len(m):
+        print("no overlap rows to compare")
+        return 1
+    m["ratio_sib_cen"] = (m["slope"] / m["census_tilt"]).round(3)
+    print(f"{'country':<15}{'sex':<8}{'sibling':>9}{'census':>9}{'sib/cen':>9}")
+    for _, r in m.sort_values(["country", "sex"]).iterrows():
+        print(f"{r['country']:<15}{r['sex']:<8}{r['slope']:>9.3f}{r['census_tilt']:>9.3f}"
+              f"{r['ratio_sib_cen']:>9.2f}")
+    both = m.dropna(subset=["slope", "census_tilt"])
+    print(f"\n{len(both)} paired estimates across {both['country'].nunique()} countries")
+    print(f"median sibling tilt {both['slope'].median():+.3f} | "
+          f"median census tilt {both['census_tilt'].median():+.3f}")
+    print(f"median attenuation (sibling/census) = {both['ratio_sib_cen'].median():.2f}")
+    if len(both) > 2:
+        print(f"correlation across countries: r = {both['slope'].corr(both['census_tilt']):+.3f}")
+    print(f"same sign in {(np.sign(both['slope']) == np.sign(both['census_tilt'])).mean():.0%} of pairs")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("selftest")
-    e = sub.add_parser("estimate")
-    e.add_argument("--ir-dir", default="~/Projects/data/dhs")
+    for name in ("unpack", "estimate", "compare"):
+        p = sub.add_parser(name)
+        if name != "compare":
+            p.add_argument("--ir-dir", default="~/Projects/data/dhs")
     args = ap.parse_args()
-    return {"selftest": cmd_selftest, "estimate": cmd_estimate}[args.cmd](args)
+    return {"selftest": cmd_selftest, "unpack": cmd_unpack,
+            "estimate": cmd_estimate, "compare": cmd_compare}[args.cmd](args)
 
 
 if __name__ == "__main__":
