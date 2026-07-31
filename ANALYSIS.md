@@ -165,7 +165,7 @@ README for why). Households are ranked by an asset index; tilts are on the same
 log-rate-per-unit-rank scale as the tables above. The age pattern — steepest at
 prime working ages, fading in old age — is the by-age shape ogcore's
 `mort_gradient` accepts directly, and it holds in every one of the
-16 censuses measured:
+18 censuses measured:
 
 ![Adult-mortality tilt by age band and country](figures/fig5_amr_age_profile.png)
 
@@ -179,9 +179,9 @@ general gradient is for everyone else.**
 
 The steepness of the gradient tracks how rich the country is:
 
-    tilt(45q15) = 1.291 − 0.243 × ln(GNI per capita, current US$)
+    tilt(45q15) = 1.291 − 0.244 × ln(GNI per capita, current US$)
 
-with r = −0.88 across 15 censuses and a 1 SD band of
+with r = −0.88 across 17 censuses and a 1 SD band of
 ±0.16. Doubling income per head steepens the gradient by about
 −0.17.
 
@@ -191,9 +191,9 @@ because a country using the fallback is by definition not in the fit:
 
 | Candidate rule | Mean absolute error |
 |---|---|
-| One tilt for every country (the pooled median, −0.36) | 0.307 |
-| **Read it off national income** | **0.142** |
-| The country's regional median | 0.222 |
+| One tilt for every country (the pooled median, −0.36) | 0.301 |
+| **Read it off national income** | **0.138** |
+| The country's regional median | 0.182 |
 
 Income is wrong by less than half as much as a single global number, and a third
 less than regional medians. So there is a general gradient, and income — not
@@ -208,11 +208,11 @@ To spread the summary tilt across age bands, which is what ogcore's
 |---|---|---|
 | 15-29 | −0.41 |  |
 | 30-44 | −0.20 |  |
-| 45-59 | 0.15 | least trustworthy |
-| 60-74 | 0.35 | least trustworthy |
+| 45-59 | 0.13 | least trustworthy |
+| 60-74 | 0.40 | least trustworthy |
 
 Applying an offset this way reproduces a country's own measured band tilt to a
-median ±0.19, so the age shape is a good deal coarser than the level.
+median ±0.17, so the age shape is a good deal coarser than the level.
 
 **The 45–59 and 60–74 offsets are the least trustworthy numbers in this file.**
 They are positive because in the poorest countries measured mortality rises with
@@ -391,6 +391,27 @@ Salvador 2007. Their evidence is recorded in
 | Benin | 2013 | all | 15–59 | 45q15 | −0.66 | 1.81 | 1,555 | 100% |
 | Benin | 2013 | male | 15–59 | 45q15 | −0.90 | 2.32 | 875 | 100% |
 | Benin | 2013 | female | 15–59 | 45q15 | −0.36 | 1.31 | 680 | 100% |
+| Cote d'Ivoire | 1998 | all | 15–29 | mx | −0.94 | 2.14 | 2,128 | 100% |
+| Cote d'Ivoire | 1998 | all | 30–44 | mx | −0.76 | 1.84 | 2,240 | 100% |
+| Cote d'Ivoire | 1998 | all | 45–59 | mx | −0.36 | 1.37 | 1,561 | 100% |
+| Cote d'Ivoire | 1998 | all | 60–74 | mx | −0.04 | 0.94 | 1,621 | 100% |
+| Cote d'Ivoire | 1998 | all | 15–59 | 45q15 | −0.48 | 1.49 | 5,929 | 100% |
+| Cote d'Ivoire | 1998 | male | 15–29 | mx | −0.85 | 1.97 | 909 | 100% |
+| Cote d'Ivoire | 1998 | male | 30–44 | mx | −0.87 | 2.08 | 1,185 | 100% |
+| Cote d'Ivoire | 1998 | male | 15–59 | 45q15 | −0.56 | 1.62 | 2,990 | 100% |
+| Cote d'Ivoire | 1998 | female | 15–29 | mx | −1.00 | 2.26 | 1,219 | 100% |
+| Cote d'Ivoire | 1998 | female | 30–44 | mx | −0.66 | 1.65 | 1,055 | 100% |
+| Cote d'Ivoire | 1998 | female | 15–59 | 45q15 | −0.41 | 1.37 | 2,939 | 100% |
+| Malawi | 1998 | all | 15–29 | mx | −0.32 | 1.57 | 2,764 | 100% |
+| Malawi | 1998 | all | 30–44 | mx | −0.06 | 1.39 | 2,204 | 100% |
+| Malawi | 1998 | all | 45–59 | mx | 0.12 | 1.04 | 1,412 | 100% |
+| Malawi | 1998 | all | 15–59 | 45q15 | −0.02 | 1.18 | 6,380 | 100% |
+| Malawi | 1998 | male | 15–29 | mx | −0.52 | 1.78 | 1,507 | 100% |
+| Malawi | 1998 | male | 30–44 | mx | −0.23 | 1.65 | 1,182 | 100% |
+| Malawi | 1998 | male | 15–59 | 45q15 | −0.12 | 1.33 | 3,514 | 100% |
+| Malawi | 1998 | female | 15–29 | mx | −0.13 | 1.40 | 1,257 | 100% |
+| Malawi | 1998 | female | 30–44 | mx | 0.10 | 1.19 | 1,022 | 100% |
+| Malawi | 1998 | female | 15–59 | 45q15 | 0.07 | 1.04 | 2,866 | 100% |
 | Sudan | 2008 | all | 15–29 | mx | −1.17 | 2.24 | 7,995 | 100% |
 | Sudan | 2008 | all | 30–44 | mx | −0.85 | 1.77 | 5,739 | 100% |
 | Sudan | 2008 | all | 45–59 | mx | −0.13 | 1.08 | 3,980 | 100% |

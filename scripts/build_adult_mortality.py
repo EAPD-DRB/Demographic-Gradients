@@ -151,6 +151,39 @@ SAMPLES = {
                     nso="National Institute of Statistics, Cambodia"),
     # sd/ss2008a carry their own per-death weight (weightd); the 2008 census
     # covered both, split here at the 2011 independence boundary.
+    # bf1996a: age is a value plus a unit code (days/months/years), and 27% of
+    # deaths have it undetermined - the unknown-age wealth check gates this one.
+    # bf1996a: NOT published (publish=False), rejected on three compounding
+    # grounds, any one of which might be tolerable alone.
+    #  1. The death file's serial is the DWELLING (dwelling x 1000), while the
+    #     extract's SERIAL is dwelling x 1000 + a household-within-dwelling
+    #     suffix (1001, 1002, 2001, ...). `serial + 1` links 100% of records,
+    #     but only by assigning every death to household #1 of its dwelling -
+    #     and 34.8% of dwellings hold more than one household, covering 62.2%
+    #     of all households. Most deaths would be charged to a household whose
+    #     assets may not be theirs, which is precisely the mis-attribution a
+    #     wealth gradient cannot survive.
+    #  2. Only ELECTRIC and TOILET survive the API's availability check, giving
+    #     a 0-3 index that supports a single cut: 2 wealth groups.
+    #  3. 29.1% of death records have an undetermined age (agedcode 9/10).
+    "bf1996a": dict(country="Burkina Faso", year=1996, publish=False,
+                    asset_extra=["MORTNUM"],
+                    drop=["PHONE", "CELL", "REFRIG", "TV", "RADIO", "COMPUTER"],
+                    death_weight=None, age_col="agedx", age_unit_col="agedcode",
+                    nso="Institut National de la Statistique et de la Demographie, Burkina Faso"),
+    # ci1998a: death file columns arrive uppercase; agedyr codes 99 = unknown
+    # (2,209 records against 7-141 at each of ages 88-98 - a 20x spike).
+    # ci1998a has NO MORTNUM, so the completeness check that gates publication
+    # cannot be run for it. Six asset variables survive, the best of these three.
+    "ci1998a": dict(country="Cote d'Ivoire", year=1998, asset_extra=[],
+                    drop=["CELL", "COMPUTER"],
+                    death_weight=None, age_col="agedyr", age_unknown=[99],
+                    nso="Institut National de la Statistique, Cote d'Ivoire"),
+    # mw1998a: a second Malawi census, giving a within-country trend against 2008.
+    "mw1998a": dict(country="Malawi", year=1998, asset_extra=["MORTNUM"],
+                    drop=["PHONE", "CELL", "REFRIG", "TV", "COMPUTER"],
+                    death_weight=None,
+                    nso="National Statistical Office, Malawi"),
     "sd2008a": dict(country="Sudan", year=2008, asset_extra=["AUTOS", "MORTNUM"],
                     death_weight="weightd", nso="Central Bureau of Statistics, Sudan"),
     "ss2008a": dict(country="South Sudan", year=2008, asset_extra=["AUTOS", "MORTNUM"],
@@ -163,7 +196,7 @@ SAMPLES = {
 CCODE = {"za": "710", "br": "076", "et": "231", "zm": "894", "mw": "454",
          "mz": "508", "ug": "800", "rw": "646", "sn": "686", "sl": "694",
          "ls": "426", "bj": "204", "sv": "222", "np": "524", "kh": "116",
-         "sd": "729", "ss": "728"}
+         "sd": "729", "ss": "728", "bf": "854", "ci": "384"}
 
 
 def api_key():
@@ -313,7 +346,25 @@ def estimate_sample(sample, cfg, extracts_dir, deaths_dir):
     hh = per.groupby("SERIAL").agg(assets=("assets", "first"), hhwt=("HHWT", "first")).reset_index()
     hh["SERIAL"] = hh["SERIAL"].astype("int64")
     m = pd.read_stata(Path(deaths_dir) / f"{sample}_mortality.dta", convert_categoricals=False)
+    m.columns = [c.lower() for c in m.columns]  # ci1998a ships them uppercase
     n_all = len(m)
+    # Age arrives in three shapes across samples: a plain year column; a year
+    # column with an unknown code (ci1998a: 99); or a value plus a unit code
+    # (bf1996a: agedcode 1=days 2=months 3=years, 9/10 unknown). Decode to
+    # years here so the estimator only ever sees `aged`.
+    if cfg.get("age_unit_col"):
+        u = pd.to_numeric(m[cfg["age_unit_col"]], errors="coerce")
+        v = pd.to_numeric(m[cfg["age_col"]], errors="coerce")
+        m["aged"] = np.select([u == 3, u == 2, u == 1], [v, v / 12, v / 365], np.nan)
+    elif cfg.get("age_col"):
+        m["aged"] = pd.to_numeric(m[cfg["age_col"]], errors="coerce")
+    if cfg.get("age_unknown"):
+        m.loc[m["aged"].isin(cfg["age_unknown"]), "aged"] = np.nan
+    if "aged" in m.columns:
+        unk = float(m["aged"].isna().mean())
+        if unk > 0.02:
+            print(f"  age undetermined for {unk:.1%} of death records "
+                  f"- checked for wealth-uniformity below")
     m = m[m["serial"] > 0]
     n_pre = len(m)
     m = m.assign(serial=m["serial"].astype("int64"))
@@ -328,9 +379,13 @@ def estimate_sample(sample, cfg, extracts_dir, deaths_dir):
     m["q"] = m["assets"].apply(qof)
     m["dw"] = m[cfg["death_weight"]] if cfg["death_weight"] else m["hhwt"]
     m["sexd"] = pd.to_numeric(m["sexd"], errors="coerce")
-    if "aged" not in m.columns:
-        m["aged"] = m[cfg["age_col"]]
     m["aged"] = pd.to_numeric(m["aged"], errors="coerce")
+    # Missing age is only harmless if it is wealth-uniform: a wealth-skewed
+    # gap would bias the age-band tilts even when the MORTNUM check passes.
+    if m["aged"].isna().any():
+        share = m.groupby("q")["aged"].apply(lambda s: float(s.isna().mean()))
+        print(f"  unknown-age share by wealth group: "
+              f"{[round(share.get(i, 0.0), 3) for i in range(G)]}")
 
     src = ("IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); "
            f"original data: {cfg['nso']}")

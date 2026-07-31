@@ -186,7 +186,7 @@ took (own survey vs borrowed, with the survey year) in your calibration docs.
 | Fertility (TFR) | 77 | **−0.79** | −0.97 to −0.53 | 1.90 |
 | Infant mortality | 78 | **−0.64** | −0.96 to −0.39 | 1.70 |
 | Under-5 mortality (fallback) | 78 | **−0.82** | −1.16 to −0.54 | 1.96 |
-| Adult mortality (45q15) | 14 | **−0.36** | −0.69 to −0.14 | 1.32 |
+| Adult mortality (45q15) | 15 | **−0.36** | −0.61 to −0.06 | 1.32 |
 <!-- END AUTO-GENERATED -->
 
 *(330 surveys, 78 countries; DHS API pull of 28 July 2026. Regenerate with

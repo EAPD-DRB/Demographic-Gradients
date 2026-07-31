@@ -91,6 +91,29 @@ scripts, and the documentation is generated — respect that architecture.
   within-dwelling household suffix, so 0% links until floored to the
   extract's multiples of 1000. A 0% linkage rate means "diagnose the key",
   not "the data is empty".
+- **A key that links 100% can still be wrong.** bf1996a's death file keys on
+  the DWELLING while the extract keys on dwelling + household suffix, so
+  `serial + 1` links every record — by assigning every death to household #1.
+  With 34.8% of dwellings holding several households (62.2% of all
+  households), most deaths would be charged to the wrong assets. Check the
+  *meaning* of a key, not just its match rate. Rejected on that plus a
+  2-group index and 29% undetermined ages.
+- Death-file schemas vary in three more ways worth handling in config, not
+  ad hoc: columns arrive uppercase in some samples (ci1998a); age can be a
+  value plus a unit code (bf1996a `agedcode` 1=days 2=months 3=years,
+  9/10 unknown); and an in-range value can mean "unknown" (ci1998a codes
+  age 99, a 2,209-record spike against 7-141 at each of ages 88-98 — always
+  look at the distribution before trusting a top code).
+- Where a sample has no MORTNUM the completeness gate cannot be run at all
+  (ci1998a). `seqd` is a partial substitute: within-household sequence gaps
+  detect records lost inside households, but not whole households missing
+  from the file, which is what br2010a's failure looked like. Record which
+  check was actually possible.
+- **Missing age is only harmless if it is wealth-uniform.** The MORTNUM check
+  looks at record counts, not age completeness, so a sample can pass it and
+  still have age-band tilts biased by skewed age reporting. ci1998a's
+  unknown-age share runs 0.11/0.15/0.18/0.15/0.15 across wealth groups —
+  flat, so it publishes.
 - The IPUMS API has no variable-metadata endpoint — `/metadata/variables`
   404s. Probe availability by submitting a throwaway extract and reading the
   400. `/metadata/samples` does work.
