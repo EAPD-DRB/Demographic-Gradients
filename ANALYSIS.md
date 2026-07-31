@@ -105,6 +105,59 @@ a decaying quantity. South Africa's own fertility gradient flattened between its
 
 ![Gradient tilts across survey years](figures/fig4_slopes_over_time.png)
 
+**Stable across countries is not the same as stable within one.** The flat line
+above is a pooled median over many countries; a single fast-developing country
+can move a long way underneath it. Brazil is the worked case — see the census
+series below, where its child-mortality gradient roughly halves in twenty years.
+Read the pooled stability as "a borrowed gradient does not decay", not as "a
+country's own gradient will not change".
+
+## Child mortality from censuses, and Brazil's twenty-year trend
+
+The DHS child-mortality gradients above are one survey per country, and for some
+countries that survey is old — Brazil's only usable DHS is 1996. Censuses ask
+every mother how many children she has borne and how many are still alive, so
+the household asset index already used for adult mortality yields a
+child-mortality gradient for any census year, including years no survey covers.
+These rows live in
+[`data/census_child_mortality.csv`](data/census_child_mortality.csv).
+
+The measure is the proportion of children ever born who have died — the classic
+Brass indirect indicator, for mothers aged 25–29. It is cumulative rather than a
+period rate, so **its levels are not comparable to DHS U5MR levels and must not
+be pooled with them.** Only the tilt is comparable.
+
+That comparability was tested rather than assumed. Brazil's 2000 census sits four
+years after its 1996 DHS, and the two agree to 0.014: the census
+gives −1.45 where the Brazil 1996 DHS U5MR gradient is
+−1.46. Two independent sources, with different measures and
+different wealth rankings, landing on the same number.
+
+| Census | Groups | Tilt | Poorest/richest | Poorest group's children dead |
+|---|---|---|---|---|
+| 1991 | 4 | −1.76 | 4.41 | 10.6% |
+| 2000 | 4 | −1.45 | 3.20 | 6.2% |
+| 2010 | 5 | −0.84 | 2.08 | 2.4% |
+
+**Brazil's child-mortality gradient roughly halved**, from −1.76 in
+1991 to −0.84 in 2010. Child mortality fell in every
+group, but proportionally faster among the poor, and the poorest-to-richest ratio
+narrowed from 4.4× to 2.1×.
+
+That is a real change, not an artefact of the asset index growing richer over
+time (1991 offers four asset variables, 2010 offers ten). Re-estimating every
+census on only the assets common to all three — electricity, fridge, TV, radio
+and cars — the flattening is *larger*, 1.06 against
+0.91 on the full index. Both variants are published, tagged by
+the `index` column; use `index == "full"`, which supports more wealth groups. The
+common-index 2010 estimate collapses to two groups, because by then nearly every
+Brazilian household owned all four items — a warning that simple durable-goods
+indices stop discriminating as a country gets richer.
+
+**For calibration:** the library's Brazil DHS row is a 1996 tilt of −1.46, and by
+2010 the value was near −0.84. A present-day Brazilian calibration
+using the DHS row overstates the child-mortality gradient by roughly 0.5.
+
 ## Adult mortality gradients (census household-deaths modules)
 
 Adult mortality by wealth comes from census microdata, not DHS surveys (see the

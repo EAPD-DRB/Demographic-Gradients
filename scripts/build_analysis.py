@@ -48,6 +48,36 @@ def headline(latest, ind):
     }
 
 
+def census_child_mortality():
+    """The census child-mortality series, on its published (full-index) basis."""
+    p = DATA / "census_child_mortality.csv"
+    if not p.exists():
+        return None
+    d = pd.read_csv(p)
+    f = d[(d["index"] == "full") & (d["measure"] == "prop_dead_2529")]
+    c = d[(d["index"] == "common") & (d["measure"] == "prop_dead_2529")]
+    if not len(f):
+        return None
+    rows = "\n".join(
+        f"| {int(r.year)} | {r.groups} | {fmt(r.slope)} | {r.ratio:.2f} | "
+        f"{r.q1 * 100:.1f}% |"
+        for _, r in f.sort_values("year").iterrows())
+    ff, cc = f.sort_values("year"), c.sort_values("year")
+    # the row carrying a DHS cross-check, and how close it landed
+    vrow = f[f["dhs_check"].astype(str).str.len() > 0]
+    vtilt = float(vrow["slope"].iloc[0]) if len(vrow) else float("nan")
+    chk = str(vrow["dhs_check"].iloc[0]) if len(vrow) else ""
+    vref = float(chk.split()[-1]) if chk else float("nan")
+    vsurvey = chk.split(" U5MR")[0] if chk else ""
+    return {"rows": rows, "n": len(f), "vtilt": vtilt, "vdiff": abs(vtilt - vref),
+            "vsurvey": vsurvey, "vref": vref,
+            "y0": int(ff.year.iloc[0]), "y1": int(ff.year.iloc[-1]),
+            "t0": ff.slope.iloc[0], "t1": ff.slope.iloc[-1],
+            "chg_full": ff.slope.iloc[-1] - ff.slope.iloc[0],
+            "chg_common": (cc.slope.iloc[-1] - cc.slope.iloc[0]) if len(cc) > 1 else float("nan"),
+            "check": next((x for x in f["dhs_check"] if isinstance(x, str) and x), "")}
+
+
 def general_gradient():
     """The fallback rule and its validation, read from data/ so it cannot drift."""
     p = DATA / "general_gradient.csv"
@@ -263,6 +293,61 @@ a decaying quantity. South Africa's own fertility gradient flattened between its
 1998 and {sa_t['year']} surveys.
 
 ![Gradient tilts across survey years](figures/fig4_slopes_over_time.png)
+
+**Stable across countries is not the same as stable within one.** The flat line
+above is a pooled median over many countries; a single fast-developing country
+can move a long way underneath it. Brazil is the worked case — see the census
+series below, where its child-mortality gradient roughly halves in twenty years.
+Read the pooled stability as "a borrowed gradient does not decay", not as "a
+country's own gradient will not change".
+"""
+
+    ccm = census_child_mortality()
+    if ccm:
+        doc += f"""
+## Child mortality from censuses, and Brazil's twenty-year trend
+
+The DHS child-mortality gradients above are one survey per country, and for some
+countries that survey is old — Brazil's only usable DHS is 1996. Censuses ask
+every mother how many children she has borne and how many are still alive, so
+the household asset index already used for adult mortality yields a
+child-mortality gradient for any census year, including years no survey covers.
+These rows live in
+[`data/census_child_mortality.csv`](data/census_child_mortality.csv).
+
+The measure is the proportion of children ever born who have died — the classic
+Brass indirect indicator, for mothers aged 25–29. It is cumulative rather than a
+period rate, so **its levels are not comparable to DHS U5MR levels and must not
+be pooled with them.** Only the tilt is comparable.
+
+That comparability was tested rather than assumed. Brazil's 2000 census sits four
+years after its 1996 DHS, and the two agree to {ccm['vdiff']:.3f}: the census
+gives {fmt(ccm['vtilt'])} where the {ccm['vsurvey']} U5MR gradient is
+{fmt(ccm['vref'])}. Two independent sources, with different measures and
+different wealth rankings, landing on the same number.
+
+| Census | Groups | Tilt | Poorest/richest | Poorest group's children dead |
+|---|---|---|---|---|
+{ccm['rows']}
+
+**Brazil's child-mortality gradient roughly halved**, from {fmt(ccm['t0'])} in
+{ccm['y0']} to {fmt(ccm['t1'])} in {ccm['y1']}. Child mortality fell in every
+group, but proportionally faster among the poor, and the poorest-to-richest ratio
+narrowed from 4.4× to 2.1×.
+
+That is a real change, not an artefact of the asset index growing richer over
+time (1991 offers four asset variables, 2010 offers ten). Re-estimating every
+census on only the assets common to all three — electricity, fridge, TV, radio
+and cars — the flattening is *larger*, {fmt(ccm['chg_common'])} against
+{fmt(ccm['chg_full'])} on the full index. Both variants are published, tagged by
+the `index` column; use `index == "full"`, which supports more wealth groups. The
+common-index 2010 estimate collapses to two groups, because by then nearly every
+Brazilian household owned all four items — a warning that simple durable-goods
+indices stop discriminating as a country gets richer.
+
+**For calibration:** the library's Brazil DHS row is a 1996 tilt of −1.46, and by
+2010 the value was near {fmt(ccm['t1'])}. A present-day Brazilian calibration
+using the DHS row overstates the child-mortality gradient by roughly 0.5.
 """
 
     amr_path = DATA / "adult_mortality_gradients.csv"

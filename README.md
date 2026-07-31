@@ -12,7 +12,10 @@ It plays the same role for demographic *differentials* that
 population *levels*: a stable, reproducible mirror the country repos reference by
 raw URL.
 
-**See [ANALYSIS.md](ANALYSIS.md)** for the figures and regional tables.
+**See [ANALYSIS.md](ANALYSIS.md)** for the figures and regional tables, and
+**[AGENTS.md](AGENTS.md)** if you (or an LLM agent) are using this data for a
+calibration — it maps each OG-Core input to a file, states the precedence rules,
+and lists the traps that have already caused errors.
 
 ## What this repo provides
 
@@ -210,6 +213,8 @@ data/
   adult_mortality_gradients.csv adult mortality tilts by sex and age band
   general_gradient.csv          the fallback adult-mortality gradient (income
                                 rule, by-age offsets, validation errors)
+  census_child_mortality.csv    child mortality by wealth from census microdata,
+                                where the DHS survey is old or absent
   gradient_library.csv          every survey (601 rows; time trends)
   dhs_gradients_raw.csv         the underlying quintile-level observations
   dhs_regions.csv               DHS Program country -> region map (for borrowing)
@@ -219,6 +224,7 @@ scripts/
   build_adult_mortality.py      the universal IPUMS pipeline: submit slim
                                 extracts, download, estimate the tilts
   build_general_gradient.py     fit + leave-one-out validate the fallback
+  build_census_child_mortality.py  child mortality by wealth from censuses
   make_figures.py               rebuild figures/ from data/
   build_analysis.py             regenerate ANALYSIS.md + README numbers from data/
   refresh.py                    all three in order, plus the vintage stamp
@@ -273,6 +279,11 @@ Data sources and required citations:
   the old proxy caveat is gone — but the two differ by a median 0.14 in tilt,
   so any calibration built on the earlier `U5MR` figures overstates its infant
   gradient and is worth revisiting.
+- **Some DHS rows are old.** The library takes each country's most recent
+  survey, which for Brazil is 1996 — and Brazil's child-mortality gradient has
+  roughly halved since, from −1.76 (1991 census) to −0.84 (2010 census). Check
+  the `year` column before using a row, and prefer
+  `census_child_mortality.csv` for Brazil.
 - Adult-mortality gradients come from a household's own recall of deaths in
   the past 12 months. Under-reporting is common (capture against national
   death counts runs from 35% in Benin to over 100% where census and UN
