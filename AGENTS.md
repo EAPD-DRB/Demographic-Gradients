@@ -113,9 +113,14 @@ not necessarily within a fast-developing country, as Brazil shows.
 
 Be direct about the gaps rather than interpolating:
 
-- No high-income country has a measured gradient of any kind. DHS surveys only
-  low- and middle-income countries, so the United States, Fiji and similar are
-  absent. Extrapolating the income rule to $70,000 GNI is not defensible.
+- **This library covers developing countries by design.** Every source it draws
+  on — DHS surveys and censuses with mortality or fertility modules — is a
+  low- or middle-income instrument, and the OG-Core country applications it
+  serves are developing-country models. High-income countries are out of scope
+  rather than missing, and the income rule must not be extrapolated to them: it
+  is fitted between roughly $200 and $10,000 GNI per head, and a prediction at
+  $70,000 would be an invention. If asked for a high-income gradient, say the
+  library does not cover it.
 - There is no Asian observation in the adult-mortality set; the Philippine and
   Indonesian values are extrapolations from an African plus South Africa plus
   Brazil relationship.

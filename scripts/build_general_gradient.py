@@ -26,6 +26,7 @@ Writes data/general_gradient.csv. GNI per capita comes from the World Bank API
 (free, no key), matched to each census year.
 """
 
+import argparse
 import json
 import time
 import urllib.request
@@ -125,6 +126,9 @@ def age_shape(src=SRC):
 
 
 def main():
+    # no options; argparse is here so `--help` behaves like the sibling scripts
+    # rather than silently running a full fit (which calls the World Bank API)
+    argparse.ArgumentParser(description=__doc__.splitlines()[0]).parse_args()
     d = observations()
     print(f"{len(d)} census observations, {d['country'].nunique()} countries\n")
     e = loo_errors(d)

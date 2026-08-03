@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
-# dependencies = ["pandas"]
+# dependencies = ["pandas", "numpy"]
 # ///
 """Regenerate ANALYSIS.md and the README headline table from the data in ../data/.
 
@@ -17,6 +17,7 @@ or figures change:
 import re
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -366,6 +367,12 @@ using the DHS row overstates the child-mortality gradient by roughly 0.5.
         gg_mae_i = gg.get("validation.loo_mae_rule_income", float("nan"))
         gg_mae_r = gg.get("validation.loo_mae_rule_region", float("nan"))
         gg_agemae = gg.get("validation.age_offset_mae", float("nan"))
+        # Malawi's two censuses: the rule tracks one country's own change
+        mw = amr[(amr.country == "Malawi") & (amr.measure == "45q15")
+                 & (amr.sex == "all")].sort_values("year")
+        gg_mw0 = float(mw.slope.iloc[0]) if len(mw) > 1 else float("nan")
+        gg_mw1 = float(mw.slope.iloc[-1]) if len(mw) > 1 else float("nan")
+        gg_mwerr = abs(gg_mw0 - (gg_a + gg_b * np.log(290))) if len(mw) > 1 else float("nan")
         gg_bsign, gg_babs = ("+" if gg_b >= 0 else NEG), abs(gg_b)
         gg_rf, gg_dblf, gg_medf = fmt(gg_r), fmt(gg_dbl), fmt(gg_med)
         gg_agerows = "\n".join(
@@ -432,8 +439,14 @@ that only needs working-age mortality should prefer the 15–29 and 30–44 offs
 and treat the older ones as an upper bound on flatness.
 
 **Do not hold a low-income country's tilt fixed across a long transition.** As
-income rises the gradient should be expected to steepen toward the middle- and
-high-income values in this table.
+income rises the gradient should be expected to steepen toward the upper-middle
+values in this table — Malawi is the worked case, its own measured tilt moving
+from {fmt(gg_mw0)} to {fmt(gg_mw1)} as income per head roughly doubled between
+its 1998 and 2008 censuses, within {gg_mwerr:.2f} of what the rule predicts.
+
+The rule is fitted between about $200 and $10,000 of GNI per head, which is the
+range this library covers by design: every source it draws on is a
+developing-country instrument. Do not extrapolate it to high-income countries.
 
 ### The reversal at older ages, and why HIV does not explain it
 

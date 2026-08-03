@@ -221,8 +221,14 @@ that only needs working-age mortality should prefer the 15–29 and 30–44 offs
 and treat the older ones as an upper bound on flatness.
 
 **Do not hold a low-income country's tilt fixed across a long transition.** As
-income rises the gradient should be expected to steepen toward the middle- and
-high-income values in this table.
+income rises the gradient should be expected to steepen toward the upper-middle
+values in this table — Malawi is the worked case, its own measured tilt moving
+from −0.02 to −0.28 as income per head roughly doubled between
+its 1998 and 2008 censuses, within 0.07 of what the rule predicts.
+
+The rule is fitted between about $200 and $10,000 of GNI per head, which is the
+range this library covers by design: every source it draws on is a
+developing-country instrument. Do not extrapolate it to high-income countries.
 
 ### The reversal at older ages, and why HIV does not explain it
 
