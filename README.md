@@ -12,10 +12,18 @@ It plays the same role for demographic *differentials* that
 population *levels*: a stable, reproducible mirror the country repos reference by
 raw URL.
 
-**See [ANALYSIS.md](ANALYSIS.md)** for the figures and regional tables, and
-**[AGENTS.md](AGENTS.md)** if you (or an LLM agent) are using this data for a
-calibration — it maps each OG-Core input to a file, states the precedence rules,
-and lists the traps that have already caused errors.
+## Where to find what
+
+| You want | Go to |
+|---|---|
+| Use the data in a calibration (input→file map, precedence, traps) | [AGENTS.md](AGENTS.md) |
+| One country's estimates and where each number comes from | [docs/countries/](docs/countries/) |
+| The figures, regional tables, and findings | [ANALYSIS.md](ANALYSIS.md) |
+| How the DHS gradients are built | [docs/methods/dhs-gradients.md](docs/methods/dhs-gradients.md) |
+| How adult mortality is measured (census death modules) | [docs/methods/adult-mortality.md](docs/methods/adult-mortality.md) |
+| The fallback for countries with no adult measurement | [docs/methods/general-gradient.md](docs/methods/general-gradient.md) |
+| The full per-census adult-mortality table | [docs/tables/adult_mortality.md](docs/tables/adult_mortality.md) |
+| Working on the repo (regeneration, IPUMS rules) | [CLAUDE.md](CLAUDE.md) |
 
 ## What this repo provides
 
@@ -31,81 +39,13 @@ accepts:
 (`income_percentiles`, the argument that accompanies any gradient, is not data —
 it is the model's own `lambdas` vector.)
 
-## Adult mortality gradients
-
-Adult mortality by wealth cannot come from DHS-type surveys (the dead are not
-interviewed, and sibling reports carry no wealth data). It CAN come from census
-**household deaths modules**: the household outlives the deceased and reports the
-death (age, sex, last 12 months) alongside its assets.
-`data/adult_mortality_gradients.csv` holds these estimates — per country, sex,
-and age band (`measure == "mx"`), plus a 15–59 summary (`measure == "45q15"`) —
-on the same tilt scale as the fertility file.
-
-Fourteen countries, sixteen censuses, 140,000 adult (15–59) death records:
-Brazil 2010 and South Africa 2001/2007/2011 establish the method; Ethiopia
-2007 covers the remaining OG-family country with a census mortality module;
-and Zambia, Malawi, Mozambique, Uganda, Rwanda, Senegal, Sierra Leone,
-Lesotho, Benin, Sudan and South Sudan give the borrowing set its spread.
-Households are ranked by an **asset index**, not measured income: a death
-mechanically removes the deceased's earnings from post-death household
-income, while assets are shock-stable (validated on São Paulo, where assets
-gave clean monotonic gradients and income did not).
-
-Every census except Brazil is built by `scripts/build_adult_mortality.py` —
-the universal IPUMS pipeline (slim extracts of ~12 variables, tens of MB per
-census; microdata stays local per the IPUMS license, and these published
-aggregates are explicitly permitted). Brazil comes from IBGE's own open
-microdata, because IPUMS's supplementary death file for that census holds
-only 48% of the deaths the census itself reports and loses them mainly in
-wealthy households.
-
-### The general gradient — usable by any country
-
-**Own measurement first; the general gradient is the fallback that is always
-available.** It lives in `data/general_gradient.csv`:
-
-    tilt(45q15) = 1.291 − 0.243 × ln(GNI per capita, current US$)      ±0.16
-
-The rule was picked by competition, each candidate judged by leaving one census
-out of the fit and predicting it — the honest test, since a country using the
-fallback is not in the fit:
-
-| Candidate rule | Mean absolute error |
-|---|---|
-| One tilt for every country (pooled median −0.36) | 0.307 |
-| **Read it off national income** | **0.142** |
-| The country's regional median | 0.221 |
-
-Income is wrong by less than half as much as a single global number and a third
-less than regional medians, so the general gradient is keyed to income rather
-than region. It predicts best in the middle-income range where the countries
-needing it sit (mean error 0.11 above $1,000 per head, 0.17 below), and it
-reproduces South Africa's own census measurement to within a rounding error.
-
-Worked values at 2024 income: **Philippines −0.75, Indonesia −0.78, Ethiopia
-−0.41**. The file also carries by-age offsets, so a model can spread the summary
-tilt across bands, and a pooled median for use where no GNI figure exists.
-
-A model running decades forward should let the gradient steepen as its income
-path rises rather than holding today's value fixed.
-
-Two caveats that matter for anyone borrowing. Eleven of the sixteen censuses
-are African, and there is **no Asian observation at all** — Cambodia 2008's
-death records are overwhelmingly children, leaving every adult band below
-this library's minimum. And in the poorest countries the gradient turns
-positive at older ages, which may be real or may reflect frail elderly
-relatives moving into better-off households before they die; see
-[ANALYSIS.md](ANALYSIS.md) for the evidence and why no within-census check
-separates the two. HIV does not explain the pattern.
-
-### What is deliberately not here
-
-Three samples were built, checked, and rejected because their death records
-go missing unevenly across rich and poor, which biases a tilt rather than
-merely adding noise: the IPUMS supplement for Brazil 2010 (48% capture,
-skewed to wealthy households), Nepal 2001 (biases the gradient flat) and El
-Salvador 2007 (biases it steep). Their configurations and the evidence stay
-in `scripts/build_adult_mortality.py` — rejected, not deleted.
+Fertility and child mortality come from DHS wealth-quintile breakdowns
+([method](docs/methods/dhs-gradients.md)). Adult mortality cannot come from
+surveys — the dead are not interviewed — so it comes from census **household
+deaths modules**, with households ranked by a shock-stable asset index
+([method](docs/methods/adult-mortality.md)). Countries with no census
+measurement use the income-keyed
+[general gradient](docs/methods/general-gradient.md).
 
 ## The file your model ingests
 
@@ -118,13 +58,6 @@ https://raw.githubusercontent.com/EAPD-DRB/Demographic-Gradients/main/data/gradi
 Columns: `indicator` (TFR, IMR, or U5MR), `country`, `year`, **`slope`** (the
 tilt — see below), `ratio` (poorest/richest decile), and `q1..q5` (the five
 quintile values behind it).
-
-For `infmort_gradient`, use **`IMR`** — it is the series ogcore's infant
-parameter actually represents. `U5MR` is kept as the fallback for the few
-surveys reporting no infant quintiles, but it is not a neutral substitute:
-across the 289 surveys carrying both, the under-5 tilt is steeper by a median
-0.14, because under-5 bundles in ages 1–4, where deaths are dominated by the
-sharply wealth-graded infectious causes. See [ANALYSIS.md](ANALYSIS.md).
 
 The **tilt** (`slope`) is the OLS slope of ln(rate) on wealth rank measured 0 to
 1 (quintile midpoints at 0.10 ... 0.90), i.e. the change in the log rate from the
@@ -177,6 +110,8 @@ fert_tilt = lib.query("indicator == 'TFR' and country == 'South Africa'")["slope
 Either way beats the current default of assuming no gradient at all — the library
 shows a tilt of zero is wrong essentially everywhere. Document which route you
 took (own survey vs borrowed, with the survey year) in your calibration docs.
+For infant mortality use `IMR`, not `U5MR` — the under-5 tilt is steeper by a
+median 0.14 ([why](docs/methods/dhs-gradients.md)).
 
 ## The headline numbers (latest survey per country)
 
@@ -202,7 +137,8 @@ Three structural findings (see [ANALYSIS.md](ANALYSIS.md)):
 3. **Adult mortality is the exception, and its level is an income story**: the
    adult median above is much flatter than the other two because the sample
    is mostly low-income countries, where the gradient is genuinely flat. Do
-   not borrow that median — use the income relationship above.
+   not borrow that median — use the income relationship in the
+   [general gradient](docs/methods/general-gradient.md).
 
 ## Contents
 
@@ -218,6 +154,10 @@ data/
   gradient_library.csv          every survey (601 rows; time trends)
   dhs_gradients_raw.csv         the underlying quintile-level observations
   dhs_regions.csv               DHS Program country -> region map (for borrowing)
+docs/
+  methods/                      how each estimate family is built
+  tables/                       the full adult-mortality table
+  countries/                    per-country provenance pages (generated)
 figures/                        the five figures shown in ANALYSIS.md
 scripts/
   build_gradient_library.py     pull the DHS API on demand, rewrite data/
@@ -226,7 +166,8 @@ scripts/
   build_general_gradient.py     fit + leave-one-out validate the fallback
   build_census_child_mortality.py  child mortality by wealth from censuses
   make_figures.py               rebuild figures/ from data/
-  build_analysis.py             regenerate ANALYSIS.md + README numbers from data/
+  build_analysis.py             regenerate ANALYSIS.md, README numbers, and
+                                the generated docs/ pages from data/
   refresh.py                    all three in order, plus the vintage stamp
 ANALYSIS.md                     the figures and regional tables (generated)
 ```
@@ -251,18 +192,11 @@ Data sources and required citations:
   et al., Integrated Public Use Microdata Series, International. Minneapolis,
   MN: IPUMS (doi:10.18128/D020.V7.7)* and acknowledge the originating
   statistical office for every census used, which the `source` column records
-  row by row: Statistics South Africa; Central Statistical Agency, Ethiopia;
-  Central Statistical Office, Zambia; National Statistical Office, Malawi;
-  Instituto Nacional de Estatística, Mozambique; Uganda Bureau of Statistics;
-  National Institute of Statistics of Rwanda; Agence Nationale de la
-  Statistique et de la Démographie, Senegal; Statistics Sierra Leone; Bureau
-  of Statistics, Lesotho; Institut National de la Statistique et de l'Analyse
-  Économique, Benin; Central Bureau of Statistics, Sudan; and the Southern
-  Sudan Centre for Census, Statistics and Evaluation. Brazil is not an IPUMS
-  product — it is built from IBGE's own open 2010 census sample microdata and
-  should be cited to IBGE. The IPUMS-based estimates rebuild only with an
-  IPUMS account (free registration):
-  the extracts come via the API and the supplementary per-death files from
+  row by row (each [country page](docs/countries/) carries its citation).
+  Brazil is not an IPUMS product — it is built from IBGE's own open 2010
+  census sample microdata and should be cited to IBGE. The IPUMS-based
+  estimates rebuild only with an IPUMS account (free registration): the
+  extracts come via the API and the supplementary per-death files from
   https://international.ipums.org/international/mort_fert_mig.shtml — both
   stay local; only the aggregated tilts here are redistributed, which the
   license explicitly permits.
@@ -273,34 +207,13 @@ Data sources and required citations:
   the standing assumption is that asset rank proxies lifetime-income rank.
 - No quintile design resolves a top-1% income group; tilts there are
   extrapolation.
-- U5MR quintile cells are noisy in low-mortality countries (South Africa 2016
-  visibly so — see ANALYSIS.md).
-- Infant mortality is now measured directly rather than proxied by under-5, so
-  the old proxy caveat is gone — but the two differ by a median 0.14 in tilt,
-  so any calibration built on the earlier `U5MR` figures overstates its infant
-  gradient and is worth revisiting.
-- **Some DHS rows are old.** The library takes each country's most recent
-  survey, which for Brazil is 1996 — and Brazil's child-mortality gradient has
-  roughly halved since, from −1.76 (1991 census) to −0.84 (2010 census). Check
-  the `year` column before using a row, and prefer
-  `census_child_mortality.csv` for Brazil.
-- Adult-mortality gradients come from a household's own recall of deaths in
-  the past 12 months. Under-reporting is common (capture against national
-  death counts runs from 35% in Benin to over 100% where census and UN
-  estimates disagree) and cancels out of a tilt only if it is uniform across
-  wealth. The published samples are the ones where it is; see the completeness
-  check in `scripts/build_adult_mortality.py`.
-- The general adult-mortality gradient rests on sixteen censuses, eleven of them
-  African and none Asian, so its predictions for Asian countries are
-  extrapolation. A predicted tilt carries roughly ±0.16 at one standard
-  deviation.
-- Within the by-age offsets, **the 45–59 and 60–74 numbers are the least
-  trustworthy**: they are positive because measured mortality rises with wealth
-  at older ages in the poorest countries, and independent evidence from DHS
-  sibling histories suggests that is at least partly a reporting artefact rather
-  than a real pattern. Prefer the 15–29 and 30–44 offsets where working-age
-  mortality is what matters.
-- Adult tilts are estimated on however many wealth groups a census's asset
-  distribution supports (the `groups` column: three where assets are sparse,
-  five where they are not), and age bands publish only above 900 death
-  records.
+- **Some DHS rows are old** (Brazil: 1996, and its child gradient has roughly
+  halved since). Check the `year` column before using a row.
+- Adult-mortality gradients rest on a household's own recall of deaths;
+  under-reporting is common and cancels out of a tilt only when
+  wealth-uniform — the published samples are the ones where it is
+  ([completeness gate](docs/methods/adult-mortality.md)).
+- The general gradient rests on sixteen censuses, eleven African and none
+  Asian; predictions for Asian countries are extrapolation, and its 45–59 and
+  60–74 age offsets are the least trustworthy numbers in the library
+  ([why](docs/methods/general-gradient.md)).
