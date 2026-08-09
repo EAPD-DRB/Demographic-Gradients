@@ -12,7 +12,7 @@ It plays the same role for demographic *differentials* that
 population *levels*: a stable, reproducible mirror the country repos reference by
 raw URL.
 
-## Where to find what
+## Repo structure
 
 | You want | Go to |
 |---|---|
