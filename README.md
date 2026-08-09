@@ -23,7 +23,7 @@ raw URL.
 | How adult mortality is measured (census death modules) | [docs/methods/adult-mortality.md](docs/methods/adult-mortality.md) |
 | The fallback for countries with no adult measurement | [docs/methods/general-gradient.md](docs/methods/general-gradient.md) |
 | The full per-census adult-mortality table | [docs/tables/adult_mortality.md](docs/tables/adult_mortality.md) |
-| Working on the repo (regeneration, IPUMS rules) | [CLAUDE.md](CLAUDE.md) |
+| Working on the repo (regeneration, IPUMS rules) | [AGENTS.md → Working on this repo](AGENTS.md#working-on-this-repo) |
 
 ## What this repo provides
 
