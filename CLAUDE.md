@@ -6,10 +6,15 @@ scripts, and the documentation is generated — respect that architecture.
 
 ## Non-negotiables
 
-- **Never hand-edit `ANALYSIS.md` or the README's marked headline table** —
-  both are written by `scripts/build_analysis.py` from the CSVs. Change the
-  generator or the data, then regenerate (`uv run scripts/build_analysis.py`,
-  or `uv run scripts/refresh.py` for the full DHS refresh).
+- **Never hand-edit the generated docs** — `ANALYSIS.md`, the README's marked
+  headline table, `docs/methods/general-gradient.md`,
+  `docs/tables/adult_mortality.md`, and everything under `docs/countries/`
+  are written by `scripts/build_analysis.py` from the CSVs (each carries a
+  GENERATED banner). Change the generator or the data, then regenerate
+  (`uv run scripts/build_analysis.py`, or `uv run scripts/refresh.py` for the
+  full DHS refresh). `docs/methods/adult-mortality.md` and
+  `docs/methods/dhs-gradients.md` are hand-written method prose — edit those
+  directly, but keep any numbers in them qualitative so they cannot drift.
 - **No microdata in this repo, ever.** IPUMS extracts and supplementary death
   files stay local (`~/ipums-extracts`, `~/Projects/data`); the IPUMS license
   permits publishing only aggregated estimates — which is what `data/` holds.

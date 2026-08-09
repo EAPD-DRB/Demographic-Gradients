@@ -4,6 +4,11 @@ Guidance for an LLM agent (or a person) answering calibration questions with
 this repo's data. It is about *consuming* the data. For working *on* the repo —
 regenerating it, adding countries — read `CLAUDE.md` instead.
 
+Answering for one specific country? Its provenance page in
+[`docs/countries/`](docs/countries/) assembles every estimate the library
+holds for it, the source of each number, and the recommended calibration
+route — start there, then apply the rules below.
+
 The library answers one question: **how much does a demographic rate differ
 between rich and poor households in a given country?** OG-Core (>= 0.18.0) can
 vary fertility and mortality across lifetime-income groups, and these are the
