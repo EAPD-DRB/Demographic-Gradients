@@ -9,6 +9,7 @@ Outputs (all overwritten on each run — never hand-edit):
     README.md                        headline table + coverage line (between markers)
     ANALYSIS.md                      figures, regional tables, findings
     docs/methods/general-gradient.md the fallback rule, its validation, its caveats
+    docs/methods/ogcore-units.md     how a tilt is passed to OG-Core (from the units check)
     docs/tables/adult_mortality.md   the full per-census adult-mortality table
     docs/countries/<country>.md      per-country provenance pages
     docs/countries/README.md         index of the country pages
@@ -394,6 +395,94 @@ prevalence with a solidly negative tilt, and the reversal is strongest at
     (DOCS / "methods" / "general-gradient.md").write_text(doc)
 
 
+def write_ogcore_units_page(amr):
+    """docs/methods/ogcore-units.md — how a tilt is passed to OG-Core (generated)."""
+    p = DATA / "ogcore_units_check.csv"
+    if not p.exists():
+        return
+    u = pd.read_csv(p)
+    ver = u["ogcore_version"].iloc[0]
+    rows = "\n".join(
+        f"| {r.margin} | {r.quintile_sets} | {r.median_rate:.3f} | "
+        f"{fmt(r.units_effect_median_pct)}% | {fmt(r.units_effect_p10_pct)}% | "
+        f"{fmt(r.residual_after_conversion_median_pct)}% |"
+        for r in u.itertuples())
+    fert = u[u["margin"].str.startswith("Fertility")]
+    fert_lo, fert_hi = fert.units_effect_median_pct.max(), fert.units_effect_median_pct.min()
+    q = amr[amr["measure"] == "mx"][["q1", "q2", "q3", "q4", "q5"]].apply(
+        pd.to_numeric, errors="coerce").values / 1000
+    adult_med, adult_max = np.nanmedian(q), np.nanmax(q)
+    big = u[u.residual_after_conversion_median_pct.abs() > 1]["margin"].tolist()
+    resid_exc = ("" if not big else " except " + ", ".join(m.lower() for m in big)
+                 + ", where rates are smallest and the quintile sets noisiest")
+    doc = f"""{GENERATED_BANNER}# Passing a tilt to OG-Core
+
+The library publishes a **log-rate tilt**: the OLS slope of ln(rate) on wealth
+rank from 0 to 1. OG-Core (>= 0.18) reads a gradient differently, as a
+**log-odds slope per centered percentile point**, and turns it into
+income-group rates with a mean-preserving logistic that keeps the UN rate at
+every age and period. Two conversions follow.
+
+**1. Rank to percentile points: divide by 100.** OG-Core places each income
+group at its centered percentile midpoint (−40, −20, 0, +20, +40 for
+quintiles), so its slope is per percentile point where the library's is per
+unit of rank.
+
+**2. Log-rate to log-odds: divide by (1 − p)**, where p is OG-Core's own mean
+rate at that age and period, on OG-Core's scale:
+
+    slope passed to OG-Core = tilt / (100 × (1 − p))
+
+On OG-Core's scale fertility is births per *person* per year (OG-Core divides
+the UN's births per 1,000 women by 2,000) and mortality is the annual
+probability of death. Passing `tilt / 100` alone makes every gradient
+slightly too flat, because a logistic flattens as rates rise.
+
+## How much it matters
+
+Every complete wealth-quintile set the library draws on, run through OG-Core
+{ver}'s own `_mean_preserving_logit_rates` at OG-Core's own scaling
+([`scripts/check_ogcore_units.py`](../../scripts/check_ogcore_units.py),
+data in [`data/ogcore_units_check.csv`](../../data/ogcore_units_check.csv)).
+The effect is the change in the poorest-to-richest ratio OG-Core produces when
+it is given `tilt / 100` instead of the converted slope; negative means too
+flat.
+
+| Margin | Quintile sets | Median rate p | Effect, median | Effect, worst tenth | Left after converting |
+|---|---|---|---|---|---|
+{rows}
+
+- **Fertility:** passing `tilt / 100` understates the gradient by
+  {fmt(-fert_lo)}–{fmt(-fert_hi)}% at the median, most at peak childbearing
+  ages, and by more where fertility is high. Convert.
+- **Infant mortality:** about {fmt(-u.set_index("margin").loc["Infant mortality", "units_effect_median_pct"])}%
+  at the median, more where infant mortality is high. Convert.
+- **Mortality from age 1:** annual death rates are small — the library's adult
+  rates have a median of {adult_med:.3f} and a maximum of {adult_max:.3f} — so
+  the correction is about 1%, at most {100 * (1 / (1 - adult_max) - 1):.1f}%.
+  `tilt / 100` is an acceptable shortcut; the conversion costs nothing.
+
+The last column is what remains after converting, measured against the slope
+that best reproduces the measured quintiles through OG-Core's own function.
+After converting it is within 1% for every margin{resid_exc}: the
+conversion removes the bias. What occasionally remains is noisy, non-monotonic quintile
+sets that no single slope can fit, which is a data question, not a units one.
+
+## In practice
+
+Because p is OG-Core's rate at each age, a single fertility tilt becomes a
+vector by age once converted. Compute it from the fertility rates OG-Core
+already uses (the UN schedule your calibration downloads), not from the survey:
+the correction depends only weakly on p, but it should be the model's p.
+
+Sign conventions agree — negative means the poor have higher rates on both
+sides — and the grouping needs nothing from this library: OG-Core derives each
+group's midpoint from the `lambdas` you pass, so any number of income groups,
+of any size, consumes the same converted slope.
+"""
+    (DOCS / "methods" / "ogcore-units.md").write_text(doc)
+
+
 def write_adult_table_page(amr):
     """docs/tables/adult_mortality.md — the full per-census table + column notes."""
     doc = f"""{GENERATED_BANNER}# Adult-mortality gradients: the full per-census table
@@ -543,8 +632,10 @@ def write_country_pages(latest, amr, ccm):
         note_txt = ("## Provenance notes\n\n" + "\n".join(f"- {n}" for n in notes) + "\n") if notes else ""
         doc = (f"{GENERATED_BANNER}# {c}\n\n"
                f"Everything this library holds for {c}, with provenance. "
-               f"Tilt = OLS slope of ln(rate) on wealth rank 0–1; ogcore "
-               f"consumes tilt ÷ 100 (see [AGENTS.md](../../AGENTS.md)).\n\n"
+               f"Tilt = OLS slope of ln(rate) on wealth rank 0–1; OG-Core "
+               f"consumes tilt ÷ (100 × (1 − p)), p being OG-Core's own rate "
+               f"at that age (see [passing a tilt to OG-Core]"
+               f"(../methods/ogcore-units.md)).\n\n"
                + "".join(b + "\n" for b in blocks if b) + note_txt)
         (DOCS / "countries" / f"{slug(c)}.md").write_text(doc)
         what = []
@@ -792,6 +883,8 @@ one of the {n_cens} censuses measured:
     # --- docs/ pages ---
     if amr is not None:
         write_general_gradient_page(amr)
+        write_ogcore_units_page(amr)
+        print("wrote docs/methods/ogcore-units.md")
         print("wrote docs/methods/general-gradient.md")
         write_adult_table_page(amr)
         print("wrote docs/tables/adult_mortality.md")

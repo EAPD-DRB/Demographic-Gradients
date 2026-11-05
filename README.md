@@ -63,17 +63,24 @@ The **tilt** (`slope`) is the OLS slope of ln(rate) on wealth rank measured 0 to
 1 (quintile midpoints at 0.10 ... 0.90), i.e. the change in the log rate from the
 bottom to the top of the wealth distribution. Negative = poor higher.
 
-**Unit conversion for ogcore (verified against ogcore 0.18.0):** ogcore evaluates
-its gradients on a centered percentile-point scale (each income group's midpoint
-lies between −50 and +50), so its slope is per *percentile point* while the
-library's is per *unit of rank* — **divide the library tilt by 100** before
-passing it (see the example below). Sign convention matches (negative = poor
-higher on both sides). ogcore applies the slope through a logistic (log-odds)
-form and re-solves the level so the UN aggregate rates are preserved exactly;
-for rates of these magnitudes the library's log-rate slope and ogcore's log-odds
-slope coincide to first order. The grouping itself needs nothing from this
-library: ogcore derives each group's midpoint from the `lambdas` you pass, so
-any number of income groups, of any sizes, consumes the same tilt.
+**Unit conversion for ogcore** (verified against ogcore 0.24.1 by running
+every measured quintile set through its own functions — see
+[docs/methods/ogcore-units.md](docs/methods/ogcore-units.md)): pass
+
+    tilt / (100 × (1 − p))
+
+**÷100** because ogcore's slope is per *centered percentile point* (group
+midpoints between −50 and +50) while the library's is per *unit of rank*.
+**÷(1 − p)** because ogcore reads a *log-odds* slope while the library publishes
+a *log-rate* one; p is ogcore's own mean rate at that age and period, on its
+scale (fertility = births per person per year; mortality = annual probability
+of death). Skipping the (1 − p) leaves every gradient slightly too flat — about
+1% for mortality from age 1, 2–3% for infant mortality, 3–7% for fertility.
+Since p varies by age, a converted fertility tilt is a vector by age. Sign
+conventions match (negative = poor higher on both sides). ogcore re-solves the
+level so the UN rates are preserved exactly, and derives each group's midpoint
+from the `lambdas` you pass, so any number of income groups, of any sizes,
+consumes the same converted slope.
 
 ## Using it in a country calibration
 
@@ -95,15 +102,19 @@ fert_tilt = lib.query("indicator == 'TFR' and country == 'South Africa'")["slope
 # ssa = lib.merge(regions).query("indicator == 'TFR' and region == 'Sub-Saharan Africa'")
 # fert_tilt = ssa["slope"].median()
 
-# 3. Feed it to ogcore (>= 0.18.0) in your Calibration's demographics call.
-#    Divide by 100: the library tilt is per unit of rank, ogcore's gradient is
-#    per percentile point (see "Unit conversion" above). A scalar applies the
-#    same tilt at every age:
+# 3. Convert and feed it to ogcore (>= 0.18.0) in your Calibration's
+#    demographics call: tilt / (100 x (1 - p)), with p = ogcore's own rate at
+#    each age (see "Unit conversion" above). get_fert already returns births
+#    per person, years x ages, so the converted fertility tilt is a vector
+#    by age:
+# from ogcore import demographics
+# fert = demographics.get_fert(p.E + p.S, 0, 99, country_id="710")
+# fert_gradient = fert_tilt / (100 * (1 - fert[0]))
 # pop_dict = demographics.get_pop_objs(
 #     p.E, p.S, p.T, 0, 99,
 #     country_id="710",
 #     income_percentiles=list(p.lambdas),
-#     fert_gradient=fert_tilt / 100,
+#     fert_gradient=fert_gradient,
 # )
 ```
 

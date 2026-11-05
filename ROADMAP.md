@@ -16,13 +16,17 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 
 ## A. Units and inputs (data the library publishes)
 
-- [ ] **A1. Log-odds vs log-rate.** ogcore reads a slope as log-odds; the library
-  publishes a log-rate tilt. Negligible for mortality; about 10% at peak
-  fertility ages under ogcore's births-per-person scaling (rates / 2000).
-  *Validate:* feed both slopes through ogcore's own mean-preserving logit and
-  check which reproduces the measured quintile ratios. *Decide:* publish a
-  log-odds column (in ogcore's scaling) or convert in the helper (C1).
-  Settle this first — it fixes the units of A2, A3 and C1.
+- [x] **A1. Log-odds vs log-rate.** ogcore reads a slope as log-odds; the library
+  publishes a log-rate tilt. *Done:* every measured quintile set run through
+  ogcore 0.24.1's own functions (`scripts/check_ogcore_units.py`,
+  `data/ogcore_units_check.csv`). Plain `tilt / 100` leaves gradients too flat
+  — about 1% for mortality from age 1, 2.6% for infant, 3–7% for fertility.
+  *Ruling:* adapt to ogcore as it is; calibrations pass
+  `tilt / (100 × (1 − p))` with p = ogcore's own rate array, which gives the
+  by-age and by-year conversion in one line and lands within 1% of exact
+  almost everywhere. The library keeps publishing the log-rate tilt.
+  Documented in `docs/methods/ogcore-units.md`, AGENTS.md, README and the
+  og-country-calibration skill.
 - [ ] **A2. Age-specific fertility tilts.** Both repos pass one TFR tilt, but the
   gradient is U-shaped by age (median −1.51 at 15–19, −0.40 at 30–34;
   Indonesia +0.05 at 25–29). DHS publishes ASFR by wealth quintile
@@ -50,15 +54,12 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 
 ## C. Something calibrations can ingest
 
-- [R] **C1. Consumer output.** OG-ETH and OG-PHL each wrote ~100 lines of glue
-  and made different choices. Ship one: per-country single-age gradients in
-  ogcore units (fertility by age, infant, ages 1–4, adult by age) as CSV, plus
-  a small dependency-free reference function for the time path (B2).
-  *Ruling needed:* whether the library ships Python code at all (it has been
-  data plus build scripts so far).
-  *Validate:* reproduce OG-ETH's and OG-PHL's current arrays exactly from the
-  new output where the rules agree, and run `get_pop_objs` end to end to
-  confirm the UN aggregates are preserved.
+- [ ] **C1. A written recipe, no code.** OG-ETH and OG-PHL each wrote ~100
+  lines of glue and made different choices. *Ruling:* the library stays data
+  plus build scripts — no package for consumers (an exact-solver package was
+  built and dropped: it beat the one-line conversion by under 1%). The fix is
+  one recipe in AGENTS.md: which rows to pick, the A1 conversion, and the B1
+  and B2 rules. Write it once B1 and B2 are ruled.
 - [ ] **C2. Provenance pages and AGENTS.md** updated to the new inputs and rules
   (generated pages via `build_analysis.py`).
 
@@ -76,4 +77,5 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 - OG-PHL: gradient work sits on `calib/multi-industry-remittances`, never pushed.
 - OG-ZAF: passes no gradients, despite the library's best-measured country.
 - OG-IDN, OG-BRA: no gradients.
-- After C1 ships, OG-ETH and OG-PHL can replace their glue with it.
+- OG-ETH, OG-PHL: still pass plain `tilt / 100`; switch to the A1 conversion,
+  then align with the C1 recipe once written.

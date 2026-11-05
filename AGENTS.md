@@ -36,10 +36,19 @@ than substituting a gradient.
 
 ## The two rules that matter most
 
-**1. Divide the tilt by 100.** The library's tilt is per unit of wealth rank
-(0 to 1). ogcore's gradients are per *centered percentile point*. A tilt of
-−0.79 is passed as `-0.0079`. Getting this wrong changes results by 100×. This
-is verified against ogcore source, not inferred.
+**1. Convert the tilt: divide by 100 × (1 − p).** The library's tilt is a
+log-rate slope per unit of wealth rank (0 to 1). ogcore reads a *log-odds*
+slope per *centered percentile point*. So pass
+`tilt / (100 × (1 − p))`, where p is ogcore's own mean rate at that age and
+period on ogcore's scale (fertility = births per *person* per year, the UN
+rate per 1,000 women ÷ 2,000; mortality = annual probability of death).
+Forgetting the 100 changes results by 100×. Forgetting the (1 − p) makes every
+gradient a little too flat: about 1% for mortality from age 1 (where
+`tilt / 100` is an acceptable shortcut), 2–3% for infant mortality, and 3–7%
+for fertility, up to ~15% where rates are high. Because p varies by age, a
+converted fertility tilt is a vector by age. Both conversions are verified by
+running every measured quintile set through ogcore's own functions — see
+[docs/methods/ogcore-units.md](docs/methods/ogcore-units.md).
 
 **2. Own measurement first, general gradient as fallback.** If the country has
 a row in the relevant file, use it. If it does not, use the general gradient
@@ -155,7 +164,8 @@ scripts, and the documentation is generated — respect that architecture.
 
 - **Never hand-edit the generated docs** — `ANALYSIS.md`, the README's marked
   headline table, `docs/methods/general-gradient.md`,
-  `docs/tables/adult_mortality.md`, and everything under `docs/countries/`
+  `docs/methods/ogcore-units.md`, `docs/tables/adult_mortality.md`, and
+  everything under `docs/countries/`
   are written by `scripts/build_analysis.py` from the CSVs (each carries a
   GENERATED banner). Change the generator or the data, then regenerate
   (`uv run scripts/build_analysis.py`, or `uv run scripts/refresh.py` for the
@@ -183,9 +193,15 @@ scripts, and the documentation is generated — respect that architecture.
   group's REALIZED population midpoint (integer asset indices tie at quintile
   cuts; a census supports however many groups it supports — record it in the
   `groups` column).
-- ogcore (>= 0.18.0) consumes the tilt **divided by 100** (its gradients are
-  per centered percentile point; verified against ogcore source). The
-  grouping is ogcore's job — any lambdas vector works with the same tilt.
+- ogcore (>= 0.18.0) consumes **tilt / (100 × (1 − p))**: ÷100 because its
+  gradients are per centered percentile point, ÷(1 − p) because it reads a
+  log-odds slope where the library publishes a log-rate one (p = ogcore's own
+  rate at that age, on its scale). Verified by `scripts/check_ogcore_units.py`,
+  which runs every quintile set through ogcore's pinned
+  `_mean_preserving_logit_rates`; rerun it when ogcore's demographics change.
+  The published `slope` stays the log-rate tilt — it is the measured,
+  scale-free quantity; the conversion needs the model's p. The grouping is
+  ogcore's job — any lambdas vector works with the same tilt.
 - Adult mortality ranks households by an **asset index**, never post-death
   household income (reverse causation; São Paulo validation: assets monotonic,
   income jagged). Asset components vary by census and are recorded per sample
