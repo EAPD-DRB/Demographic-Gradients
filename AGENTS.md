@@ -23,7 +23,7 @@ arguments. Three are gradients this library supplies:
 
 | Argument | File | Filter | Coverage |
 |---|---|---|---|
-| `fert_gradient` | `data/gradient_library_latest.csv` | `indicator == "TFR"` | 77 countries |
+| `fert_gradient` | `data/gradient_library_latest.csv` + `data/fertility_age_offsets.csv` | `indicator == "TFR"`, plus the offset by age | 77 countries |
 | `infmort_gradient` | `data/gradient_library_latest.csv` | `indicator == "IMR"` | 78 countries |
 | `mort_gradient` | `data/adult_mortality_gradients.csv` | `measure == "45q15"` | 14 countries |
 | `imm_pctiles` | **not in this library** | — | — |
@@ -49,6 +49,17 @@ for fertility, up to ~15% where rates are high. Because p varies by age, a
 converted fertility tilt is a vector by age. Both conversions are verified by
 running every measured quintile set through ogcore's own functions — see
 [docs/methods/ogcore-units.md](docs/methods/ogcore-units.md).
+
+**Fertility goes in by age.** Pass `fert_gradient` as a vector by age: the
+country's TFR tilt plus the offset for each age from
+`data/fertility_age_offsets.csv` (ages under 15 take the 15–19 offset, 50 and
+over the 45–49 one), then convert as above. A single TFR tilt at every age
+keeps the gap in number of children but erases the gap in timing — poorer
+women have children earlier, and the teenage gradient is about twice the TFR
+tilt. Use the pooled offsets, not a country's own age tilts
+(`fertility_age_tilts.csv` is supporting data): a country's own age shape
+predicts its next survey no better than the pooled offsets. Recipe and
+checks: [docs/methods/fertility-by-age.md](docs/methods/fertility-by-age.md).
 
 **2. Own measurement first, general gradient as fallback.** If the country has
 a row in the relevant file, use it. If it does not, use the general gradient
@@ -164,7 +175,8 @@ scripts, and the documentation is generated — respect that architecture.
 
 - **Never hand-edit the generated docs** — `ANALYSIS.md`, the README's marked
   headline table, `docs/methods/general-gradient.md`,
-  `docs/methods/ogcore-units.md`, `docs/tables/adult_mortality.md`, and
+  `docs/methods/ogcore-units.md`, `docs/methods/fertility-by-age.md`,
+  `docs/tables/adult_mortality.md`, and
   everything under `docs/countries/`
   are written by `scripts/build_analysis.py` from the CSVs (each carries a
   GENERATED banner). Change the generator or the data, then regenerate
@@ -202,6 +214,12 @@ scripts, and the documentation is generated — respect that architecture.
   The published `slope` stays the log-rate tilt — it is the measured,
   scale-free quantity; the conversion needs the model's p. The grouping is
   ogcore's job — any lambdas vector works with the same tilt.
+- Fertility enters by age as **TFR tilt + pooled age offset**
+  (`fertility_age_offsets.csv`, built from DHS age-specific rates by wealth
+  quintile in `build_gradient_library.py`). Validated: 5 × Σ ASFR reproduces
+  DHS's TFR per quintile within rounding; a backtest over consecutive surveys
+  shows a country's own age shape predicts no better than the pooled offsets.
+  Ruled 2026-11-05 — offsets, not per-country age tilts.
 - Adult mortality ranks households by an **asset index**, never post-death
   household income (reverse causation; São Paulo validation: assets monotonic,
   income jagged). Asset components vary by census and are recorded per sample

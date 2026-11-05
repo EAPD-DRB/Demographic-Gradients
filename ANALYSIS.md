@@ -19,8 +19,8 @@ OG-Core's income-group demographics consume. Negative means the poor have higher
 rates; a tilt of −0.79 puts the poorest decile's rate at about
 e^(0.79×0.8) ≈ 1.9× the richest decile's.
 
-Coverage: **330 surveys with complete wealth quintets across
-78 countries**, giving 891 country-survey-margin tilts (most
+Coverage: **331 surveys with complete wealth quintets across
+78 countries**, giving 894 country-survey-margin tilts (most
 recent survey per country used for the library view below).
 
 ## Every country, individually
@@ -40,7 +40,7 @@ child-mortality samples in its 2016 survey.
 ### Use infant mortality, not under-5, for `infmort_gradient`
 
 The library carries both. They are not interchangeable, and the difference runs
-one way: across the 289 surveys that report both by wealth quintile, the
+one way: across the 290 surveys that report both by wealth quintile, the
 under-5 tilt is steeper than the infant tilt by a median
 0.14, and it is steeper in 84% of
 them. The two are strongly correlated (r = 0.94), so the shape of the
@@ -84,7 +84,7 @@ region's median on fertility.
 | North Africa/West Asia/Europe | 10 | −0.75 | −1.06 to −0.55 | 2.06 |
 | Oceania | 1 | −0.72 | (single survey) | 1.74 |
 | Central Asia | 5 | −0.55 | −0.90 to −0.17 | 1.53 |
-| Sub-Saharan Africa | 39 | −0.52 | −0.67 to −0.22 | 1.52 |
+| Sub-Saharan Africa | 39 | −0.49 | −0.65 to −0.22 | 1.52 |
 
 **Under-5 mortality tilt by region** — the fallback, and steeper (see below)
 
@@ -94,12 +94,12 @@ region's median on fertility.
 | South & Southeast Asia | 12 | −1.06 | −1.48 to −0.82 | 2.42 |
 | North Africa/West Asia/Europe | 10 | −0.85 | −1.25 to −0.76 | 2.38 |
 | Oceania | 1 | −0.84 | (single survey) | 1.92 |
-| Sub-Saharan Africa | 39 | −0.72 | −0.96 to −0.37 | 1.80 |
+| Sub-Saharan Africa | 39 | −0.70 | −0.93 to −0.37 | 1.80 |
 | Central Asia | 5 | −0.37 | −0.52 to −0.25 | 1.40 |
 
 ## Stability over survey years
 
-All 891 country-survey-margin tilts plotted by fieldwork year, with a
+All 894 country-survey-margin tilts plotted by fieldwork year, with a
 rolling median. The
 pooled gradient is nearly flat across three and a half decades — wealth gradients
 are a stable structural feature, not an eroding one, so a borrowed gradient is not
@@ -114,6 +114,19 @@ can move a long way underneath it. Brazil is the worked case — see the census
 series below, where its child-mortality gradient roughly halves in twenty years.
 Read the pooled stability as "a borrowed gradient does not decay", not as "a
 country's own gradient will not change".
+
+## Fertility by age: the gradient is in the timing
+
+The TFR tilt summarizes how many children each wealth group has. By age, the
+gradient is U-shaped: steepest for teenagers and women over 40, flattest at
+30–34. Poorer women start earlier and continue later. The library publishes
+this as **age offsets** added to a country's TFR tilt — −0.78 at
+15–19, 0.33 at 30–34, −0.93 at 45–49 — pooled across
+countries, because a country's own age shape is mostly survey noise. Method,
+checks and the calibration recipe:
+[fertility by age](docs/methods/fertility-by-age.md).
+
+![Fertility age offsets, and what they mean for the median country](figures/fig6_fertility_age_offsets.png)
 
 ## Child mortality from censuses, and Brazil's twenty-year trend
 

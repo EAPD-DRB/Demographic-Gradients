@@ -2,7 +2,7 @@
 # requires-python = ">=3.10"
 # dependencies = ["pandas", "matplotlib"]
 # ///
-"""Regenerate the library's four figures from the CSVs in ../data/.
+"""Regenerate the library's figures from the CSVs in ../data/.
 
     uv run scripts/make_figures.py [--highlight "South Africa"]
 """
@@ -216,6 +216,61 @@ def amr_age_profile(fname):
     return True
 
 
+def fertility_age_offsets(latest, fname):
+    """The fertility age offsets, and what they mean for a median country."""
+    tilts, offs = ROOT / "data" / "fertility_age_tilts.csv", ROOT / "data" / "fertility_age_offsets.csv"
+    if not (tilts.exists() and offs.exists()):
+        return False
+    t = pd.read_csv(tilts).sort_values(["country", "year", "survey", "age_lo"])
+    o = pd.read_csv(offs).sort_values("age_lo")
+    last = t.groupby("country")["survey"].last()
+    t = t[t["survey"].isin(last)]
+    x = np.arange(len(o))
+    labels = [f"{a}–{b}" for a, b in zip(o["age_lo"], o["age_hi"])]
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(11, 4.6), dpi=150, gridspec_kw={"wspace": 0.28})
+    for ax in (a1, a2):
+        ax.grid(True, axis="y", color=GRID, linewidth=0.6)
+        ax.set_xticks(x, labels)
+        ax.set_xlabel("mother's age")
+    for _, g in t.groupby("survey"):
+        a1.plot(x, g["offset"].values, color=MUTED, alpha=0.13, lw=1)
+    a1.fill_between(x, o["iqr_lo"], o["iqr_hi"], color=HI, alpha=0.15, lw=0)
+    a1.axhline(0, color=INK, lw=1, ls=(0, (4, 3)))
+    a1.text(x[-1] + 0.45, 0.06, "single TFR tilt\nat every age", ha="right", va="bottom",
+            color=MUTED, fontsize=8.5)
+    a1.plot(x, o["offset"], color=HI, lw=2, marker="o", ms=7, mec=SURF, mew=1.5, zorder=3)
+    for i, v in enumerate(o["offset"]):
+        a1.annotate(f"{v:+.2f}".replace("-", "−"), (i, v), textcoords="offset points",
+                    xytext=(0, 10 if v >= 0 else -16), ha="center", fontsize=9)
+    a1.set_ylim(-2.6, 1.6)
+    a1.set_ylabel("offset added to the country's TFR tilt")
+    a1.set_title(f"Age offsets: median of {o['countries'].max()} countries, IQR band,\n"
+                 "gray = each country's latest survey", loc="left", fontsize=11)
+    n_last = int(o["countries"].iloc[-1])
+    a1.text(x[-1], -2.5, f"{labels[-1]}: {n_last} countries (elsewhere a quintile has no births)",
+            ha="right", fontsize=8, color=MUTED)
+    tfr = latest.loc[latest["indicator"] == "TFR", "slope"].median()
+    ref = np.exp(-tfr * 0.8)
+    ratio = np.exp(-(tfr + o["offset"].values) * 0.8)
+    a2.axhline(ref, color=INK, lw=1, ls=(0, (4, 3)))
+    a2.text(x[-1] + 0.45, ref - 0.06, f"single TFR tilt:\n{ref:.1f}× at every age", ha="right",
+            va="top", color=MUTED, fontsize=8.5)
+    a2.plot(x, ratio, color=HI, lw=2, marker="o", ms=7, mec=SURF, mew=1.5, zorder=3)
+    for i, v in enumerate(ratio):
+        below = v < ref and ref - v < 0.3  # keep the label off the reference line
+        a2.annotate(f"{v:.1f}×", (i, v), textcoords="offset points",
+                    xytext=(0, -16 if below else 10), ha="center", fontsize=9)
+    a2.set_ylim(1, max(4.6, ratio.max() + 0.5))
+    a2.set_ylabel("poorest-decile ÷ richest-decile birth rate")
+    a2.set_title(f"What it means for the median country (TFR tilt {tfr:.2f})".replace("-", "−"),
+                 loc="left", fontsize=11)
+    fig.text(0.01, -0.02, "Source: DHS Program API, age-specific fertility by wealth quintile; "
+             "latest survey per country. Offset = age tilt − TFR tilt.", fontsize=8, color=MUTED)
+    fig.savefig(ROOT / "figures" / fname, bbox_inches="tight")
+    plt.close(fig)
+    return True
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--highlight", default="South Africa")
@@ -231,6 +286,7 @@ def main():
     strip_by_region(latest, "fig3_slopes_by_region.png", args.highlight)
     slopes_over_time(lib, "fig4_slopes_over_time.png", args.highlight)
     n = 4 + int(amr_age_profile("fig5_amr_age_profile.png"))
+    n += int(fertility_age_offsets(latest, "fig6_fertility_age_offsets.png"))
     print(f"wrote {n} figures to figures/")
 
 

@@ -9,11 +9,17 @@ From [`data/gradient_library_latest.csv`](../../data/gradient_library_latest.csv
 
 | Indicator | Survey year | Tilt | Poorest/richest | Q1 … Q5 |
 |---|---|---|---|---|
-| TFR | 2023 | **−0.30** | 1.22 | 3.9 / 3.9 / 3.8 / 3.2 / 3.2 |
-| IMR | 2019 | **−0.97** | 2.14 | 45 / 44 / 31 / 29 / 21 |
-| U5MR | 2019 | **−1.05** | 2.40 | 72 / 57 / 43 / 40 / 30 |
+| TFR | 2025 | **−0.49** | 1.55 | 4.5 / 4 / 3.7 / 3.6 / 2.9 |
+| IMR | 2025 | **−0.39** | 1.60 | 32 / 29 / 26 / 34 / 20 |
+| U5MR | 2025 | **−0.69** | 2.18 | 48 / 37 / 33 / 44 / 22 |
 
 Source: DHS Program indicator API (wealth-quintile breakdown); tilt = OLS slope of ln(rate) on wealth rank.
+
+**Fertility by age** — TFR tilt plus the pooled [age offsets](../methods/fertility-by-age.md); pass these, not the single TFR tilt, to `fert_gradient`:
+
+| 15–19 | 20–24 | 25–29 | 30–34 | 35–39 | 40–44 | 45–49 |
+|---|---|---|---|---|---|---|
+| −1.27 | −0.59 | −0.29 | −0.16 | −0.39 | −0.88 | −1.42 |
 
 ## Adult mortality (census household-deaths modules)
 

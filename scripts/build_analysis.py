@@ -10,6 +10,7 @@ Outputs (all overwritten on each run — never hand-edit):
     ANALYSIS.md                      figures, regional tables, findings
     docs/methods/general-gradient.md the fallback rule, its validation, its caveats
     docs/methods/ogcore-units.md     how a tilt is passed to OG-Core (from the units check)
+    docs/methods/fertility-by-age.md the fertility age offsets, their checks, the recipe
     docs/tables/adult_mortality.md   the full per-census adult-mortality table
     docs/countries/<country>.md      per-country provenance pages
     docs/countries/README.md         index of the country pages
@@ -483,6 +484,125 @@ of any size, consumes the same converted slope.
     (DOCS / "methods" / "ogcore-units.md").write_text(doc)
 
 
+def fertility_offsets():
+    """The pooled fertility age offsets, or None if the build has not made them."""
+    p = DATA / "fertility_age_offsets.csv"
+    return pd.read_csv(p).sort_values("age_lo") if p.exists() else None
+
+
+def asfr_sum_check():
+    """5 x the sum of age rates against DHS's TFR, per survey and quintile."""
+    raw = pd.read_csv(DATA / "dhs_gradients_raw.csv")
+    raw = raw[raw["quintile"].isin(["Lowest", "Second", "Middle", "Fourth", "Highest"])]
+    w = raw.pivot_table(index=["survey", "quintile"], columns="indicator",
+                        values="value", aggfunc="first")
+    a = [c for c in w.columns if c.startswith("ASFR")]
+    w = w.dropna(subset=["TFR"] + a)
+    gap = (5 * w[a].sum(axis=1) / 1000 - w["TFR"]).abs()
+    return {"cells": len(w), "max": gap.max()}
+
+
+def write_fertility_age_page(off, tfr_med):
+    """docs/methods/fertility-by-age.md — the fertility age offsets (generated)."""
+    chk = asfr_sum_check()
+    bt = off.dropna(subset=["backtest_err_flat"])
+    e = {k: bt[f"backtest_err_{k}"].mean() for k in ("flat", "pooled", "own")}
+    rows = "\n".join(
+        f"| {r.age_lo}–{r.age_hi} | **{fmt(r.offset)}** | {fmt(r.iqr_lo)} to {fmt(r.iqr_hi)} "
+        f"| {r.countries} | {fmt(tfr_med + r.offset)} | {np.exp(-(tfr_med + r.offset) * 0.8):.1f}× |"
+        for r in off.itertuples())
+    btrows = "\n".join(
+        f"| {r.age_lo}–{r.age_hi} | {r.backtest_err_flat:.2f} | {r.backtest_err_pooled:.2f} "
+        f"| {r.backtest_err_own:.2f} |" for r in bt.itertuples())
+    last = off.iloc[-1]
+    doc = f"""{GENERATED_BANNER}# Fertility by age
+
+The fertility gradient is mostly about **when** women have children, not only
+how many. Poorer women start earlier and continue later; births in the prime
+childbearing ages differ much less by wealth. A single TFR tilt applied at
+every age (the simplest use of `fert_gradient`) keeps the gap in the number
+of children but erases the gap in timing.
+
+The library therefore publishes **age offsets**: how much steeper or flatter
+the tilt is at each age than the country's TFR tilt, pooled across countries.
+
+    fertility tilt at age a = country's TFR tilt + offset(a)
+
+![Fertility age offsets, and what they mean for the median country](../../figures/fig6_fertility_age_offsets.png)
+
+## The offsets
+
+From [`data/fertility_age_offsets.csv`](../../data/fertility_age_offsets.csv):
+the median across countries' latest surveys of (age tilt − TFR tilt). The last
+two columns apply them to the median country (TFR tilt {fmt(tfr_med)}).
+
+| Ages | Offset | IQR | Countries | Median country's tilt | Poorest ÷ richest decile |
+|---|---|---|---|---|---|
+{rows}
+
+A single TFR tilt would put the poorest decile at
+{np.exp(-tfr_med * 0.8):.1f}× the richest at every age. At {int(last.age_lo)}–{int(last.age_hi)}
+only {int(last.countries)} countries can be fitted: elsewhere a quintile reports no
+births. Rates there are small, so the offset matters little.
+
+## Why pooled offsets, not each country's own age tilts
+
+The per-survey age tilts are in
+[`data/fertility_age_tilts.csv`](../../data/fertility_age_tilts.csv), but a
+country's own age shape is mostly survey noise. The test: predict each
+survey's age shape (age tilt − TFR tilt) from three candidates, over
+{int(bt.backtest_pairs.iloc[0])} pairs of consecutive surveys in the same
+country. Mean absolute error:
+
+| Ages | Single TFR tilt | Pooled offsets (other countries) | Same country's previous survey |
+|---|---|---|---|
+{btrows}
+| **All** | **{e['flat']:.2f}** | **{e['pooled']:.2f}** | **{e['own']:.2f}** |
+
+The age shape is real — the pooled offsets cut the error of a single tilt by
+{100 * (1 - e['pooled'] / e['flat']):.0f}% — but a country's own previous survey
+predicts its next one no better than the pooled offsets, and worse at 35 and
+over. The previous survey's error also includes genuine change between
+surveys, so this is a generous test for the own-country route.
+
+## Checks
+
+- **The age rates add up.** In all {chk['cells']:,} survey-quintile cells,
+  5 × the sum of the age-specific rates reproduces DHS's published TFR to
+  within {chk['max']:.3f} births per woman — the most rounding alone allows
+  (TFR is published to one decimal, the age rates as whole numbers per 1,000).
+- **The TFR gradient is kept.** Adding the offsets changes the gap in total
+  fertility between groups very little: the offsets roughly cancel when
+  weighted by how many births fall at each age.
+
+## Recipe for a calibration
+
+1. Take the country's TFR tilt from
+   [`gradient_library_latest.csv`](../../data/gradient_library_latest.csv)
+   (or the regional median if it has no survey).
+2. Add the offset for each single year of age: ages under 15 take the 15–19
+   offset, ages 50 and over the 45–49 offset (fertility is close to zero
+   there, so this choice is immaterial).
+3. Convert to OG-Core units as for any tilt:
+   `tilt / (100 × (1 − p))`, with p OG-Core's own fertility rate at that age
+   ([passing a tilt to OG-Core](ogcore-units.md)).
+
+With the usual 100 model ages (E + S = 100, ages 0–99):
+
+```python
+off = pd.read_csv(".../data/fertility_age_offsets.csv").set_index("age_lo")["offset"]
+ages = np.arange(p.E + p.S)
+fert_tilt_by_age = fert_tilt + off.loc[np.clip(ages // 5 * 5, 15, 45)].values
+fert = demographics.get_fert(p.E + p.S, 0, 99, country_id="710")
+fert_gradient = fert_tilt_by_age / (100 * (1 - fert[0]))
+```
+
+Source: the DHS Program indicator API, age-specific fertility rates
+(`FE_FRTR_W_A15` … `FE_FRTR_W_A45`) by wealth quintile. Cite the DHS Program.
+"""
+    (DOCS / "methods" / "fertility-by-age.md").write_text(doc)
+
+
 def write_adult_table_page(amr):
     """docs/tables/adult_mortality.md — the full per-census table + column notes."""
     doc = f"""{GENERATED_BANNER}# Adult-mortality gradients: the full per-census table
@@ -538,6 +658,16 @@ def country_dhs_block(latest, country):
                 f"| {r['ratio']:.2f} | {qs} |\n")
     out += ("\nSource: DHS Program indicator API (wealth-quintile breakdown); "
             "tilt = OLS slope of ln(rate) on wealth rank.\n")
+    off = fertility_offsets()
+    tfr = rows[rows["indicator"] == "TFR"]
+    if off is not None and len(tfr):
+        t = tfr["slope"].iloc[0]
+        out += ("\n**Fertility by age** — TFR tilt plus the pooled "
+                "[age offsets](../methods/fertility-by-age.md); pass these, "
+                "not the single TFR tilt, to `fert_gradient`:\n\n"
+                "| " + " | ".join(f"{a}–{b}" for a, b in zip(off.age_lo, off.age_hi)) + " |\n"
+                "|" + "---|" * len(off) + "\n"
+                "| " + " | ".join(fmt(t + o) for o in off.offset) + " |\n")
     return out
 
 
@@ -806,6 +936,24 @@ Read the pooled stability as "a borrowed gradient does not decay", not as "a
 country's own gradient will not change".
 """
 
+    off = fertility_offsets()
+    if off is not None:
+        o = off.set_index("age_lo")["offset"]
+        doc += f"""
+## Fertility by age: the gradient is in the timing
+
+The TFR tilt summarizes how many children each wealth group has. By age, the
+gradient is U-shaped: steepest for teenagers and women over 40, flattest at
+30–34. Poorer women start earlier and continue later. The library publishes
+this as **age offsets** added to a country's TFR tilt — {fmt(o.iloc[0])} at
+15–19, {fmt(o.loc[30])} at 30–34, {fmt(o.iloc[-1])} at 45–49 — pooled across
+countries, because a country's own age shape is mostly survey noise. Method,
+checks and the calibration recipe:
+[fertility by age](docs/methods/fertility-by-age.md).
+
+![Fertility age offsets, and what they mean for the median country](figures/fig6_fertility_age_offsets.png)
+"""
+
     ccm = census_child_mortality()
     if ccm:
         doc += f"""
@@ -881,6 +1029,9 @@ one of the {n_cens} censuses measured:
     print("wrote ANALYSIS.md")
 
     # --- docs/ pages ---
+    if off is not None:
+        write_fertility_age_page(off, tfr["med"])
+        print("wrote docs/methods/fertility-by-age.md")
     if amr is not None:
         write_general_gradient_page(amr)
         write_ogcore_units_page(amr)

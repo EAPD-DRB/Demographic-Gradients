@@ -21,6 +21,7 @@ raw URL.
 | The figures, regional tables, and findings | [ANALYSIS.md](ANALYSIS.md) |
 | How the DHS gradients are built | [docs/methods/dhs-gradients.md](docs/methods/dhs-gradients.md) |
 | How adult mortality is measured (census death modules) | [docs/methods/adult-mortality.md](docs/methods/adult-mortality.md) |
+| Fertility by age (the age offsets) | [docs/methods/fertility-by-age.md](docs/methods/fertility-by-age.md) |
 | The fallback for countries with no adult measurement | [docs/methods/general-gradient.md](docs/methods/general-gradient.md) |
 | The full per-census adult-mortality table | [docs/tables/adult_mortality.md](docs/tables/adult_mortality.md) |
 | Working on the repo (regeneration, IPUMS rules) | [AGENTS.md → Working on this repo](AGENTS.md#working-on-this-repo) |
@@ -32,7 +33,7 @@ accepts:
 
 | OG-Core input | What it does | Coverage | Where |
 |---|---|---|---|
-| `fert_gradient` | tilts fertility across income rank | 77 countries | `data/gradient_library_latest.csv`, rows with `indicator == "TFR"` |
+| `fert_gradient` | tilts fertility across income rank, by age | 77 countries | `data/gradient_library_latest.csv`, rows with `indicator == "TFR"`, plus the age offsets in `data/fertility_age_offsets.csv` |
 | `infmort_gradient` | tilts infant mortality across income rank | 78 countries | same file, `indicator == "IMR"` (fall back to `"U5MR"`) |
 | `mort_gradient` | tilts adult mortality across income rank, by age | 14 countries measured, **any country via the general gradient** | `data/adult_mortality_gradients.csv`; fallback in `data/general_gradient.csv` |
 
@@ -85,6 +86,7 @@ consumes the same converted slope.
 ## Using it in a country calibration
 
 ```python
+import numpy as np
 import pandas as pd
 
 LIB = (
@@ -102,14 +104,20 @@ fert_tilt = lib.query("indicator == 'TFR' and country == 'South Africa'")["slope
 # ssa = lib.merge(regions).query("indicator == 'TFR' and region == 'Sub-Saharan Africa'")
 # fert_tilt = ssa["slope"].median()
 
-# 3. Convert and feed it to ogcore (>= 0.18.0) in your Calibration's
+# 3. Spread it by age: add the pooled age offset for each age (poorer women
+#    have children earlier; see docs/methods/fertility-by-age.md). With the
+#    usual 100 model ages (ages 0-99):
+# off = pd.read_csv(".../data/fertility_age_offsets.csv").set_index("age_lo")["offset"]
+# ages = np.arange(p.E + p.S)
+# fert_tilt_by_age = fert_tilt + off.loc[np.clip(ages // 5 * 5, 15, 45)].values
+
+# 4. Convert and feed it to ogcore (>= 0.18.0) in your Calibration's
 #    demographics call: tilt / (100 x (1 - p)), with p = ogcore's own rate at
 #    each age (see "Unit conversion" above). get_fert already returns births
-#    per person, years x ages, so the converted fertility tilt is a vector
-#    by age:
+#    per person, years x ages:
 # from ogcore import demographics
 # fert = demographics.get_fert(p.E + p.S, 0, 99, country_id="710")
-# fert_gradient = fert_tilt / (100 * (1 - fert[0]))
+# fert_gradient = fert_tilt_by_age / (100 * (1 - fert[0]))
 # pop_dict = demographics.get_pop_objs(
 #     p.E, p.S, p.T, 0, 99,
 #     country_id="710",
@@ -130,12 +138,12 @@ median 0.14 ([why](docs/methods/dhs-gradients.md)).
 | Margin | Countries | Median tilt | IQR | Median poorest/richest ratio |
 |---|---|---|---|---|
 | Fertility (TFR) | 77 | **−0.79** | −0.97 to −0.53 | 1.90 |
-| Infant mortality | 78 | **−0.64** | −0.96 to −0.39 | 1.70 |
+| Infant mortality | 78 | **−0.64** | −0.93 to −0.38 | 1.67 |
 | Under-5 mortality (fallback) | 78 | **−0.82** | −1.16 to −0.54 | 1.96 |
 | Adult mortality (45q15) | 15 | **−0.36** | −0.61 to −0.06 | 1.32 |
 <!-- END AUTO-GENERATED -->
 
-*(330 surveys, 78 countries; DHS API pull of 28 July 2026. Regenerate with
+*(331 surveys, 78 countries; DHS API pull of 5 November 2026. Regenerate with
 `uv run scripts/refresh.py`.)*
 
 Three structural findings (see [ANALYSIS.md](ANALYSIS.md)):
@@ -160,6 +168,9 @@ data/
   adult_mortality_gradients.csv adult mortality tilts by sex and age band
   general_gradient.csv          the fallback adult-mortality gradient (income
                                 rule, by-age offsets, validation errors)
+  fertility_age_offsets.csv     fertility tilt by age, as offsets to the TFR
+                                tilt (pooled; with the backtest behind them)
+  fertility_age_tilts.csv       each survey's fertility tilt by age (supporting)
   census_child_mortality.csv    child mortality by wealth from census microdata,
                                 where the DHS survey is old or absent
   gradient_library.csv          every survey (601 rows; time trends)
@@ -169,7 +180,7 @@ docs/
   methods/                      how each estimate family is built
   tables/                       the full adult-mortality table
   countries/                    per-country provenance pages (generated)
-figures/                        the five figures shown in ANALYSIS.md
+figures/                        the figures shown in ANALYSIS.md
 scripts/
   build_gradient_library.py     pull the DHS API on demand, rewrite data/
   build_adult_mortality.py      the universal IPUMS pipeline: submit slim
@@ -195,7 +206,8 @@ Data sources and required citations:
 
 - Fertility and child mortality: the
   [DHS Program indicator API](https://api.dhsprogram.com) (indicators
-  `FE_FRTR_W_TFR`, `CM_ECMR_C_IMR`, `CM_ECMR_C_U5M`, characteristic "Wealth
+  `FE_FRTR_W_TFR`, `FE_FRTR_W_A15`…`A45`, `CM_ECMR_C_IMR`, `CM_ECMR_C_U5M`,
+  characteristic "Wealth
   quintile"). Credit
   the DHS Program alongside this repo. Wealth quintiles are the DHS household
   asset index; surveys with incomplete quintets are dropped, never imputed.

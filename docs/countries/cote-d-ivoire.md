@@ -15,6 +15,12 @@ From [`data/gradient_library_latest.csv`](../../data/gradient_library_latest.csv
 
 Source: DHS Program indicator API (wealth-quintile breakdown); tilt = OLS slope of ln(rate) on wealth rank.
 
+**Fertility by age** — TFR tilt plus the pooled [age offsets](../methods/fertility-by-age.md); pass these, not the single TFR tilt, to `fert_gradient`:
+
+| 15–19 | 20–24 | 25–29 | 30–34 | 35–39 | 40–44 | 45–49 |
+|---|---|---|---|---|---|---|
+| −1.66 | −0.98 | −0.69 | −0.55 | −0.78 | −1.28 | −1.81 |
+
 ## Adult mortality (census household-deaths modules)
 
 From [`data/adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv). Households ranked by asset index; see the [method page](../methods/adult-mortality.md).

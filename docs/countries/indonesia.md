@@ -15,6 +15,12 @@ From [`data/gradient_library_latest.csv`](../../data/gradient_library_latest.csv
 
 Source: DHS Program indicator API (wealth-quintile breakdown); tilt = OLS slope of ln(rate) on wealth rank.
 
+**Fertility by age** — TFR tilt plus the pooled [age offsets](../methods/fertility-by-age.md); pass these, not the single TFR tilt, to `fert_gradient`:
+
+| 15–19 | 20–24 | 25–29 | 30–34 | 35–39 | 40–44 | 45–49 |
+|---|---|---|---|---|---|---|
+| −1.16 | −0.48 | −0.19 | −0.05 | −0.28 | −0.78 | −1.31 |
+
 ## Adult-mortality route for calibration
 
 No census household-deaths module exists, so use the [general gradient](../methods/general-gradient.md): at GNI per capita ≈ $5,010 (~2024), predicted tilt(45q15) = **−0.79** ± 0.16, spread across age bands with the by-age offsets in `data/general_gradient.csv`.

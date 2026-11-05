@@ -27,13 +27,15 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
   almost everywhere. The library keeps publishing the log-rate tilt.
   Documented in `docs/methods/ogcore-units.md`, AGENTS.md, README and the
   og-country-calibration skill.
-- [ ] **A2. Age-specific fertility tilts.** Both repos pass one TFR tilt, but the
-  gradient is U-shaped by age (median −1.51 at 15–19, −0.40 at 30–34;
-  Indonesia +0.05 at 25–29). DHS publishes ASFR by wealth quintile
-  (`FE_FRTR_W_A15`…`A45`; 313 surveys, 77 countries).
-  *Validate:* 5 × Σ ASFR per quintile must reproduce DHS's published TFR per
-  quintile; and through ogcore, the age-level UN rates stay fixed while the
-  TFR gradient comes out right.
+- [x] **A2. Age-specific fertility tilts.** Both repos pass one TFR tilt, but the
+  gradient is U-shaped by age. *Done 2026-11-05:* DHS age-specific rates by
+  wealth quintile (`FE_FRTR_W_A15`…`A45`) now pulled by
+  `build_gradient_library.py`. 5 × Σ ASFR reproduces DHS's TFR per quintile
+  within rounding. *Ruling:* publish pooled **age offsets** to add to the TFR
+  tilt (`fertility_age_offsets.csv`), not per-country age tilts — a country's
+  own age shape predicts its next survey no better (backtest in the same
+  file). Docs: `docs/methods/fertility-by-age.md` (generated, with fig6),
+  ANALYSIS.md, country pages, AGENTS.md, README, skill.
 - [ ] **A3. Child mortality at ages 1–4.** Both repos use the under-5 tilt there,
   which includes infant deaths. DHS publishes 4q1 by wealth (`CM_ECMR_C_CMR`).
   *Validate:* per quintile, (1 − IMR)(1 − CMR) must reproduce 1 − U5MR.
@@ -77,5 +79,8 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 - OG-PHL: gradient work sits on `calib/multi-industry-remittances`, never pushed.
 - OG-ZAF: passes no gradients, despite the library's best-measured country.
 - OG-IDN, OG-BRA: no gradients.
-- OG-ETH, OG-PHL: still pass plain `tilt / 100`; switch to the A1 conversion,
-  then align with the C1 recipe once written.
+- OG-ETH, OG-PHL: still pass plain `tilt / 100` and one TFR tilt at every
+  age; switch to the A1 conversion and the A2 age offsets, then align with
+  the C1 recipe once written.
+- Rwanda: the 2025 DHS appeared in the API (pull of 2026-11-05) and replaced
+  the 2019/2023 rows; its quintile cells are noisy (IMR Q4 > Q1).
