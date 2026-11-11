@@ -9,9 +9,11 @@ This builds the fallback and, more importantly, shows how well it would have
 served the countries that DO have a measured tilt - so a user can see what
 accuracy they are accepting.
 
-Three candidate rules compete, judged by leave-one-out error. Leave-one-out is
-the honest test: a country using the fallback is by definition not in the fit,
-so each country is predicted from a rule fitted without it.
+Three candidate rules are compared by leave-one-country-out prediction error:
+each census is predicted from a rule estimated without any census of the same
+country, which matches the use case of a country with no estimate of its own.
+All rules are scored on the same censuses (those with a GNI figure); the region
+rule falls back to the pooled median where a region has no other census.
 
     constant   one number for everyone (the pooled median)
     income     tilt ~ a + b * ln(GNI per capita)
@@ -92,14 +94,21 @@ def observations():
 
 
 def loo_errors(d):
-    """Leave-one-out prediction error for each candidate rule."""
+    """Leave-one-country-out prediction error for each candidate rule.
+
+    A country's censuses are all left out together (South Africa has three,
+    Malawi two), matching the use case of a country with no estimate of its
+    own. Censuses without a GNI figure are dropped first, so every rule is
+    scored on the same observations.
+    """
+    d = d.dropna(subset=["lg", "tilt"])
     out = []
     for i in d.index:
-        tr, te = d.drop(index=i), d.loc[i]
+        te = d.loc[i]
+        tr = d[d["country"] != te["country"]]
         pred = {"constant": tr["tilt"].median()}
-        fit = tr.dropna(subset=["lg", "tilt"])
-        b, a_ = np.polyfit(fit["lg"], fit["tilt"], 1)
-        pred["income"] = (a_ + b * te["lg"]) if np.isfinite(te["lg"]) else np.nan
+        b, a_ = np.polyfit(tr["lg"], tr["tilt"], 1)
+        pred["income"] = a_ + b * te["lg"]
         same = tr[tr["region"] == te["region"]]
         pred["region"] = same["tilt"].median() if len(same) else tr["tilt"].median()
         out.append(dict(country=te["country"], year=te["year"], actual=te["tilt"],

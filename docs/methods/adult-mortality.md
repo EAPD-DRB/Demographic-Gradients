@@ -1,80 +1,96 @@
-# Adult mortality by wealth: the census household-deaths method
+# Adult mortality by wealth: census household-death records
 
-How the estimates in
+This page describes how the estimates in
 [`data/adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv)
-are built. The full per-census table is in
-[`docs/tables/adult_mortality.md`](../tables/adult_mortality.md); per-country
-provenance is on the [country pages](../countries/); the fallback for
-countries with no measurement is the
-[general gradient](general-gradient.md).
+are constructed. All estimates are listed in
+[the full table](../tables/adult_mortality.md); countries without an estimate
+use the [general gradient](general-gradient.md).
 
-## Why censuses, not surveys
+## Data
 
-Adult mortality by wealth cannot come from DHS-type surveys: the dead are not
-interviewed, and sibling survival reports carry no wealth data for the
-deceased's own household. It CAN come from census **household deaths modules**:
-the household outlives the deceased and reports the death (age, sex, occurred
-in the last 12 months) alongside its assets. Fourteen countries have usable
-modules — sixteen censuses, roughly 140,000 adult (15–59) death records.
-Brazil 2010 and South Africa 2001/2007/2011 establish the method; Ethiopia
-2007 covers the remaining OG-family country with a census mortality module;
-and Zambia, Malawi, Mozambique, Uganda, Rwanda, Senegal, Sierra Leone,
-Lesotho, Benin, Sudan and South Sudan give the borrowing set its spread.
+Household surveys cannot measure adult mortality by household wealth, since
+the deceased are not interviewed, and sibling histories do not record the
+deceased person's household. Some censuses, however, ask each household about
+deaths of members during a recent reference period (usually the previous
+twelve months), with the age and sex of the deceased. These records, linked to
+the household's assets, are the basis of the estimates. The census samples
+come from IPUMS International; Brazil's come from IBGE's 2010 census sample
+microdata. Microdata are processed locally and only aggregate estimates are
+published, as the IPUMS license requires.
 
-## Assets, not income
+## Wealth ranking
 
-Households are ranked by an **asset index**, never post-death household
-income: a death mechanically removes the deceased's earnings from post-death
-income (reverse causation), while assets are shock-stable. Validated on São
-Paulo, where assets gave clean monotonic gradients and income did not. Asset
-components vary by census and are recorded per sample in
-`scripts/build_adult_mortality.py`; a census supports however many wealth
-groups its asset distribution supports (the `groups` column: three where
-assets are sparse, five where they are not).
+Households are ranked by an asset index rather than by income. Household income
+recorded after a death excludes the earnings of the deceased, so ranking by
+income would partly reflect the death itself; assets are less affected. In a
+comparison using the São Paulo census data, death rates by asset group were
+monotonic while death rates by income group were not. The assets available differ by
+census and are recorded for each sample in `scripts/build_adult_mortality.py`.
+The number of wealth groups depends on the asset distribution: three where most
+households own few of the recorded assets, up to five otherwise (`groups`
+column).
 
-## The pipeline
+## Estimation
 
-Every census except Brazil is built by `scripts/build_adult_mortality.py` —
-the universal IPUMS pipeline (slim extracts of ~12 variables, tens of MB per
-census). Microdata stays local per the IPUMS license; the published aggregates
-are explicitly permitted. Brazil comes from IBGE's own open microdata, because
-IPUMS's supplementary death file for that census holds only 48% of the deaths
-the census itself reports and loses them mainly in wealthy households (see
-[the Brazil page](../countries/brazil.md)).
+Wealth groups are formed by cutting the asset score at the values closest to
+the quintile points of its person-weighted distribution among persons aged
+15–59. Cut points that coincide, or that fall at the minimum or maximum of the
+score, are dropped, which is why some censuses have fewer than five groups. For each group, the age-specific death rate (`mx`) for 15–29,
+30–44, 45–59 and 60–74 is the weighted number of deaths at those ages divided
+by the weighted population of the same ages in the group. Deaths are weighted
+by the weight in the supplementary death file where one is provided, and
+otherwise by the household weight. The probability of dying between ages 15
+and 60 is computed from the first three bands as
+45q15 = 1 − ∏(1 − mx)¹⁵, treating each band's rate as a constant annual
+probability. Band rates are published only where the band contains at least
+900 death records; 45q15 is published for every sample, with the number of
+deaths behind it in `n_deaths`.
 
-The tilt is the OLS slope of ln(rate) on wealth rank 0–1, regressed on each
-group's realized population midpoint. Deaths are weighted by the supplementary
-file's own weight where provided, else by the linked household's weight. Age
-bands publish only above 900 death records (`MIN_BAND_DEATHS`).
+The wealth gradient is the ordinary least squares slope of the log rate on
+wealth rank, with each group placed at the midpoint of its realized population
+share. Because asset indices take discrete values, groups do not always
+contain exactly equal shares of the population, and the realized midpoints
+are used rather than nominal quintile midpoints.
 
-## The completeness gate
+## Completeness of death reporting
 
-**The MORTNUM check gates publication of any sample.** The supplementary
-per-death file is compared, *within each wealth group*, against the same
-households' own reported death counts. Even (wealth-uniform) record loss
-cancels out of a tilt; wealth-skewed loss biases it. Census under-reporting
-of deaths is common — capture against national death counts runs from 35%
-(Benin) to over 100% where census and UN estimates disagree — and is
-acceptable only when uniform across wealth.
+Censuses under-record deaths. Under-recording that is uniform across wealth
+groups does not affect a gradient; under-recording that varies with wealth
+biases it. Where the census records the number of deaths per household
+(`MORTNUM`), the deaths in the supplementary death file were compared with that
+number within each wealth group during sample review, and samples in which the
+ratio varied with wealth were not published. The check is not part of the
+build script, and it could not be made for South Africa 2001 and 2007 or Côte
+d'Ivoire 1998, which have no `MORTNUM`.
 
-Three samples were built, checked, and **rejected** because their loss is
-wealth-skewed: the IPUMS supplement for Brazil 2010 (48% capture, skewed to
-wealthy households), Nepal 2001 (biases the gradient flat) and El Salvador
-2007 (biases it steep). Their configurations and the evidence stay in
-`scripts/build_adult_mortality.py` — rejected, not deleted. Cambodia 2008 was
-examined for an Asian observation but its death records are overwhelmingly
-children, leaving every adult band below the publication minimum — which is
-why the library has **no Asian adult observation at all**.
+Four samples are not published: the IPUMS mortality supplement for Brazil 2010
+(about half of the deaths the census reports, with the shortfall concentrated
+in wealthier households), Nepal 2001 and El Salvador 2007, which failed the
+check, and Burkina Faso 1996, whose death records cannot be assigned to
+households reliably. Their configuration and the evidence are retained in
+`scripts/build_adult_mortality.py` with `publish=False`. The Cambodia 2008
+sample was examined and is not published: most of its death records are of
+children, and no adult age band reaches the publication threshold. The library
+therefore has no census estimate for an Asian country.
 
-## Verification standard for any new country
+Where linkage of death records to households is incomplete (South Africa 2011,
+about 9 percent linked), linked and unlinked deaths were compared by province,
+residence, sex and age during sample review.
 
-1. Extract's weighted population reproduces the census total.
-2. Linkage rate measured and recorded; composition check if < 1.
-3. MORTNUM wealth-uniformity check passes.
-4. Envelope check: weighted supplement deaths against the national death
-   count; record the capture rate.
-5. Tilt cross-checked against the library's existing range and any published
-   national evidence.
-6. The shipped script — not session code — produces the committed rows,
-   byte-identically on a re-run.
-7. Figures and docs regenerated, not edited.
+Brazil's estimates were produced by an earlier script using IBGE microdata,
+which is not part of the current build.
+
+## Verification for new samples
+
+1. The weighted population of the extract reproduces the census total.
+2. The share of death records linked to households is recorded; where it is
+   below one, linked and unlinked deaths are compared by province, residence,
+   sex and age.
+3. The `MORTNUM` check shows no systematic variation with wealth.
+4. Recorded deaths are compared with the expected national total (crude death
+   rate × population), and the coverage is recorded.
+5. The gradient is compared with the library's existing range and with
+   published national evidence.
+6. The published rows are produced by the committed script and are reproduced
+   exactly on a re-run.
+7. Figures and documentation are regenerated.

@@ -1,0 +1,18 @@
+# Matplotlib style for the library's figures (loaded by make_figures.py).
+font.size: 10.5
+text.color: 1a1a19
+axes.edgecolor: e8e8e6
+axes.labelcolor: 6b6b68
+axes.spines.top: False
+axes.spines.right: False
+axes.facecolor: fcfcfb
+axes.titlesize: 10.5
+axes.titlelocation: left
+axes.titlepad: 8
+axes.grid: False
+figure.facecolor: fcfcfb
+xtick.color: 6b6b68
+ytick.color: 6b6b68
+lines.solid_capstyle: round
+lines.solid_joinstyle: round
+savefig.dpi: 150

@@ -1,50 +1,48 @@
-# Fertility & child mortality by wealth: the DHS pipeline
+# Fertility and child mortality by wealth: survey estimates
 
-How [`data/gradient_library_latest.csv`](../../data/gradient_library_latest.csv)
-and its full-history sibling `gradient_library.csv` are built by
+This page describes how [`data/gradient_library_latest.csv`](../../data/gradient_library_latest.csv)
+and `gradient_library.csv`, which contains every survey, are constructed by
 `scripts/build_gradient_library.py`.
 
-## Source
+## Data
 
-The [DHS Program indicator API](https://api.dhsprogram.com) — indicators
-`FE_FRTR_W_TFR` (total fertility), `CM_ECMR_C_IMR` (infant mortality), and
-`CM_ECMR_C_U5M` (under-5 mortality), plus the age-specific fertility rates
-`FE_FRTR_W_A15` … `FE_FRTR_W_A45`, with the "Wealth quintile"
-characteristic breakdown. Wealth quintiles are the DHS household asset index.
-Surveys with incomplete quintets are dropped, never imputed. Credit the DHS
-Program alongside this repo when using these numbers.
+The estimates use the [DHS Program indicator API](https://api.dhsprogram.com):
+the total fertility rate (`FE_FRTR_W_TFR`), age-specific fertility rates
+(`FE_FRTR_W_A15` … `FE_FRTR_W_A45`), the infant mortality rate
+(`CM_ECMR_C_IMR`) and the under-five mortality rate (`CM_ECMR_C_U5M`), each by
+wealth quintile. Wealth quintiles are those of the DHS wealth index, an index
+of household assets and housing characteristics. Surveys without a value for
+every quintile are excluded; no values are imputed. The reference periods are
+those of the published DHS indicators.
 
-## The tilt
+## Wealth gradient and low/high ratio
 
-The tilt (`slope`) is the OLS slope of ln(rate) on wealth rank measured 0 to 1
-(quintile midpoints at 0.10 … 0.90) — the change in the log rate from the
-bottom to the top of the wealth distribution. Negative = poor higher. `ratio`
-is the measured poorest-fifth over richest-fifth ratio (`q1 / q5`; the docs
-use the smoother fitted version, e^(−0.8 × tilt)), and `q1..q5` are the five
-quintile values behind each tilt.
+The wealth gradient (`slope`) is the ordinary least squares slope of the log
+rate on wealth rank, with the five quintiles placed at rank midpoints 0.1, 0.3,
+0.5, 0.7 and 0.9. It measures the proportional change in the rate across the
+wealth distribution; a negative value means the rate falls as wealth rises.
+The low/high ratio (`ratio`) is the rate in the lowest quintile divided by the
+rate in the highest (`q1 / q5`). The gradient uses all five quintiles and is
+therefore less affected by sampling variation in a single quintile.
 
-## Fertility by age
+## Fertility by age of mother
 
-The same script fits a tilt at each five-year age of mother and writes how
-far each sits from the survey's TFR tilt. Pooled across countries, those
-differences are the **age offsets** in `fertility_age_offsets.csv`; the
-per-survey values are in `fertility_age_tilts.csv`. Pooled offsets are the
-published route: a country's own age shape predicts its next survey about as
-well overall, and is often unfittable at the oldest ages. The numbers, checks and recipe are on the generated
-[fertility by age](fertility-by-age.md) page.
+The same procedure is applied to each age-specific fertility rate. The
+difference between each age gradient and the survey's TFR gradient, pooled
+across countries' latest surveys, gives the age offsets in
+`fertility_age_offsets.csv`; the survey-level values are in
+`fertility_age_tilts.csv`. Results and validation are reported in
+[fertility by age](fertility-by-age.md).
 
-## IMR vs U5MR
+## Infant and under-five mortality
 
-Both are published, and they are not interchangeable: across the surveys that
-report both, the under-5 tilt is steeper than the infant tilt by a median
-0.14, because under-5 bundles in ages 1–4, where deaths are dominated by the
-sharply wealth-graded infectious causes (diarrhoea, malaria, malnutrition),
-while infant deaths lean toward prematurity and birth complications, which
-wealth protects against much less. **Use `IMR` for ogcore's
-`infmort_gradient`**; `U5MR` is only the fallback for surveys reporting no
-infant quintiles. The computed comparison (count, median gap, worst case)
-lives in [ANALYSIS.md](../../ANALYSIS.md).
+Both are published, but they are not interchangeable. The gradient in
+under-five mortality is steeper in most surveys (see
+[Main results](../../ANALYSIS.md#infant-and-under-five-mortality)), consistent
+with the larger share of infectious causes in deaths at ages 1–4.
+`infmort_gradient` uses the infant mortality rate; every survey in the library
+that reports the under-five rate by quintile also reports the infant rate.
 
-## Limits
+## Limitations
 
-See [sources, citation and limits](../sources.md).
+See [sources, citation and limitations](../sources.md).

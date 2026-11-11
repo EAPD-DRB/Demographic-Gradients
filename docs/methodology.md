@@ -1,0 +1,200 @@
+# Methodology
+
+This note summarizes how the estimates in the library are produced and how
+they map to OG-Core. Each section links to a detailed page; terms are defined
+in the [glossary](glossary.md).
+
+## 1. Purpose and scope
+
+The library measures how fertility and mortality differ between poorer and
+richer households in low- and middle-income countries. It supplies three of
+the arguments with which OG-Core's `get_pop_objs` differentiates demographic
+rates across lifetime-income groups: `fert_gradient` (fertility),
+`infmort_gradient` (infant mortality) and `mort_gradient` (mortality by age).
+Fertility and child mortality come from surveys of the DHS Program; adult
+mortality, and child mortality for Brazil, come from population censuses.
+
+## 2. Summary measures
+
+Each differential is summarized by the **wealth gradient** *b*, estimated by
+ordinary least squares from
+
+    ln(rate_g) = a + b × rank_g
+
+where *g* indexes wealth groups and *rank_g* is the midpoint of group *g* on a
+wealth scale from 0 (poorest) to 1 (richest). For DHS quintiles the midpoints
+are 0.1, 0.3, 0.5, 0.7 and 0.9. Census groups need not be of equal size, and
+each is placed at the midpoint of its population share. A negative gradient
+means the rate falls as wealth rises. On the log scale, the gradient is
+unaffected by proportional differences in the level of the rate. Gradients are
+most comparable within a source: a census divided into three or four wealth
+groups may yield a flatter gradient than a quintile breakdown.
+
+The **low/high ratio**, the rate in the lowest wealth group divided by the
+rate in the highest, is reported alongside the gradient. It corresponds to the
+ratio published in DHS reports, but it uses only the two extreme groups and is
+more affected by sampling variation. For census estimates with fewer than five
+groups it is not comparable with a quintile ratio.
+
+No standard errors are published; each gradient is a fit to five or fewer
+group rates.
+
+## 3. Wealth ranking
+
+Neither source collects reliable income data, so households are ranked by
+assets. DHS estimates use the DHS wealth index, a composite index of household
+assets and housing characteristics divided into quintiles of the household
+population.
+
+Census estimates use an asset score: one point for each durable good or
+amenity recorded in the census (for example electricity, a refrigerator or a
+television), the number of cars up to three and, for adult mortality, one or
+two points for an improved or flush toilet. The score is cut at the values
+closest to the 20th, 40th, 60th and 80th percentiles of the person-weighted
+distribution (persons aged 15–59 for adult mortality). Cut points that
+coincide, or that fall at the minimum or maximum of the score, are dropped, so
+a census may yield three or four groups. Assets are preferred to income
+because a death reduces a household's subsequent income; since assets are
+measured after the death, this reduces but does not remove reverse causation.
+
+## 4. Fertility and infant mortality
+
+Rates by wealth quintile are taken from the DHS Program indicator API: the
+total fertility rate (TFR), age-specific fertility rates (ASFR), the infant
+mortality rate (IMR) and the under-five mortality rate (U5MR). The surveys are
+Demographic and Health Surveys and, for a few countries, Malaria Indicator
+Surveys. Fertility rates refer to the three years before the survey and
+mortality rates to the ten years before it. Surveys without a positive value
+for every quintile are excluded. A gradient is estimated for each survey, and
+calibrations use the latest survey for each country
+([details](methods/dhs-gradients.md)).
+
+**Infant mortality.** `infmort_gradient` uses the IMR gradient. The U5MR
+includes deaths at ages 1–4, which are more strongly associated with wealth,
+and its gradient is steeper; it is published for comparison.
+
+**Fertility by age.** The fertility differential is larger at ages 15–19 and
+40–49 than at 25–34. A gradient is estimated for the ASFR of each five-year age
+group, and its difference from the survey's TFR gradient is computed. The
+median of these differences across countries' latest surveys gives the **age
+offsets**; a country's fertility gradient at age *a* is its TFR gradient plus
+the offset for *a*. In a comparison over consecutive surveys of the same
+country, the pooled offsets (estimated without that country) predicted the
+next survey's age pattern considerably better than a single TFR gradient. The
+country's own previous survey performed about as well overall, better at
+15–24 and worse at 35–44. Pooled offsets are used because they are available
+for every country and age; the 45–49 offset rests on fewer countries than the
+others ([details](methods/fertility-by-age.md)).
+
+**Countries without a survey.** The regional median gradient is used, with the
+interquartile range as a sensitivity range.
+
+## 5. Child mortality from censuses
+
+Censuses record, for each woman, the number of children ever born and the
+number surviving. For mothers aged 25–29 the proportion who have died, the
+standard indirect (Brass) measure, approximates mortality before about age
+three. It is cumulative, so its levels are not comparable with survey rates.
+Census estimates are currently available only for Brazil (1991, 2000 and
+2010). For the 2000 census, the gradient in this measure is close to the
+under-five mortality gradient in the 1996 DHS; this is the only comparison
+available. Because the measure resembles under-five rather than infant
+mortality, using it for Brazil's `infmort_gradient` probably overstates the
+infant gradient somewhat.
+
+## 6. Adult mortality from censuses
+
+Surveys provide adult mortality only through sibling histories, which record
+deaths of the respondent's siblings but not the deceased's own household; in
+tests on DHS data, under-reporting of deaths by poorer respondents produced
+gradients of implausible sign. The library therefore uses censuses that record
+deaths of household members during a recent reference period, usually twelve
+months, alongside the household's characteristics
+([details](methods/adult-mortality.md)). Samples come from IPUMS International,
+and for Brazil from IBGE's 2010 census sample microdata.
+
+For each wealth group, the death rate in each age band (15–29, 30–44, 45–59
+and 60–74) is the weighted number of deaths divided by the weighted population
+of the same age. The probability of dying between ages 15 and 60 is
+
+    45q15 = 1 − (1 − m₁₅)¹⁵ (1 − m₃₀)¹⁵ (1 − m₄₅)¹⁵
+
+where *m_x* is the death rate in the band starting at age *x*, treated as a
+constant annual probability. Band rates are published only where the band
+contains at least 900 death records; 45q15 is published for every sample, and
+the number of deaths behind it is given in the `n_deaths` column. Rates are
+stored per 1,000.
+
+`mort_gradient` uses the 45q15 gradient. It can be spread across ages with the
+pooled age offsets described in section 7 or, where a country's own band
+gradients are published, with those.
+
+**Death reporting.** Censuses under-record deaths. Under-recording that is the
+same in every wealth group does not affect the gradient; under-recording that
+varies with wealth does. Where the census records the number of deaths per
+household, the deaths in the death file were compared with that number within
+each wealth group, and samples in which the ratio varied with wealth were not
+published. The check was made during sample review and is not
+part of the build script; it could not be made for South Africa 2001 and 2007
+or Côte d'Ivoire 1998. Four samples were not published on these grounds:
+Brazil 2010 (IPUMS supplement), Nepal 2001, El Salvador 2007 and Burkina Faso
+1996. Censuses also miss deaths that dissolve a household and
+deaths in institutions.
+
+## 7. Countries without an adult-mortality estimate
+
+Across censuses, the adult-mortality gradient becomes more negative as income
+rises. The **general gradient** is the least-squares regression of the 45q15
+gradient on the logarithm of GNI per capita (World Bank, Atlas method, current
+US dollars) in the census year. All but one of the censuses are African; the
+exception is Brazil. The rule was selected over a single pooled value and over
+regional medians by leave-one-country-out prediction error, all three
+scored on the same censuses. It is
+spread across age bands by adding the median difference, across censuses,
+between each band's gradient and the 45q15 gradient; these offsets are fitted
+in-sample, and those for ages 45–59 and 60–74 are the least reliable
+([details](methods/general-gradient.md)).
+
+The rule is estimated on GNI in current dollars of the census years
+(1998–2013). Applied to a recent GNI figure, it does not adjust for price
+change since then, which makes the predicted gradient somewhat steeper. The
+rule should not be extrapolated outside the income range of the censuses.
+
+## 8. Conversion to OG-Core
+
+OG-Core expresses differences across income groups as a slope in the log-odds
+of a rate per centered percentile point (percentile rank minus 50), applied
+through a mean-preserving logistic function. A wealth gradient is converted by
+dividing it by 100 × (1 − p), where p is OG-Core's own rate at that age:
+births per person per year for fertility (the ASFR per 1,000 women divided by
+2,000) and the annual probability of death for mortality. The conversion was
+checked by passing every DHS quintile set for infant mortality, under-five
+mortality and age-specific fertility through OG-Core's function; after
+conversion the remaining discrepancy is small except at ages 45–49. Adult
+mortality sets were not tested; at adult death rates 1 − p is close to one
+([details](methods/ogcore-units.md)).
+
+## 9. Quality checks
+
+| Check | What it tests |
+|---|---|
+| Five times the sum of the ASFRs compared with the published TFR, by quintile | consistency of the fertility inputs |
+| Deaths in the death file compared with household-reported deaths, by wealth group, where available | whether under-recording varies with wealth |
+| South Africa 2011, where 9 percent of deaths are linked to households: linked and unlinked deaths compared by province, residence, sex and age | whether linked deaths are representative on observed characteristics |
+| Census and DHS child-mortality gradients compared for Brazil 2000 | comparability of the two sources (one comparison) |
+| Leave-one-country-out prediction of each census by the general gradient | out-of-sample accuracy of the income rule |
+| Pooled fertility offsets compared with country-specific patterns over consecutive surveys | choice of pooled offsets |
+| Conversion tested against OG-Core's code for DHS quintile sets | correct units for the model |
+
+Re-running the scripts on the same inputs reproduces the published files,
+except Brazil's adult-mortality rows, which were produced by an earlier
+IBGE-based script. DHS-based files reflect the date of the API download given
+in the README.
+
+## 10. Limitations
+
+Asset rank is used as a proxy for lifetime income; no source distinguishes
+groups within the richest quintile; some surveys are old; older-age
+adult-mortality estimates are uncertain; there is no census estimate for an
+Asian country; and no sampling uncertainty is published. See
+[sources, citation and limitations](sources.md).

@@ -1,53 +1,54 @@
 # Data files
 
-Everything in [`data/`](../data/), what it holds, and which file to use. All
-files are CSV and are rebuilt by the scripts in [`scripts/`](../scripts/). Terms
-are explained in the [glossary](glossary.md).
+All files in [`data/`](../data/) are CSV and are rebuilt by the scripts in
+[`scripts/`](../scripts/). Terms are defined in the [glossary](glossary.md).
 
-## The files a calibration uses
+## Files used in a calibration
 
-| File | Holds | Use it for |
+| File | Contents | Use |
 |---|---|---|
-| [`gradient_library_latest.csv`](../data/gradient_library_latest.csv) | One row per country and measure: the tilt from the latest DHS survey | `fert_gradient` (`indicator == "TFR"`), `infmort_gradient` (`"IMR"`; `"U5MR"` only if no IMR) |
-| [`fertility_age_offsets.csv`](../data/fertility_age_offsets.csv) | Seven age offsets to add to a fertility tilt, with the checks behind them | spreading `fert_gradient` by age |
-| [`adult_mortality_gradients.csv`](../data/adult_mortality_gradients.csv) | Adult-mortality tilts from censuses, by sex and age band | `mort_gradient` (`measure == "45q15"`) where the country has a census |
-| [`general_gradient.csv`](../data/general_gradient.csv) | The rule that predicts the adult tilt from national income, its age offsets and its validation | `mort_gradient` for every other country |
-| [`census_child_mortality.csv`](../data/census_child_mortality.csv) | Child-mortality tilts from censuses (Brazil 1991, 2000, 2010) | the child gradient where the survey is old or missing |
+| [`gradient_library_latest.csv`](../data/gradient_library_latest.csv) | Wealth gradients from the latest DHS survey, by country and indicator | `fert_gradient` (`indicator == "TFR"`); `infmort_gradient` (`"IMR"`) |
+| [`fertility_age_offsets.csv`](../data/fertility_age_offsets.csv) | Age offsets for fertility, with the validation results | `fert_gradient` by age of mother |
+| [`adult_mortality_gradients.csv`](../data/adult_mortality_gradients.csv) | Census estimates of adult mortality by sex and age band | `mort_gradient` (`measure == "45q15"`, `sex == "all"`, latest census) for countries with a census estimate |
+| [`general_gradient.csv`](../data/general_gradient.csv) | Income relationship for adult mortality, age offsets and validation statistics | `mort_gradient` for other countries |
+| [`census_child_mortality.csv`](../data/census_child_mortality.csv) | Census estimates of child mortality (Brazil 1991, 2000, 2010) | child mortality where the DHS survey is old or absent |
 
-## Columns shared by the gradient files
+## Common columns
 
-| Column | Meaning |
+| Column | Definition |
 |---|---|
-| `indicator` | The measure: `TFR`, `IMR`, `U5MR` (surveys), `AMR` (adult mortality), `CHMORT_CENSUS` (census child mortality) |
-| `country`, `year` | Country and the survey's or census's year |
-| `slope` | **The tilt** — the number a calibration uses |
-| `ratio` | The measured ratio: the poorest group's rate over the richest group's (`q1` over the last group). Noisier than the fitted [poorest-to-richest ratio](glossary.md#poorest-to-richest-ratio) the docs use |
-| `q1` … `q5` | The rate in each wealth fifth, poorest first. Units differ by file: births per woman, deaths per 1,000 births, annual death rates. Blank where a census supports fewer groups |
+| `indicator` | `TFR`, `IMR`, `U5MR` (DHS); `AMR` (census adult mortality); `CHMORT_CENSUS` (census child mortality) |
+| `country`, `year` | Country and year of the survey or census |
+| `slope` | Wealth gradient |
+| `ratio` | Low/high ratio: rate in the lowest wealth group divided by the rate in the highest |
+| `q1` … `q5` | Rate in each wealth group, lowest first. Units: births per woman (TFR), deaths per 1,000 live births (IMR, U5MR), deaths per 1,000 (adult mortality: annual rate for `mx`, probability for `45q15`), proportion dead (census child mortality). Blank where a census supports fewer than five groups |
 
-Extra columns in `adult_mortality_gradients.csv`: `sex`; `measure` (`45q15`
-for ages 15–60, `mx` for an age band); `age_lo`, `age_hi`; `n_deaths`;
-`ranking` (always the asset index); `source`; `groups` (wealth groups the census
-supports); `linked_share` (share of deaths matched to a household's assets —
-below 1, the levels are not meaningful but the tilt is).
+`adult_mortality_gradients.csv` also contains `sex`; `measure` (`45q15` or `mx`);
+`age_lo` and `age_hi`; `n_deaths`; `ranking` (asset index); `source`; `groups`
+(number of wealth groups); and `linked_share` (share of the census's death
+records matched to household assets; below 1, rate levels are not meaningful).
 
-Extra columns in `census_child_mortality.csv`: `measure` (share of children
-who died, mothers aged 25–29); `index` (`full` uses every asset the census
-offers; `common` uses only those every census offers — use `full`);
-`n_mothers`; `asset_vars`; `dhs_check` (cross-check against a survey).
+`census_child_mortality.csv` also contains `measure` (proportion of children
+ever born who have died: `prop_dead_2529`, mothers aged 25–29, the series used;
+`prop_dead_agestd`, standardized over mothers aged 20–39; `prop_dead_all`, all
+mothers, for reference); `index` (`full`, all assets in the
+census; `common`, assets recorded in all three censuses); `n_mothers`;
+`asset_vars`; and `dhs_check` (comparison with the DHS).
 
 ## Supporting files
 
-| File | Holds |
+| File | Contents |
 |---|---|
-| [`gradient_library.csv`](../data/gradient_library.csv) | Every survey, not just the latest: the history behind `gradient_library_latest.csv` |
-| [`dhs_gradients_raw.csv`](../data/dhs_gradients_raw.csv) | The raw quintile values downloaded from the DHS API, including fertility by age |
-| [`fertility_age_tilts.csv`](../data/fertility_age_tilts.csv) | Each survey's fertility tilt at each age, from which the offsets are built. Supporting data: the pooled offsets are as accurate overall and have no gaps at the oldest ages |
-| [`general_gradient_points.csv`](../data/general_gradient_points.csv) | Each census behind the general gradient: income, measured tilt and the rule's out-of-sample prediction |
-| [`dhs_regions.csv`](../data/dhs_regions.csv) | The DHS Program's region for each country, for borrowing a regional median |
-| [`ogcore_units_check.csv`](../data/ogcore_units_check.csv) | The check that sets how a tilt is converted for OG-Core ([explained](methods/ogcore-units.md)) |
+| [`gradient_library.csv`](../data/gradient_library.csv) | Wealth gradients for every DHS survey |
+| [`dhs_gradients_raw.csv`](../data/dhs_gradients_raw.csv) | Quintile values as downloaded from the DHS API, including age-specific fertility rates |
+| [`fertility_age_tilts.csv`](../data/fertility_age_tilts.csv) | Fertility gradient by age for each survey, from which the age offsets are computed |
+| [`general_gradient_points.csv`](../data/general_gradient_points.csv) | Census observations behind the general gradient: GNI per capita, measured 45q15 gradient (`tilt_45q15`) and leave-one-out prediction |
+| [`dhs_regions.csv`](../data/dhs_regions.csv) | DHS Program region of each country |
+| [`ogcore_units_check.csv`](../data/ogcore_units_check.csv) | Results of the check that determines the conversion to OG-Core units |
 
-## Do not mix
+## Comparability
 
-The survey files, the census adult file and the census child file measure
-different things. Their tilts agree where tested, but their `q1` … `q5`
-levels are not comparable, so never pool them.
+Survey estimates, census adult-mortality estimates and census child-mortality
+estimates measure different quantities. Their gradients agree where they can be
+compared, but their levels (`q1` … `q5`) are not comparable and should not be
+pooled.

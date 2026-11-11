@@ -93,6 +93,30 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
   rewritten as seven findings; a page for every country (80) opening with
   "What to use in OG-Core".
 
+## F. Questions raised by the documentation review (2026-11-11)
+
+- [R] **F1. GNI price basis.** The general gradient is fitted on GNI in current
+  dollars of the census years (1998–2013) and applied to recent current-dollar
+  GNI. Price change since then makes predicted gradients about 0.1–0.15 steeper
+  (close to one residual SD). Option: deflate GNI to a common year before
+  fitting and applying. Disclosed in the docs meanwhile.
+- [R] **F2. Brazil `infmort_gradient`.** The country page uses the 2010 census
+  child-mortality gradient (−0.84), an under-five-type measure that probably
+  overstates the infant gradient; the alternative is the 1996 DHS infant
+  gradient (−1.37). Both are now shown on the page.
+- [R] **F3. 45q15 publication threshold.** `MIN_BAND_DEATHS` gates only the
+  age-band rates; 45q15 is published without a minimum (South Africa 2011,
+  Rwanda, Lesotho and Benin rest on fewer than 2,700 deaths). Cambodia 2008
+  is not marked `publish=False` but has no published rows; a re-run with its
+  files present would publish a 45q15 row.
+- [ ] **F4. Completeness check in code.** The MORTNUM wealth-uniformity check
+  and the South Africa 2011 linkage comparison were done by hand during sample
+  review; neither is in `build_adult_mortality.py`. Script them so they run on
+  every rebuild.
+- [ ] **F5. Senegal 2002 death counts.** `n_deaths` repeats exactly (1,086 for
+  15–29 and 30–44; 1,311 for 60–74 and male 45q15). Check against the
+  microdata.
+
 ## Downstream — not this repo, tracked so they are not lost
 
 - OG-PHL: gradient work sits on `calib/multi-industry-remittances`, never pushed.

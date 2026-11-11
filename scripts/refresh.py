@@ -10,9 +10,14 @@
 Chains the three build scripts and stamps the data vintage in the README.
 Each stage is also runnable on its own:
 
-    build_gradient_library.py   pull the DHS API, rewrite data/
+    build_gradient_library.py   pull the DHS API, rewrite the DHS-based files in data/
+    check_ogcore_units.py       re-run the OG-Core units check on the new DHS data
     make_figures.py             rebuild figures/ from data/
-    build_analysis.py           regenerate ANALYSIS.md + README numbers from data/
+    build_analysis.py           regenerate the generated documentation from data/
+
+Census-based files are rebuilt separately: build_adult_mortality.py and
+build_census_child_mortality.py (IPUMS account required) and
+build_general_gradient.py (World Bank API).
 """
 
 import argparse
@@ -40,7 +45,7 @@ def main():
 
     if not args.no_pull:
         run("build_gradient_library.py")  # also stamps the data vintage in the README
-
+        run("check_ogcore_units.py")  # its quintile sets change with the DHS data
     run("make_figures.py")
     run("build_analysis.py")
     print("refresh complete — review `git diff`, then commit.")

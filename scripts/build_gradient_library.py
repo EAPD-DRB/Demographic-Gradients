@@ -6,23 +6,23 @@
 
 Pulls total fertility (FE_FRTR_W_TFR), infant mortality (CM_ECMR_C_IMR) and
 under-5 mortality (CM_ECMR_C_U5M) by wealth quintile for every DHS survey,
-computes one comparable tilt per survey (the OLS slope of ln(rate) on
+computes one comparable gradient per survey (the OLS slope of ln(rate) on
 wealth-rank percentile midpoints), and writes the four library CSVs in ../data/.
 
 Also pulls age-specific fertility (FE_FRTR_W_A15 ... A45) by wealth quintile
-and writes the fertility age offsets: how much steeper or flatter the tilt is
-at each age than the TFR tilt, pooled across countries. The gradient lives in
-the timing of births - poorer women start earlier and continue later - so a
-single TFR tilt at every age loses it. A country's own age shape predicts its
-next survey's no better than the pooled offsets do (the backtest written to
-fertility_age_offsets.csv), so the offsets, added to the country's TFR tilt,
-are the published route; the per-survey age tilts are supporting data.
+and writes the fertility age offsets: how much steeper or flatter the gradient is
+at each age than the TFR gradient, pooled across countries. The differential is
+concentrated in the timing of births, so a single TFR gradient at every age
+misses it. Over consecutive surveys a country's own age pattern predicts the next
+survey about as well as the pooled offsets overall (better below 30, worse from
+35; backtest written to fertility_age_offsets.csv); the pooled offsets are
+published because they cover every country and age, and the per-survey age
+gradients are supporting data.
 
-IMR is what ogcore's `infmort_gradient` actually represents; U5MR is kept as
-the fallback for surveys that report no infant quintiles. The two are not
-interchangeable - across 289 paired surveys the U5MR tilt is steeper by a
-median 0.15, because under-5 bundles in ages 1-4, where deaths are dominated
-by the sharply wealth-graded infectious causes.
+IMR is what OG-Core's `infmort_gradient` represents. U5MR is published for
+comparison: its gradient is steeper in most surveys that report both, because
+it includes deaths at ages 1-4, where infectious causes weigh more. Every
+survey in the library that reports U5MR by quintile also reports IMR.
 
 The API is free and public (https://api.dhsprogram.com) — no key, no
 registration. Run:
@@ -79,10 +79,10 @@ def tilt(values):
 
 
 def fertility_age_tilts(raw):
-    """Each survey's fertility tilt at each age, beside its TFR tilt.
+    """Each survey's fertility gradient at each age, beside its TFR gradient.
 
     Keyed by survey, and kept only where every quintile reports the TFR and
-    all seven age rates; an age with a zero-birth quintile gets a NaN tilt.
+    all seven age rates; an age with a zero-birth quintile gets a NaN gradient.
     """
     q = raw[raw["quintile"].isin(QUINTILE_MIDPOINTS)].copy()
     q["value"] = pd.to_numeric(q["value"], errors="coerce")
@@ -112,7 +112,7 @@ def fertility_age_offsets(ages):
                            values="offset").reset_index()
     off = off.sort_values(["country", "year", "survey"])
     latest = off.groupby("country").tail(1)
-    # Backtest: predict each survey's age shape from (a) a single TFR tilt at
+    # Backtest: predict each survey's age shape from (a) a single TFR gradient at
     # every age, (b) the offsets pooled over the other countries' surveys, or
     # (c) the same country's previous survey.
     full = off.dropna(subset=BACKTEST_AGES)
@@ -174,7 +174,7 @@ def main():
     )
     regions.to_csv(DATA_DIR / "dhs_regions.csv", index=False)
 
-    # 3. One tilt per survey: slope of ln(rate) on percentile midpoint.
+    # 3. One wealth gradient per survey: slope of ln(rate) on rank midpoint.
     #    On this scale a slope of -0.79 means the poorest decile's rate is
     #    about exp(0.79 * 0.8) ~ 1.9x the richest decile's.
     df = raw[raw["quintile"].isin(QUINTILE_MIDPOINTS)
@@ -212,14 +212,14 @@ def main():
     for ind in INDICATORS.values():
         l = latest[latest["indicator"] == ind]
         print(
-            f"{ind}: {len(l)} countries | median tilt {l['slope'].median():.3f} "
+            f"{ind}: {len(l)} countries | median gradient {l['slope'].median():.3f} "
             f"IQR [{l['slope'].quantile(0.25):.3f}, {l['slope'].quantile(0.75):.3f}] "
-            f"| median poorest/richest ratio {l['ratio'].median():.2f}"
+            f"| median low/high ratio {l['ratio'].median():.2f}"
         )
     print(f"surveys with complete quintets: {lib.groupby(['country', 'year']).ngroups} "
-          f"({len(lib)} country-survey-margin tilts)")
+          f"({len(lib)} country-survey-indicator gradients)")
 
-    # 4. Fertility by age: per-survey age tilts and the pooled offsets
+    # 4. Fertility by age: per-survey age gradients and the pooled offsets
     ages = fertility_age_tilts(raw)
     ages.to_csv(DATA_DIR / "fertility_age_tilts.csv", index=False)
     offsets = fertility_age_offsets(ages)

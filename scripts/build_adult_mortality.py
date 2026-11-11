@@ -35,10 +35,10 @@ Method notes (validated on Brazil 2010 and South Africa 2001/2007/2011):
   distribution supports (recorded in the `groups` column) and the regression
   uses each group's realized population midpoint.
 - Some samples anonymize most death records' household IDs (e.g. za2011a
-  links only ~10%): levels are then meaningless but the tilt is unbiased if
-  linkage is mechanical. The estimate prints a linked-vs-unlinked composition
-  check (province/urban/sex/age) wherever those fields exist; `linked_share`
-  is recorded per row.
+  links about 9%): levels are then meaningless but the gradient is unbiased if
+  linkage is unrelated to wealth. A linked-vs-unlinked composition comparison
+  (province/urban/sex/age) was made by hand during sample review for za2011a;
+  this script does not run it. `linked_share` is recorded per row.
 - Deaths are weighted by the supplementary file's own weight where provided
   (za2011a: wtmort), else by the linked household's HHWT.
 """
