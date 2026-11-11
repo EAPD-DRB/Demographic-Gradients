@@ -51,4 +51,4 @@ Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original d
 - Three censuses (2001, 2007, 2011) plus DHS 2016. The 2011 census links only ~9% of death records to asset data (`linked_share`), so its *levels* are meaningless — but the linked deaths match the unlinked on province, urban/rural, sex, and age, so the tilt is unbiased.
 - A per-sample lesson recorded in the pipeline: IPUMS `AUTOS` code 7 means "has a car, count unspecified", not seven cars; treating it as a count materially changed the 2011 tilt (−1.14 → −0.80).
 - The DHS 2016 child-mortality quintile cells are visibly noisy (non-monotonic top quintiles) — small death counts in a low-mortality survey. The tilt is usable; individual cells are not.
-- South Africa's own census measurement (−0.80) should be used over the general gradient's prediction (−0.83).
+- Use South Africa's own census measurement, not the general gradient's prediction.

@@ -8,7 +8,7 @@ The wealth gradients this library holds for Brazil: first the values to give OG-
 | OG-Core input | Tilt | From |
 |---|---|---|
 | `fert_gradient` | **by age**, table below (fertility tilt −1.21 plus the [age offsets](../methods/fertility-by-age.md)) | DHS 1996 |
-| `infmort_gradient` | **−0.84** | census 2010 (child mortality; the DHS row is from 1996) |
+| `infmort_gradient` | **−0.84** | census 2010: share of children who died, an under-5-type measure and so somewhat steeper than infant mortality (the DHS infant row is from 1996) |
 | `mort_gradient` | **−0.99** (ages 15–60) | census 2010, own measurement |
 | `imm_pctiles` | not covered by this library | — |
 
@@ -55,7 +55,7 @@ Tilts of the death rate across household wealth, from [`data/adult_mortality_gra
 
 | Census | Ages 15–60 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| 2010 (mean of men and women) | **−0.99** | −1.20 | −1.39 | −0.87 | −0.19 | 5 | 25,455 |
+| 2010 (mean of men and women) | **−0.99** | −1.20 | −1.39 | −0.87 | −0.19 | 5 | 37,544 |
 
 Source: IBGE Census 2010 sample microdata, household deaths module.
 
@@ -63,4 +63,4 @@ Source: IBGE Census 2010 sample microdata, household deaths module.
 
 - **Adult mortality comes from IBGE's own open 2010 census sample microdata, not IPUMS.** The IPUMS mortality supplement for this census ships ~48% of the deaths the census itself reports, and the loss is concentrated in wealthy households — a wealth-skewed loss that would bias the tilt, not just add noise. The IPUMS rebuild is therefore marked `publish=False` in `scripts/build_adult_mortality.py` (with the evidence), and the committed rows come from IBGE.
 - **The DHS fertility/child rows are old (1996).** Brazil's child-mortality gradient roughly halved between 1991 and 2010 (census series above); prefer `census_child_mortality.csv` for the child gradient and treat the 1996 DHS tilt as an upper bound.
-- The census child-mortality series is published on two asset-index bases (`index` column): `full` (all assets each census offers) and `common` (only electricity/fridge/TV/radio/cars, comparable across 1991/2000/2010). Use `full`; the 2010 common-index estimate collapses to two groups because nearly every household owned all four items.
+- The census child-mortality series is published on two asset-index bases (`index` column): `full` (all assets each census offers) and `common` (only electricity, fridge, TV and radio, comparable across 1991/2000/2010). Use `full`; the 2010 common-index estimate collapses to two groups because nearly every household owned all four items.

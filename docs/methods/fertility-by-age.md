@@ -38,8 +38,8 @@ births. Rates there are small, so the offset matters little.
 ## Why pooled offsets, not each country's own age tilts
 
 The per-survey age tilts are in
-[`data/fertility_age_tilts.csv`](../../data/fertility_age_tilts.csv), but a
-country's own age shape is mostly survey noise. The test: predict each
+[`data/fertility_age_tilts.csv`](../../data/fertility_age_tilts.csv). Whether a
+country's own age shape is worth using instead was tested directly: predict each
 survey's age shape (age tilt − TFR tilt) from three candidates, over
 172 pairs of consecutive surveys in the same
 country. Mean absolute error:
@@ -52,13 +52,18 @@ country. Mean absolute error:
 | 30–34 | 0.29 | 0.17 | 0.17 |
 | 35–39 | 0.22 | 0.22 | 0.25 |
 | 40–44 | 0.60 | 0.49 | 0.53 |
-| **All** | **0.39** | **0.27** | **0.27** |
+| **All (15–44)** | **0.39** | **0.27** | **0.27** |
 
-The age shape is real — the pooled offsets cut the error of a single tilt by
-29% — but a country's own previous survey
-predicts its next one no better than the pooled offsets, and worse at 35 and
-over. The previous survey's error also includes genuine change between
-surveys, so this is a generous test for the own-country route.
+Ages 45–49 are left out: a fifth with no births makes them unfittable in too
+many surveys to pair.
+
+The age shape is real: the pooled offsets cut the error of a single tilt by
+29%. A country's own previous survey does
+about as well as the pooled offsets overall — somewhat better under 30, worse
+from 35 — and it includes genuine change between surveys, so the test is if
+anything harsh on it. The library publishes the pooled offsets because they
+are as accurate overall, exist for every country with a fertility tilt, and
+have no gaps at the oldest ages, where a single survey often cannot be fitted.
 
 ## Checks
 

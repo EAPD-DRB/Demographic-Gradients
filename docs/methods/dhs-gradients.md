@@ -29,8 +29,8 @@ The same script fits a tilt at each five-year age of mother and writes how
 far each sits from the survey's TFR tilt. Pooled across countries, those
 differences are the **age offsets** in `fertility_age_offsets.csv`; the
 per-survey values are in `fertility_age_tilts.csv`. Pooled offsets are the
-published route because a country's own age shape predicts its next survey no
-better than they do. The numbers, checks and recipe are on the generated
+published route: a country's own age shape predicts its next survey about as
+well overall, and is often unfittable at the oldest ages. The numbers, checks and recipe are on the generated
 [fertility by age](fertility-by-age.md) page.
 
 ## IMR vs U5MR

@@ -66,7 +66,7 @@ COUNTRY_NOTES = {
         "gradient and treat the 1996 DHS tilt as an upper bound.",
         "The census child-mortality series is published on two asset-index "
         "bases (`index` column): `full` (all assets each census offers) and "
-        "`common` (only electricity/fridge/TV/radio/cars, comparable across "
+        "`common` (only electricity, fridge, TV and radio, comparable across "
         "1991/2000/2010). Use `full`; the 2010 common-index estimate collapses "
         "to two groups because nearly every household owned all four items.",
     ],
@@ -82,16 +82,16 @@ COUNTRY_NOTES = {
         "The DHS 2016 child-mortality quintile cells are visibly noisy "
         "(non-monotonic top quintiles) — small death counts in a "
         "low-mortality survey. The tilt is usable; individual cells are not.",
-        "South Africa's own census measurement (−0.80) should be used over "
-        "the general gradient's prediction (−0.83).",
+        "Use South Africa's own census measurement, not the general "
+        "gradient's prediction.",
     ],
     "Ethiopia": [
         "The 2007 census asks assets and mortality of the long-form 20% "
         "subsample only; its weights already inflate to national totals — do "
         "not re-scale. 46% of persons hold no assets, so the asset "
         "distribution supports only three wealth groups (`groups` column).",
-        "Ethiopia is the flattest adult gradient in the library (45q15 tilt "
-        "≈ +0.09, i.e. no protective wealth gradient), and at 30+ the "
+        "Ethiopia's adult gradient is close to zero (45q15 tilt ≈ +0.09): "
+        "wealth barely protects adult survival, and from age 30 the "
         "measured gradient turns positive — see the older-age reversal "
         "discussion in the general-gradient page before using the older "
         "bands.",
@@ -99,18 +99,18 @@ COUNTRY_NOTES = {
     "Philippines": [
         "No census household-deaths module is available, so there is no "
         "measured adult-mortality gradient; use the general gradient "
-        "(worked value below). The DHS rows (NDHS 2022) cover fertility and "
+        "(worked value in the table above). The DHS rows (NDHS 2022) cover fertility and "
         "child mortality directly.",
     ],
     "Indonesia": [
         "No census household-deaths module is available, so there is no "
         "measured adult-mortality gradient; use the general gradient "
-        "(worked value below). The DHS rows (IDHS 2017) cover fertility and "
+        "(worked value in the table above). The DHS rows (IDHS 2017) cover fertility and "
         "child mortality directly.",
-        "Indonesia is the canonical tempo case: its TFR-by-wealth gradient "
-        "is nearly flat while adolescent childbearing differs ~8× between "
-        "poorest and richest quintiles — the gradient lives in the age "
-        "pattern, not the total.",
+        "Indonesia is the clearest case of a timing gradient: its gap in "
+        "total births by wealth is mild, while teenage childbearing differs "
+        "several-fold between the poorest and richest fifths. The gradient "
+        "lives in the age pattern, not the total.",
     ],
     "Benin": [
         "The 2013 census records deaths since 1 January 2012 (~16 months to "
@@ -181,6 +181,11 @@ def census_child_mortality():
             "t0": ff.slope.iloc[0], "t1": ff.slope.iloc[-1],
             "chg_full": ff.slope.iloc[-1] - ff.slope.iloc[0],
             "chg_common": (cc.slope.iloc[-1] - cc.slope.iloc[0]) if len(cc) > 1 else float("nan"),
+            # 1991-2000: the span where the common index still separates four groups
+            "f9100": float(ff[ff.year == 2000].slope.iloc[0] - ff[ff.year == 1991].slope.iloc[0]),
+            "c9100": float(cc[cc.year == 2000].slope.iloc[0] - cc[cc.year == 1991].slope.iloc[0]),
+            "n_common": len(str(cc.asset_vars.iloc[0]).split()),
+            "groups_common_last": int(cc.groups.iloc[-1]),
             "check": next((x for x in f["dhs_check"] if isinstance(x, str) and x), ""),
             "df": d}
 
@@ -295,6 +300,18 @@ def write_general_gradient_page(amr):
         f"| {b} | {fmt(v)} | {'least trustworthy' if b in ('45-59', '60-74') else ''} |"
         for b, v in gg.get("_ages", []))
     n_cens = amr.groupby(["country", "year"]).ngroups
+    pts_p = DATA / "general_gradient_points.csv"
+    pts = pd.read_csv(pts_p).dropna(subset=["gni"]) if pts_p.exists() else pd.DataFrame()
+    n_fit_gg = len(pts)
+    n_africa = int((pts["country"] != "Brazil").sum()) if len(pts) else 0
+    mxa = amr[amr["measure"] == "mx"]
+    rev = []
+    for (c, y), g in mxa.groupby(["country", "year"]):
+        g = (g[g["sex"] == "all"] if (g["sex"] == "all").any() else
+             g[g["sex"].isin(["male", "female"])]).groupby("age_lo")["slope"].mean().sort_index()
+        if len(g) > 1 and g.iloc[-1] > 0:
+            rev.append(f"{c} {y}")
+    reversal_list = ", ".join(rev[:-1]) + " and " + rev[-1] if len(rev) > 1 else "".join(rev)
     doc = f"""{GENERATED_BANNER}# The general gradient: adult mortality when a country has no measurement
 
 Most countries have no measured adult-mortality gradient. The library therefore
@@ -359,14 +376,14 @@ its 1998 and 2008 censuses, within {gg_mwerr:.2f} of what the rule predicts.
 The rule is fitted between about $200 and $10,000 of GNI per head, which is the
 range this library covers by design: every source it draws on is a
 developing-country instrument. Do not extrapolate it to high-income countries.
-Of the {n_cens} censuses behind it, eleven are African and none Asian, so its
-predictions for Asian countries are extrapolation.
+Of the {n_fit_gg} censuses behind it, {n_africa} are African, one is Brazilian and
+none is Asian, so its predictions for Asian countries are extrapolation.
 
 ## The reversal at older ages, and why HIV does not explain it
 
 In the poorest countries the gradient is flat, and at older ages it turns
-positive: measured mortality is *higher* in wealthier households in Ethiopia
-2007, Uganda 2002, South Sudan 2008 and Mozambique 2007. Where almost everyone
+positive: measured mortality is *higher* in wealthier households at the oldest
+ages measured in {reversal_list}. Where almost everyone
 is poor, the top asset group is barely better protected, and deaths are
 infectious and maternal rather than the socially graded chronic diseases of
 middle income. Against that, a frail elderly relative often moves into a
@@ -543,8 +560,8 @@ births. Rates there are small, so the offset matters little.
 ## Why pooled offsets, not each country's own age tilts
 
 The per-survey age tilts are in
-[`data/fertility_age_tilts.csv`](../../data/fertility_age_tilts.csv), but a
-country's own age shape is mostly survey noise. The test: predict each
+[`data/fertility_age_tilts.csv`](../../data/fertility_age_tilts.csv). Whether a
+country's own age shape is worth using instead was tested directly: predict each
 survey's age shape (age tilt − TFR tilt) from three candidates, over
 {int(bt.backtest_pairs.iloc[0])} pairs of consecutive surveys in the same
 country. Mean absolute error:
@@ -552,13 +569,18 @@ country. Mean absolute error:
 | Ages | Single TFR tilt | Pooled offsets (other countries) | Same country's previous survey |
 |---|---|---|---|
 {btrows}
-| **All** | **{e['flat']:.2f}** | **{e['pooled']:.2f}** | **{e['own']:.2f}** |
+| **All (15–44)** | **{e['flat']:.2f}** | **{e['pooled']:.2f}** | **{e['own']:.2f}** |
 
-The age shape is real — the pooled offsets cut the error of a single tilt by
-{100 * (1 - e['pooled'] / e['flat']):.0f}% — but a country's own previous survey
-predicts its next one no better than the pooled offsets, and worse at 35 and
-over. The previous survey's error also includes genuine change between
-surveys, so this is a generous test for the own-country route.
+Ages 45–49 are left out: a fifth with no births makes them unfittable in too
+many surveys to pair.
+
+The age shape is real: the pooled offsets cut the error of a single tilt by
+{100 * (1 - e['pooled'] / e['flat']):.0f}%. A country's own previous survey does
+about as well as the pooled offsets overall — somewhat better under 30, worse
+from 35 — and it includes genuine change between surveys, so the test is if
+anything harsh on it. The library publishes the pooled offsets because they
+are as accurate overall, exist for every country with a fertility tilt, and
+have no gaps at the oldest ages, where a single survey often cannot be fitted.
 
 ## Checks
 
@@ -685,8 +707,9 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
     dhs_year = int(imr["year"].iloc[0]) if len(imr) else (int(u5["year"].iloc[0]) if len(u5) else 0)
     if len(cc) and int(cc["year"].max()) > dhs_year + 10:
         r = cc.sort_values("year").iloc[-1]
-        rows.append(f"| `infmort_gradient` | **{fmt(r['slope'])}** | census {int(r['year'])} "
-                    f"(child mortality; the DHS row is from {dhs_year}) |")
+        rows.append(f"| `infmort_gradient` | **{fmt(r['slope'])}** | census {int(r['year'])}: "
+                    "share of children who died, an under-5-type measure and so somewhat "
+                    f"steeper than infant mortality (the DHS infant row is from {dhs_year}) |")
     elif len(imr):
         rows.append(f"| `infmort_gradient` | **{fmt(float(imr['slope'].iloc[0]))}** "
                     f"| DHS {int(imr['year'].iloc[0])} |")
@@ -703,7 +726,7 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
     if own:
         rows.append(f"| `mort_gradient` | **{fmt(own['tilt'])}** (ages 15–60) "
                     f"| census {own['year']}, own measurement |")
-        if own["linked"] < 1:
+        if own["linked"] < 0.95:
             notes.append(f"The {own['year']} census links only {own['linked']:.0%} of deaths "
                          "to household assets: the tilt is usable, the death-rate levels "
                          "are not.")
@@ -734,6 +757,13 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
     if notes:
         out += "\n" + "\n".join(f"> **Note.** {n}" for n in notes) + "\n"
     return out
+
+
+def deaths_15_60(g):
+    """Deaths behind a census's 15-60 estimate: both sexes, summed if only by sex."""
+    q = g[g["measure"] == "45q15"]
+    a = q[q["sex"] == "all"]
+    return int(a["n_deaths"].sum() if len(a) else q[q["sex"].isin(["male", "female"])]["n_deaths"].sum())
 
 
 def country_dhs_block(latest, country):
@@ -798,7 +828,7 @@ def country_amr_block(amr, country):
             return "" if not len(m) else fmt(float(m["slope"].mean()))
         out += (f"| {y}{lbl} | **{cell('45q15')}** | "
                 + " | ".join(cell("mx", lo) for lo, _ in bands)
-                + f" | {int(g['groups'].iloc[0])} | {int(g[g['measure'] == '45q15']['n_deaths'].max()):,} |\n")
+                + f" | {int(g['groups'].iloc[0])} | {deaths_15_60(g):,} |\n")
     out += "\nSource: " + "; ".join(srcs) + ".\n"
     return out
 
@@ -853,12 +883,22 @@ def r10(tilt):
 
 def age_fade(amr):
     """Censuses measured at two or more ages (both sexes): how many weaken / reverse."""
-    mx = amr[(amr["measure"] == "mx") & (amr["sex"] == "all")].sort_values("age_lo")
-    d = mx.groupby(["country", "year"])["slope"].agg(["first", "last", "size"])
-    d = d[d["size"] > 1]
+    mx = amr[amr["measure"] == "mx"]
+    rows = []
+    for (c, y), g in mx.groupby(["country", "year"]):
+        # both sexes where published, else the mean of men and women in each band
+        g = (g[g["sex"] == "all"] if (g["sex"] == "all").any() else
+             g[g["sex"].isin(["male", "female"])]).groupby("age_lo")["slope"].mean().sort_index()
+        if len(g) > 1:
+            rows.append({"country": c, "year": y, "first": g.iloc[0], "last": g.iloc[-1]})
+    d = pd.DataFrame(rows)
+    pts = DATA / "general_gradient_points.csv"
+    gni = pd.read_csv(pts).set_index(["country", "year"])["gni"] if pts.exists() else {}
+    rev = d[d["last"] > 0]
     return {"n": len(d), "weaker": int((d["last"] > d["first"]).sum()),
-            "reversed": int((d["last"] > 0).sum()),
-            "drift": float((d["last"] - d["first"]).mean())}
+            "reversed": len(rev), "drift": float((d["last"] - d["first"]).mean()),
+            "rev_max_gni": max((gni.get((r.country, r.year), np.nan) for r in rev.itertuples()),
+                               default=np.nan)}
 
 
 def main():
@@ -921,8 +961,9 @@ def main():
                  "deaths." if steep["TFR"] == steep["IMR"] else
                  f"Birth gradients are steepest in {steep['TFR']}, infant-death gradients in "
                  f"{steep['IMR']}.")
-    steep_txt += (f" The mildest are in {flat['TFR']} (births) and {flat['IMR']} "
-                  "(infant deaths), but every region's median shows the poor with higher rates.")
+    steep_txt += (f" Among regions with three or more countries the mildest are "
+                  f"{flat['TFR']} (births) and {flat['IMR']} (infant deaths); every "
+                  "region's median shows the poor with the higher rate.")
     doc = f"""<!-- GENERATED by scripts/build_analysis.py — do not edit by hand. -->
 # Findings
 
@@ -996,18 +1037,20 @@ Brazil's only usable survey is from 1996, so the library also measures child
 mortality from three censuses, using the share of children ever born who have
 died (mothers aged 25–29; [file](data/census_child_mortality.csv)). Its levels
 are not comparable with survey rates, but its tilt is: the 2000 census gives
-{fmt(ccm['vtilt'])} where the {ccm['vsurvey']} survey gives {fmt(ccm['vref'])}.
+{fmt(ccm['vtilt'])} where the {ccm['vsurvey']} survey's under-5 tilt is {fmt(ccm['vref'])}.
 
 | Census | Wealth groups | Tilt | Poorest-to-richest ratio | Poorest group's children who died |
 |---|---|---|---|---|
 {ccm['rows']}
 
 The tilt went from {fmt(ccm['t0'])} in {ccm['y0']} to {fmt(ccm['t1'])} in
-{ccm['y1']}. Child mortality fell for everyone, but fastest among the poor. The
-change is not an artefact of the asset index getting richer: re-estimated on
-only the five assets every census asks about, the flattening is larger
-({fmt(ccm['chg_common'])} against {fmt(ccm['chg_full'])}). A present-day Brazil
-calibration should use the census value, not the 1996 survey.
+{ccm['y1']}. Child mortality fell for everyone, but fastest among the poor. Part
+of the check that this is not an artefact of a richer asset index is possible:
+on only the {ccm['n_common']} assets every census asks about, the 1991–2000
+change is {fmt(ccm['c9100'])}, against {fmt(ccm['f9100'])} on the full index. By
+2010 nearly every household owns all {ccm['n_common']}, so that index separates
+only {ccm['groups_common_last']} groups and cannot test the later years. A
+present-day Brazil calibration should use the census value, not the 1996 survey.
 """
     if off is not None:
         o = off.set_index("age_lo")["offset"]
@@ -1020,8 +1063,9 @@ poorest-to-richest ratio in birth rates is {r10(tfr['med'] + o.iloc[0])} at ages
 {r10(tfr['med'] + o.loc[30])} at 30–34. One
 fertility tilt at every age gets the number of children right but erases the
 timing, so the library publishes **age offsets** to add to a country's tilt.
-They are pooled across countries because a country's own age pattern turns out
-to be mostly survey noise ([method and checks](docs/methods/fertility-by-age.md)).
+They are pooled across countries: a country's own age pattern predicts its next
+survey about as well overall, but is missing or unreliable at the oldest ages
+([method and checks](docs/methods/fertility-by-age.md)).
 
 ![Fertility gradient by mother's age](figures/fertility_by_age.png)
 """
@@ -1042,11 +1086,11 @@ exists.
     if amr is not None and gg:
         a, b = gg["income_rule.intercept"], gg["income_rule.slope_ln_gni"]
         fade = age_fade(amr)
-        n_cens = amr.groupby(["country", "year"]).ngroups
+        n_fit = int(gg["income_rule.n_censuses"])
         doc += f"""
 ## 6. Adult deaths are more concentrated among the poor in richer countries
 
-**Across {n_cens} censuses, the adult-mortality gradient steepens with national
+**Across the {n_fit} censuses with a national income figure, the adult-mortality gradient steepens with national
 income (r = {fmt(gg['income_rule.r'])}).** At $500 per person the
 poorest-to-richest ratio in the risk of dying between 15 and 60 is about
 {r10(a + b * np.log(500))}; at $5,000, about {r10(a + b * np.log(5000))}. In the
@@ -1063,15 +1107,17 @@ not there to interview), so it comes from censuses that record deaths in each
 household over the past year ([method](docs/methods/adult-mortality.md)).
 Every census measurement is in the [full table](docs/tables/adult_mortality.md).
 
-## 7. The adult gradient weakens with age, and in the poorest countries reverses
+## 7. The adult gradient weakens with age, and in some low-income countries reverses
 
 **In {fade['weaker']} of the {fade['n']} censuses measured at more than one
 age, the gradient is weaker at the oldest ages than at 15–29; in
-{fade['reversed']} the richer households report more deaths at the oldest
-ages.** Part of this is real (where everyone is poor, survival differs little)
-and part is how deaths are reported (frail elderly relatives often move into
-better-off households before they die). No check within a census separates the
-two, so the older-age values are the least certain in the library.
+{fade['reversed']}, all with national income of ${fade['rev_max_gni']:,.0f} per
+person or less, the richer households report more deaths at the oldest ages.** Two
+explanations fit: where nearly everyone is poor, survival may genuinely differ
+little by wealth; and frail elderly relatives often move into better-off
+households before they die, so their deaths are recorded against that
+household's wealth. No check within a census separates the two, so the
+older-age values are the least certain in the library.
 
 ![Adult-mortality gradient by age, census by census](figures/adult_mortality_by_age.png)
 """

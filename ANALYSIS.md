@@ -27,7 +27,7 @@ every income group the same demographics misses something real.
 
 ## 2. How steep, region by region
 
-**Gradients are steepest in Latin America & Caribbean for both births and infant deaths. The mildest are in Central Asia (births) and Sub-Saharan Africa (infant deaths), but every region's median shows the poor with higher rates.** A country with no survey of its own can borrow its region's
+**Gradients are steepest in Latin America & Caribbean for both births and infant deaths. Among regions with three or more countries the mildest are Central Asia (births) and Sub-Saharan Africa (infant deaths); every region's median shows the poor with the higher rate.** A country with no survey of its own can borrow its region's
 median, using the middle half as the range to test.
 
 ![Gradients by region](figures/by_region.png)
@@ -83,7 +83,7 @@ Brazil's only usable survey is from 1996, so the library also measures child
 mortality from three censuses, using the share of children ever born who have
 died (mothers aged 25–29; [file](data/census_child_mortality.csv)). Its levels
 are not comparable with survey rates, but its tilt is: the 2000 census gives
-−1.45 where the Brazil 1996 DHS survey gives −1.46.
+−1.45 where the Brazil 1996 DHS survey's under-5 tilt is −1.46.
 
 | Census | Wealth groups | Tilt | Poorest-to-richest ratio | Poorest group's children who died |
 |---|---|---|---|---|
@@ -92,11 +92,13 @@ are not comparable with survey rates, but its tilt is: the 2000 census gives
 | 2010 | 5 | −0.84 | 2.0 | 2.4% |
 
 The tilt went from −1.76 in 1991 to −0.84 in
-2010. Child mortality fell for everyone, but fastest among the poor. The
-change is not an artefact of the asset index getting richer: re-estimated on
-only the five assets every census asks about, the flattening is larger
-(1.06 against 0.91). A present-day Brazil
-calibration should use the census value, not the 1996 survey.
+2010. Child mortality fell for everyone, but fastest among the poor. Part
+of the check that this is not an artefact of a richer asset index is possible:
+on only the 4 assets every census asks about, the 1991–2000
+change is 0.35, against 0.31 on the full index. By
+2010 nearly every household owns all 4, so that index separates
+only 2 groups and cannot test the later years. A
+present-day Brazil calibration should use the census value, not the 1996 survey.
 
 ## 4. The fertility gap is mostly about timing
 
@@ -106,8 +108,9 @@ poorest-to-richest ratio in birth rates is 3.5 at ages 15–19 and
 1.4 at 30–34. One
 fertility tilt at every age gets the number of children right but erases the
 timing, so the library publishes **age offsets** to add to a country's tilt.
-They are pooled across countries because a country's own age pattern turns out
-to be mostly survey noise ([method and checks](docs/methods/fertility-by-age.md)).
+They are pooled across countries: a country's own age pattern predicts its next
+survey about as well overall, but is missing or unreliable at the oldest ages
+([method and checks](docs/methods/fertility-by-age.md)).
 
 ![Fertility gradient by mother's age](figures/fertility_by_age.png)
 
@@ -125,7 +128,7 @@ exists.
 
 ## 6. Adult deaths are more concentrated among the poor in richer countries
 
-**Across 18 censuses, the adult-mortality gradient steepens with national
+**Across the 17 censuses with a national income figure, the adult-mortality gradient steepens with national
 income (r = −0.88).** At $500 per person the
 poorest-to-richest ratio in the risk of dying between 15 and 60 is about
 1.2; at $5,000, about 1.9. In the
@@ -142,14 +145,16 @@ not there to interview), so it comes from censuses that record deaths in each
 household over the past year ([method](docs/methods/adult-mortality.md)).
 Every census measurement is in the [full table](docs/tables/adult_mortality.md).
 
-## 7. The adult gradient weakens with age, and in the poorest countries reverses
+## 7. The adult gradient weakens with age, and in some low-income countries reverses
 
-**In 12 of the 12 censuses measured at more than one
+**In 13 of the 13 censuses measured at more than one
 age, the gradient is weaker at the oldest ages than at 15–29; in
-6 the richer households report more deaths at the oldest
-ages.** Part of this is real (where everyone is poor, survival differs little)
-and part is how deaths are reported (frail elderly relatives often move into
-better-off households before they die). No check within a census separates the
-two, so the older-age values are the least certain in the library.
+6, all with national income of $1,350 per
+person or less, the richer households report more deaths at the oldest ages.** Two
+explanations fit: where nearly everyone is poor, survival may genuinely differ
+little by wealth; and frail elderly relatives often move into better-off
+households before they die, so their deaths are recorded against that
+household's wealth. No check within a census separates the two, so the
+older-age values are the least certain in the library.
 
 ![Adult-mortality gradient by age, census by census](figures/adult_mortality_by_age.png)

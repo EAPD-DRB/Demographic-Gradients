@@ -20,8 +20,6 @@ Every value is a **tilt** ([what that is](../glossary.md#tilt)). Convert it befo
 |---|---|---|---|---|---|---|
 | −1.37 | −0.70 | −0.39 | −0.27 | −0.50 | −0.99 | −1.58 |
 
-> **Note.** The 2008 census links only 99% of deaths to household assets: the tilt is usable, the death-rate levels are not.
-
 ## Where these numbers come from
 
 ### Household surveys (DHS)

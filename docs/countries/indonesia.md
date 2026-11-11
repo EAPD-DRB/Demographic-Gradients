@@ -34,5 +34,5 @@ Latest survey, from [`data/gradient_library_latest.csv`](../../data/gradient_lib
 
 ## Notes
 
-- No census household-deaths module is available, so there is no measured adult-mortality gradient; use the general gradient (worked value below). The DHS rows (IDHS 2017) cover fertility and child mortality directly.
-- Indonesia is the canonical tempo case: its TFR-by-wealth gradient is nearly flat while adolescent childbearing differs ~8× between poorest and richest quintiles — the gradient lives in the age pattern, not the total.
+- No census household-deaths module is available, so there is no measured adult-mortality gradient; use the general gradient (worked value in the table above). The DHS rows (IDHS 2017) cover fertility and child mortality directly.
+- Indonesia is the clearest case of a timing gradient: its gap in total births by wealth is mild, while teenage childbearing differs several-fold between the poorest and richest fifths. The gradient lives in the age pattern, not the total.

@@ -100,13 +100,27 @@ def what_is_a_gradient(latest, country="Philippines"):
                     bbox=dict(boxstyle="square,pad=0.15", fc=SURF, ec="none"))
     xs = np.linspace(0, 1, 100)
     ax.plot(xs, np.exp(a + b * xs), color=INK, lw=2, zorder=3)
-    ax.annotate("fitted curve: the rate falls by the same\nproportion at each step up in wealth",
-                (0.62, np.exp(a + b * 0.62)), xytext=(0.66, q.max() * 0.93),
+    fit = np.exp(a + b * RANK)
+    step = 100 * (1 - np.exp(b * 0.2))           # the curve's fall per fifth
+    drops = 100 * (1 - q[1:] / q[:-1])           # the bars' actual falls
+    # the two curve values the ratio is read from, drawn so the reader can check it
+    # poorest: above-right of the point, clear of the falling curve; richest: left, between bars
+    for i, text, off, ha, va in ((0, f"{fit[0]:.1f} on the curve", (18, 4), "left", "bottom"),
+                                 (4, f"{fit[4]:.1f} on\nthe curve", (-18, -4), "right", "top")):
+        ax.plot(RANK[i], fit[i], "o", ms=8, color=INK, mec=SURF, mew=2, zorder=4)
+        ax.annotate(text, (RANK[i], fit[i]), xytext=off, textcoords="offset points", ha=ha,
+                    va=va, fontsize=9, color=INK, zorder=5)
+    ax.annotate(f"fitted curve: falls {step:.0f}% at every step up a fifth.\n"
+                "The bars fall unevenly ("
+                + ", ".join(f"{d:.0f}%" for d in drops)
+                + ");\nthe curve is the steady fall that fits them best.",
+                (0.62, np.exp(a + b * 0.62)), xytext=(0.5, q.max() * 1.02),
                 fontsize=9.5, color=INK, arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.8))
-    ax.text(1.02, q.max() * 0.62,
-            f"The library's number for this\npattern is the tilt: {num(b)}\n\n"
-            f"Poorest-to-richest ratio: {ratio(b):.1f}\n(on the curve, the poorest\n"
-            f"fifth's rate is {ratio(b):.1f} times\nthe richest fifth's)\n\n"
+    ax.text(1.02, q.max() * 0.78,
+            f"The tilt is the slope of this\ncurve on a log scale: {num(b)}\n\n"
+            f"Poorest-to-richest ratio,\nread off the curve:\n"
+            f"{fit[0]:.1f} ÷ {fit[4]:.1f} = {fit[0] / fit[4]:.1f}\n"
+            f"(the bars give {q[0]:g} ÷ {q[4]:g} = {q[0] / q[4]:.1f})\n\n"
             "A negative tilt means the\npoor have the higher rate.",
             fontsize=10, va="top", linespacing=1.4)
     ax.set_xticks(RANK, QUINTILES)
@@ -173,24 +187,23 @@ def by_region(latest):
             ax.scatter(sub["r"], yi + rng.uniform(-0.17, 0.17, len(sub)), s=22, color=CONTEXT,
                        alpha=0.7, edgecolors="none", zorder=2)
             ax.plot([q50], [yi], marker="|", ms=18, mew=2.5, color=HI, zorder=3)
+            ax.text(1.01, yi, str(len(sub)), transform=ax.get_yaxis_transform(), va="center",
+                    fontsize=9, color=MUTED)
         ratio_axis(ax, "x", 0.5, 8)
         ax.set_title(ttl)
         ax.set_xlabel("poorest-to-richest ratio (log scale)")
-    n = tfr.groupby("region")["country"].nunique()
-    short = {"North Africa/West Asia/Europe": "N. Africa, W. Asia & Europe",
-             "Latin America & Caribbean": "Latin America & Caribbean"}
-    axes[0].set_yticks(range(len(regions)),
-                       [f"{short.get(r, r)} ({n.get(r, 0)})" for r in regions])
+    short = {"North Africa/West Asia/Europe": "N. Africa, W. Asia & Europe"}
+    axes[0].set_yticks(range(len(regions)), [short.get(r, r) for r in regions])
     axes[0].tick_params(axis="y", length=0)
     same = steepest["TFR"] == steepest["IMR"]
     title = (f"Gradients are steepest in {steepest['TFR']}" if same else
              f"Birth gradients are steepest in {steepest['TFR']}, infant-death gradients "
              f"in {steepest['IMR']}")
     frame(fig, title,
-          "Each dot is one country's latest survey (number of countries in brackets); the "
-          "blue tick is the region's median and\nthe band its middle half. Above 1 "
+          "Each dot is one country's latest survey; the number at the right of each row counts "
+          "them. The blue tick is the region's\nmedian and the band its middle half. Above 1 "
           "the poor have the higher rate.", DHS)
-    fig.subplots_adjust(left=0.235)
+    fig.subplots_adjust(left=0.235, right=0.96, wspace=0.12)
     save(fig, "by_region.png")
 
 
@@ -242,14 +255,14 @@ def fertility_by_age(latest):
     rr = ratio(tfr + o["offset"].values)
     ratio_axis(a1, "y", 0.8, 6)
     a1.axhline(ratio(tfr), color=CONTEXT, lw=1.5, zorder=1)
-    a1.text(3, ratio(tfr) * 0.955, f"one tilt for all ages: {ratio(tfr):.1f}", ha="center", va="top",
-            color=MUTED, fontsize=9)
+    a1.text(x[-1] + 0.3, ratio(tfr) * 0.97, f"one tilt for all ages: {ratio(tfr):.1f}",
+            ha="right", va="top", color=MUTED, fontsize=8.5)
     a1.plot(x, rr, color=HI, lw=2.5, marker="o", ms=7, mec=SURF, mew=2, zorder=3)
     for i, v in enumerate(rr):
         a1.annotate(f"{v:.1f}", (i, v), xytext=(0, 9), textcoords="offset points",
                     ha="center", fontsize=9)
     a1.set_ylabel("poorest-to-richest ratio, birth rate (log scale)")
-    a1.set_title(f"The gap by age, for the median country")
+    a1.set_title("The gap by age, for a typical country")
     # right: what the file holds
     for _, g in t.groupby("survey"):
         a2.plot(x, g["offset"].values, color=CONTEXT, alpha=0.3, lw=1)
@@ -259,14 +272,15 @@ def fertility_by_age(latest):
     for i, v in enumerate(o["offset"]):
         a2.annotate(f"{v:+.2f}".replace("-", "−"), (i, v), xytext=(0, 9 if v >= 0 else -16),
                     textcoords="offset points", ha="center", fontsize=9)
-    a2.set_ylim(-2.6, 1.6)
+    a2.set_ylim(min(-2.6, t["offset"].min() - 0.2), max(1.6, t["offset"].max() + 0.2))
     a2.set_ylabel("offset added to the country's fertility tilt")
     a2.set_title("The age offsets the library publishes")
-    frame(fig, "Poorer women have children earlier: the gap is widest at the youngest "
-          "and oldest ages",
-          f"Left: the median country (fertility tilt {tfr:.2f}) with the offsets applied. "
-          "Right: each gray line is one country's latest survey; blue\nis the median "
-          "across countries (the published offset), the band its middle half. "
+    frame(fig, "Poorer women start having children earlier and continue later: the gap "
+          "is widest at both ends",
+          f"Left: a typical country (the median fertility tilt, {tfr:.2f}, plus the median "
+          "offsets). Right: each gray line is one country's\nlatest survey with fertility by "
+          "age; blue is the median across countries (the published offset), the band its "
+          "middle half. "
           f"Ages 45–49 rest on {int(o['countries'].iloc[-1])} countries.".replace("-0", "−0"),
           "Source: DHS Program API, age-specific fertility by wealth quintile. "
           "Offset = tilt at that age − the survey's fertility tilt.")
@@ -284,13 +298,13 @@ def adult_mortality_vs_income():
     sd, r = rule[("income_rule", "residual_sd")], rule[("income_rule", "r")]
     fig, ax = plt.subplots(figsize=(10, 5.6))
     grid(ax, "both")
-    g = np.geomspace(180, 11000, 100)
+    g = np.geomspace(120, 11000, 100)
     ax.fill_between(g, ratio(a + b * np.log(g) + sd), ratio(a + b * np.log(g) - sd),
                     color=HI, alpha=0.12, lw=0)
     ax.plot(g, ratio(a + b * np.log(g)), color=HI, lw=2.5, zorder=2)
     ax.scatter(pts["gni"], ratio(pts["tilt_45q15"]), s=55, color=INK, edgecolors=SURF,
                linewidths=2, zorder=3)
-    show = {"Ethiopia 2007": (6, -10), "Uganda 2002": (6, -6), "Malawi 1998": (6, 4),
+    show = {"Ethiopia 2007": (-9, -2), "Uganda 2002": (8, -3), "Malawi 1998": (6, 4),
             "Malawi 2008": (6, -12), "Zambia 2010": (6, -4), "Benin 2013": (-8, 6),
             "South Africa 2001": (-8, 8),
             "Brazil 2010": (-8, 8)}
@@ -299,7 +313,7 @@ def adult_mortality_vs_income():
         if key in show:
             dx, dy = show[key]
             ax.annotate(key, (p["gni"], ratio(p["tilt_45q15"])), xytext=(dx, dy),
-                        textcoords="offset points", fontsize=9, color=INK,
+                        textcoords="offset points", fontsize=9, color=INK, va="center",
                         ha="left" if dx > 0 else "right")
     za = pts[(pts["country"] == "South Africa") & (pts["year"] > 2001)]
     if len(za):  # two censuses side by side: one label under both
@@ -307,7 +321,7 @@ def adult_mortality_vs_income():
                     (np.exp(np.log(za["gni"]).mean()), ratio(za["tilt_45q15"]).min()),
                     xytext=(-30, -16), textcoords="offset points", fontsize=9, ha="center")
     ax.set_xscale("log")
-    ax.set_xlim(180, 11000)
+    ax.set_xlim(120, 11000)
     ax.xaxis.set_major_locator(FixedLocator([200, 500, 1000, 2000, 5000, 10000]))
     ax.xaxis.set_minor_locator(NullLocator())
     ax.xaxis.set_ticklabels(["$200", "$500", "$1,000", "$2,000", "$5,000", "$10,000"])
@@ -317,10 +331,10 @@ def adult_mortality_vs_income():
     ax.text(2200, ratio(a + b * np.log(2200)) * 0.95, "general gradient\n(fallback rule)",
             color=INK, fontsize=9.5, ha="center", va="top")
     frame(fig, "Adult deaths are more concentrated among the poor in richer countries",
-          f"Each dot is one census (risk of dying between 15 and 60). The blue line is the "
-          f"rule the library uses for countries with no\nmeasurement, fitted to these dots "
-          f"(r = {num(r)}); the band is ±1 standard deviation. Below 1 the richer households "
-          "report more deaths.",
+          "Each dot is one census (risk of dying between 15 and 60). The blue line is the rule "
+          "the library uses for countries with no\nmeasurement, fitted to these dots "
+          f"(r = {num(r)}); the band is ±1 standard deviation of the dots around it.\n"
+          "Below 1 the richer households report more deaths.",
           "Source: IPUMS International and IBGE census microdata (household deaths "
           "modules); World Bank GNI per capita.")
     save(fig, "adult_mortality_vs_income.png")
@@ -332,10 +346,14 @@ def adult_mortality_by_age():
     if not (p.exists() and pts_p.exists()):
         return
     amr = pd.read_csv(p)
-    mx = amr[(amr["measure"] == "mx") & (amr["sex"] == "all")].sort_values("age_lo")
+    mx = amr[amr["measure"] == "mx"]
     gni = pd.read_csv(pts_p).set_index(["country", "year"])["gni"]
     rows = []
     for (c, y), g in mx.groupby(["country", "year"]):
+        # both sexes where published, else the mean of men and women in each band
+        g = (g[g["sex"] == "all"] if (g["sex"] == "all").any() else
+             g[g["sex"].isin(["male", "female"])]).groupby(["age_lo", "age_hi"], as_index=False)[
+            "slope"].mean().sort_values("age_lo")
         if len(g) < 2:
             continue
         rows.append(dict(label=f"{c} {y}", gni=gni.get((c, y), np.nan),
@@ -364,13 +382,14 @@ def adult_mortality_by_age():
     weaker, reversed_ = (d["old"] > d["young"]).sum(), (d["old"] > 0).sum()
     frame(fig, f"Adult-mortality gradients weaken with age in {weaker} of {len(d)} "
           f"censuses, and reverse in {reversed_}",
-          "Each row is one census (men and women together), richest country at the top "
-          "(GNI per person in brackets). The arrow\nruns from ages 15–29 to ages 60–74 "
-          "(45–59 where marked: too few deaths above 60). Below 1 the richer\nhouseholds "
-          "report more deaths, which is partly real and partly how deaths of elderly "
-          "relatives get reported.",
-          "Source: IPUMS International census microdata (household deaths modules); "
-          "World Bank GNI per capita.", top=0.74)
+          "Each row is one census, men and women together (Brazil, published only by sex: "
+          "the average of the two). Richest country at the top,\nGNI per person in "
+          "brackets. The arrow runs from ages 15–29 to ages 60–74 (45–59 where marked: "
+          "too few deaths above 60).\nBelow 1 the richer households report more deaths. "
+          "That may be real or an effect of how deaths of elderly relatives get reported;\n"
+          "no check separates the two.",
+          "Source: IPUMS International and IBGE census microdata (household deaths "
+          "modules); World Bank GNI per capita.", top=0.71)
     fig.subplots_adjust(left=0.27)
     save(fig, "adult_mortality_by_age.png")
 

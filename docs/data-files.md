@@ -41,7 +41,7 @@ offers; `common` uses only those every census offers — use `full`);
 |---|---|
 | [`gradient_library.csv`](../data/gradient_library.csv) | Every survey, not just the latest: the history behind `gradient_library_latest.csv` |
 | [`dhs_gradients_raw.csv`](../data/dhs_gradients_raw.csv) | The raw quintile values downloaded from the DHS API, including fertility by age |
-| [`fertility_age_tilts.csv`](../data/fertility_age_tilts.csv) | Each survey's fertility tilt at each age, from which the offsets are built. Not for direct use: a single country's age pattern is mostly survey noise |
+| [`fertility_age_tilts.csv`](../data/fertility_age_tilts.csv) | Each survey's fertility tilt at each age, from which the offsets are built. Supporting data: the pooled offsets are as accurate overall and have no gaps at the oldest ages |
 | [`general_gradient_points.csv`](../data/general_gradient_points.csv) | Each census behind the general gradient: income, measured tilt and the rule's out-of-sample prediction |
 | [`dhs_regions.csv`](../data/dhs_regions.csv) | The DHS Program's region for each country, for borrowing a regional median |
 | [`ogcore_units_check.csv`](../data/ogcore_units_check.csv) | The check that sets how a tilt is converted for OG-Core ([explained](methods/ogcore-units.md)) |

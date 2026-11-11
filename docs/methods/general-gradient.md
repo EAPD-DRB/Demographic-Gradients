@@ -66,14 +66,14 @@ its 1998 and 2008 censuses, within 0.07 of what the rule predicts.
 The rule is fitted between about $200 and $10,000 of GNI per head, which is the
 range this library covers by design: every source it draws on is a
 developing-country instrument. Do not extrapolate it to high-income countries.
-Of the 18 censuses behind it, eleven are African and none Asian, so its
-predictions for Asian countries are extrapolation.
+Of the 17 censuses behind it, 16 are African, one is Brazilian and
+none is Asian, so its predictions for Asian countries are extrapolation.
 
 ## The reversal at older ages, and why HIV does not explain it
 
 In the poorest countries the gradient is flat, and at older ages it turns
-positive: measured mortality is *higher* in wealthier households in Ethiopia
-2007, Uganda 2002, South Sudan 2008 and Mozambique 2007. Where almost everyone
+positive: measured mortality is *higher* in wealthier households at the oldest
+ages measured in Ethiopia 2007, Malawi 1998, Mozambique 2007, Sudan 2008, Uganda 2002 and Zambia 2010. Where almost everyone
 is poor, the top asset group is barely better protected, and deaths are
 infectious and maternal rather than the socially graded chronic diseases of
 middle income. Against that, a frail elderly relative often moves into a

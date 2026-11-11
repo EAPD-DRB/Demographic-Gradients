@@ -26,7 +26,7 @@ arguments. Three are gradients this library supplies:
 |---|---|---|---|
 | `fert_gradient` | `data/gradient_library_latest.csv` + `data/fertility_age_offsets.csv` | `indicator == "TFR"`, plus the offset by age | 77 countries |
 | `infmort_gradient` | `data/gradient_library_latest.csv` | `indicator == "IMR"` | 78 countries |
-| `mort_gradient` | `data/adult_mortality_gradients.csv` | `measure == "45q15"` | 14 countries |
+| `mort_gradient` | `data/adult_mortality_gradients.csv` | `measure == "45q15"` | 15 countries |
 | `imm_pctiles` | **not in this library** | — | — |
 
 `imm_pctiles` is not a gradient — it is the lifetime-income distribution of new
@@ -59,7 +59,8 @@ keeps the gap in number of children but erases the gap in timing — poorer
 women have children earlier, and the teenage gradient is about twice the TFR
 tilt. Use the pooled offsets, not a country's own age tilts
 (`fertility_age_tilts.csv` is supporting data): a country's own age shape
-predicts its next survey no better than the pooled offsets. Recipe and
+predicts its next survey about as well overall (better under 30, worse from
+35) and is missing or unfittable at the oldest ages in many surveys. Recipe and
 checks: [docs/methods/fertility-by-age.md](docs/methods/fertility-by-age.md).
 
 **2. Own measurement first, general gradient as fallback.** If the country has
@@ -71,18 +72,17 @@ country's value; state which route was taken and the survey or census year.
 
 `data/general_gradient.csv` holds a fallback usable for **any** country:
 
-    tilt(45q15) = 1.291 − 0.243 × ln(GNI per capita, current US$)      ±0.16
+    tilt(45q15) = 1.291 − 0.244 × ln(GNI per capita, current US$)      ±0.16
 
 It was chosen by leave-one-out competition against the alternatives — mean
-absolute error 0.142, against 0.307 for one tilt applied to every country and
-0.221 for regional medians — so it is the documented default, not a guess. It is
+absolute error 0.138, against 0.301 for one tilt applied to every country and
+0.182 for regional medians — so it is the documented default, not a guess. It is
 most accurate above $1,000 per head (error 0.11) and least accurate below
-(0.17). The same file carries by-age offsets and a pooled median for use when no
+(0.16). The same file carries by-age offsets and a pooled median for use when no
 GNI figure is available.
 
-Worked values at 2024 income: Philippines −0.75, Indonesia −0.78, Ethiopia
-−0.41. South Africa should use its own census value (−0.80), not the rule's
-−0.83.
+Worked values at 2024 income: Philippines −0.76, Indonesia −0.79, Ethiopia
+−0.42. South Africa should use its own census value (−0.80), not the rule.
 
 **There is no equivalent fallback for fertility or infant mortality, and that is
 deliberate.** The same competition was run for them: income beat a single global
@@ -94,7 +94,7 @@ IQR from `ANALYSIS.md` and label it as borrowed.
 ## Traps that have already caused errors
 
 - **Do not use `U5MR` for `infmort_gradient`.** The library used to ship under-5
-  mortality as an infant proxy. It is steeper: across 289 surveys carrying both,
+  mortality as an infant proxy. It is steeper: across 291 surveys carrying both,
   the under-5 tilt exceeds the infant tilt by a median 0.14, and by 0.67 in
   Nigeria 2018. `IMR` is now measured directly — use it. `U5MR` remains only as
   a fallback for the few surveys with no infant quintiles.
@@ -229,7 +229,8 @@ scripts, and the documentation is generated — respect that architecture.
   (`fertility_age_offsets.csv`, built from DHS age-specific rates by wealth
   quintile in `build_gradient_library.py`). Validated: 5 × Σ ASFR reproduces
   DHS's TFR per quintile within rounding; a backtest over consecutive surveys
-  shows a country's own age shape predicts no better than the pooled offsets.
+  shows a country's own age shape predicts about as well overall (better
+  under 30, worse from 35), while the pooled offsets have no gaps at 45–49.
   Ruled 2026-11-05 — offsets, not per-country age tilts.
 - Adult mortality ranks households by an **asset index**, never post-death
   household income (reverse causation; São Paulo validation: assets monotonic,
@@ -252,12 +253,12 @@ scripts, and the documentation is generated — respect that architecture.
   - biases steep). Mark rejects `publish=False` with the evidence in the
   config; never delete the config entry.
 - Tilt steepness tracks national income, not HIV or region:
-  `tilt ~ 1.25 - 0.24*ln(GNI per capita)`, r = -0.85 over 16 censuses.
+  `tilt ~ 1.29 - 0.244*ln(GNI per capita)`, r = -0.88 over 17 censuses.
   Excluding South Africa the tilt-vs-HIV-prevalence correlation is +0.00.
   Borrowing tables should key on income level; a long OG transition should
   expect the gradient to steepen as the country's income rises.
-- The gradient fades with age in every census measured (8/8, mean drift
-  +0.78 from 15-29 to 60-74) and in the poorest countries it crosses zero -
+- The gradient fades with age in every census measured at more than one
+  age (13/13, mean drift +0.83 from 15-29 to the oldest band) and in the poorest countries it crosses zero -
   measured mortality is higher in wealthier households at 45+. Real
   (low income compresses survival differences) and artefactual (frail elders
   move into better-off households before dying) explanations both fit; no

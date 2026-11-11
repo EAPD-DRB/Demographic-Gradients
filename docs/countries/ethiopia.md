@@ -20,8 +20,6 @@ Every value is a **tilt** ([what that is](../glossary.md#tilt)). Convert it befo
 |---|---|---|---|---|---|---|
 | −1.51 | −0.84 | −0.53 | −0.41 | −0.64 | −1.13 | −1.72 |
 
-> **Note.** The 2007 census links only 100% of deaths to household assets: the tilt is usable, the death-rate levels are not.
-
 ## Where these numbers come from
 
 ### Household surveys (DHS)
@@ -47,4 +45,4 @@ Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original d
 ## Notes
 
 - The 2007 census asks assets and mortality of the long-form 20% subsample only; its weights already inflate to national totals — do not re-scale. 46% of persons hold no assets, so the asset distribution supports only three wealth groups (`groups` column).
-- Ethiopia is the flattest adult gradient in the library (45q15 tilt ≈ +0.09, i.e. no protective wealth gradient), and at 30+ the measured gradient turns positive — see the older-age reversal discussion in the general-gradient page before using the older bands.
+- Ethiopia's adult gradient is close to zero (45q15 tilt ≈ +0.09): wealth barely protects adult survival, and from age 30 the measured gradient turns positive — see the older-age reversal discussion in the general-gradient page before using the older bands.

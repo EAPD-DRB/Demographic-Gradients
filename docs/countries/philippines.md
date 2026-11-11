@@ -34,4 +34,4 @@ Latest survey, from [`data/gradient_library_latest.csv`](../../data/gradient_lib
 
 ## Notes
 
-- No census household-deaths module is available, so there is no measured adult-mortality gradient; use the general gradient (worked value below). The DHS rows (NDHS 2022) cover fertility and child mortality directly.
+- No census household-deaths module is available, so there is no measured adult-mortality gradient; use the general gradient (worked value in the table above). The DHS rows (NDHS 2022) cover fertility and child mortality directly.
