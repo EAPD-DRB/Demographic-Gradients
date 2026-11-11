@@ -44,14 +44,6 @@ wealth protects against much less. **Use `IMR` for ogcore's
 infant quintiles. The computed comparison (count, median gap, worst case)
 lives in [ANALYSIS.md](../../ANALYSIS.md).
 
-## Known limits
+## Limits
 
-- Quintiles are household-based cross-sections, not lifetime individual rank —
-  the standing assumption is that asset rank proxies lifetime-income rank.
-- No quintile design resolves a top-1% income group; tilts there are
-  extrapolation.
-- U5MR quintile cells are noisy in low-mortality countries (South Africa 2016
-  visibly so).
-- The library takes each country's **most recent survey**, which can be old
-  (Brazil: 1996). Check the `year` column; for Brazil prefer
-  `census_child_mortality.csv` (see [the Brazil page](../countries/brazil.md)).
+See [sources, citation and limits](../sources.md).

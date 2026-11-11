@@ -5,10 +5,11 @@ this repo's data. The first part is about *consuming* the data. For working
 *on* the repo — regenerating it, adding countries — see
 [Working on this repo](#working-on-this-repo) below.
 
-Answering for one specific country? Its provenance page in
-[`docs/countries/`](docs/countries/) assembles every estimate the library
-holds for it, the source of each number, and the recommended calibration
-route — start there, then apply the rules below.
+Answering for one specific country? Its page in
+[`docs/countries/`](docs/countries/) opens with the value to use for each
+OG-Core input, then every estimate the library holds for it and the source of
+each number — start there, then apply the rules below. Terms are defined in
+[`docs/glossary.md`](docs/glossary.md).
 
 The library answers one question: **how much does a demographic rate differ
 between rich and poor households in a given country?** OG-Core (>= 0.18.0) can
@@ -174,16 +175,25 @@ scripts, and the documentation is generated — respect that architecture.
 ## Non-negotiables
 
 - **Never hand-edit the generated docs** — `ANALYSIS.md`, the README's marked
-  headline table, `docs/methods/general-gradient.md`,
+  coverage table, `docs/methods/general-gradient.md`,
   `docs/methods/ogcore-units.md`, `docs/methods/fertility-by-age.md`,
   `docs/tables/adult_mortality.md`, and
   everything under `docs/countries/`
   are written by `scripts/build_analysis.py` from the CSVs (each carries a
   GENERATED banner). Change the generator or the data, then regenerate
   (`uv run scripts/build_analysis.py`, or `uv run scripts/refresh.py` for the
-  full DHS refresh). `docs/methods/adult-mortality.md` and
-  `docs/methods/dhs-gradients.md` are hand-written method prose — edit those
-  directly, but keep any numbers in them qualitative so they cannot drift.
+  full DHS refresh). The rest of `README.md`, `docs/glossary.md`,
+  `docs/data-files.md`, `docs/sources.md`, `docs/methods/adult-mortality.md`
+  and `docs/methods/dhs-gradients.md` are hand-written — edit those directly,
+  but keep any numbers in them qualitative so they cannot drift.
+- **Write for a reader with no context.** The README is the front door: what
+  the library is, the coverage table, "find your country", a short recipe, and
+  links — keep it short and put detail on the page it belongs to. Every new
+  term goes in `docs/glossary.md`. Every figure follows the standard in
+  `scripts/make_figures.py`: a title that states the finding, a subtitle that
+  says what is plotted, plain axis labels, gradients shown as poorest ÷
+  richest tenth on a log scale, one accent colour for the story and gray for
+  context, and a source line. Render it and look at it before committing.
 - **No microdata in this repo, ever.** IPUMS extracts and supplementary death
   files stay local (`~/ipums-extracts`, `~/Projects/data`); the IPUMS license
   permits publishing only aggregated estimates — which is what `data/` holds.

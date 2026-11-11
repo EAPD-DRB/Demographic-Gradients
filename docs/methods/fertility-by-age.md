@@ -12,7 +12,7 @@ the tilt is at each age than the country's TFR tilt, pooled across countries.
 
     fertility tilt at age a = country's TFR tilt + offset(a)
 
-![Fertility age offsets, and what they mean for the median country](../../figures/fig6_fertility_age_offsets.png)
+![Fertility age offsets, and what they mean for the median country](../../figures/fertility_by_age.png)
 
 ## The offsets
 

@@ -22,7 +22,8 @@ because ogcore's `mort_gradient` accepts a tilt per age band.
 
     uv run scripts/build_general_gradient.py
 
-Writes data/general_gradient.csv. GNI per capita comes from the World Bank API
+Writes data/general_gradient.csv (the rule) and data/general_gradient_points.csv
+(each census behind it: GNI, measured tilt, leave-one-out prediction). GNI per capita comes from the World Bank API
 (free, no key), matched to each census year.
 """
 
@@ -38,6 +39,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "data" / "adult_mortality_gradients.csv"
 OUT = ROOT / "data" / "general_gradient.csv"
+POINTS = ROOT / "data" / "general_gradient_points.csv"
 BANDS = [(15, 29), (30, 44), (45, 59), (60, 74)]
 
 # World Bank ISO3 per country in the adult-mortality file
@@ -204,6 +206,10 @@ def main():
                          value=round(float(s.abs().mean()), 4), note=""))
     pd.DataFrame(recs).to_csv(OUT, index=False)
     print(f"\nwrote {OUT}")
+    pts = m[["country", "year", "gni", "actual", f"pred_{best}"]].rename(
+        columns={"actual": "tilt_45q15", f"pred_{best}": "loo_prediction"})
+    pts.sort_values("gni").to_csv(POINTS, index=False)
+    print(f"wrote {POINTS}")
 
 
 if __name__ == "__main__":

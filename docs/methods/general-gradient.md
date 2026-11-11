@@ -14,7 +14,11 @@ The steepness of the gradient tracks how rich the country is:
 
 with r = −0.88 across 17 censuses and a 1 SD band of
 ±0.16. Doubling income per head steepens the gradient by about
-−0.17.
+−0.17. Each census behind it, with its income and the rule's
+out-of-sample prediction, is in
+[`data/general_gradient_points.csv`](../../data/general_gradient_points.csv).
+
+![Adult-mortality gradient against national income](../../figures/adult_mortality_vs_income.png)
 
 That rule was chosen by competition, not assertion. Three candidates were each
 judged by leaving one census out of the fit and predicting it — the honest test,

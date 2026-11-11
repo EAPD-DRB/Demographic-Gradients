@@ -95,8 +95,6 @@ COUNTRY_NOTES = {
         "measured gradient turns positive — see the older-age reversal "
         "discussion in the general-gradient page before using the older "
         "bands.",
-        "For fertility use the **2016 full EDHS** — the 2019 mini-DHS has no "
-        "fertility module.",
     ],
     "Philippines": [
         "No census household-deaths module is available, so there is no "
@@ -252,16 +250,9 @@ def region_table(latest, ind):
     for rgn, r in g.iterrows():
         iqr = REGION_ORDER_NOTE if r["n"] == 1 else f"{fmt(r['q25'])} to {fmt(r['q75'])}"
         rows.append(
-            f"| {rgn} | {int(r['n'])} | {fmt(r['med'])} | {iqr} | {r['ratio']:.2f} |"
+            f"| {rgn} | {int(r['n'])} | {fmt(r['med'])} | {iqr} | {np.exp(-0.8 * r['med']):.1f}× |"
         )
     return "\n".join(rows)
-
-
-def sa(latest, ind):
-    row = latest[(latest["indicator"] == ind) & (latest["country"] == "South Africa")]
-    if not len(row):
-        return None
-    return {"slope": row["slope"].iloc[0], "ratio": row["ratio"].iloc[0], "year": int(row["year"].iloc[0])}
 
 
 def replace_between(text, start, end, new):
@@ -319,7 +310,11 @@ The steepness of the gradient tracks how rich the country is:
 
 with r = {fmt(gg_r)} across {gg_n:.0f} censuses and a 1 SD band of
 ±{gg_sd:.2f}. Doubling income per head steepens the gradient by about
-{fmt(gg_dbl)}.
+{fmt(gg_dbl)}. Each census behind it, with its income and the rule's
+out-of-sample prediction, is in
+[`data/general_gradient_points.csv`](../../data/general_gradient_points.csv).
+
+![Adult-mortality gradient against national income](../../figures/adult_mortality_vs_income.png)
 
 That rule was chosen by competition, not assertion. Three candidates were each
 judged by leaving one census out of the fit and predicting it — the honest test,
@@ -528,7 +523,7 @@ the tilt is at each age than the country's TFR tilt, pooled across countries.
 
     fertility tilt at age a = country's TFR tilt + offset(a)
 
-![Fertility age offsets, and what they mean for the median country](../../figures/fig6_fertility_age_offsets.png)
+![Fertility age offsets, and what they mean for the median country](../../figures/fertility_by_age.png)
 
 ## The offsets
 
@@ -641,61 +636,120 @@ recorded in `scripts/build_adult_mortality.py`).
     (DOCS / "tables" / "adult_mortality.md").write_text(doc)
 
 
+IND_NAME = {"TFR": "Births per woman (TFR)", "IMR": "Infant deaths per 1,000 births (IMR)",
+            "U5MR": "Under-5 deaths per 1,000 births (U5MR)"}
+STALE_YEAR = 2005  # surveys older than this get an explicit warning
+
+
+def decile_ratio(tilt):
+    return float(np.exp(-0.8 * tilt))
+
+
+def own_adult(amr, country):
+    """The latest census's 45q15 tilt, both sexes (else the mean of the sexes)."""
+    q = amr[(amr["country"] == country) & (amr["measure"] == "45q15")]
+    if not len(q):
+        return None
+    y = q["year"].max()
+    g = q[q["year"] == y]
+    a = g[g["sex"] == "all"]
+    src = a if len(a) else g[g["sex"].isin(["male", "female"])]
+    return {"year": int(y), "tilt": float(src["slope"].mean()),
+            "both": bool(len(a)), "linked": float(g["linked_share"].min())}
+
+
+def what_to_use(c, latest, amr, ccm_df, off, regions):
+    """The 'What to use in OG-Core' box: one row per get_pop_objs input."""
+    rows, notes = [], []
+    tfr = latest[(latest["country"] == c) & (latest["indicator"] == "TFR")]
+    region = regions.get(c)
+    borrow = (f"the median for {region} in [Findings](../../ANALYSIS.md#2-how-steep-region-by-region)"
+              if region else "the median for the country's region in "
+              "[Findings](../../ANALYSIS.md#2-how-steep-region-by-region)")
+    if len(tfr):
+        t, y = float(tfr["slope"].iloc[0]), int(tfr["year"].iloc[0])
+        rows.append(f"| `fert_gradient` | **by age**, table below (fertility tilt {fmt(t)} "
+                    f"plus the [age offsets](../methods/fertility-by-age.md)) | DHS {y} |")
+        if y < STALE_YEAR:
+            notes.append(f"The DHS survey is from {y}. Gradients can change a lot in a "
+                         "fast-developing country; say how old it is when you use it.")
+    else:
+        t = None
+        rows.append(f"| `fert_gradient` | no survey: borrow {borrow}, then add the age offsets "
+                    "| borrowed |")
+    imr = latest[(latest["country"] == c) & (latest["indicator"] == "IMR")]
+    u5 = latest[(latest["country"] == c) & (latest["indicator"] == "U5MR")]
+    cc = (ccm_df[(ccm_df["country"] == c) & (ccm_df["index"] == "full")
+                 & (ccm_df["measure"] == "prop_dead_2529")] if ccm_df is not None else [])
+    dhs_year = int(imr["year"].iloc[0]) if len(imr) else (int(u5["year"].iloc[0]) if len(u5) else 0)
+    if len(cc) and int(cc["year"].max()) > dhs_year + 10:
+        r = cc.sort_values("year").iloc[-1]
+        rows.append(f"| `infmort_gradient` | **{fmt(r['slope'])}** | census {int(r['year'])} "
+                    f"(child mortality; the DHS row is from {dhs_year}) |")
+    elif len(imr):
+        rows.append(f"| `infmort_gradient` | **{fmt(float(imr['slope'].iloc[0]))}** "
+                    f"| DHS {int(imr['year'].iloc[0])} |")
+    elif len(u5):
+        rows.append(f"| `infmort_gradient` | **{fmt(float(u5['slope'].iloc[0]))}** "
+                    f"| DHS {int(u5['year'].iloc[0])}, under-5 (no infant figure; "
+                    "slightly too steep) |")
+    else:
+        rows.append(f"| `infmort_gradient` | no survey: borrow {borrow} | borrowed |")
+    own = own_adult(amr, c)
+    gg = general_gradient() or {}
+    a = gg.get("income_rule.intercept", float("nan"))
+    b = gg.get("income_rule.slope_ln_gni", float("nan"))
+    if own:
+        rows.append(f"| `mort_gradient` | **{fmt(own['tilt'])}** (ages 15–60) "
+                    f"| census {own['year']}, own measurement |")
+        if own["linked"] < 1:
+            notes.append(f"The {own['year']} census links only {own['linked']:.0%} of deaths "
+                         "to household assets: the tilt is usable, the death-rate levels "
+                         "are not.")
+    elif c in WORKED_GNI:
+        rows.append(f"| `mort_gradient` | **{fmt(a + b * np.log(WORKED_GNI[c]))}** (ages 15–60) "
+                    f"| [general gradient](../methods/general-gradient.md) at GNI "
+                    f"${WORKED_GNI[c]:,} per person (~2024) |")
+    else:
+        rows.append(f"| `mort_gradient` | {fmt(a)} {NEG} {abs(b):.3f} × ln(GNI per person); "
+                    f"e.g. {fmt(a + b * np.log(1000))} at $1,000, "
+                    f"{fmt(a + b * np.log(5000))} at $5,000 "
+                    f"| [general gradient](../methods/general-gradient.md) "
+                    "(no census measurement) |")
+    rows.append("| `imm_pctiles` | not covered by this library | — |")
+    out = ("## What to use in OG-Core\n\n"
+           "| OG-Core input | Tilt | From |\n|---|---|---|\n" + "\n".join(rows) + "\n\n"
+           "Every value is a **tilt** ([what that is](../glossary.md#tilt)). Convert it "
+           "before passing it to OG-Core: `tilt / (100 × (1 − p))`, with p OG-Core's own "
+           "rate at that age ([how](../methods/ogcore-units.md)).\n")
+    if off is not None:
+        base = t if t is not None else None
+        if base is not None:
+            out += ("\n**Fertility tilt by mother's age** (for `fert_gradient`; ages under 15 "
+                    "take the 15–19 value, 50 and over the 45–49 value):\n\n"
+                    "| " + " | ".join(f"{x}–{y}" for x, y in zip(off.age_lo, off.age_hi))
+                    + " |\n|" + "---|" * len(off) + "\n"
+                    "| " + " | ".join(fmt(base + o) for o in off.offset) + " |\n")
+    if notes:
+        out += "\n" + "\n".join(f"> **Note.** {n}" for n in notes) + "\n"
+    return out
+
+
 def country_dhs_block(latest, country):
     rows = latest[latest["country"] == country]
     if not len(rows):
         return ""
-    out = ("## DHS survey gradients (fertility & child mortality)\n\n"
-           "From [`data/gradient_library_latest.csv`](../../data/gradient_library_latest.csv)"
-           " (most recent survey; the full survey history is in"
-           " `gradient_library.csv`).\n\n"
-           "| Indicator | Survey year | Tilt | Poorest/richest | Q1 … Q5 |\n"
+    out = ("### Household surveys (DHS)\n\n"
+           "Latest survey, from [`data/gradient_library_latest.csv`]"
+           "(../../data/gradient_library_latest.csv). Earlier surveys are in "
+           "`gradient_library.csv`.\n\n"
+           "| Measure | Survey | Tilt | Poorest ÷ richest tenth | Poorest fifth → richest fifth |\n"
            "|---|---|---|---|---|\n")
     order = {"TFR": 0, "IMR": 1, "U5MR": 2}
     for _, r in rows.sort_values("indicator", key=lambda s: s.map(order)).iterrows():
-        qs = " / ".join("" if pd.isna(r[q]) else f"{r[q]:g}" for q in ["q1", "q2", "q3", "q4", "q5"])
-        out += (f"| {r['indicator']} | {int(r['year'])} | **{fmt(r['slope'])}** "
-                f"| {r['ratio']:.2f} | {qs} |\n")
-    out += ("\nSource: DHS Program indicator API (wealth-quintile breakdown); "
-            "tilt = OLS slope of ln(rate) on wealth rank.\n")
-    off = fertility_offsets()
-    tfr = rows[rows["indicator"] == "TFR"]
-    if off is not None and len(tfr):
-        t = tfr["slope"].iloc[0]
-        out += ("\n**Fertility by age** — TFR tilt plus the pooled "
-                "[age offsets](../methods/fertility-by-age.md); pass these, "
-                "not the single TFR tilt, to `fert_gradient`:\n\n"
-                "| " + " | ".join(f"{a}–{b}" for a, b in zip(off.age_lo, off.age_hi)) + " |\n"
-                "|" + "---|" * len(off) + "\n"
-                "| " + " | ".join(fmt(t + o) for o in off.offset) + " |\n")
-    return out
-
-
-def country_amr_block(amr, country):
-    rows = amr[amr["country"] == country]
-    if not len(rows):
-        return ""
-    srcs = sorted(rows["source"].dropna().unique())
-    censuses = sorted(rows["year"].unique())
-    meta = []
-    for y in censuses:
-        g = rows[rows["year"] == y]
-        meta.append(
-            f"- **{y} census** — {int(g['n_deaths'].sum()):,} death records across "
-            f"published rows; {int(g['groups'].iloc[0])} wealth groups; ranking: "
-            f"{g['ranking'].iloc[0].replace('_', ' ')}; linked share "
-            f"{g['linked_share'].iloc[0]:.0%}.")
-    out = ("## Adult mortality (census household-deaths modules)\n\n"
-           "From [`data/adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv)."
-           " Households ranked by asset index; see the"
-           " [method page](../methods/adult-mortality.md).\n\n"
-           + "\n".join(meta) + "\n\n"
-           "| Year | Sex | Ages | Measure | Tilt | Poorest/richest | Deaths |\n"
-           "|---|---|---|---|---|---|---|\n")
-    for _, r in rows.iterrows():
-        out += (f"| {r['year']} | {r['sex']} | {r['age_lo']}–{r['age_hi']} | {r['measure']} "
-                f"| **{fmt(r['slope'])}** | {r['ratio']:.2f} | {r['n_deaths']:,} |\n")
-    out += "\nSource: " + "; ".join(srcs) + ".\n"
+        qs = " · ".join("" if pd.isna(r[q]) else f"{r[q]:g}" for q in ["q1", "q2", "q3", "q4", "q5"])
+        out += (f"| {IND_NAME[r['indicator']]} | {int(r['year'])} | **{fmt(r['slope'])}** "
+                f"| {r['ratio']:.1f}× | {qs} |\n")
     return out
 
 
@@ -705,90 +759,105 @@ def country_ccm_block(ccm_df, country):
     rows = ccm_df[(ccm_df["country"] == country) & (ccm_df["measure"] == "prop_dead_2529")]
     if not len(rows):
         return ""
-    out = ("## Child mortality from censuses\n\n"
-           "From [`data/census_child_mortality.csv`](../../data/census_child_mortality.csv)."
-           " The measure is the proportion of children ever born who have died"
-           " (Brass indirect, mothers 25–29) — a cumulative proportion whose"
-           " *levels* must not be pooled with DHS U5MR; only the tilt is"
-           " comparable.\n\n"
-           "| Census | Index | Groups | Tilt | Poorest/richest |\n"
+    out = ("### Child mortality from censuses\n\n"
+           "From [`data/census_child_mortality.csv`](../../data/census_child_mortality.csv): "
+           "the share of children ever born who have died, for mothers aged 25–29. Compare "
+           "tilts only; the levels are not comparable with the survey rates.\n\n"
+           "| Census | Asset index | Wealth groups | Tilt | Poorest ÷ richest tenth |\n"
            "|---|---|---|---|---|\n")
     for _, r in rows.sort_values(["year", "index"]).iterrows():
         out += (f"| {int(r['year'])} | {r['index']} | {r['groups']} | **{fmt(r['slope'])}** "
-                f"| {r['ratio']:.2f} |\n")
+                f"| {r['ratio']:.1f}× |\n")
     chk = rows[rows["dhs_check"].astype(str).str.len() > 0]
     if len(chk):
-        out += f"\nCross-check: {chk['dhs_check'].iloc[0]}.\n"
-    out += "\nAsset components per census are recorded in the `asset_vars` column.\n"
+        out += f"\nCross-check against the survey: {chk['dhs_check'].iloc[0]}.\n"
     return out
 
 
-def country_fallback_block(country, amr):
-    gg = general_gradient() or {}
-    a = gg.get("income_rule.intercept", float("nan"))
-    b = gg.get("income_rule.slope_ln_gni", float("nan"))
-    sd = gg.get("income_rule.residual_sd", float("nan"))
-    has_own = country in set(amr["country"])
-    if has_own:
-        return ("## Adult-mortality route for calibration\n\n"
-                "This country has its **own census measurement — use it** (rows "
-                "above), not the general gradient.\n")
-    if country in WORKED_GNI:
-        gni = WORKED_GNI[country]
-        tilt = a + b * np.log(gni)
-        return (f"## Adult-mortality route for calibration\n\n"
-                f"No census household-deaths module exists, so use the "
-                f"[general gradient](../methods/general-gradient.md): at GNI per "
-                f"capita ≈ ${gni:,} (~2024), predicted tilt(45q15) = "
-                f"**{fmt(tilt)}** ± {sd:.2f}, spread across age bands with the "
-                f"by-age offsets in `data/general_gradient.csv`.\n")
-    return ("## Adult-mortality route for calibration\n\n"
-            "No census measurement; use the "
-            "[general gradient](../methods/general-gradient.md) at the "
-            "country's GNI per capita.\n")
+def country_amr_block(amr, country):
+    rows = amr[amr["country"] == country]
+    if not len(rows):
+        return ""
+    srcs = sorted(rows["source"].dropna().unique())
+    bands = [(15, 29), (30, 44), (45, 59), (60, 74)]
+    out = ("### Adult mortality from censuses\n\n"
+           "Tilts of the death rate across household wealth, from [`data/adult_mortality_gradients.csv`]"
+           "(../../data/adult_mortality_gradients.csv) ([method](../methods/adult-mortality.md)). "
+           "Men and women together where available; the by-sex rows are in the "
+           "[full table](../tables/adult_mortality.md). A blank cell had too few deaths "
+           "to publish.\n\n"
+           "| Census | Ages 15–60 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |\n"
+           "|---|---|---|---|---|---|---|---|\n")
+    for y, g in rows.groupby("year"):
+        s = g[g["sex"] == "all"] if (g["sex"] == "all").any() else g
+        lbl = "" if (g["sex"] == "all").any() else " (mean of men and women)"
+
+        def cell(meas, lo=None):
+            m = s[(s["measure"] == meas) & ((s["age_lo"] == lo) if lo is not None else True)]
+            return "" if not len(m) else fmt(float(m["slope"].mean()))
+        out += (f"| {y}{lbl} | **{cell('45q15')}** | "
+                + " | ".join(cell("mx", lo) for lo, _ in bands)
+                + f" | {int(g['groups'].iloc[0])} | {int(g[g['measure'] == '45q15']['n_deaths'].max()):,} |\n")
+    out += "\nSource: " + "; ".join(srcs) + ".\n"
+    return out
 
 
 def write_country_pages(latest, amr, ccm):
     ccm_df = ccm["df"] if ccm else None
-    countries = sorted(set(amr["country"]) | set(OG_FAMILY)
+    off = fertility_offsets()
+    regions = pd.read_csv(DATA / "dhs_regions.csv").set_index("country")["region"].to_dict()
+    countries = sorted(set(latest["country"]) | set(amr["country"]) | set(OG_FAMILY)
                        | (set(ccm_df["country"]) if ccm_df is not None else set()))
     index_rows = []
     for c in countries:
-        blocks = [country_dhs_block(latest, c),
-                  country_ccm_block(ccm_df, c),
-                  country_amr_block(amr, c),
-                  country_fallback_block(c, amr)]
+        evidence = [country_dhs_block(latest, c), country_ccm_block(ccm_df, c),
+                    country_amr_block(amr, c)]
         notes = COUNTRY_NOTES.get(c, [])
-        note_txt = ("## Provenance notes\n\n" + "\n".join(f"- {n}" for n in notes) + "\n") if notes else ""
+        note_txt = ("\n## Notes\n\n" + "\n".join(f"- {n}" for n in notes) + "\n") if notes else ""
         doc = (f"{GENERATED_BANNER}# {c}\n\n"
-               f"Everything this library holds for {c}, with provenance. "
-               f"Tilt = OLS slope of ln(rate) on wealth rank 0–1; OG-Core "
-               f"consumes tilt ÷ (100 × (1 − p)), p being OG-Core's own rate "
-               f"at that age (see [passing a tilt to OG-Core]"
-               f"(../methods/ogcore-units.md)).\n\n"
-               + "".join(b + "\n" for b in blocks if b) + note_txt)
+               f"The wealth gradients this library holds for {c}: first the values to "
+               "give OG-Core, then the measurements behind them. New to the terms? See the "
+               "[glossary](../glossary.md).\n\n"
+               + what_to_use(c, latest, amr, ccm_df, off, regions)
+               + "\n## Where these numbers come from\n\n"
+               + "\n".join(b for b in evidence if b) + note_txt)
         (DOCS / "countries" / f"{slug(c)}.md").write_text(doc)
         what = []
         if len(latest[latest["country"] == c]):
-            what.append("DHS")
+            what.append(f"survey {int(latest[latest['country'] == c]['year'].max())}")
         if ccm_df is not None and len(ccm_df[ccm_df["country"] == c]):
-            what.append("census child")
+            what.append("census child mortality")
         if len(amr[amr["country"] == c]):
-            what.append("census adult")
-        index_rows.append(f"| [{c}]({slug(c)}.md) | {', '.join(what) or 'general gradient only'} |")
-    idx = (f"{GENERATED_BANNER}# Country provenance pages\n\n"
-           "One page per country with census-based content or OG-Core family "
-           "membership: every estimate the library holds for it, where each "
-           "number comes from, and the recommended calibration route.\n\n"
-           "| Country | Instruments |\n|---|---|\n" + "\n".join(index_rows) + "\n\n"
-           "**Any other country:** take its row in "
-           "[`data/gradient_library_latest.csv`](../../data/gradient_library_latest.csv) "
-           "for fertility/infant mortality (or the regional median in "
-           "[ANALYSIS.md](../../ANALYSIS.md) if it has no survey), and the "
-           "[general gradient](../methods/general-gradient.md) for adult "
-           "mortality. Precedence rules: [AGENTS.md](../../AGENTS.md).\n")
+            what.append("census adult mortality")
+        index_rows.append(f"| [{c}]({slug(c)}.md) | {regions.get(c, '—')} | "
+                          f"{', '.join(what) or 'general gradient only'} |")
+    idx = (f"{GENERATED_BANNER}# Find your country\n\n"
+           "One page per country. Each starts with the values to give OG-Core, then shows "
+           "where they come from. Countries with a census-based adult-mortality "
+           "measurement are marked; every other country uses the "
+           "[general gradient](../methods/general-gradient.md) for adult mortality.\n\n"
+           "Not listed? The country has no wealth-quintile survey in the library: borrow "
+           "its region's median from [Findings](../../ANALYSIS.md#2-how-steep-region-by-region) "
+           "and say that you did.\n\n"
+           "| Country | Region | What the library measures |\n|---|---|---|\n"
+           + "\n".join(index_rows) + "\n")
     (DOCS / "countries" / "README.md").write_text(idx)
     return countries
+
+
+def r10(tilt):
+    """Poorest tenth ÷ richest tenth, formatted."""
+    return f"{np.exp(-0.8 * tilt):.1f}×"
+
+
+def age_fade(amr):
+    """Censuses measured at two or more ages (both sexes): how many weaken / reverse."""
+    mx = amr[(amr["measure"] == "mx") & (amr["sex"] == "all")].sort_values("age_lo")
+    d = mx.groupby(["country", "year"])["slope"].agg(["first", "last", "size"])
+    d = d[d["size"] > 1]
+    return {"n": len(d), "weaker": int((d["last"] > d["first"]).sum()),
+            "reversed": int((d["last"] > 0).sum()),
+            "drift": float((d["last"] - d["first"]).mean())}
 
 
 def main():
@@ -798,233 +867,212 @@ def main():
     n_surveys = lib.groupby(["country", "year"]).ngroups
     n_obs = len(lib)
     n_countries = latest["country"].nunique()
+    off = fertility_offsets()
+    amr_path = DATA / "adult_mortality_gradients.csv"
+    amr = pd.read_csv(amr_path) if amr_path.exists() else None
+    amr_h = amr_headline()
+    gg = general_gradient() or {}
+    teen = (tfr["med"] + float(off.set_index("age_lo").loc[15, "offset"])) if off is not None else None
 
-    # --- README headline table (between markers) ---
+    # --- README coverage table (between markers) ---
     readme_path = ROOT / "README.md"
     readme = readme_path.read_text()
     table = (
-        "| Margin | Countries | Median tilt | IQR | Median poorest/richest ratio |\n"
+        "| What it measures | OG-Core input | Source | Countries | Typical gap, poorest ÷ richest tenth |\n"
         "|---|---|---|---|---|\n"
-        f"| Fertility (TFR) | {tfr['n']} | **{fmt(tfr['med'])}** | "
-        f"{fmt(tfr['q25'])} to {fmt(tfr['q75'])} | {tfr['ratio']:.2f} |\n"
-        f"| Infant mortality | {imr['n']} | **{fmt(imr['med'])}** | "
-        f"{fmt(imr['q25'])} to {fmt(imr['q75'])} | {imr['ratio']:.2f} |\n"
-        f"| Under-5 mortality (fallback) | {u5['n']} | **{fmt(u5['med'])}** | "
-        f"{fmt(u5['q25'])} to {fmt(u5['q75'])} | {u5['ratio']:.2f} |"
+        f"| Births, by mother's age | `fert_gradient` | household surveys (DHS) | {tfr['n']} | "
+        f"{r10(tfr['med'])} overall"
+        + (f"; {r10(teen)} for teenagers" if teen is not None else "") + " |\n"
+        f"| Infant deaths | `infmort_gradient` | household surveys (DHS) | {imr['n']} | "
+        f"{r10(imr['med'])} |\n"
     )
-    amr_h = amr_headline()
     if amr_h:
-        table += (
-            f"\n| Adult mortality (45q15) | {amr_h['n']} | **{fmt(amr_h['med'])}** | "
-            f"{fmt(amr_h['q25'])} to {fmt(amr_h['q75'])} | {amr_h['ratio']:.2f} |"
-        )
+        table += (f"| Adult deaths, ages 15–60 | `mort_gradient` | census death records | "
+                  f"{amr_h['n']} measured; any country via the general gradient | "
+                  f"{r10(amr_h['med'])}, steeper in richer countries |\n")
+    table += "| Income of new immigrants | `imm_pctiles` | not covered | — | — |"
     readme = replace_between(
         readme,
         "<!-- AUTO-GENERATED by scripts/build_analysis.py — do not edit by hand -->",
         "<!-- END AUTO-GENERATED -->",
         table,
     )
-    # keep the coverage parenthetical in step with the data too
+    # keep the coverage line in step with the data too
     readme = re.sub(r"\d[\d,]* surveys, \d+ countries",
                     f"{n_surveys:,} surveys, {n_countries} countries", readme)
     readme_path.write_text(readme)
-    print(f"updated README headline table ({n_surveys} surveys, {n_countries} countries)")
+    print(f"updated README coverage table ({n_surveys} surveys, {n_countries} countries)")
 
-    # --- ANALYSIS.md (fully generated) ---
-    sa_t, sa_u = sa(latest, "TFR"), sa(latest, "U5MR")
+    # --- ANALYSIS.md: the findings (fully generated) ---
     cmp_ = imr_vs_u5mr(lib)
-    doc = f"""# The gradient library, in figures
+    both = latest.pivot_table(index="country", columns="indicator", values=["q1", "q5"])
+    fert_hi = int((both[("q1", "TFR")] > both[("q5", "TFR")]).sum())
+    imr_hi = int((both[("q1", "IMR")] > both[("q5", "IMR")]).sum())
+    t_early = lib[(lib.indicator == "TFR") & (lib.year < 2000)]["slope"].median()
+    t_late = lib[(lib.indicator == "TFR") & (lib.year >= 2015)]["slope"].median()
+    i_early = lib[(lib.indicator == "IMR") & (lib.year < 2000)]["slope"].median()
+    i_late = lib[(lib.indicator == "IMR") & (lib.year >= 2015)]["slope"].median()
+    g = latest.groupby(["indicator", "region"])["slope"]
+    reg = g.median()[g.count() >= 3]  # a one- or two-country region is not a pattern
+    steep = {i: reg[i].idxmin() for i in ("TFR", "IMR")}
+    flat = {i: reg[i].idxmax() for i in ("TFR", "IMR")}
+    steep_txt = (f"Gradients are steepest in {steep['TFR']} for both births and infant "
+                 "deaths." if steep["TFR"] == steep["IMR"] else
+                 f"Birth gradients are steepest in {steep['TFR']}, infant-death gradients in "
+                 f"{steep['IMR']}.")
+    steep_txt += (f" The mildest are in {flat['TFR']} (births) and {flat['IMR']} "
+                  "(infant deaths), but every region's median shows the poor with higher rates.")
+    doc = f"""<!-- GENERATED by scripts/build_analysis.py — do not edit by hand. -->
+# Findings
 
-Documentation of the data in this repo. **This file is generated** by
-[`scripts/build_analysis.py`](scripts/build_analysis.py) from the CSVs in
-[`data/`](data/); every number below is computed from the data, not hand-typed,
-so it cannot drift. Figures come from
-[`scripts/make_figures.py`](scripts/make_figures.py) and live in
-[`figures/`](figures/). Regenerate everything with `uv run scripts/refresh.py`.
+What the library's data show, in seven points. Each section opens with the
+finding in one sentence, then the figure and the numbers behind it.
 
-Method pages, the full adult-mortality table, and per-country provenance pages
-live under [`docs/`](docs/) — see the map in the [README](README.md).
+**How to read the numbers.** The library measures each pattern as a
+[tilt](docs/glossary.md#tilt); the figures show it as a ratio that needs no
+explanation: the **poorest tenth's rate divided by the richest tenth's**. 2×
+means the poorest households have twice the rate; 1× means no difference. New
+to the terms? See the [glossary](docs/glossary.md).
 
-South Africa is highlighted throughout as the worked example; pass
-`--highlight "<country>"` to `make_figures.py` to feature any other.
+Coverage: {n_surveys} household surveys with complete wealth breakdowns in
+{n_countries} countries (DHS), plus census death records for adult mortality.
+Every number on this page is computed from the files in [`data/`](data/).
 
-The **tilt** summarizing each survey is the OLS slope of ln(rate) on wealth-rank
-percentile midpoints (quintiles at the 10th…90th percentile) — the same log scale
-OG-Core's income-group demographics consume. Negative means the poor have higher
-rates; a tilt of {fmt(tfr['med'])} puts the poorest decile's rate at about
-e^({abs(tfr['med']):.2f}×0.8) ≈ {2.718281828 ** (abs(tfr['med']) * 0.8):.1f}× the richest decile's.
+## 1. Poorer households have more births and more infant deaths, almost everywhere
 
-Coverage: **{n_surveys} surveys with complete wealth quintets across
-{n_countries} countries**, giving {n_obs} country-survey-margin tilts (most
-recent survey per country used for the library view below).
+**In {fert_hi} of {tfr['n']} countries the poorest fifth of households has
+more births than the richest; in {imr_hi} of {imr['n']} it has more infant
+deaths.** The typical gap is {r10(tfr['med'])} for births and
+{r10(imr['med'])} for infant deaths. That is why an economic model that gives
+every income group the same demographics misses something real.
 
-## Every country, individually
+![Births and infant deaths by household wealth, every country](figures/by_wealth.png)
 
-Nearly every line slopes down: the wealth gradient in fertility is close to
-universal. South Africa is both low-fertility and mild-gradient (tilt
-{fmt(sa_t['slope'])} in {sa_t['year']}, vs the pooled median of {fmt(tfr['med'])}).
+## 2. How steep, region by region
 
-![Fertility (TFR) by household wealth rank, one line per country](figures/fig1_tfr_gradients.png)
+**{steep_txt}** A country with no survey of its own can borrow its region's
+median, using the middle half as the range to test.
 
-The same universal direction holds for child mortality, with wider spread across
-countries. South Africa's non-monotonic top quintiles reflect the small
-child-mortality samples in its {sa_u['year']} survey.
+![Gradients by region](figures/by_region.png)
 
-![Under-5 mortality by household wealth rank, one line per country](figures/fig2_u5mr_gradients.png)
+**Births (fertility tilt)**
 
-### Use infant mortality, not under-5, for `infmort_gradient`
-
-The library carries both. They are not interchangeable, and the difference runs
-one way: across the {cmp_['n']} surveys that report both by wealth quintile, the
-under-5 tilt is steeper than the infant tilt by a median
-{abs(cmp_['med_diff']):.2f}, and it is steeper in {cmp_['share_flatter']:.0%} of
-them. The two are strongly correlated (r = {cmp_['r']:.2f}), so the shape of the
-story is the same — but the level is not, and the gap reaches
-{cmp_['worst_gap']:.2f} ({cmp_['worst'][0]} {cmp_['worst'][1]}).
-
-The reason is what under-5 mortality includes. Deaths between ages 1 and 4 are
-dominated by diarrhoea, malaria, and malnutrition, which wealth protects against
-strongly; infant deaths lean toward prematurity and birth complications, which it
-protects against much less. Using under-5 as the infant proxy therefore imports
-the steeper child-mortality gradient into a parameter meant to describe infants.
-Prefer `indicator == "IMR"`, and fall back to `"U5MR"` only for the surveys that
-report no infant quintiles.
-
-## Grouped by region
-
-Each dot is a country's most recent survey; the bar marks the regional
-interquartile range and the tick marks the median. Latin America has the steepest
-gradients; Sub-Saharan Africa sits mid-range; South Africa is milder than its
-region's median on fertility.
-
-![Distribution of gradient tilts by region](figures/fig3_slopes_by_region.png)
-
-**Fertility (TFR) tilt by region**
-
-| Region | Countries | Median tilt | IQR | Median poorest/richest ratio |
+| Region | Countries | Median tilt | Middle half | Poorest ÷ richest tenth |
 |---|---|---|---|---|
 {region_table(latest, "TFR")}
 
-**Infant mortality tilt by region** — the series `infmort_gradient` should use
+**Infant deaths (infant-mortality tilt)**
 
-| Region | Countries | Median tilt | IQR | Median poorest/richest ratio |
+| Region | Countries | Median tilt | Middle half | Poorest ÷ richest tenth |
 |---|---|---|---|---|
 {region_table(latest, "IMR")}
 
-**Under-5 mortality tilt by region** — the fallback, and steeper (see below)
+<details><summary>Under-5 deaths, for surveys with no infant figure</summary>
 
-| Region | Countries | Median tilt | IQR | Median poorest/richest ratio |
+| Region | Countries | Median tilt | Middle half | Poorest ÷ richest tenth |
 |---|---|---|---|---|
 {region_table(latest, "U5MR")}
 
-## Stability over survey years
+</details>
 
-All {n_obs} country-survey-margin tilts plotted by fieldwork year, with a
-rolling median. The
-pooled gradient is nearly flat across three and a half decades — wealth gradients
-are a stable structural feature, not an eroding one, so a borrowed gradient is not
-a decaying quantity. South Africa's own fertility gradient flattened between its
-1998 and {sa_t['year']} surveys.
+## 3. The typical gradient has changed little since 1990, but a single country can
 
-![Gradient tilts across survey years](figures/fig4_slopes_over_time.png)
+**Across all surveys the typical gap moved only from {r10(t_early)} to
+{r10(t_late)} for births and from {r10(i_early)} to {r10(i_late)} for infant
+deaths between the 1990s and the surveys since 2015.** A borrowed gradient is
+therefore not a quantity that decays. Within one fast-developing country it
+can still move a lot (Brazil, below).
 
-**Stable across countries is not the same as stable within one.** The flat line
-above is a pooled median over many countries; a single fast-developing country
-can move a long way underneath it. Brazil is the worked case — see the census
-series below, where its child-mortality gradient roughly halves in twenty years.
-Read the pooled stability as "a borrowed gradient does not decay", not as "a
-country's own gradient will not change".
+![Gradients across survey years](figures/over_time.png)
 """
-
-    off = fertility_offsets()
-    if off is not None:
-        o = off.set_index("age_lo")["offset"]
-        doc += f"""
-## Fertility by age: the gradient is in the timing
-
-The TFR tilt summarizes how many children each wealth group has. By age, the
-gradient is U-shaped: steepest for teenagers and women over 40, flattest at
-30–34. Poorer women start earlier and continue later. The library publishes
-this as **age offsets** added to a country's TFR tilt — {fmt(o.iloc[0])} at
-15–19, {fmt(o.loc[30])} at 30–34, {fmt(o.iloc[-1])} at 45–49 — pooled across
-countries, because a country's own age shape is mostly survey noise. Method,
-checks and the calibration recipe:
-[fertility by age](docs/methods/fertility-by-age.md).
-
-![Fertility age offsets, and what they mean for the median country](figures/fig6_fertility_age_offsets.png)
-"""
-
     ccm = census_child_mortality()
     if ccm:
         doc += f"""
-## Child mortality from censuses, and Brazil's twenty-year trend
+### Brazil: a child-mortality gradient that halved in twenty years
 
-The DHS child-mortality gradients above are one survey per country, and for some
-countries that survey is old — Brazil's only usable DHS is 1996. Censuses ask
-every mother how many children she has borne and how many are still alive, so
-the household asset index already used for adult mortality yields a
-child-mortality gradient for any census year, including years no survey covers.
-These rows live in
-[`data/census_child_mortality.csv`](data/census_child_mortality.csv).
+Brazil's only usable survey is from 1996, so the library also measures child
+mortality from three censuses, using the share of children ever born who have
+died (mothers aged 25–29; [file](data/census_child_mortality.csv)). Its levels
+are not comparable with survey rates, but its tilt is: the 2000 census gives
+{fmt(ccm['vtilt'])} where the {ccm['vsurvey']} survey gives {fmt(ccm['vref'])}.
 
-The measure is the proportion of children ever born who have died — the classic
-Brass indirect indicator, for mothers aged 25–29. It is cumulative rather than a
-period rate, so **its levels are not comparable to DHS U5MR levels and must not
-be pooled with them.** Only the tilt is comparable.
-
-That comparability was tested rather than assumed. Brazil's 2000 census sits four
-years after its 1996 DHS, and the two agree to {ccm['vdiff']:.3f}: the census
-gives {fmt(ccm['vtilt'])} where the {ccm['vsurvey']} U5MR gradient is
-{fmt(ccm['vref'])}. Two independent sources, with different measures and
-different wealth rankings, landing on the same number.
-
-| Census | Groups | Tilt | Poorest/richest | Poorest group's children dead |
+| Census | Wealth groups | Tilt | Poorest ÷ richest | Poorest group's children who died |
 |---|---|---|---|---|
 {ccm['rows']}
 
-**Brazil's child-mortality gradient roughly halved**, from {fmt(ccm['t0'])} in
-{ccm['y0']} to {fmt(ccm['t1'])} in {ccm['y1']}. Child mortality fell in every
-group, but proportionally faster among the poor, and the poorest-to-richest ratio
-narrowed from 4.4× to 2.1×.
-
-That is a real change, not an artefact of the asset index growing richer over
-time (1991 offers four asset variables, 2010 offers ten). Re-estimating every
-census on only the assets common to all three — electricity, fridge, TV, radio
-and cars — the flattening is *larger*, {fmt(ccm['chg_common'])} against
-{fmt(ccm['chg_full'])} on the full index. Both variants are published, tagged by
-the `index` column; use `index == "full"`, which supports more wealth groups. The
-common-index 2010 estimate collapses to two groups, because by then nearly every
-Brazilian household owned all four items — a warning that simple durable-goods
-indices stop discriminating as a country gets richer.
-
-**For calibration:** the library's Brazil DHS row is a 1996 tilt of −1.46, and by
-2010 the value was near {fmt(ccm['t1'])}. A present-day Brazilian calibration
-using the DHS row overstates the child-mortality gradient by roughly 0.5.
+The tilt went from {fmt(ccm['t0'])} in {ccm['y0']} to {fmt(ccm['t1'])} in
+{ccm['y1']}. Child mortality fell for everyone, but fastest among the poor. The
+change is not an artefact of the asset index getting richer: re-estimated on
+only the five assets every census asks about, the flattening is larger
+({fmt(ccm['chg_common'])} against {fmt(ccm['chg_full'])}). A present-day Brazil
+calibration should use the census value, not the 1996 survey.
 """
+    if off is not None:
+        o = off.set_index("age_lo")["offset"]
+        doc += f"""
+## 4. The fertility gap is mostly about timing
 
-    amr_path = DATA / "adult_mortality_gradients.csv"
-    amr = pd.read_csv(amr_path) if amr_path.exists() else None
-    if amr is not None:
+**Poorer women start having children earlier and continue later; in the prime
+childbearing ages the gap is much smaller.** For the median country the
+poorest tenth's birth rate is {r10(tfr['med'] + o.iloc[0])} the richest
+tenth's at ages 15–19 and {r10(tfr['med'] + o.loc[30])} at 30–34. One
+fertility tilt at every age gets the number of children right but erases the
+timing, so the library publishes **age offsets** to add to a country's tilt.
+They are pooled across countries because a country's own age pattern turns out
+to be mostly survey noise ([method and checks](docs/methods/fertility-by-age.md)).
+
+![Fertility gradient by mother's age](figures/fertility_by_age.png)
+"""
+    if cmp_:
+        doc += f"""
+## 5. Use infant deaths, not under-5 deaths, for `infmort_gradient`
+
+**The under-5 gradient is steeper than the infant one in
+{cmp_['share_flatter']:.0%} of the {cmp_['n']} surveys that report both, by a
+median {abs(cmp_['med_diff']):.2f} on the tilt.** Deaths at ages 1–4 are
+dominated by diarrhoea, malaria and malnutrition, which wealth protects
+against strongly; infant deaths lean toward prematurity and birth
+complications, which it protects against less. The gap reaches
+{cmp_['worst_gap']:.2f} ({cmp_['worst'][0]} {cmp_['worst'][1]}). The library
+measures infant mortality directly; use under-5 only where no infant figure
+exists.
+"""
+    if amr is not None and gg:
+        a, b = gg["income_rule.intercept"], gg["income_rule.slope_ln_gni"]
+        fade = age_fade(amr)
         n_cens = amr.groupby(["country", "year"]).ngroups
         doc += f"""
-## Adult mortality gradients (census household-deaths modules)
+## 6. Adult deaths are more concentrated among the poor in richer countries
 
-Adult mortality by wealth comes from census microdata, not DHS surveys — the
-household outlives the deceased and reports the death alongside its assets. The
-method, the assets-vs-income validation, and the completeness checks are on the
-[adult-mortality method page](docs/methods/adult-mortality.md); the full
-per-census table is in
-[docs/tables/adult_mortality.md](docs/tables/adult_mortality.md); and the
-fallback for unmeasured countries is the
-[general gradient](docs/methods/general-gradient.md).
+**Across {n_cens} censuses, the adult-mortality gradient steepens with national
+income (r = {fmt(gg['income_rule.r'])}).** At $500 per person the poorest
+tenth's risk of dying between 15 and 60 is about {r10(a + b * np.log(500))}
+the richest tenth's; at $5,000, about {r10(a + b * np.log(5000))}. In the
+poorest countries survival differs little by wealth. That relationship is the
+**general gradient**, the library's rule for countries with no census
+measurement of their own ([method](docs/methods/general-gradient.md)). It also
+means a model running decades forward should let the gradient steepen as the
+country gets richer.
 
-The age pattern — steepest at prime working ages, fading in old age — is the
-by-age shape ogcore's `mort_gradient` accepts directly, and it holds in every
-one of the {n_cens} censuses measured:
+![Adult-mortality gradient against national income](figures/adult_mortality_vs_income.png)
 
-![Adult-mortality tilt by age band and country](figures/fig5_amr_age_profile.png)
+Adult mortality cannot come from household surveys (the people who died are
+not there to interview), so it comes from censuses that record deaths in each
+household over the past year ([method](docs/methods/adult-mortality.md)).
+Every census measurement is in the [full table](docs/tables/adult_mortality.md).
+
+## 7. The adult gradient weakens with age, and in the poorest countries reverses
+
+**In {fade['weaker']} of the {fade['n']} censuses measured at more than one
+age, the gradient is weaker at the oldest ages than at 15–29; in
+{fade['reversed']} the richer households report more deaths at the oldest
+ages.** Part of this is real (where everyone is poor, survival differs little)
+and part is how deaths are reported (frail elderly relatives often move into
+better-off households before they die). No check within a census separates the
+two, so the older-age values are the least certain in the library.
+
+![Adult-mortality gradient by age, census by census](figures/adult_mortality_by_age.png)
 """
-
     (ROOT / "ANALYSIS.md").write_text(doc)
     print("wrote ANALYSIS.md")
 

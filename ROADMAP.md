@@ -74,6 +74,16 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 - [ ] **D2. `imm_pctiles`** — the lifetime-income distribution of new
   immigrants. Not covered. Scope before building.
 
+## E. Documentation for readers with no context
+
+- [x] **E1. Front door, figures, glossary (2026-11-11).** README cut to a short
+  front door with a generated coverage table; seven figures rebuilt to one
+  standard (finding as title, poorest ÷ richest ratio, one accent), including
+  two new ones: what a gradient is, and adult mortality against income;
+  `docs/glossary.md`, `docs/data-files.md`, `docs/sources.md`; ANALYSIS.md
+  rewritten as seven findings; a page for every country (80) opening with
+  "What to use in OG-Core".
+
 ## Downstream — not this repo, tracked so they are not lost
 
 - OG-PHL: gradient work sits on `calib/multi-industry-remittances`, never pushed.
