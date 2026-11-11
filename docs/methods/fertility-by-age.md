@@ -20,18 +20,18 @@ From [`data/fertility_age_offsets.csv`](../../data/fertility_age_offsets.csv):
 the median across countries' latest surveys of (age tilt − TFR tilt). The last
 two columns apply them to the median country (TFR tilt −0.79).
 
-| Ages | Offset | IQR | Countries | Median country's tilt | Poorest ÷ richest decile |
+| Ages | Offset | IQR | Countries | Median country's tilt | Poorest-to-richest ratio |
 |---|---|---|---|---|---|
-| 15–19 | **−0.78** | −1.14 to −0.44 | 68 | −1.56 | 3.5× |
-| 20–24 | **−0.10** | −0.33 to 0.02 | 68 | −0.88 | 2.0× |
-| 25–29 | **0.21** | 0.13 to 0.33 | 68 | −0.58 | 1.6× |
-| 30–34 | **0.32** | 0.19 to 0.42 | 68 | −0.46 | 1.4× |
-| 35–39 | **0.09** | −0.07 to 0.27 | 68 | −0.69 | 1.7× |
-| 40–44 | **−0.39** | −0.82 to −0.10 | 66 | −1.18 | 2.6× |
-| 45–49 | **−0.98** | −1.72 to −0.61 | 34 | −1.77 | 4.1× |
+| 15–19 | **−0.78** | −1.14 to −0.44 | 68 | −1.56 | 3.5 |
+| 20–24 | **−0.10** | −0.33 to 0.02 | 68 | −0.88 | 2.0 |
+| 25–29 | **0.21** | 0.13 to 0.33 | 68 | −0.58 | 1.6 |
+| 30–34 | **0.32** | 0.19 to 0.42 | 68 | −0.46 | 1.4 |
+| 35–39 | **0.09** | −0.07 to 0.27 | 68 | −0.69 | 1.7 |
+| 40–44 | **−0.39** | −0.82 to −0.10 | 66 | −1.18 | 2.6 |
+| 45–49 | **−0.98** | −1.72 to −0.61 | 34 | −1.77 | 4.1 |
 
-A single TFR tilt would put the poorest decile at
-1.9× the richest at every age. At 45–49
+A single TFR tilt would give a poorest-to-richest ratio of
+1.9 at every age. At 45–49
 only 34 countries can be fitted: elsewhere a quintile reports no
 births. Rates there are small, so the offset matters little.
 

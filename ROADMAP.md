@@ -36,9 +36,18 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
   own age shape predicts its next survey no better (backtest in the same
   file). Docs: `docs/methods/fertility-by-age.md` (generated, with fig6),
   ANALYSIS.md, country pages, AGENTS.md, README, skill.
-- [ ] **A3. Child mortality at ages 1–4.** Both repos use the under-5 tilt there,
+- [R] **A3. Child mortality at ages 1–4.** Both repos use the under-5 tilt there,
   which includes infant deaths. DHS publishes 4q1 by wealth (`CM_ECMR_C_CMR`).
-  *Validate:* per quintile, (1 − IMR)(1 − CMR) must reproduce 1 − U5MR.
+  *Validated 2026-11-11:* (1 − IMR)(1 − CMR) reproduces DHS's U5MR in all
+  1,461 quintile cells within 1.4 per 1,000 (rounding). 291 surveys,
+  78 countries; 14 unfittable (a quintile with no child deaths). The ages 1–4
+  gradient is much steeper than under-5: median tilt −1.36 vs −0.82 (poorest-to-richest
+  ratio 3.0 vs 1.9); steeper in 79% of countries. Unlike fertility
+  by age, a country's own value is signal: predicting the next survey's
+  ages 1–4 tilt, own previous value MAE 0.43, U5MR + pooled offset 0.43,
+  plain U5MR (status quo) 0.61; test-retest r 0.70 (U5MR 0.75).
+  *Ruling needed:* publish the ages 1–4 tilt per country as indicator `CMR`
+  in the library files (fallback where unfittable: U5MR tilt + pooled offset).
 
 ## B. Rules a calibration needs (method documentation)
 
@@ -78,7 +87,7 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 
 - [x] **E1. Front door, figures, glossary (2026-11-11).** README cut to a short
   front door with a generated coverage table; seven figures rebuilt to one
-  standard (finding as title, poorest ÷ richest ratio, one accent), including
+  standard (finding as title, poorest-to-richest ratio, one accent), including
   two new ones: what a gradient is, and adult mortality against income;
   `docs/glossary.md`, `docs/data-files.md`, `docs/sources.md`; ANALYSIS.md
   rewritten as seven findings; a page for every country (80) opening with

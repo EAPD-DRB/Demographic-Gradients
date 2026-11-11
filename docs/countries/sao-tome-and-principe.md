@@ -26,8 +26,8 @@ Every value is a **tilt** ([what that is](../glossary.md#tilt)). Convert it befo
 
 Latest survey, from [`data/gradient_library_latest.csv`](../../data/gradient_library_latest.csv). Earlier surveys are in `gradient_library.csv`.
 
-| Measure | Survey | Tilt | Poorest ÷ richest tenth | Poorest fifth → richest fifth |
+| Measure | Survey | Tilt | Poorest-to-richest ratio | Poorest fifth → richest fifth |
 |---|---|---|---|---|
-| Births per woman (TFR) | 2008 | **−0.48** | 1.4× | 5.6 · 5.4 · 5.7 · 4.3 · 3.9 |
-| Infant deaths per 1,000 births (IMR) | 2008 | **−0.64** | 2.0× | 53 · 49 · 42 · 57 · 26 |
-| Under-5 deaths per 1,000 births (U5MR) | 2008 | **−1.10** | 3.2× | 90 · 72 · 76 · 83 · 28 |
+| Births per woman (TFR) | 2008 | **−0.48** | 1.5 | 5.6 · 5.4 · 5.7 · 4.3 · 3.9 |
+| Infant deaths per 1,000 births (IMR) | 2008 | **−0.64** | 1.7 | 53 · 49 · 42 · 57 · 26 |
+| Under-5 deaths per 1,000 births (U5MR) | 2008 | **−1.10** | 2.4 | 90 · 72 · 76 · 83 · 28 |

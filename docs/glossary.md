@@ -17,11 +17,18 @@ a slope on a log scale, a tilt works the same way whatever the level of the
 rate, so tilts can be compared across countries and years. In the data files
 it is the `slope` column.
 
-### Poorest ÷ richest tenth
-The tilt turned into a ratio anyone can read: the poorest tenth of households'
-rate divided by the richest tenth's, which is e^(−0.8 × tilt). A tilt of −0.79
-is about 1.9×, meaning the poorest tenth has almost twice the richest tenth's
-rate. 1× means no difference. The figures use this ratio; the `ratio` column in
+### Poorest-to-richest ratio
+The tilt turned into a number anyone can read: the rate of the poorest fifth
+of households divided by the rate of the richest fifth, both read off the
+fitted curve. It equals e^(−0.8 × tilt), because the two fifths sit 0.8 apart
+on the wealth scale. A tilt of −0.79 gives a ratio of about 1.9: the poorest
+fifth's rate is almost twice the richest fifth's. A ratio of 1 means no
+difference; below 1, the richer households have the higher rate.
+
+The `ratio` column in the data files is the *measured* version, the poorest
+group's published rate over the richest group's. It is noisier, because it
+rests on two numbers instead of the whole curve; the documentation and
+figures use the fitted ratio. The figures use this ratio; the `ratio` column in
 the data files holds it too.
 
 ### Wealth fifths (quintiles)

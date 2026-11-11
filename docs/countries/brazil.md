@@ -28,24 +28,24 @@ Every value is a **tilt** ([what that is](../glossary.md#tilt)). Convert it befo
 
 Latest survey, from [`data/gradient_library_latest.csv`](../../data/gradient_library_latest.csv). Earlier surveys are in `gradient_library.csv`.
 
-| Measure | Survey | Tilt | Poorest ÷ richest tenth | Poorest fifth → richest fifth |
+| Measure | Survey | Tilt | Poorest-to-richest ratio | Poorest fifth → richest fifth |
 |---|---|---|---|---|
-| Births per woman (TFR) | 1996 | **−1.21** | 2.8× | 4.8 · 2.7 · 2.1 · 1.9 · 1.7 |
-| Infant deaths per 1,000 births (IMR) | 1996 | **−1.37** | 2.9× | 83 · 47 · 33 · 25 · 29 |
-| Under-5 deaths per 1,000 births (U5MR) | 1996 | **−1.46** | 3.0× | 99 · 56 · 39 · 27 · 33 |
+| Births per woman (TFR) | 1996 | **−1.21** | 2.6 | 4.8 · 2.7 · 2.1 · 1.9 · 1.7 |
+| Infant deaths per 1,000 births (IMR) | 1996 | **−1.37** | 3.0 | 83 · 47 · 33 · 25 · 29 |
+| Under-5 deaths per 1,000 births (U5MR) | 1996 | **−1.46** | 3.2 | 99 · 56 · 39 · 27 · 33 |
 
 ### Child mortality from censuses
 
 From [`data/census_child_mortality.csv`](../../data/census_child_mortality.csv): the share of children ever born who have died, for mothers aged 25–29. Compare tilts only; the levels are not comparable with the survey rates.
 
-| Census | Asset index | Wealth groups | Tilt | Poorest ÷ richest tenth |
+| Census | Asset index | Wealth groups | Tilt | Poorest-to-richest ratio |
 |---|---|---|---|---|
-| 1991 | common | 4 | **−1.76** | 4.4× |
-| 1991 | full | 4 | **−1.76** | 4.4× |
-| 2000 | common | 4 | **−1.41** | 3.0× |
-| 2000 | full | 4 | **−1.45** | 3.2× |
-| 2010 | common | 2 | **−0.70** | 1.4× |
-| 2010 | full | 5 | **−0.84** | 2.1× |
+| 1991 | common | 4 | **−1.76** | 4.1 |
+| 1991 | full | 4 | **−1.76** | 4.1 |
+| 2000 | common | 4 | **−1.41** | 3.1 |
+| 2000 | full | 4 | **−1.45** | 3.2 |
+| 2010 | common | 2 | **−0.70** | 1.7 |
+| 2010 | full | 5 | **−0.84** | 2.0 |
 
 Cross-check against the survey: Brazil 1996 DHS U5MR tilt -1.4634.
 

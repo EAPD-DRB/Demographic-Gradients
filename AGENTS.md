@@ -122,8 +122,9 @@ IQR from `ANALYSIS.md` and label it as borrowed.
 ## Sign convention and interpretation
 
 Negative means the poor have higher rates — the usual case for every margin
-here. A tilt of −0.79 puts the poorest decile's rate at roughly
-e^(0.79 × 0.8) ≈ 1.9× the richest decile's. A positive adult-mortality tilt is
+here. A tilt of −0.79 puts the poorest fifth's fitted rate at
+e^(0.79 × 0.8) ≈ 1.9 times the richest fifth's (a poorest-to-richest ratio
+of 1.9). The `ratio` column is the measured q1/q5 version, which is noisier. A positive adult-mortality tilt is
 not necessarily an error: several of the poorest countries genuinely measure
 that way, for reasons the analysis discusses.
 
@@ -191,8 +192,8 @@ scripts, and the documentation is generated — respect that architecture.
   links — keep it short and put detail on the page it belongs to. Every new
   term goes in `docs/glossary.md`. Every figure follows the standard in
   `scripts/make_figures.py`: a title that states the finding, a subtitle that
-  says what is plotted, plain axis labels, gradients shown as poorest ÷
-  richest tenth on a log scale, one accent colour for the story and gray for
+  says what is plotted, plain axis labels, gradients shown as the
+  poorest-to-richest ratio (plain numbers, no "×") on a log scale, one accent colour for the story and gray for
   context, and a source line. Render it and look at it before committing.
 - **No microdata in this repo, ever.** IPUMS extracts and supplementary death
   files stay local (`~/ipums-extracts`, `~/Projects/data`); the IPUMS license

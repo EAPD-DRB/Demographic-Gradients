@@ -21,7 +21,7 @@ are explained in the [glossary](glossary.md).
 | `indicator` | The measure: `TFR`, `IMR`, `U5MR` (surveys), `AMR` (adult mortality), `CHMORT_CENSUS` (census child mortality) |
 | `country`, `year` | Country and the survey's or census's year |
 | `slope` | **The tilt** — the number a calibration uses |
-| `ratio` | Poorest tenth's rate ÷ richest tenth's, implied by the tilt |
+| `ratio` | The measured ratio: the poorest group's rate over the richest group's (`q1` over the last group). Noisier than the fitted [poorest-to-richest ratio](glossary.md#poorest-to-richest-ratio) the docs use |
 | `q1` … `q5` | The rate in each wealth fifth, poorest first. Units differ by file: births per woman, deaths per 1,000 births, annual death rates. Blank where a census supports fewer groups |
 
 Extra columns in `adult_mortality_gradients.csv`: `sex`; `measure` (`45q15`

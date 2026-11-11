@@ -19,7 +19,8 @@ Program alongside this repo when using these numbers.
 The tilt (`slope`) is the OLS slope of ln(rate) on wealth rank measured 0 to 1
 (quintile midpoints at 0.10 … 0.90) — the change in the log rate from the
 bottom to the top of the wealth distribution. Negative = poor higher. `ratio`
-is the implied poorest/richest **decile** ratio, and `q1..q5` are the five
+is the measured poorest-fifth over richest-fifth ratio (`q1 / q5`; the docs
+use the smoother fitted version, e^(−0.8 × tilt)), and `q1..q5` are the five
 quintile values behind each tilt.
 
 ## Fertility by age

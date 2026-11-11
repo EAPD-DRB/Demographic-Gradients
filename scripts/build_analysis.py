@@ -165,7 +165,7 @@ def census_child_mortality():
     if not len(f):
         return None
     rows = "\n".join(
-        f"| {int(r.year)} | {r.groups} | {fmt(r.slope)} | {r.ratio:.2f} | "
+        f"| {int(r.year)} | {r.groups} | {fmt(r.slope)} | {np.exp(-0.8 * r.slope):.1f} | "
         f"{r.q1 * 100:.1f}% |"
         for _, r in f.sort_values("year").iterrows())
     ff, cc = f.sort_values("year"), c.sort_values("year")
@@ -250,7 +250,7 @@ def region_table(latest, ind):
     for rgn, r in g.iterrows():
         iqr = REGION_ORDER_NOTE if r["n"] == 1 else f"{fmt(r['q25'])} to {fmt(r['q75'])}"
         rows.append(
-            f"| {rgn} | {int(r['n'])} | {fmt(r['med'])} | {iqr} | {np.exp(-0.8 * r['med']):.1f}× |"
+            f"| {rgn} | {int(r['n'])} | {fmt(r['med'])} | {iqr} | {np.exp(-0.8 * r['med']):.1f} |"
         )
     return "\n".join(rows)
 
@@ -504,7 +504,7 @@ def write_fertility_age_page(off, tfr_med):
     e = {k: bt[f"backtest_err_{k}"].mean() for k in ("flat", "pooled", "own")}
     rows = "\n".join(
         f"| {r.age_lo}–{r.age_hi} | **{fmt(r.offset)}** | {fmt(r.iqr_lo)} to {fmt(r.iqr_hi)} "
-        f"| {r.countries} | {fmt(tfr_med + r.offset)} | {np.exp(-(tfr_med + r.offset) * 0.8):.1f}× |"
+        f"| {r.countries} | {fmt(tfr_med + r.offset)} | {np.exp(-(tfr_med + r.offset) * 0.8):.1f} |"
         for r in off.itertuples())
     btrows = "\n".join(
         f"| {r.age_lo}–{r.age_hi} | {r.backtest_err_flat:.2f} | {r.backtest_err_pooled:.2f} "
@@ -531,12 +531,12 @@ From [`data/fertility_age_offsets.csv`](../../data/fertility_age_offsets.csv):
 the median across countries' latest surveys of (age tilt − TFR tilt). The last
 two columns apply them to the median country (TFR tilt {fmt(tfr_med)}).
 
-| Ages | Offset | IQR | Countries | Median country's tilt | Poorest ÷ richest decile |
+| Ages | Offset | IQR | Countries | Median country's tilt | Poorest-to-richest ratio |
 |---|---|---|---|---|---|
 {rows}
 
-A single TFR tilt would put the poorest decile at
-{np.exp(-tfr_med * 0.8):.1f}× the richest at every age. At {int(last.age_lo)}–{int(last.age_hi)}
+A single TFR tilt would give a poorest-to-richest ratio of
+{np.exp(-tfr_med * 0.8):.1f} at every age. At {int(last.age_lo)}–{int(last.age_hi)}
 only {int(last.countries)} countries can be fitted: elsewhere a quintile reports no
 births. Rates there are small, so the offset matters little.
 
@@ -641,7 +641,8 @@ IND_NAME = {"TFR": "Births per woman (TFR)", "IMR": "Infant deaths per 1,000 bir
 STALE_YEAR = 2005  # surveys older than this get an explicit warning
 
 
-def decile_ratio(tilt):
+def fitted_ratio(tilt):
+    """Poorest-to-richest ratio implied by a tilt: fitted poorest fifth over richest fifth."""
     return float(np.exp(-0.8 * tilt))
 
 
@@ -743,13 +744,13 @@ def country_dhs_block(latest, country):
            "Latest survey, from [`data/gradient_library_latest.csv`]"
            "(../../data/gradient_library_latest.csv). Earlier surveys are in "
            "`gradient_library.csv`.\n\n"
-           "| Measure | Survey | Tilt | Poorest ÷ richest tenth | Poorest fifth → richest fifth |\n"
+           "| Measure | Survey | Tilt | Poorest-to-richest ratio | Poorest fifth → richest fifth |\n"
            "|---|---|---|---|---|\n")
     order = {"TFR": 0, "IMR": 1, "U5MR": 2}
     for _, r in rows.sort_values("indicator", key=lambda s: s.map(order)).iterrows():
         qs = " · ".join("" if pd.isna(r[q]) else f"{r[q]:g}" for q in ["q1", "q2", "q3", "q4", "q5"])
         out += (f"| {IND_NAME[r['indicator']]} | {int(r['year'])} | **{fmt(r['slope'])}** "
-                f"| {r['ratio']:.1f}× | {qs} |\n")
+                f"| {fitted_ratio(r['slope']):.1f} | {qs} |\n")
     return out
 
 
@@ -763,11 +764,11 @@ def country_ccm_block(ccm_df, country):
            "From [`data/census_child_mortality.csv`](../../data/census_child_mortality.csv): "
            "the share of children ever born who have died, for mothers aged 25–29. Compare "
            "tilts only; the levels are not comparable with the survey rates.\n\n"
-           "| Census | Asset index | Wealth groups | Tilt | Poorest ÷ richest tenth |\n"
+           "| Census | Asset index | Wealth groups | Tilt | Poorest-to-richest ratio |\n"
            "|---|---|---|---|---|\n")
     for _, r in rows.sort_values(["year", "index"]).iterrows():
         out += (f"| {int(r['year'])} | {r['index']} | {r['groups']} | **{fmt(r['slope'])}** "
-                f"| {r['ratio']:.1f}× |\n")
+                f"| {fitted_ratio(r['slope']):.1f} |\n")
     chk = rows[rows["dhs_check"].astype(str).str.len() > 0]
     if len(chk):
         out += f"\nCross-check against the survey: {chk['dhs_check'].iloc[0]}.\n"
@@ -846,8 +847,8 @@ def write_country_pages(latest, amr, ccm):
 
 
 def r10(tilt):
-    """Poorest tenth ÷ richest tenth, formatted."""
-    return f"{np.exp(-0.8 * tilt):.1f}×"
+    """The poorest-to-richest ratio implied by a tilt, formatted."""
+    return f"{np.exp(-0.8 * tilt):.1f}"
 
 
 def age_fade(amr):
@@ -878,7 +879,7 @@ def main():
     readme_path = ROOT / "README.md"
     readme = readme_path.read_text()
     table = (
-        "| What it measures | OG-Core input | Source | Countries | Typical gap, poorest ÷ richest tenth |\n"
+        "| What it measures | OG-Core input | Source | Countries | Typical poorest-to-richest ratio |\n"
         "|---|---|---|---|---|\n"
         f"| Births, by mother's age | `fert_gradient` | household surveys (DHS) | {tfr['n']} | "
         f"{r10(tfr['med'])} overall"
@@ -929,9 +930,10 @@ What the library's data show, in seven points. Each section opens with the
 finding in one sentence, then the figure and the numbers behind it.
 
 **How to read the numbers.** The library measures each pattern as a
-[tilt](docs/glossary.md#tilt); the figures show it as a ratio that needs no
-explanation: the **poorest tenth's rate divided by the richest tenth's**. 2×
-means the poorest households have twice the rate; 1× means no difference. New
+[tilt](docs/glossary.md#tilt); the figures and tables show it as the
+**[poorest-to-richest ratio](docs/glossary.md#poorest-to-richest-ratio)**. A
+ratio of 2 means the poorest households have twice the rate of the richest; 1
+means no difference. New
 to the terms? See the [glossary](docs/glossary.md).
 
 Coverage: {n_surveys} household surveys with complete wealth breakdowns in
@@ -942,8 +944,8 @@ Every number on this page is computed from the files in [`data/`](data/).
 
 **In {fert_hi} of {tfr['n']} countries the poorest fifth of households has
 more births than the richest; in {imr_hi} of {imr['n']} it has more infant
-deaths.** The typical gap is {r10(tfr['med'])} for births and
-{r10(imr['med'])} for infant deaths. That is why an economic model that gives
+deaths.** The typical poorest-to-richest ratio is {r10(tfr['med'])} for births
+and {r10(imr['med'])} for infant deaths. That is why an economic model that gives
 every income group the same demographics misses something real.
 
 ![Births and infant deaths by household wealth, every country](figures/by_wealth.png)
@@ -957,19 +959,19 @@ median, using the middle half as the range to test.
 
 **Births (fertility tilt)**
 
-| Region | Countries | Median tilt | Middle half | Poorest ÷ richest tenth |
+| Region | Countries | Median tilt | Middle half | Poorest-to-richest ratio |
 |---|---|---|---|---|
 {region_table(latest, "TFR")}
 
 **Infant deaths (infant-mortality tilt)**
 
-| Region | Countries | Median tilt | Middle half | Poorest ÷ richest tenth |
+| Region | Countries | Median tilt | Middle half | Poorest-to-richest ratio |
 |---|---|---|---|---|
 {region_table(latest, "IMR")}
 
 <details><summary>Under-5 deaths, for surveys with no infant figure</summary>
 
-| Region | Countries | Median tilt | Middle half | Poorest ÷ richest tenth |
+| Region | Countries | Median tilt | Middle half | Poorest-to-richest ratio |
 |---|---|---|---|---|
 {region_table(latest, "U5MR")}
 
@@ -977,8 +979,8 @@ median, using the middle half as the range to test.
 
 ## 3. The typical gradient has changed little since 1990, but a single country can
 
-**Across all surveys the typical gap moved only from {r10(t_early)} to
-{r10(t_late)} for births and from {r10(i_early)} to {r10(i_late)} for infant
+**Across all surveys the typical poorest-to-richest ratio moved only from
+{r10(t_early)} to {r10(t_late)} for births and from {r10(i_early)} to {r10(i_late)} for infant
 deaths between the 1990s and the surveys since 2015.** A borrowed gradient is
 therefore not a quantity that decays. Within one fast-developing country it
 can still move a lot (Brazil, below).
@@ -996,7 +998,7 @@ died (mothers aged 25–29; [file](data/census_child_mortality.csv)). Its levels
 are not comparable with survey rates, but its tilt is: the 2000 census gives
 {fmt(ccm['vtilt'])} where the {ccm['vsurvey']} survey gives {fmt(ccm['vref'])}.
 
-| Census | Wealth groups | Tilt | Poorest ÷ richest | Poorest group's children who died |
+| Census | Wealth groups | Tilt | Poorest-to-richest ratio | Poorest group's children who died |
 |---|---|---|---|---|
 {ccm['rows']}
 
@@ -1014,8 +1016,8 @@ calibration should use the census value, not the 1996 survey.
 
 **Poorer women start having children earlier and continue later; in the prime
 childbearing ages the gap is much smaller.** For the median country the
-poorest tenth's birth rate is {r10(tfr['med'] + o.iloc[0])} the richest
-tenth's at ages 15–19 and {r10(tfr['med'] + o.loc[30])} at 30–34. One
+poorest-to-richest ratio in birth rates is {r10(tfr['med'] + o.iloc[0])} at ages 15–19 and
+{r10(tfr['med'] + o.loc[30])} at 30–34. One
 fertility tilt at every age gets the number of children right but erases the
 timing, so the library publishes **age offsets** to add to a country's tilt.
 They are pooled across countries because a country's own age pattern turns out
@@ -1045,9 +1047,9 @@ exists.
 ## 6. Adult deaths are more concentrated among the poor in richer countries
 
 **Across {n_cens} censuses, the adult-mortality gradient steepens with national
-income (r = {fmt(gg['income_rule.r'])}).** At $500 per person the poorest
-tenth's risk of dying between 15 and 60 is about {r10(a + b * np.log(500))}
-the richest tenth's; at $5,000, about {r10(a + b * np.log(5000))}. In the
+income (r = {fmt(gg['income_rule.r'])}).** At $500 per person the
+poorest-to-richest ratio in the risk of dying between 15 and 60 is about
+{r10(a + b * np.log(500))}; at $5,000, about {r10(a + b * np.log(5000))}. In the
 poorest countries survival differs little by wealth. That relationship is the
 **general gradient**, the library's rule for countries with no census
 measurement of their own ([method](docs/methods/general-gradient.md)). It also

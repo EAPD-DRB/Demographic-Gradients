@@ -10,8 +10,9 @@ Every figure follows one standard, so a reader with no context can follow it:
 a title that states the finding, a subtitle that says what is plotted, plain
 axis labels, one accent colour for the series the story is about and gray for
 context, and a source line. Where a gradient is shown as a number it is the
-poorest tenth's rate divided by the richest tenth's (exp(-0.8 x tilt)), on a
-log scale, because a ratio needs no explanation and a tilt does.
+poorest-to-richest ratio (the fitted rate of the poorest fifth over the
+richest fifth, exp(-0.8 x tilt)), on a log scale, because a ratio needs no explanation and a
+tilt does.
 """
 
 from pathlib import Path
@@ -48,7 +49,10 @@ def num(x, fmt=".2f"):
 
 
 def ratio(tilt):
-    """Poorest tenth's rate / richest tenth's, implied by a tilt."""
+    """The poorest-to-richest ratio implied by a tilt: fitted poorest fifth over richest fifth.
+
+    The fifths' midpoints sit at ranks 0.1 and 0.9, 0.8 apart, so the ratio is exp(-0.8 x tilt).
+    """
     return np.exp(-0.8 * np.asarray(tilt, dtype=float))
 
 
@@ -66,14 +70,14 @@ def grid(ax, axis="y"):
 
 
 def ratio_axis(ax, axis="y", lo=0.6, hi=6):
-    """Log-scaled 'poorest / richest' axis with plain tick labels and a no-difference line."""
+    """Log-scaled poorest-to-richest ratio axis, plain tick labels, a no-difference line at 1."""
     (ax.set_yscale if axis == "y" else ax.set_xscale)("log")
     (ax.set_ylim if axis == "y" else ax.set_xlim)(lo, hi)
     a = ax.yaxis if axis == "y" else ax.xaxis
     ticks = [t for t in RATIO_TICKS if lo <= t <= hi]
     a.set_major_locator(FixedLocator(ticks))
     a.set_minor_locator(NullLocator())
-    a.set_ticklabels([f"{t:g}×" for t in ticks])
+    a.set_ticklabels([f"{t:g}" for t in ticks])
     (ax.axhline if axis == "y" else ax.axvline)(1, color=INK, lw=1, alpha=0.55, zorder=1)
 
 
@@ -101,8 +105,9 @@ def what_is_a_gradient(latest, country="Philippines"):
                 fontsize=9.5, color=INK, arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.8))
     ax.text(1.02, q.max() * 0.62,
             f"The library's number for this\npattern is the tilt: {num(b)}\n\n"
-            f"It means the poorest tenth\nhas {ratio(b):.1f}× the richest tenth's\n"
-            "rate. Negative = poor higher.",
+            f"Poorest-to-richest ratio: {ratio(b):.1f}\n(on the curve, the poorest\n"
+            f"fifth's rate is {ratio(b):.1f} times\nthe richest fifth's)\n\n"
+            "A negative tilt means the\npoor have the higher rate.",
             fontsize=10, va="top", linespacing=1.4)
     ax.set_xticks(RANK, QUINTILES)
     ax.set_xlim(0, 1)
@@ -170,7 +175,7 @@ def by_region(latest):
             ax.plot([q50], [yi], marker="|", ms=18, mew=2.5, color=HI, zorder=3)
         ratio_axis(ax, "x", 0.5, 8)
         ax.set_title(ttl)
-        ax.set_xlabel("poorest tenth's rate ÷ richest tenth's (log scale)")
+        ax.set_xlabel("poorest-to-richest ratio (log scale)")
     n = tfr.groupby("region")["country"].nunique()
     short = {"North Africa/West Asia/Europe": "N. Africa, W. Asia & Europe",
              "Latin America & Caribbean": "Latin America & Caribbean"}
@@ -183,8 +188,8 @@ def by_region(latest):
              f"in {steepest['IMR']}")
     frame(fig, title,
           "Each dot is one country's latest survey (number of countries in brackets); the "
-          "blue tick is the region's median and\nthe band its middle half. Right of 1× "
-          "means the poor have the higher rate.", DHS)
+          "blue tick is the region's median and\nthe band its middle half. Above 1 "
+          "the poor have the higher rate.", DHS)
     fig.subplots_adjust(left=0.235)
     save(fig, "by_region.png")
 
@@ -207,11 +212,11 @@ def over_time(lib):
         ax.set_xlabel("survey year")
         early = ratio(l[l["year"] < 2000]["slope"].median())
         late = ratio(l[l["year"] >= 2015]["slope"].median())
-        notes.append(f"{ttl.lower()} {early:.1f}× in the 1990s and {late:.1f}× since 2015")
-    axes[0].set_ylabel("poorest tenth's rate ÷ richest tenth's")
+        notes.append(f"{ttl.lower()} {early:.1f} in the 1990s and {late:.1f} since 2015")
+    axes[0].set_ylabel("poorest-to-richest ratio (log scale)")
     frame(fig, "The typical gradient has changed little since 1990",
           "Each dot is one survey; the line is the median over a nine-year window. Median "
-          f"gap: {notes[0]};\n{notes[1]}. A single country can still change a lot "
+          f"poorest-to-richest ratio: {notes[0]};\n{notes[1]}. A single country can still change a lot "
           "(Brazil's child-mortality gradient halved 1991–2010).",
           "Source: DHS Program API, every survey with a complete wealth-quintile breakdown.")
     save(fig, "over_time.png")
@@ -237,13 +242,13 @@ def fertility_by_age(latest):
     rr = ratio(tfr + o["offset"].values)
     ratio_axis(a1, "y", 0.8, 6)
     a1.axhline(ratio(tfr), color=CONTEXT, lw=1.5, zorder=1)
-    a1.text(3, ratio(tfr) * 0.955, f"single tilt: {ratio(tfr):.1f}×", ha="center", va="top",
+    a1.text(3, ratio(tfr) * 0.955, f"one tilt for all ages: {ratio(tfr):.1f}", ha="center", va="top",
             color=MUTED, fontsize=9)
     a1.plot(x, rr, color=HI, lw=2.5, marker="o", ms=7, mec=SURF, mew=2, zorder=3)
     for i, v in enumerate(rr):
-        a1.annotate(f"{v:.1f}×", (i, v), xytext=(0, 9), textcoords="offset points",
+        a1.annotate(f"{v:.1f}", (i, v), xytext=(0, 9), textcoords="offset points",
                     ha="center", fontsize=9)
-    a1.set_ylabel("poorest tenth's birth rate ÷ richest tenth's")
+    a1.set_ylabel("poorest-to-richest ratio, birth rate (log scale)")
     a1.set_title(f"The gap by age, for the median country")
     # right: what the file holds
     for _, g in t.groupby("survey"):
@@ -308,13 +313,13 @@ def adult_mortality_vs_income():
     ax.xaxis.set_ticklabels(["$200", "$500", "$1,000", "$2,000", "$5,000", "$10,000"])
     ratio_axis(ax, "y", 0.8, 2.6)
     ax.set_xlabel("national income per person in the census year (GNI, current US$, log scale)")
-    ax.set_ylabel("poorest tenth's adult death risk ÷ richest tenth's")
+    ax.set_ylabel("poorest-to-richest ratio, adult death risk (log scale)")
     ax.text(2200, ratio(a + b * np.log(2200)) * 0.95, "general gradient\n(fallback rule)",
             color=INK, fontsize=9.5, ha="center", va="top")
     frame(fig, "Adult deaths are more concentrated among the poor in richer countries",
           f"Each dot is one census (risk of dying between 15 and 60). The blue line is the "
           f"rule the library uses for countries with no\nmeasurement, fitted to these dots "
-          f"(r = {num(r)}); the band is ±1 standard deviation. Below 1× the richer households "
+          f"(r = {num(r)}); the band is ±1 standard deviation. Below 1 the richer households "
           "report more deaths.",
           "Source: IPUMS International and IBGE census microdata (household deaths "
           "modules); World Bank GNI per capita.")
@@ -354,14 +359,14 @@ def adult_mortality_by_age():
     ax.tick_params(axis="y", length=0)
     ax.set_ylim(len(d) - 0.4, -0.7)
     ratio_axis(ax, "x", 0.5, 4)
-    ax.set_xlabel("poorest tenth's death rate ÷ richest tenth's (log scale)")
+    ax.set_xlabel("poorest-to-richest ratio, death rate (log scale)")
     ax.legend(loc="lower right", bbox_to_anchor=(1, 1.0), ncol=2, frameon=False, fontsize=9.5)
     weaker, reversed_ = (d["old"] > d["young"]).sum(), (d["old"] > 0).sum()
     frame(fig, f"Adult-mortality gradients weaken with age in {weaker} of {len(d)} "
           f"censuses, and reverse in {reversed_}",
           "Each row is one census (men and women together), richest country at the top "
           "(GNI per person in brackets). The arrow\nruns from ages 15–29 to ages 60–74 "
-          "(45–59 where marked: too few deaths above 60). Left of 1× the richer\nhouseholds "
+          "(45–59 where marked: too few deaths above 60). Below 1 the richer\nhouseholds "
           "report more deaths, which is partly real and partly how deaths of elderly "
           "relatives get reported.",
           "Source: IPUMS International census microdata (household deaths modules); "
