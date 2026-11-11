@@ -22,17 +22,17 @@ two columns apply them to the median country (TFR tilt −0.79).
 
 | Ages | Offset | IQR | Countries | Median country's tilt | Poorest ÷ richest decile |
 |---|---|---|---|---|---|
-| 15–19 | **−0.78** | −1.14 to −0.45 | 68 | −1.57 | 3.5× |
-| 20–24 | **−0.10** | −0.33 to 0.02 | 68 | −0.89 | 2.0× |
-| 25–29 | **0.20** | 0.13 to 0.33 | 68 | −0.59 | 1.6× |
-| 30–34 | **0.33** | 0.20 to 0.42 | 68 | −0.46 | 1.4× |
-| 35–39 | **0.10** | −0.06 to 0.27 | 68 | −0.69 | 1.7× |
+| 15–19 | **−0.78** | −1.14 to −0.44 | 68 | −1.56 | 3.5× |
+| 20–24 | **−0.10** | −0.33 to 0.02 | 68 | −0.88 | 2.0× |
+| 25–29 | **0.21** | 0.13 to 0.33 | 68 | −0.58 | 1.6× |
+| 30–34 | **0.32** | 0.19 to 0.42 | 68 | −0.46 | 1.4× |
+| 35–39 | **0.09** | −0.07 to 0.27 | 68 | −0.69 | 1.7× |
 | 40–44 | **−0.39** | −0.82 to −0.10 | 66 | −1.18 | 2.6× |
-| 45–49 | **−0.93** | −1.71 to −0.60 | 33 | −1.72 | 4.0× |
+| 45–49 | **−0.98** | −1.72 to −0.61 | 34 | −1.77 | 4.1× |
 
 A single TFR tilt would put the poorest decile at
 1.9× the richest at every age. At 45–49
-only 33 countries can be fitted: elsewhere a quintile reports no
+only 34 countries can be fitted: elsewhere a quintile reports no
 births. Rates there are small, so the offset matters little.
 
 ## Why pooled offsets, not each country's own age tilts
@@ -41,7 +41,7 @@ The per-survey age tilts are in
 [`data/fertility_age_tilts.csv`](../../data/fertility_age_tilts.csv), but a
 country's own age shape is mostly survey noise. The test: predict each
 survey's age shape (age tilt − TFR tilt) from three candidates, over
-171 pairs of consecutive surveys in the same
+172 pairs of consecutive surveys in the same
 country. Mean absolute error:
 
 | Ages | Single TFR tilt | Pooled offsets (other countries) | Same country's previous survey |
@@ -51,7 +51,7 @@ country. Mean absolute error:
 | 25–29 | 0.24 | 0.12 | 0.11 |
 | 30–34 | 0.29 | 0.17 | 0.17 |
 | 35–39 | 0.22 | 0.22 | 0.25 |
-| 40–44 | 0.60 | 0.48 | 0.53 |
+| 40–44 | 0.60 | 0.49 | 0.53 |
 | **All** | **0.39** | **0.27** | **0.27** |
 
 The age shape is real — the pooled offsets cut the error of a single tilt by
@@ -62,7 +62,7 @@ surveys, so this is a generous test for the own-country route.
 
 ## Checks
 
-- **The age rates add up.** In all 1,376 survey-quintile cells,
+- **The age rates add up.** In all 1,381 survey-quintile cells,
   5 × the sum of the age-specific rates reproduces DHS's published TFR to
   within 0.055 births per woman — the most rounding alone allows
   (TFR is published to one decimal, the age rates as whole numbers per 1,000).

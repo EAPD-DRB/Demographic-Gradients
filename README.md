@@ -143,7 +143,7 @@ median 0.14 ([why](docs/methods/dhs-gradients.md)).
 | Adult mortality (45q15) | 15 | **−0.36** | −0.61 to −0.06 | 1.32 |
 <!-- END AUTO-GENERATED -->
 
-*(331 surveys, 78 countries; DHS API pull of 5 November 2026. Regenerate with
+*(332 surveys, 78 countries; DHS API pull of 11 November 2026. Regenerate with
 `uv run scripts/refresh.py`.)*
 
 Three structural findings (see [ANALYSIS.md](ANALYSIS.md)):

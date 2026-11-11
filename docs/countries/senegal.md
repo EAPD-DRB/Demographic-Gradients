@@ -19,7 +19,7 @@ Source: DHS Program indicator API (wealth-quintile breakdown); tilt = OLS slope 
 
 | 15–19 | 20–24 | 25–29 | 30–34 | 35–39 | 40–44 | 45–49 |
 |---|---|---|---|---|---|---|
-| −1.54 | −0.86 | −0.56 | −0.43 | −0.66 | −1.15 | −1.69 |
+| −1.54 | −0.86 | −0.55 | −0.43 | −0.67 | −1.15 | −1.74 |
 
 ## Adult mortality (census household-deaths modules)
 

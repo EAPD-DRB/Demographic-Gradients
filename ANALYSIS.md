@@ -19,8 +19,8 @@ OG-Core's income-group demographics consume. Negative means the poor have higher
 rates; a tilt of −0.79 puts the poorest decile's rate at about
 e^(0.79×0.8) ≈ 1.9× the richest decile's.
 
-Coverage: **331 surveys with complete wealth quintets across
-78 countries**, giving 894 country-survey-margin tilts (most
+Coverage: **332 surveys with complete wealth quintets across
+78 countries**, giving 897 country-survey-margin tilts (most
 recent survey per country used for the library view below).
 
 ## Every country, individually
@@ -40,7 +40,7 @@ child-mortality samples in its 2016 survey.
 ### Use infant mortality, not under-5, for `infmort_gradient`
 
 The library carries both. They are not interchangeable, and the difference runs
-one way: across the 290 surveys that report both by wealth quintile, the
+one way: across the 291 surveys that report both by wealth quintile, the
 under-5 tilt is steeper than the infant tilt by a median
 0.14, and it is steeper in 84% of
 them. The two are strongly correlated (r = 0.94), so the shape of the
@@ -99,7 +99,7 @@ region's median on fertility.
 
 ## Stability over survey years
 
-All 894 country-survey-margin tilts plotted by fieldwork year, with a
+All 897 country-survey-margin tilts plotted by fieldwork year, with a
 rolling median. The
 pooled gradient is nearly flat across three and a half decades — wealth gradients
 are a stable structural feature, not an eroding one, so a borrowed gradient is not
@@ -121,7 +121,7 @@ The TFR tilt summarizes how many children each wealth group has. By age, the
 gradient is U-shaped: steepest for teenagers and women over 40, flattest at
 30–34. Poorer women start earlier and continue later. The library publishes
 this as **age offsets** added to a country's TFR tilt — −0.78 at
-15–19, 0.33 at 30–34, −0.93 at 45–49 — pooled across
+15–19, 0.32 at 30–34, −0.98 at 45–49 — pooled across
 countries, because a country's own age shape is mostly survey noise. Method,
 checks and the calibration recipe:
 [fertility by age](docs/methods/fertility-by-age.md).
