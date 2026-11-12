@@ -6,7 +6,8 @@
 The slope of the natural logarithm of a rate on household wealth rank, where
 rank runs from 0 (poorest) to 1 (richest). Each wealth group is placed at the
 midpoint of its population share (0.1, 0.3, 0.5, 0.7 and 0.9 for DHS quintiles)
-and the slope is estimated by ordinary least squares. A negative gradient means the
+and the slope is estimated by least squares, with census groups weighted by
+their population share. A negative gradient means the
 rate falls as wealth rises. Because the gradient is defined on the log scale,
 it does not depend on the level of the rate and can be compared across
 countries and indicators. It is the `slope` column in the data files.
@@ -39,16 +40,17 @@ estimated across censuses, used for countries without a census estimate. See
 ### Wealth quintile
 One fifth of the household population ranked by wealth, from the lowest
 (poorest) to the highest (richest) quintile. Census-based estimates use as
-many groups as the asset distribution supports, between two and five
+many groups as the asset distribution supports, between three and five
 (`groups` column).
 
 ### Asset index
-The measure of household wealth. DHS surveys and censuses do not collect
-reliable income data, so households are ranked by assets: the DHS wealth index
-in surveys, and in censuses an additive score of durable goods and amenities
-(for example electricity, a refrigerator, a television, cars and the type of
-toilet). Assets reflect longer-term economic status better than current
-income.
+The measure of household wealth. DHS surveys do not collect income, and
+census income recorded after a death is affected by the death itself, so
+households are ranked by assets: the DHS wealth index in surveys, and in
+censuses an index built the same way, the first principal component of
+indicators for durable goods and amenities (for example electricity, a
+refrigerator, a television or a car) and the type of toilet. Assets reflect
+longer-term economic status better than current income.
 
 ## Indicators
 

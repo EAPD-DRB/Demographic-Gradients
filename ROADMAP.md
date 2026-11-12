@@ -52,7 +52,8 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 ## B. Rules a calibration needs (method documentation)
 
 - [R] **B1. Adult tilt at ages 45+.** OG-ETH applies none (the measured bands
-  reverse); OG-PHL applies the general-gradient offsets (+0.13, +0.40), which
+  reverse); OG-PHL applies the general-gradient offsets (then +0.13, +0.40;
+  +0.13, +0.49 since G1), which
   AGENTS.md calls the least trustworthy numbers here. One documented rule.
   *Validate:* show the effect of each choice on survival from 20 to 65 and on
   life expectancy at 65 by group, so the ruling is made on consequences.
@@ -60,7 +61,7 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
   the income rule's change since the census year, then along the model's
   growth path, capped at $10,000 GNI. OG-PHL uses the rule's level directly.
   *Validate:* backtest on the library's within-country pairs — Malawi
-  1998 → 2008, South Africa 2001 → 2007 → 2011 — predicting the later tilt
+  1998 → 2008, South Africa 2001 → 2007 (2011 withdrawn in G1) — predicting the later tilt
   from the earlier one plus the rule's change.
 
 ## C. Something calibrations can ingest
@@ -79,7 +80,11 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 - [ ] **D1. An Asian adult-mortality observation.** None exists, so the
   Philippines and Indonesia rest on the income rule. Routes: Vietnam 1999
   census (mortality as household-record variables, untried), or published
-  IFLS life tables by consumption quartile (Sudharsanan 2019).
+  IFLS life tables by consumption quartile (Sudharsanan 2019). Cambodia 2008
+  passes every check but is held (ruling 2026-11-11): 1,250 adult death
+  records, no band reaches 900, 45q15 gradient −0.73; revisit with a second
+  Asian source (Benin 2013, published, is comparably thin: 1,555 records,
+  35% coverage, so the hold rests on the Asian question, not the checks).
 - [ ] **D2. `imm_pctiles`** — the lifetime-income distribution of new
   immigrants. Not covered. Scope before building.
 
@@ -101,27 +106,54 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
   (close to one residual SD). Option: deflate GNI to a common year before
   fitting and applying. Disclosed in the docs meanwhile.
 - [R] **F2. Brazil `infmort_gradient`.** The country page uses the 2010 census
-  child-mortality gradient (−0.84), an under-five-type measure that probably
+  child-mortality gradient (−0.96 on the PCA index), an under-five-type measure that probably
   overstates the infant gradient; the alternative is the 1996 DHS infant
   gradient (−1.37). Both are now shown on the page.
-- [R] **F3. 45q15 publication threshold.** `MIN_BAND_DEATHS` gates only the
-  age-band rates; 45q15 is published without a minimum (South Africa 2011,
-  Rwanda, Lesotho and Benin rest on fewer than 2,700 deaths). Cambodia 2008
-  is not marked `publish=False` but has no published rows; a re-run with its
-  files present would publish a 45q15 row.
-- [ ] **F4. Completeness check in code.** The MORTNUM wealth-uniformity check
-  and the South Africa 2011 linkage comparison were done by hand during sample
-  review; neither is in `build_adult_mortality.py`. Script them so they run on
-  every rebuild.
+- [x] **F3. 45q15 publication threshold.** Ruled 2026-11-11: 45q15 needs 900
+  death records at 15–59, as the bands do. Cambodia 2008 is now
+  `publish=False` (held).
+- [x] **F4. Completeness check in code.** `estimate` now prints the MORTNUM
+  comparison by wealth group for every sample (2026-11-11); it rejected
+  South Africa 2011 and Mozambique 2007 on the PCA index and shows South
+  Africa 2007 passing. The linkage composition comparison stays manual; it
+  only concerned South Africa 2011, now unpublished.
 - [ ] **F5. Senegal 2002 death counts.** `n_deaths` repeats exactly (1,086 for
-  15–29 and 30–44; 1,311 for 60–74 and male 45q15). Check against the
-  microdata.
+  15–29 and 30–44; 1,311 for 60–74 and male 45q15), and still does on the PCA
+  index. Check against the microdata.
+- [R] **F6. Residual SD of the income rule.** `build_general_gradient.py`
+  computes it with an n − 1 denominator (0.170); the regression standard
+  error with two fitted parameters (n − 2) is 0.177. It sets the ±1 SD band
+  in the docs and figure. Small; change only on a ruling.
+
+## G. Wealth index (2026-11-11)
+
+- [x] **G1. Census asset index: principal components.** Coding errors found in
+  the additive score (INTERNET and WASHER scored backwards, TV codes 21-43
+  ignored, latrine scored as flush). Replaced, on Marcelo's ruling, by the
+  standard first-principal-component index (Filmer and Pritchett 2001; DHS;
+  Lovaton Davila et al. 2022), groups cut on the household population.
+  Shared module `scripts/asset_index.py`. Done 2026-11-11 with the rulings:
+  groups under 10% merged, gradient weighted by group share, at least three
+  groups (Rwanda 2002 withheld), 45q15 needs 900 records; South Africa 2011
+  and Mozambique 2007 withheld on the completeness check; Malawi 1998
+  published with a caveat; Brazil rebuilt from IBGE with
+  `build_adult_mortality_brazil.py` (restored). Result: 15 censuses in 13
+  countries; general gradient 1.639 − 0.302 ln(GNI), LOO MAE 0.175.
+- [ ] **G2. Compare with Marcelo's improved wealth index** (code change to the
+  PCA calculation; materials in `~/Downloads/Inequality`, incl. Wittenberg and
+  Leibbrandt 2015) once the PCA rebuild is complete; decide which to use.
 
 ## Downstream — not this repo, tracked so they are not lost
 
 - OG-PHL: gradient work sits on `calib/multi-industry-remittances`, never pushed.
 - OG-ZAF: passes no gradients, despite the library's best-measured country.
 - OG-IDN, OG-BRA: no gradients.
+- After G1 the published values moved: general-gradient slope −0.244 →
+  −0.302 (OG-ETH hard-codes −0.2443 for its income path); Philippines
+  −0.76 → −0.90 (OG-PHL); Indonesia −0.79 → −0.93; Ethiopia's own 45q15
+  +0.09 → +0.01; South Africa's latest becomes 2007, −1.23 (was 2011, −0.80);
+  age offsets 15–29 −0.41 → −0.44, 30–44 −0.20 → −0.27, 60–74 +0.40 → +0.49.
+  Update once pushed.
 - OG-ETH, OG-PHL: still pass plain `tilt / 100` and one TFR tilt at every
   age; switch to the A1 conversion and the A2 age offsets, then align with
   the C1 recipe once written.

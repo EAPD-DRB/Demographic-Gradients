@@ -339,8 +339,8 @@ def adult_mortality_by_age():
     ax.set_xlabel("wealth gradient in the age-specific death rate")
     ax.legend(loc="lower right", bbox_to_anchor=(1, 1.0), ncol=2, frameon=False, fontsize=9.5)
     frame(fig, "Wealth gradient in adult mortality at ages 15–29 and at older ages, by census",
-          "Censuses with estimates for at least two age bands; both sexes (Brazil, published "
-          "by sex only: mean of men and women); ordered by GNI per capita\n(current US$). "
+          "Censuses with estimates for at least two age bands; both sexes; ordered by GNI "
+          "per capita (current US$).\n"
           "The oldest band is 60–74 except where "
           "marked (too few deaths above 60). Positive values: death rates rise with "
           "household wealth.", CENSUS, top=0.85)

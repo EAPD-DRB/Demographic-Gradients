@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.60, by age as below | DHS 2024, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.04 | DHS 2024, infant mortality rate |
-| `mort_gradient` | −0.28 | census 2008, 45q15 |
+| `mort_gradient` | −0.47 | census 2008, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -38,11 +38,12 @@ Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_m
 
 | Census | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| 1998 | −0.02 | −0.32 | −0.06 | 0.12 |  | 4 | 6,380 |
-| 2008 | −0.28 | −0.71 | −0.50 | −0.10 |  | 4 | 5,243 |
+| 1998 | −0.14 | −0.42 | −0.31 | −0.01 |  | 4 | 6,380 |
+| 2008 | −0.47 | −0.96 | −0.83 | −0.26 |  | 3 | 5,243 |
 
 Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi.
 
 ## Notes
 
 - With two censuses (1998 and 2008), Malawi shows the adult-mortality gradient steepening as GNI per capita rose, in line with the income relationship described in the general-gradient documentation.
+- The 1998 census records only radio, electricity and toilet type. The asset index built from them ranks some households with a flush toilet or electricity below households with a latrine, so the 1998 wealth ranking rests on little information; its estimates should be used with caution. The 2008 census is used for `mort_gradient`.

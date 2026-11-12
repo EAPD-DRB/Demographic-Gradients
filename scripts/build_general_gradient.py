@@ -63,17 +63,24 @@ REGION = {"South Africa": "Southern Africa", "Lesotho": "Southern Africa",
 
 
 def wb(iso3, year, indicator="NY.GNP.PCAP.CD"):
+    """The World Bank value, or None only when the API has no value for it.
+
+    Any other failure (network, an error message in place of data) is retried
+    and then raised, so a transient outage cannot silently drop a census.
+    """
     url = (f"https://api.worldbank.org/v2/country/{iso3}/indicator/{indicator}"
            f"?date={year}&format=json")
-    for attempt in range(4):
+    for attempt in range(5):
         try:
             with urllib.request.urlopen(url, timeout=60) as r:
-                return json.load(r)[1][0]["value"]
-        except (IndexError, KeyError, TypeError):
-            return None
-        except Exception:
+                body = json.load(r)
+            if len(body) > 1 and body[1] is None:
+                return None                      # valid reply, no data
+            return body[1][0]["value"]
+        except Exception as e:
+            err = e
             time.sleep(4 * (attempt + 1))
-    return None
+    raise RuntimeError(f"World Bank API failed for {iso3} {year}: {err}")
 
 
 def observations():
@@ -89,6 +96,8 @@ def observations():
                          region=REGION.get(c, "unknown")))
     d = pd.DataFrame(rows)
     d["gni"] = [wb(ISO3[c], y) for c, y in zip(d["country"], d["year"])]
+    for r in d[d["gni"].isna()].itertuples():
+        print(f"no World Bank GNI for {r.country} {r.year}: excluded from the fit")
     d["lg"] = np.log(d["gni"])
     return d
 
@@ -96,8 +105,8 @@ def observations():
 def loo_errors(d):
     """Leave-one-country-out prediction error for each candidate rule.
 
-    A country's censuses are all left out together (South Africa has three,
-    Malawi two), matching the use case of a country with no estimate of its
+    A country's censuses are all left out together (South Africa and Malawi
+    have two each), matching the use case of a country with no estimate of its
     own. Censuses without a GNI figure are dropped first, so every rule is
     scored on the same observations.
     """

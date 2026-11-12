@@ -81,22 +81,22 @@ therefore also estimated from the 1991, 2000 and 2010 censuses, using the
 proportion of children ever born who have died among mothers aged 25–29
 ([`census_child_mortality.csv`](data/census_child_mortality.csv)). The levels
 are not comparable with survey mortality rates, but the gradients are: the
-2000 census gives −1.45, against −1.46 for the
+2000 census gives −1.42, against −1.46 for the
 under-five mortality rate in the Brazil 1996 DHS survey.
 
 | Census | Wealth groups | Gradient | Low/high ratio | Lowest group, children who died (%) |
 |---|---|---|---|---|
-| 1991 | 4 | −1.76 | 4.41 | 10.6 |
-| 2000 | 4 | −1.45 | 3.20 | 6.2 |
-| 2010 | 5 | −0.84 | 2.08 | 2.4 |
+| 1991 | 3 | −1.69 | 2.77 | 9.9 |
+| 2000 | 3 | −1.42 | 2.33 | 5.8 |
+| 2010 | 5 | −0.96 | 2.26 | 2.5 |
 
-The gradient changed from −1.76 in 1991 to −0.84 in
+The gradient changed from −1.69 in 1991 to −0.96 in
 2010: child mortality fell in all groups, and most in the poorest. On an
-index restricted to the 4 assets recorded in all three censuses,
-the 1991–2000 change is 0.35, compared with 0.31 on the
+index restricted to the 5 assets recorded in all three censuses,
+the 1991–2000 change is 0.34, compared with 0.27 on the
 full index, so the change does not stem from the larger asset set of later
-censuses. The restricted index cannot be used for 2010, when it separates only
-2 groups. For Brazil, the census estimate is used in
+censuses. In 2010 the restricted index separates fewer than three groups, so
+no 2010 value is published on it. For Brazil, the census estimate is used in
 preference to the 1996 survey.
 
 ## Fertility by age of mother
@@ -132,9 +132,9 @@ Household surveys cannot measure adult mortality by wealth, since the deceased
 are not interviewed. The library uses censuses that record deaths in the
 household during the previous year
 ([methods](docs/methods/adult-mortality.md); [all estimates](docs/tables/adult_mortality.md)).
-Across the 17 censuses with a GNI estimate, the gradient in 45q15 is steeper
-in richer countries (r = −0.88): the fitted gradient is
-−0.23 at a GNI per capita of $500 and −0.79 at
+Across the 14 censuses with a GNI estimate, the gradient in 45q15 is steeper
+in richer countries (r = −0.90): the fitted gradient is
+−0.24 at a GNI per capita of $500 and −0.94 at
 $5,000. This relationship, the general gradient, provides values for
 countries without a census estimate ([details](docs/methods/general-gradient.md)).
 It also implies that the gradient should steepen as income rises in long-run
@@ -144,9 +144,9 @@ projections.
 
 ## Adult mortality by age
 
-In all 13 of the 13 censuses with estimates for more than one
+In all 12 of the 12 censuses with estimates for more than one
 age band, the gradient is weaker at the oldest band measured than at ages
-15–29. In 6 censuses, all with GNI per capita of
+15–29. In 4 censuses, all with GNI per capita of
 $1,350 or less, it is positive at the oldest band: recorded
 death rates rise with household wealth. Two explanations are consistent with
 this: small survival differences where most households are poor, and elderly

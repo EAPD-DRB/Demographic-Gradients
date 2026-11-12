@@ -8,8 +8,8 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
 | `fert_gradient` | −1.21, by age as below | DHS 1996, TFR, plus [age offsets](../methods/fertility-by-age.md) |
-| `infmort_gradient` | −0.84 | census 2010, proportion of children ever born who have died (mothers 25–29). This measure resembles under-five mortality and probably overstates the infant gradient; the alternative is the DHS 1996 infant gradient (−1.37) |
-| `mort_gradient` | −0.99 | census 2010, 45q15 |
+| `infmort_gradient` | −0.96 | census 2010, proportion of children ever born who have died (mothers 25–29). This measure resembles under-five mortality and probably overstates the infant gradient; the alternative is the DHS 1996 infant gradient (−1.37) |
+| `mort_gradient` | −1.00 | census 2010, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -40,14 +40,13 @@ Proportion of children ever born who have died, mothers aged 25–29 ([`census_c
 
 | Census | Asset index | Wealth groups | Low/high ratio | Gradient |
 |---|---|---|---|---|
-| 1991 | common | 4 | 4.41 | −1.76 |
-| 1991 | full | 4 | 4.41 | −1.76 |
-| 2000 | common | 4 | 3.03 | −1.41 |
-| 2000 | full | 4 | 3.20 | −1.45 |
-| 2010 | common | 2 | 1.42 | −0.70 |
-| 2010 | full | 5 | 2.08 | −0.84 |
+| 1991 | common | 3 | 2.77 | −1.69 |
+| 1991 | full | 3 | 2.77 | −1.69 |
+| 2000 | common | 4 | 2.85 | −1.35 |
+| 2000 | full | 3 | 2.33 | −1.42 |
+| 2010 | full | 5 | 2.26 | −0.96 |
 
-Comparison with the DHS: the 2000 census gradient (−1.45) is close to the under-five mortality gradient in the Brazil 1996 DHS (−1.46).
+Comparison with the DHS: the 2000 census gradient (−1.42) is close to the under-five mortality gradient in the Brazil 1996 DHS (−1.46).
 
 ### Adult mortality from censuses
 
@@ -55,12 +54,13 @@ Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_m
 
 | Census | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| 2010 (mean of men and women) | −0.99 | −1.20 | −1.39 | −0.87 | −0.19 | 5 | 37,544 |
+| 2010 | −1.00 | −1.36 | −1.43 | −0.85 | −0.21 | 5 | 37,467 |
 
 Source: IBGE Census 2010 sample microdata, household deaths module.
 
 ## Notes
 
 - Adult-mortality estimates use IBGE's 2010 census sample microdata rather than the IPUMS mortality supplement. The supplement contains about half of the deaths the census reports, and the missing records are concentrated in wealthier households, which would bias the gradient. The IPUMS sample is retained in `scripts/build_adult_mortality.py` with `publish=False` and the supporting evidence.
-- The DHS survey (1996) predates the census series. The census estimates show the child-mortality gradient roughly halving between 1991 and 2010; the census value is therefore used for `infmort_gradient`.
-- Census child-mortality estimates are published on two asset indices (`index` column): `full`, using all assets in each census, and `common`, using only electricity, refrigerator, television and radio, which all three censuses record. The `full` index is preferred; by 2010 nearly all households own the four common assets, and that index separates only two groups.
+- The adult-mortality script is `scripts/build_adult_mortality_brazil.py`; it downloads the microdata from IBGE's public server (about 1.5 GB, no registration) and uses the same asset index as the other censuses.
+- The DHS survey (1996) predates the census series. The census estimates show the child-mortality gradient becoming considerably less steep between 1991 and 2010 (child-mortality table above); the census value is therefore used for `infmort_gradient`.
+- Census child-mortality estimates are published on two asset indices (`index` column): `full`, using all assets in each census, and `common`, using only electricity, refrigerator, television, radio and car, which all three censuses record. The `full` index is preferred. In 1991 the two coincide, since the census records only the common assets; by 2010 nearly all households own them, the common index separates fewer than three groups, and no 2010 value is published on it.

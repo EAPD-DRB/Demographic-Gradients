@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.74, by age as below | DHS 2024, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.66 | DHS 2024, infant mortality rate |
-| `mort_gradient` | 0.09 | census 2007, 45q15 |
+| `mort_gradient` | 0.01 | census 2007, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -38,11 +38,11 @@ Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_m
 
 | Census | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| 2007 | 0.09 | −0.87 | 0.08 | 0.58 | 0.44 | 3 | 4,329 |
+| 2007 | 0.01 | −0.83 | 0.00 | 0.42 | 0.44 | 3 | 4,329 |
 
 Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Central Statistical Agency, Ethiopia.
 
 ## Notes
 
 - The 2007 census collected assets and deaths in the long-form sample (about 20 percent of households); the sample weights already gross up to national totals. Because 46 percent of persons live in households with none of the recorded assets, the asset index supports three wealth groups (`groups`).
-- The 45q15 gradient is close to zero, and from age 30 it is positive: recorded death rates rise with household wealth. See the discussion of older-age reversals in the general-gradient documentation before using the older age bands.
+- The 45q15 gradient is close to zero. Recorded death rates fall with household wealth at ages 15–29, show no gradient at 30–44 and rise with wealth from age 45. See the discussion of older-age reversals in the general-gradient documentation before using the older age bands.

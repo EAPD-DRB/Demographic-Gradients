@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −1.11, by age as below | DHS 2022, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | 0.09 | DHS 2022, infant mortality rate |
-| `mort_gradient` | −0.01 | census 2007, 45q15 |
+| `mort_gradient` | 1.64 − 0.302 × ln(GNI per capita) | [general gradient](../methods/general-gradient.md); for example −0.45 at $1,000 and −0.94 at $5,000 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -32,12 +32,6 @@ Latest survey with a complete wealth-quintile breakdown ([`gradient_library_late
 | Infant mortality rate (per 1,000 live births) | 2022 | 34 | 38 | 46 | 43 | 35 | 0.97 | 0.09 |
 | Under-five mortality rate (per 1,000 live births) | 2022 | 64 | 55 | 67 | 62 | 50 | 1.28 | −0.19 |
 
-### Adult mortality from censuses
+## Notes
 
-Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv); [methods](../methods/adult-mortality.md); estimates by sex in the [full table](../tables/adult_mortality.md)). Blank cells: too few deaths to publish.
-
-| Census | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
-|---|---|---|---|---|---|---|---|
-| 2007 | −0.01 | −0.62 | 0.03 | 0.19 | 0.66 | 4 | 11,610 |
-
-Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Instituto Nacional de Estatistica, Mozambique.
+- The 2007 census includes a household-deaths module but is not published. Compared with the deaths households report, the death records capture about 11 percent fewer deaths than average in the lowest wealth group, which would make the gradient too flat by about 0.15. Adult mortality therefore uses the general gradient.

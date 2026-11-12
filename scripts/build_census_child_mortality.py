@@ -24,8 +24,8 @@ variants are published per census:
                       composition; published for transparency, not for use)
 
 Validated against DHS: Brazil's 2000 census, four years after its 1996 DHS,
-gives a `prop_dead_2529` tilt of -1.449 where the DHS U5MR tilt is -1.463 - a
-difference of 0.014, from two independent sources with different measures and
+gives a `prop_dead_2529` gradient of -1.417 where the DHS U5MR gradient is
+-1.463 - a difference of 0.047 (printed on every run), from two independent sources with different measures and
 different wealth rankings. That agreement is why these rows are publishable.
 
 What the tilt is NOT: a period U5MR gradient. Levels are not comparable to
@@ -52,14 +52,13 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+import asset_index as ai
+
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "census_child_mortality.csv"
 
-# Harmonized IPUMS-I codes meaning "owns it" - same convention as
-# build_adult_mortality.py, kept in step deliberately.
-YES = {"ELECTRIC": [1], "PHONE": [2], "CELL": [1], "INTERNET": [1],
-       "COMPUTER": [2], "WASHER": [1], "REFRIG": [2], "TV": [20], "RADIO": [2],
-       "BATH": [2, 3, 4]}
+YES = ai.YES  # asset codes and the wealth index live in asset_index.py
+MIN_GROUPS = 3  # as in build_adult_mortality.py
 AGE_BANDS = [(20, 24), (25, 29), (30, 34), (35, 39)]
 
 CCODE = {"br": "076"}
@@ -110,7 +109,7 @@ def find_extract_for(sample, extracts_dir):
 def load_extract(xml):
     """Read only the columns the estimate uses - the fixed-width parse dominates."""
     cols = _cols(xml)
-    need = [c for c in (["PERWT", "SEX", "AGE", "CHBORN", "CHSURV", "AUTOS"]
+    need = [c for c in (["SERIAL", "HHWT", "PERWT", "SEX", "AGE", "CHBORN", "CHSURV", "TOILET"]
                         + list(YES)) if c in cols]
     df = pd.read_fwf(str(xml).replace(".xml", ".dat.gz"),
                      colspecs=[cols[c] for c in need], names=need,
@@ -124,32 +123,21 @@ def load_extract(xml):
 def assets_available(xml):
     """Which asset variables an extract carries, from the DDI alone (cheap)."""
     cols = _cols(xml)
-    return [c for c in list(YES) + ["AUTOS"] if c in cols]
+    return [c for c in list(YES) if c in cols]
 
 
-def wealth_groups(per, yesmap=None):
-    """Asset index -> groups, on the repo's census conventions."""
-    yesmap = yesmap or YES
-    avail = [c for c in yesmap if c in per.columns]
-    obs = pd.Series(False, index=per.index)
-    for c in avail:
-        obs |= per[c].fillna(0) > 0
-    if "AUTOS" in per.columns:
-        obs |= per["AUTOS"].fillna(9) != 9
-    per = per[obs].copy()
-    per["assets"] = sum(per[c].isin(yesmap[c]).astype(int) for c in avail)
-    if "AUTOS" in per.columns:  # code 7 = "has a car, count unspecified"
-        a = per["AUTOS"].mask(per["AUTOS"] == 7, 1)
-        per["assets"] += a.clip(0, 3).where(a < 8, 0)
-    base = per.sort_values("assets")
-    cum = base["PERWT"].cumsum() / base["PERWT"].sum()
-    cuts = sorted({base.loc[(cum - q).abs().idxmin(), "assets"] for q in (.2, .4, .6, .8)})
-    cuts = [c for c in cuts if base["assets"].min() < c < base["assets"].max()]
-    G = len(cuts) + 1
-    per["q"] = np.searchsorted(cuts, per["assets"], side="right")
-    sh = per.groupby("q")["PERWT"].sum().reindex(range(G), fill_value=0)
-    shv = (sh / sh.sum()).values
-    return per, G, np.cumsum(shv) - 0.5 * shv, avail
+def wealth_groups(per, keep=None):
+    """PCA wealth index and groups (asset_index.py), on all assets or on `keep` only."""
+    drop = [c for c in list(YES) + ["TOILET"] if c in per.columns
+            and keep is not None and c not in keep]
+    view = per.drop(columns=drop)
+    view = view[ai.in_universe(view)].copy()
+    hidx, loadings, pc1 = ai.household_index(view)
+    view = view.merge(hidx, on="SERIAL")
+    cuts, group, mids, shares = ai.wealth_groups(view["score"], view["PERWT"])
+    view["q"] = group(view["score"])
+    avail = [c for c in list(YES) + ["TOILET"] if c in view.columns]
+    return view, len(mids), mids, shares, avail
 
 
 def estimate_sample(sample, cfg, extracts_dir, common=None):
@@ -168,11 +156,14 @@ def estimate_sample(sample, cfg, extracts_dir, common=None):
     src = ("IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); "
            f"original data: {cfg['nso']}")
     rows = []
-    variants = [("full", YES)]
+    variants = [("full", None)]
     if common:
-        variants.append(("common", {k: v for k, v in YES.items() if k in common}))
-    for index_label, yesmap in variants:
-        d, G, mids, avail = wealth_groups(per, yesmap)
+        variants.append(("common", set(common)))
+    for index_label, keep in variants:
+        d, G, mids, shares, avail = wealth_groups(per, keep)
+        if G < MIN_GROUPS:
+            print(f"  [{index_label}] {G} wealth groups, fewer than {MIN_GROUPS}: not published")
+            continue
         print(f"  [{index_label}] {len(avail)} asset vars -> {G} groups, "
               f"midpoints {np.round(mids, 3)}")
         w = d[(d["SEX"] == 2) & d["AGE"].between(15, 49)
@@ -200,7 +191,7 @@ def estimate_sample(sample, cfg, extracts_dir, common=None):
                          if measure == "prop_dead_2529" else len(w))
             r = dict(indicator="CHMORT_CENSUS", country=cfg["country"],
                      year=cfg["year"], measure=measure, index=index_label,
-                     slope=round(float(np.polyfit(mids, np.log(v), 1)[0]), 4),
+                     slope=round(ai.gradient(mids, v, shares), 4),
                      ratio=round(float(v[0] / v[-1]), 3))
             for i in range(5):
                 r[f"q{i + 1}"] = round(float(v[i]), 5) if i < G else ""

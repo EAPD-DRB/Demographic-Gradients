@@ -10,12 +10,12 @@ country's own census estimate, where one exists, is always preferred.
 
 Across censuses, the gradient in 45q15 (the probability of dying between ages
 15 and 60) becomes steeper as national income rises. Estimated by ordinary
-least squares on 17 censuses:
+least squares on 14 censuses:
 
-    gradient(45q15) = 1.291 − 0.244 × ln(GNI per capita, current US$)
+    gradient(45q15) = 1.639 − 0.302 × ln(GNI per capita, current US$)
 
-with r = −0.88 and a residual standard deviation of 0.16. A doubling
-of GNI per capita corresponds to a change of −0.17 in the gradient. The
+with r = −0.90 and a residual standard deviation of 0.17. A doubling
+of GNI per capita corresponds to a change of −0.21 in the gradient. The
 census observations, their GNI and the leave-one-out predictions are in
 [`data/general_gradient_points.csv`](../../data/general_gradient_points.csv).
 
@@ -32,11 +32,12 @@ subregion is available.
 
 | Candidate rule | Mean absolute error |
 |---|---|
-| A single value for all countries (pooled median, −0.36) | 0.303 |
-| **Linear in ln(GNI per capita)** | **0.136** |
-| Regional median | 0.260 |
+| A single value for all countries (pooled median) | 0.316 |
+| **Linear in ln(GNI per capita)** | **0.175** |
+| Regional median | 0.336 |
 
-The income rule has the lowest error, and is used. For South Africa 2011 the out-of-sample prediction is −0.92 against a measured −0.80.
+The income rule has the lowest error, and is used. For South Africa 2007 the out-of-sample prediction is −0.86 against a measured −1.23. Where no GNI figure is available, the pooled
+median of all census estimates, −0.36, is used.
 
 ## Age pattern
 
@@ -46,13 +47,13 @@ each census's band gradient and its 45q15 gradient:
 
 | Age band | Offset | |
 |---|---|---|
-| 15–29 | −0.41 |  |
-| 30–44 | −0.20 |  |
+| 15–29 | −0.44 |  |
+| 30–44 | −0.27 |  |
 | 45–59 | 0.13 | least reliable |
-| 60–74 | 0.40 | least reliable |
+| 60–74 | 0.49 | least reliable |
 
 Applied to the censuses' own 45q15 gradients, the offsets reproduce the
-measured band gradients with a median absolute error of 0.17. The
+measured band gradients with a median absolute error of 0.13. The
 offsets for ages 45–59 and 60–74 are the least reliable values in the library:
 they are positive because, in several low-income censuses, recorded mortality
 at older ages rises with household wealth (see below). Where working-age
@@ -63,20 +64,21 @@ mortality is what matters, the 15–29 and 30–44 offsets are the more reliable
 Because the gradient varies with income, a model projecting a low-income
 country over several decades should allow the gradient to steepen as income
 rises rather than hold it fixed. Malawi's two censuses illustrate this: between
-1998 and 2008 its 45q15 gradient moved from −0.02 to −0.28 as GNI per
-capita rose from about $290 to $530.
+1998 and 2008 its 45q15 gradient moved from −0.14 to −0.47 as GNI per
+capita rose from about $290 to $530 (the 1998 wealth ranking rests on only
+three asset variables; see the [Malawi page](../countries/malawi.md)).
 
 ## Scope
 
 The rule is estimated on censuses with GNI per capita between about $200 and
-$10,000 and should not be extrapolated beyond that range. Of the 17
-censuses, 16 are African and one is Brazilian; none is Asian, so
+$10,000 and should not be extrapolated beyond that range. Of the 14
+censuses, 13 are African and one is Brazilian; none is Asian, so
 predictions for Asian countries are extrapolations.
 
 ## Older-age reversals
 
 At the oldest ages measured, recorded mortality is higher in wealthier
-households in Ethiopia 2007, Malawi 1998, Mozambique 2007, Sudan 2008, Uganda 2002 and Zambia 2010. Two explanations are consistent with this. Where
+households in Ethiopia 2007, Sudan 2008, Uganda 2002 and Zambia 2010. Two explanations are consistent with this. Where
 most households are poor, survival may differ little by wealth, and causes of
 death are less socially graded than in middle-income countries. Alternatively,
 elderly people in poor health often move into better-off households before
@@ -91,6 +93,6 @@ distinguish the two explanations, which is why the older-age offsets carry a
 caution.
 
 HIV does not appear to drive the pattern: Lesotho, the highest-prevalence
-country in the set, has a 45q15 gradient of −0.43, and
+country in the set, has a 45q15 gradient of −0.36, and
 most reversals occur in the oldest age bands, where HIV mortality is
 comparatively low.

@@ -25,7 +25,7 @@ demographic rates by income group. The library supplies three:
 |---|---|---|---|
 | `fert_gradient` | `data/gradient_library_latest.csv` + `data/fertility_age_offsets.csv` | `indicator == "TFR"`, plus the offset by age | 77 countries |
 | `infmort_gradient` | `data/gradient_library_latest.csv` | `indicator == "IMR"` | 78 countries |
-| `mort_gradient` | `data/adult_mortality_gradients.csv` | `measure == "45q15"`, `sex == "all"`, latest census (Brazil: mean of `male` and `female`) | 15 countries |
+| `mort_gradient` | `data/adult_mortality_gradients.csv` | `measure == "45q15"`, `sex == "all"`, latest census | 13 countries |
 | `imm_pctiles` | not provided | — | — |
 
 `imm_pctiles` is not a gradient: it is the lifetime-income distribution of new
@@ -72,24 +72,26 @@ and the survey or census year.
 
 `data/general_gradient.csv` provides a fallback for any country:
 
-    gradient(45q15) = 1.291 − 0.244 × ln(GNI per capita, Atlas method, current US$)      ±0.16
+    gradient(45q15) = 1.639 − 0.302 × ln(GNI per capita, Atlas method, current US$)      ±0.17
 
 It was selected by leave-one-country-out prediction error against two
-alternatives: mean absolute error 0.136, compared with 0.303 for a single pooled
-value and 0.260 for regional medians. The error is 0.11 for censuses above
-$1,000 per capita and 0.16 below. The same file contains age offsets and a
+alternatives: mean absolute error 0.175, compared with 0.316 for a single pooled
+value and 0.336 for regional medians, scored on the same 14 censuses. The error
+is 0.12 for censuses below $1,000 per capita and 0.23 above, where the two
+South African censuses lie well off the line (−0.93 and −1.23 measured against
+−0.68 and −0.86 predicted). The same file contains age offsets and a
 pooled median for use when no GNI figure is available. The rule is estimated
 on GNI in current dollars of the census years (1998–2013); applying it to a
 recent GNI figure without adjusting for price change makes the predicted
 gradient somewhat steeper.
 
-Values at 2024 GNI per capita: Philippines −0.76 ($4,470), Indonesia −0.79
-($4,920). Countries with their own census estimate (for example South Africa,
-−0.80, and Ethiopia, +0.09) use that estimate, not the rule.
+Values at 2024 GNI per capita: Philippines −0.90 ($4,470), Indonesia −0.93
+($4,920). Countries with their own census estimate (for example South Africa
+2007, −1.23, and Ethiopia 2007, +0.01) use that estimate, not the rule.
 
 **There is no income-based fallback for fertility or infant mortality.** The
 same comparison was run for them: an income rule improved on a single pooled
-value by 0.4 percent for fertility, against 54 percent for adult mortality,
+value by 0.4 percent for fertility, against 44 percent for adult mortality,
 because these gradients vary little with national income. For a country with no
 DHS survey, use the regional median and interquartile range from
 [ANALYSIS.md](ANALYSIS.md#regional-medians) and report the value as borrowed.
@@ -112,17 +114,19 @@ DHS survey, use the regional median and interquartile range from
   mortality is what matters, rely on the 15–29 and 30–44 offsets and state the
   caveat.
 - **Brazil's DHS survey is from 1996.** Census estimates show its
-  child-mortality gradient falling from −1.76 (1991) to −0.84 (2010). The census
+  child-mortality gradient falling from −1.69 (1991) to −0.96 (2010). The census
   measure resembles under-five mortality and probably overstates the infant
   gradient; the alternative is the 1996 DHS infant gradient (−1.37). State
   which is used and why.
 - **`groups` is not always 5.** Census rows use as many wealth groups as the
-  asset distribution supports (2 to 5), with each group placed at its realized
-  population midpoint. The `q1..q5` columns stop at the last group, and the
+  asset distribution supports (3 to 5; fewer than 3 is not published), with
+  each group placed at its realized population midpoint. The `q1..q5` columns stop at the last group, and the
   low/high ratio then compares the lowest and highest of those groups.
-- **`linked_share` below 1 means rate levels are not meaningful.** South Africa
-  2011 links about 9 percent of death records; its gradient is used, its
-  levels are not.
+- **`linked_share` is the share of death records matched to a household.**
+  Every published row is above 0.99. A sample with low linkage is publishable
+  only if linkage does not vary with wealth; South Africa 2011 (9 percent
+  linked, linkage lower in richer households) failed that test and is not
+  published.
 
 ## Sign and interpretation
 
@@ -137,9 +141,9 @@ documentation.
 ## Long-run projections
 
 The adult-mortality gradient becomes more negative as national income rises
-(r = −0.88 across censuses). A model projecting several decades ahead should
+(r = −0.90 across censuses). A model projecting several decades ahead should
 let the gradient steepen along its income path rather than hold it fixed; a
-doubling of income per capita corresponds to about −0.17 in the gradient. The
+doubling of income per capita corresponds to about −0.21 in the gradient. The
 pooled fertility and infant gradients change little across 35 years of
 surveys, although a single country can change considerably, as Brazil shows.
 
@@ -210,15 +214,26 @@ scripts, and the documentation is generated — respect that architecture.
 
 ## Method rulings (validated — don't relitigate without new evidence)
 
-- The gradient = OLS slope of ln(rate) on wealth rank 0–1, regressed on each
-  group's REALIZED population midpoint (integer asset indices tie at quintile
-  cuts; a census supports however many groups it supports — record it in the
-  `groups` column).
+- The gradient = slope of ln(rate) on wealth rank 0–1. DHS quintiles: OLS at
+  0.1…0.9. Census groups: each at its REALIZED population midpoint, WLS
+  weighted by group population share (`asset_index.gradient`). Many households
+  share an index value, so cuts tie; a census supports however many groups it
+  supports — record it in the `groups` column. Ruled 2026-11-11.
+- **Census wealth index = first principal component** (Filmer & Pritchett
+  2001; DHS; Lovaton Dávila et al. 2022 for IPUMS-I) of household 0/1
+  indicators, one per asset and one per TOILET category, household-weighted
+  correlation matrix, oriented to rise with assets owned (`scripts/asset_index.py`,
+  shared by all three census scripts). Groups are cut at the person-weighted
+  quintiles of all persons in the asset universe; groups under 10% are merged
+  into the smaller neighbour; `MIN_GROUPS = 3`. Ruled 2026-11-11, replacing an
+  additive count that had mis-coded INTERNET/WASHER (scored on "no"), TV (only
+  code 20) and latrines (scored as flush). The IPUMS yes-codes are documented
+  in `asset_index.py` from the .cbk files — check any new variable there.
 - ogcore (>= 0.18.0) consumes **gradient / (100 × (1 − p))**: ÷100 because its
   gradients are per centered percentile point, ÷(1 − p) because it reads a
   log-odds slope where the library publishes a log-rate one (p = ogcore's own
   rate at that age, on its scale). Verified by `scripts/check_ogcore_units.py`,
-  which runs every quintile set through ogcore's pinned
+  which runs every DHS quintile set (IMR, U5MR, ASFR) through ogcore's pinned
   `_mean_preserving_logit_rates`; rerun it when ogcore's demographics change.
   The published `slope` stays the log-rate gradient — it is the measured,
   scale-free quantity; the conversion needs the model's p. The grouping is
@@ -240,7 +255,8 @@ scripts, and the documentation is generated — respect that architecture.
 - Where a sample links only some deaths (za2011a: ~10%), record
   `linked_share` and run the linked-vs-unlinked composition check (province,
   urban, sex, age) before trusting the gradient.
-- `MIN_BAND_DEATHS = 900` gates publication of an age-band gradient.
+- `MIN_BAND_DEATHS = 900` gates publication of an age-band gradient and of
+  45q15 (records at 15–59). Ruled 2026-11-11.
 - **The MORTNUM check gates publication of any new sample.** Compare the
   supplementary per-death file against the same households' own reported
   death counts (MORTNUM in the extract) *within each wealth group*. Even
@@ -249,14 +265,21 @@ scripts, and the documentation is generated — respect that architecture.
   the deaths the census reports, loss concentrated in wealthy households),
   np2001a (0.77/0.79/0.90/1.13 - biases flat) and sv2007a (0.96 down to 0.58
   - biases steep). Mark rejects `publish=False` with the evidence in the
-  config; never delete the config entry.
-- Gradient steepness tracks national income, not HIV or region:
-  `gradient ~ 1.29 - 0.244*ln(GNI per capita)`, r = -0.88 over 17 censuses.
-  Excluding South Africa the gradient-vs-HIV-prevalence correlation is +0.00.
+  config; never delete the config entry. `estimate` prints the comparison
+  (relative to the mean) for every sample with MORTNUM. On the PCA index it
+  also rejected za2011a (0.066/0.073/0.064/0.059/0.055 linked/reported -
+  biases steep by ~0.3) and mz2007a (0.89/1.09/0.97/1.05 - biases flat by
+  ~0.15). za2007a has MORTNUM and passes; za2001a and ci1998a have none.
+- Gradient steepness tracks national income, not region:
+  `gradient ~ 1.64 - 0.302*ln(GNI per capita)`, r = -0.90 over 14 censuses
+  (PCA index, 2026-11-11). On the earlier index, excluding South Africa, the
+  gradient-vs-HIV-prevalence correlation was +0.00; not re-run since.
   Borrowing tables should key on income level; a long OG transition should
   expect the gradient to steepen as the country's income rises.
 - The gradient fades with age in every census measured at more than one
-  age (13/13, mean drift +0.83 from 15-29 to the oldest band) and in the poorest countries it becomes positive at older ages -
+  age (12/12, mean drift +0.87 from 15-29 to the oldest band), and in 4
+  censuses, all with GNI <= $1,350 (Ethiopia, Uganda, Zambia, Sudan), it becomes
+  positive at older ages -
   measured mortality is higher in wealthier households at 45+. Real
   (low income compresses survival differences) and artefactual (frail elders
   move into better-off households before dying) explanations both fit; no
@@ -264,15 +287,16 @@ scripts, and the documentation is generated — respect that architecture.
 
 ## Per-sample gotchas already paid for
 
-- IPUMS extract variables differ by census — submit with the full wish list
-  and let the API's 400 errors name what to drop (za2001a has no MORTNUM,
-  AUTOS, WASHER, INTERNET; za2007a no AUTOS/WASHER). `submit` now does this
-  automatically: it retries on 400, dropping what the error names, and prints
-  the final set to record in SAMPLES. br2010a has no harmonized TOILET (BATH
+- IPUMS extract variables differ by census — start a new sample's
+  `asset_extra` from `WISH` and let the API's 400 errors name what to drop
+  (za2001a has no MORTNUM, AUTOS, WASHER, INTERNET; za2007a no AUTOS/WASHER).
+  `submit` retries on 400, dropping what the error names, and prints the final
+  set to record in SAMPLES. br2010a has no harmonized TOILET (BATH
   stands in); np2001a lacks almost everything.
 - **AUTOS code 7 means "has a car, count unspecified", not seven cars** —
   clip it to 1. Treating it as 3 inflated the asset index for every car-owning
-  household and materially changed za2011a's published gradient (-1.14 -> -0.80).
+  household and materially changed za2011a's gradient (-1.14 -> -0.80, on the
+  earlier additive index; za2011a is no longer published).
   Read the .cbk code labels for any new asset variable before trusting it.
 - Rank only households actually observed on the asset module. Collective
   dwellings are NIU everywhere, and et2007a asks assets *and* mortality of the
@@ -282,7 +306,8 @@ scripts, and the documentation is generated — respect that architecture.
 - Quantile cuts landing on the distribution's minimum create a structurally
   empty first group and silently zero the whole sample (et2007a: 46% of
   persons hold no assets). Drop cuts at the min/max; a census supports
-  however many groups it supports (Ethiopia and Rwanda support 3).
+  however many groups it supports (Ethiopia supports 3; Rwanda 2002 only 2,
+  so it is not published).
 - Supplement serial schemes are not always the extract's: sv2007a appends a
   within-dwelling household suffix, so 0% links until floored to the
   extract's multiples of 1000. A 0% linkage rate means "diagnose the key",
@@ -331,7 +356,8 @@ scripts, and the documentation is generated — respect that architecture.
 4. Envelope check: weighted supplement deaths against the national death
    count (World Bank crude death rate x population). Wealth-uniform
    under-reporting is fine and cancels; record the capture rate as a caveat
-   (bj2013a 35%, kh2008a 49% both publish; note bj2013a's ~16-month window).
+   (bj2013a 35% publishes; note its ~16-month window). kh2008a (48%) passes
+   every check but is held by ruling (2026-11-11) pending a second Asian source.
 5. Gradient cross-checked against the library's existing range and any published
    national evidence.
 6. The shipped script — not session code — produces the committed rows,

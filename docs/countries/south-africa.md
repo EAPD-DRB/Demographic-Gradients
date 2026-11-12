@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.51, by age as below | DHS 2016, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.54 | DHS 2016, infant mortality rate |
-| `mort_gradient` | −0.80 | census 2011, 45q15 |
+| `mort_gradient` | −1.23 | census 2007, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -19,8 +19,6 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 | 15–19 | 20–24 | 25–29 | 30–34 | 35–39 | 40–44 | 45–49 |
 |---|---|---|---|---|---|---|
 | −1.28 | −0.60 | −0.30 | −0.18 | −0.41 | −0.90 | −1.49 |
-
-*Note:* The 2011 census links 9% of death records to household assets. The gradient is retained; rate levels for that census are not meaningful.
 
 ## Estimates
 
@@ -40,15 +38,13 @@ Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_m
 
 | Census | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| 2001 | −0.79 | −0.92 | −1.17 | −0.86 | −0.32 | 5 | 20,193 |
-| 2007 | −0.80 | −1.21 | −1.25 | −1.21 | −0.56 | 4 | 9,467 |
-| 2011 | −0.80 |  | −0.99 |  |  | 4 | 2,098 |
+| 2001 | −0.93 | −1.04 | −1.45 | −0.98 | −0.34 | 5 | 20,193 |
+| 2007 | −1.23 | −1.63 | −2.00 | −1.58 | −0.69 | 5 | 9,467 |
 
 Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Statistics South Africa.
 
 ## Notes
 
-- Three censuses (2001, 2007, 2011) and the 2016 DHS. The 2011 census links about 9 percent of death records to household assets (`linked_share`), so rate levels for that year are not meaningful. In a comparison made during sample review, linked and unlinked deaths had the same distribution by province, urban or rural residence, sex and age; the gradient is retained on that basis.
-- In the IPUMS samples, `AUTOS` code 7 means that the household has a car but the number is unspecified. Treating it as a count changed the 2011 gradient from −0.80 to −1.14; the published estimate uses the corrected coding.
+- Adult-mortality estimates are published for the 2001 and 2007 censuses; 2007 is the latest and is used for `mort_gradient`. In 2007 the death records match the deaths households report in every wealth group. The 2001 census does not record the number of deaths per household, so that check could not be made.
+- The 2011 census is not published. Only about 9 percent of its death records can be linked to a household, and the linked share is lower in wealthier households: compared with the deaths households report, it falls by 15–20 percent from the lowest to the highest wealth group. This would make the gradient too steep by about 0.3.
 - The 2016 DHS child-mortality rates by quintile are based on few deaths and are not monotonic in the upper quintiles; the gradient is usable, the individual quintile rates less so.
-- The country's own census estimate is used for `mort_gradient` in preference to the general gradient.

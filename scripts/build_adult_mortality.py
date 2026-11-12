@@ -7,13 +7,17 @@
 One pipeline for every country: a slim IPUMS extract (persons rectangularized
 with household asset variables) is linked to the sample's supplementary
 per-death file (age/sex of each death in the 12 months before the census) by
-household SERIAL; households are ranked by an asset index; and the tilt — the
-OLS slope of ln(death rate) on wealth rank — is estimated by sex and age band.
+household SERIAL; households are ranked by an asset index; and the wealth
+gradient — the slope of ln(death rate) on wealth rank — is estimated by sex
+and age band. Brazil 2010 is built separately from IBGE's own microdata by
+build_adult_mortality_brazil.py (the IPUMS supplement for it fails the
+completeness check below).
 
 Subcommands
     submit   define + submit the slim extracts via the IPUMS API
     download poll and download completed extracts
     estimate build data/adult_mortality_gradients.csv from local files
+             (keeps the IBGE Brazil rows already in the file)
 
 Inputs the API cannot fetch: the supplementary mortality files, downloaded
 once per sample (logged in) from
@@ -24,21 +28,25 @@ data/ are published.
 
 API key: .secrets/ipums_api_key (gitignored) or the IPUMS_API_KEY env var.
 
-Method notes (validated on Brazil 2010 and South Africa 2001/2007/2011):
+Method notes:
 - Rank by ASSETS, never post-death household income (a death removes the
   deceased's earnings from measured income - reverse causation; on Sao Paulo
   assets gave monotonic gradients where income did not).
-- The asset index is a count of owned durables plus a toilet-quality tier
-  (and a car count where available). Components vary by census and are
+- The asset index is the first principal component of household asset and
+  toilet-type indicators (asset_index.py). Components vary by census and are
   recorded per sample below; ranking within a census remains valid.
-- Integer asset indices produce tied quintile cuts; groups are whatever the
-  distribution supports (recorded in the `groups` column) and the regression
-  uses each group's realized population midpoint.
-- Some samples anonymize most death records' household IDs (e.g. za2011a
-  links about 9%): levels are then meaningless but the gradient is unbiased if
-  linkage is unrelated to wealth. A linked-vs-unlinked composition comparison
-  (province/urban/sex/age) was made by hand during sample review for za2011a;
-  this script does not run it. `linked_share` is recorded per row.
+- Wealth groups are cut at the population quintiles of the index; groups under
+  10% are merged, and a census with fewer than MIN_GROUPS groups is not
+  published (recorded in the `groups` column). The gradient is fitted on each
+  group's realized population midpoint, weighted by its population share.
+- Completeness check, printed for every sample with MORTNUM: weighted death
+  records against the deaths households report, by wealth group. It must be
+  flat; samples where it is not are set publish=False with the evidence.
+- 45q15 and each age band are published only from MIN_BAND_DEATHS records.
+- Some samples anonymize most death records' household IDs (za2011a links
+  about 9%): `linked_share` is recorded per row. A linked-vs-unlinked
+  composition comparison was made by hand for za2011a; this script does not
+  run it.
 - Deaths are weighted by the supplementary file's own weight where provided
   (za2011a: wtmort), else by the linked household's HHWT.
 """
@@ -57,16 +65,20 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+import asset_index as ai
+
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "adult_mortality_gradients.csv"
 API = "https://api.ipums.org"
 BANDS = [(15, 29), (30, 44), (45, 59), (60, 74)]
-MIN_BAND_DEATHS = 900  # publish a band tilt only above this record count
+MIN_BAND_DEATHS = 900  # publish a band or 45q15 gradient only from at least this many records
+# column order of the published file, shared with build_adult_mortality_brazil.py
+COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "ratio",
+           "q1", "q2", "q3", "q4", "q5", "n_deaths", "ranking", "source", "groups", "linked_share"]
+MIN_GROUPS = 3  # a gradient needs at least three wealth groups (ruled 2026-11-11)
 
 # Harmonized IPUMS-I codes meaning "owns it"
-YES = {"ELECTRIC": [1], "PHONE": [2], "CELL": [1], "INTERNET": [1],
-       "COMPUTER": [2], "WASHER": [1], "REFRIG": [2], "TV": [20], "RADIO": [2],
-       "BATH": [2, 3, 4]}
+YES = ai.YES  # asset codes and the wealth index live in asset_index.py
 BASE_VARS = ["AGE", "SEX", "TOILET", "ELECTRIC", "PHONE", "CELL", "REFRIG", "TV", "RADIO", "COMPUTER"]
 
 # Per-sample configuration. asset_extra: variables beyond BASE_VARS that the
@@ -74,28 +86,35 @@ BASE_VARS = ["AGE", "SEX", "TOILET", "ELECTRIC", "PHONE", "CELL", "REFRIG", "TV"
 # death_weight: column in the supplementary file, or None to use the linked
 # household's HHWT. nso: the originating statistical office, cited alongside
 # IPUMS in the source column.
-WISH = ["INTERNET", "AUTOS", "WASHER", "BATH", "MORTNUM"]  # extras to try everywhere
+# extras to try for a new sample: start its asset_extra from this list and let
+# submit's 400 retries name what the census lacks
+WISH = ["INTERNET", "AUTOS", "WASHER", "BATH", "MORTNUM"]
 SAMPLES = {
     "za2001a": dict(country="South Africa", year=2001, asset_extra=[], death_weight=None,
                     nso="Statistics South Africa"),
-    "za2007a": dict(country="South Africa", year=2007, asset_extra=["INTERNET"], death_weight=None,
+    "za2007a": dict(country="South Africa", year=2007, asset_extra=["INTERNET", "MORTNUM"], death_weight=None,
                     nso="Statistics South Africa"),
-    "za2011a": dict(country="South Africa", year=2011,
+    # za2011a: NOT published (publish=False; ruled 2026-11-11). Only 9.4% of
+    # death records link to a household, and the linkage varies with wealth:
+    # linked / household-reported (MORTNUM) deaths by wealth group, PCA index,
+    # 0.066 0.073 0.064 0.059 0.055 - deaths in the richest households are
+    # under-captured by 15-20%, biasing the 45q15 gradient steep by about 0.30
+    # (-1.63 uncorrected, about -1.33 corrected). Linked and unlinked deaths
+    # match on population group, province, residence, sex, age and cause.
+    "za2011a": dict(country="South Africa", year=2011, publish=False,
                     asset_extra=["INTERNET", "AUTOS", "WASHER", "MORTNUM"], death_weight="wtmort",
                     nso="Statistics South Africa"),
     "et2007a": dict(country="Ethiopia", year=2007, asset_extra=["MORTNUM"],
                     drop=["CELL", "REFRIG", "COMPUTER"], death_weight=None,
                     nso="Central Statistical Agency, Ethiopia"),
-    # br2010a: the repo's Brazil rows come from the same census via IBGE's
-    # open files; this IPUMS rebuild must reproduce them before replacing them.
     # br2010a: NOT published (publish=False) - the IPUMS mortality supplement
     # is defective for this sample. It ships 52,393 death records where the
     # extract's own MORTNUM implies ~110k (weighted 1.007M = 88.5% of
     # registered deaths, the expected module completeness); the ~52% record
     # loss is wealth-skewed (q5 rates retain ~1/3 of their IBGE values, q1
     # ~3/4), so tilts from it are biased, not just noisy. The committed
-    # Brazil rows come from IBGE's open microdata via the retired
-    # build_adult_mortality_brazil.py (git 7600931) and stay authoritative.
+    # Brazil rows come from IBGE's open microdata via
+    # build_adult_mortality_brazil.py.
     "br2010a": dict(country="Brazil", year=2010, publish=False,
                     asset_extra=["INTERNET", "AUTOS", "WASHER", "BATH"],
                     drop=["TOILET"], death_weight=None,
@@ -108,12 +127,20 @@ SAMPLES = {
     "mw2008a": dict(country="Malawi", year=2008, asset_extra=["AUTOS", "MORTNUM"],
                     drop=["CELL", "COMPUTER"], death_weight=None,
                     nso="National Statistical Office, Malawi"),
-    "mz2007a": dict(country="Mozambique", year=2007, asset_extra=["AUTOS", "MORTNUM"],
+    # mz2007a: NOT published (publish=False; ruled 2026-11-11). Death records
+    # against household-reported deaths (MORTNUM) by wealth group, PCA index,
+    # relative to the mean: 0.89 1.09 0.97 1.05 - deaths in the poorest group
+    # are under-recorded by about 11%, biasing the 45q15 gradient flat by about
+    # 0.15 (+0.08 uncorrected, about -0.07 corrected).
+    "mz2007a": dict(country="Mozambique", year=2007, publish=False,
+                    asset_extra=["AUTOS", "MORTNUM"],
                     drop=["REFRIG"], death_weight=None,
                     nso="Instituto Nacional de Estatistica, Mozambique"),
     "ug2002a": dict(country="Uganda", year=2002, asset_extra=["BATH", "MORTNUM"],
                     drop=["REFRIG", "COMPUTER"], death_weight=None,
                     nso="Uganda Bureau of Statistics"),
+    # rw2002a: not published under MIN_GROUPS - its asset distribution gives
+    # two wealth groups once a group holding 0.1% of the population is merged.
     "rw2002a": dict(country="Rwanda", year=2002, asset_extra=["INTERNET", "AUTOS", "MORTNUM"],
                     drop=["REFRIG"], death_weight=None,
                     nso="National Institute of Statistics of Rwanda"),
@@ -146,13 +173,19 @@ SAMPLES = {
     "np2001a": dict(country="Nepal", year=2001, publish=False, asset_extra=["MORTNUM"],
                     drop=["PHONE", "CELL", "REFRIG", "COMPUTER"], death_weight=None,
                     nso="Central Bureau of Statistics, Nepal"),
-    "kh2008a": dict(country="Cambodia", year=2008, asset_extra=["INTERNET", "AUTOS", "MORTNUM"],
+    # kh2008a: HELD (publish=False; ruled 2026-11-11) pending a second Asian
+    # source. Passes population (13.40m) and linkage (99.8%); death coverage
+    # 48% of the expected national total; the MORTNUM check passes (the death
+    # file reproduces MORTNUM exactly, ratio 1.00 in every group);
+    # 1,250 death records at 15-59, none of the age bands reaches 900. The
+    # 45q15 gradient is -0.73 (PCA index).
+    "kh2008a": dict(country="Cambodia", year=2008, publish=False,
+                    asset_extra=["INTERNET", "AUTOS", "MORTNUM"],
                     drop=["REFRIG"], death_weight=None,
                     nso="National Institute of Statistics, Cambodia"),
     # sd/ss2008a carry their own per-death weight (weightd); the 2008 census
     # covered both, split here at the 2011 independence boundary.
-    # bf1996a: age is a value plus a unit code (days/months/years), and 27% of
-    # deaths have it undetermined - the unknown-age wealth check gates this one.
+    # bf1996a: age is a value plus a unit code (days/months/years).
     # bf1996a: NOT published (publish=False), rejected on three compounding
     # grounds, any one of which might be tolerable alone.
     #  1. The death file's serial is the DWELLING (dwelling x 1000), while the
@@ -163,8 +196,8 @@ SAMPLES = {
     #     of all households. Most deaths would be charged to a household whose
     #     assets may not be theirs, which is precisely the mis-attribution a
     #     wealth gradient cannot survive.
-    #  2. Only ELECTRIC and TOILET survive the API's availability check, giving
-    #     a 0-3 index that supports a single cut: 2 wealth groups.
+    #  2. Only ELECTRIC and TOILET survive the API's availability check; on the
+    #     earlier additive index this supported a single cut: 2 wealth groups.
     #  3. 29.1% of death records have an undetermined age (agedcode 9/10).
     "bf1996a": dict(country="Burkina Faso", year=1996, publish=False,
                     asset_extra=["MORTNUM"],
@@ -180,6 +213,10 @@ SAMPLES = {
                     death_weight=None, age_col="agedyr", age_unknown=[99],
                     nso="Institut National de la Statistique, Cote d'Ivoire"),
     # mw1998a: a second Malawi census, giving a within-country trend against 2008.
+    # Published with a caveat (ruled 2026-11-11): only radio, electricity and
+    # toilet type are recorded, and the first principal component ranks
+    # flush-toilet and electrified households below latrine households, so the
+    # wealth ranking rests on very little information.
     "mw1998a": dict(country="Malawi", year=1998, asset_extra=["MORTNUM"],
                     drop=["PHONE", "CELL", "REFRIG", "TV", "COMPUTER"],
                     death_weight=None,
@@ -303,47 +340,31 @@ def estimate_sample(sample, cfg, extracts_dir, deaths_dir):
     xml = find_extract_for(sample, extracts_dir)
     assert xml, f"no extract found for {sample} in {extracts_dir}"
     per = load_extract(xml)
-    for c in list(YES) + ["TOILET", "SEX", "AGE", "AUTOS", "BATH"]:
+    for c in list(ai.YES) + ["TOILET", "SEX", "AGE"]:
         if c in per.columns:
             per[c] = pd.to_numeric(per[c], errors="coerce")
-    avail = [c for c in YES if c in per.columns]
     # rank only households observed on the asset module: et2007a asks assets
     # (and mortality) on the long form only; collective dwellings are NIU
-    # everywhere. NIU is 0 on all asset vars except AUTOS (9).
-    obs = pd.Series(False, index=per.index)
-    for c in avail + (["TOILET"] if "TOILET" in per.columns else []):
-        obs |= per[c].fillna(0) > 0
-    if "AUTOS" in per.columns:
-        obs |= per["AUTOS"].fillna(9) != 9
+    # everywhere.
+    obs = ai.in_universe(per)
     print(f"  asset universe: {obs.mean():.1%} of persons ({(~obs).sum()} excluded as NIU)")
     per = per[obs].copy()
-    per["assets"] = sum(per[c].isin(YES[c]).astype(int) for c in avail)
-    if "AUTOS" in per.columns:
-        # 7 = "have auto, number unspecified" (e.g. br2010a) - one auto, not clip's 3
-        autos = per["AUTOS"].mask(per["AUTOS"] == 7, 1)
-        per["assets"] += autos.clip(0, 3).where(autos < 8, 0)
-    if "TOILET" in per.columns:
-        per["assets"] += np.select(
-            [per["TOILET"].between(21, 22), per["TOILET"].between(23, 26)], [2, 1], 0)
     per["PERWT"] = per["PERWT"].astype(float) / 100
     per["HHWT"] = per["HHWT"].astype(float) / 100
+    # wealth index: first principal component of household asset indicators;
+    # groups at the quintiles of the household population (asset_index.py)
+    hidx, loadings, pc1 = ai.household_index(per)
+    per = per.merge(hidx, on="SERIAL")
+    cuts, group, mids, gshare = ai.wealth_groups(per["score"], per["PERWT"])
+    G = len(mids)
+    print(f"  wealth index: {len(loadings)} indicators, PC1 explains {pc1:.0%}; "
+          f"{G} groups, shares {np.round(gshare, 3)}")
+    per["q"] = group(per["score"])
+    if G < MIN_GROUPS:
+        print(f"  not published: {G} wealth groups, fewer than MIN_GROUPS ({MIN_GROUPS})")
+        return []
 
-    d = per[per["AGE"].between(15, 59)].sort_values("assets")
-    cum = d["PERWT"].cumsum() / d["PERWT"].sum()
-    cuts = sorted(set(d.loc[(cum - q).abs().idxmin(), "assets"] for q in [0.2, 0.4, 0.6, 0.8]))
-    # a cut at the distribution's min or max creates a structurally empty edge
-    # group (searchsorted side="right"): e.g. et2007a, where 46% of persons
-    # hold zero assets and the 20% cut lands on 0
-    cuts = [c for c in cuts if d["assets"].min() < c < d["assets"].max()]
-    qof = lambda v: np.searchsorted(cuts, v, side="right")
-    G = len(cuts) + 1
-    print(f"  groups: {G} (cuts at {cuts}, assets 0-{int(per['assets'].max())})")
-    per["q"] = per["assets"].apply(qof)
-    gsh = d.assign(q=d["assets"].apply(qof)).groupby("q")["PERWT"].sum().reindex(range(G), fill_value=0)
-    gshv = (gsh / gsh.sum()).values
-    mids = np.cumsum(gshv) - 0.5 * gshv
-
-    hh = per.groupby("SERIAL").agg(assets=("assets", "first"), hhwt=("HHWT", "first")).reset_index()
+    hh = per.groupby("SERIAL").agg(score=("score", "first"), hhwt=("HHWT", "first")).reset_index()
     hh["SERIAL"] = hh["SERIAL"].astype("int64")
     m = pd.read_stata(Path(deaths_dir) / f"{sample}_mortality.dta", convert_categoricals=False)
     m.columns = [c.lower() for c in m.columns]  # ci1998a ships them uppercase
@@ -376,7 +397,19 @@ def estimate_sample(sample, cfg, extracts_dir, deaths_dir):
     linked_share = len(m) / max(n_all, 1)
     print(f"  deaths: {n_all} records, {n_pre} with serial, {len(m)} matched to an "
           f"asset-universe household (linked_share {linked_share:.1%})")
-    m["q"] = m["assets"].apply(qof)
+    m["q"] = group(m["score"])
+    if "MORTNUM" in per.columns:
+        # completeness check: weighted death records against the deaths each
+        # household reports (MORTNUM), by wealth group; it should be flat
+        h = per.drop_duplicates("SERIAL")
+        mn = pd.to_numeric(h["MORTNUM"], errors="coerce")
+        rep = (mn.where(mn.between(0, 30), 0) * h["HHWT"]).groupby(h["q"]).sum()
+        dw = m[cfg["death_weight"]] if cfg["death_weight"] else m["hhwt"]
+        cap = (dw.groupby(m["q"]).sum() / rep).reindex(range(G))
+        print(f"  completeness (death records / MORTNUM deaths) by wealth group: "
+              f"{np.round(cap.values / np.nanmean(cap.values), 2)} (relative to mean)")
+    else:
+        print("  completeness: no MORTNUM in this census; check not possible")
     m["dw"] = m[cfg["death_weight"]] if cfg["death_weight"] else m["hhwt"]
     m["sexd"] = pd.to_numeric(m["sexd"], errors="coerce")
     m["aged"] = pd.to_numeric(m["aged"], errors="coerce")
@@ -401,17 +434,17 @@ def estimate_sample(sample, cfg, extracts_dir, deaths_dir):
             rates[bi] = np.where(e > 0, dd / np.maximum(e, 1e-12), np.nan)
             nb[bi] = int(len(mm[mm["aged"].between(a0, a1)]))
             if nb[bi] >= MIN_BAND_DEATHS and np.all(rates[bi] > 0):
-                rows.append(_row(cfg, lab, "mx", a0, a1, rates[bi], mids, int(nb[bi]), G, linked_share, src))
+                rows.append(_row(cfg, lab, "mx", a0, a1, rates[bi], mids, gshare, int(nb[bi]), G, linked_share, src))
         q45 = 1 - np.prod((1 - rates[:3]) ** 15, axis=0)
-        if np.all(q45 > 0):
-            rows.append(_row(cfg, lab, "45q15", 15, 59, q45, mids, int(nb[:3].sum()), G, linked_share, src))
+        if nb[:3].sum() >= MIN_BAND_DEATHS and np.all(q45 > 0):
+            rows.append(_row(cfg, lab, "45q15", 15, 59, q45, mids, gshare, int(nb[:3].sum()), G, linked_share, src))
     return rows
 
 
-def _row(cfg, sex, measure, a0, a1, vals, mids, n, G, linked_share, src):
+def _row(cfg, sex, measure, a0, a1, vals, mids, shares, n, G, linked_share, src):
     r = dict(indicator="AMR", country=cfg["country"], year=cfg["year"], sex=sex,
              measure=measure, age_lo=a0, age_hi=a1,
-             slope=round(float(np.polyfit(mids, np.log(vals), 1)[0]), 4),
+             slope=round(ai.gradient(mids, vals, shares), 4),
              ratio=round(float(vals[0] / vals[-1]), 3))
     scale = 1000
     for i in range(5):
@@ -437,12 +470,17 @@ def cmd_estimate(args):
         rows += estimate_sample(sample, cfg, args.extracts_dir, args.deaths_dir)
     new = pd.DataFrame(rows)
     if OUT.exists():
+        # keep only rows this pipeline does not produce (Brazil, from IBGE via
+        # build_adult_mortality_brazil.py); every IPUMS row is rebuilt here, so
+        # a sample that no longer publishes drops out of the file
         old = pd.read_csv(OUT)
-        keep = old[~old["country"].isin(new["country"].unique())]
+        keep = old[~old["source"].astype(str).str.startswith("IPUMS")]
         if "groups" not in keep.columns:
             keep = keep.assign(groups=5, linked_share=1.0)
-        new = pd.concat([keep, new], ignore_index=True)
-    new.to_csv(OUT, index=False)
+        # IPUMS rows first, then the rest, as build_adult_mortality_brazil.py
+        # writes them, so the file is identical whichever script ran last
+        new = pd.concat([new, keep], ignore_index=True)
+    new[COLUMNS].to_csv(OUT, index=False)
     print(f"wrote {OUT} ({len(new)} rows)")
 
 

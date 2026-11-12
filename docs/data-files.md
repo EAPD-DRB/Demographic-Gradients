@@ -26,7 +26,7 @@ All files in [`data/`](../data/) are CSV and are rebuilt by the scripts in
 `adult_mortality_gradients.csv` also contains `sex`; `measure` (`45q15` or `mx`);
 `age_lo` and `age_hi`; `n_deaths`; `ranking` (asset index); `source`; `groups`
 (number of wealth groups); and `linked_share` (share of the census's death
-records matched to household assets; below 1, rate levels are not meaningful).
+records matched to household assets).
 
 `census_child_mortality.csv` also contains `measure` (proportion of children
 ever born who have died: `prop_dead_2529`, mothers aged 25–29, the series used;

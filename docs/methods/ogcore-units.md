@@ -53,8 +53,8 @@ percent for fertility and 5
 percent for infant mortality. As a result, the low/high ratio that OG-Core
 produces is too small by 1.32–6.66 percent for fertility and
 2.61 percent for infant mortality
-(table). Adult death rates are low (median annual rate 0.012, maximum
-0.061 in the library), so for adult mortality the slope is too small by
+(table). Adult death rates are low (median annual rate 0.011, maximum
+0.058 in the library), so for adult mortality the slope is too small by
 about 1 percent at the median rate and at most 6 percent. Adult
 mortality quintile sets were not included in the test.
 

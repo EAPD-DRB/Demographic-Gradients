@@ -11,9 +11,9 @@ are open.
 
 Each differential is summarized by a **wealth gradient**: the slope of the log
 rate on household wealth rank, estimated across wealth groups (quintiles in the
-DHS). The
-**low/high ratio**, the rate in the lowest quintile divided by the rate in the
-highest, is reported alongside it.
+DHS; three to five groups in censuses). The **low/high ratio**, the rate in the
+lowest wealth group divided by the rate in the highest, is reported alongside
+it.
 
 ![Total fertility rate by household wealth quintile, Philippines, DHS 2022](figures/what_is_a_gradient.png)
 
@@ -24,7 +24,7 @@ highest, is reported alongside it.
 |---|---|---|---|---|
 | Fertility, by age of mother | `fert_gradient` | DHS | 77 | 1.90 (TFR); 3.72 at ages 15–19 |
 | Infant mortality | `infmort_gradient` | DHS | 78 | 1.67 |
-| Adult mortality (45q15) | `mort_gradient` | census household-death records | 15; other countries through the general gradient | 1.32 |
+| Adult mortality (45q15) | `mort_gradient` | census household-death records | 13; other countries through the general gradient | 1.32 |
 | Income distribution of immigrants | `imm_pctiles` | not provided | — | — |
 <!-- END AUTO-GENERATED -->
 

@@ -53,7 +53,7 @@ One page per country, giving the values for an OG-Core calibration and the estim
 | [Mauritania](mauritania.md) | Sub-Saharan Africa | 2020 | — | — |
 | [Moldova](moldova.md) | North Africa/West Asia/Europe | 2005 | — | — |
 | [Morocco](morocco.md) | North Africa/West Asia/Europe | 2003 | — | — |
-| [Mozambique](mozambique.md) | Sub-Saharan Africa | 2022 | 2007 | — |
+| [Mozambique](mozambique.md) | Sub-Saharan Africa | 2022 | — | — |
 | [Myanmar](myanmar.md) | South & Southeast Asia | 2016 | — | — |
 | [Namibia](namibia.md) | Sub-Saharan Africa | 2013 | — | — |
 | [Nepal](nepal.md) | South & Southeast Asia | 2022 | — | — |
@@ -65,11 +65,11 @@ One page per country, giving the values for an OG-Core calibration and the estim
 | [Paraguay](paraguay.md) | Latin America & Caribbean | 1990 | — | — |
 | [Peru](peru.md) | Latin America & Caribbean | 2012 | — | — |
 | [Philippines](philippines.md) | South & Southeast Asia | 2022 | — | — |
-| [Rwanda](rwanda.md) | Sub-Saharan Africa | 2025 | 2002 | — |
+| [Rwanda](rwanda.md) | Sub-Saharan Africa | 2025 | — | — |
 | [Sao Tome and Principe](sao-tome-and-principe.md) | Sub-Saharan Africa | 2008 | — | — |
 | [Senegal](senegal.md) | Sub-Saharan Africa | 2023 | 2002 | — |
 | [Sierra Leone](sierra-leone.md) | Sub-Saharan Africa | 2019 | 2004 | — |
-| [South Africa](south-africa.md) | Sub-Saharan Africa | 2016 | 2001, 2007, 2011 | — |
+| [South Africa](south-africa.md) | Sub-Saharan Africa | 2016 | 2001, 2007 | — |
 | [South Sudan](south-sudan.md) | — | — | 2008 | — |
 | [Sudan](sudan.md) | Sub-Saharan Africa | — | 2008 | — |
 | [Tajikistan](tajikistan.md) | Central Asia | 2023 | — | — |

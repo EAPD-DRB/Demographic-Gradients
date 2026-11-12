@@ -7,194 +7,176 @@ one row per country, census, sex and age band. Methods are described in
 [adult mortality from census household-death records](../methods/adult-mortality.md);
 countries without an estimate use the [general gradient](../methods/general-gradient.md).
 
-Households are ranked by an asset index; the assets used differ by census and
-are recorded in `scripts/build_adult_mortality.py`. `45q15` is the probability
+Households are ranked by an asset index, the first principal component of
+indicators for household assets and toilet type; the assets used differ by
+census and are recorded in `scripts/build_adult_mortality.py`. `45q15` is the probability
 of dying between ages 15 and 60; `mx` is the age-specific death rate for the
 band shown. The low/high ratio is the rate in the lowest wealth group divided
 by the rate in the highest. "Linked" is the share of the census's death
-records matched to household assets. Where it is well below 1 (South Africa
-2011), rate levels are not meaningful; the gradient is retained because linked
-and unlinked deaths have the same composition by province, residence, sex and
-age.
+records matched to household assets.
 
 Where the census records the number of deaths per household (`MORTNUM`), the
-deaths in the supplementary death file were compared with that number within
-each wealth group during sample review. Uniform under-recording does not affect
-a gradient; under-recording that varies with wealth does. The check could not
-be made for South Africa 2001 and 2007 or Côte d'Ivoire 1998. Four samples
-were not published: the IPUMS mortality supplement for Brazil 2010 (about half
-of the deaths the census reports, with the shortfall concentrated in wealthier
-households; the Brazil estimates below use IBGE's own microdata), Nepal 2001,
-El Salvador 2007 and Burkina Faso 1996 (deaths could not be assigned to
-households reliably). The evidence is recorded in
-`scripts/build_adult_mortality.py`.
+weighted death records are compared with that number within each wealth group;
+`scripts/build_adult_mortality.py` prints the comparison for every sample.
+Uniform under-recording does not affect a gradient; under-recording that varies
+with wealth does. The check could not be made for South Africa 2001 or Côte
+d'Ivoire 1998, which do not record `MORTNUM`. The following samples are not
+published, with the evidence recorded in the script: South Africa 2011,
+Mozambique 2007, Nepal 2001 and El Salvador 2007 (death records missing
+unevenly across wealth groups); the IPUMS supplement for Brazil 2010 (about
+half of the deaths the census reports, with the shortfall concentrated in
+wealthier households; the Brazil estimates below use IBGE's own microdata);
+Burkina Faso 1996 (deaths cannot be assigned to households reliably); Rwanda
+2002 (only two wealth groups); and Cambodia 2008 (held pending review).
 
-Age-band rates (`mx`) are published only where the band contains at least 900
-death records; 45q15 is published for every sample, and `Deaths` gives the
-number of records behind it. Rates are per 1,000.
+Age-band rates (`mx`) and 45q15 are published only where they rest on at least
+900 death records; `Deaths` gives the number of records behind each estimate.
+Rates are per 1,000.
 
 | Country | Year | Sex | Ages | Measure | Gradient | Low/high ratio | Deaths | Linked |
 |---|---|---|---|---|---|---|---|---|
-| Brazil | 2010 | male | 15–29 | mx | −1.41 | 2.98 | 6,876 | 100% |
-| Brazil | 2010 | male | 30–44 | mx | −1.54 | 3.42 | 7,328 | 100% |
-| Brazil | 2010 | male | 45–59 | mx | −0.77 | 1.84 | 11,251 | 100% |
-| Brazil | 2010 | male | 60–74 | mx | −0.13 | 1.05 | 16,459 | 100% |
-| Brazil | 2010 | male | 15–59 | 45q15 | −0.99 | 2.19 | 25,455 | 100% |
-| Brazil | 2010 | female | 15–29 | mx | −0.99 | 2.19 | 1,881 | 100% |
-| Brazil | 2010 | female | 30–44 | mx | −1.23 | 2.79 | 3,312 | 100% |
-| Brazil | 2010 | female | 45–59 | mx | −0.97 | 2.26 | 6,896 | 100% |
-| Brazil | 2010 | female | 60–74 | mx | −0.25 | 1.23 | 12,161 | 100% |
-| Brazil | 2010 | female | 15–59 | 45q15 | −0.98 | 2.28 | 12,089 | 100% |
-| South Africa | 2001 | all | 15–29 | mx | −0.92 | 1.98 | 5,939 | 100% |
-| South Africa | 2001 | all | 30–44 | mx | −1.17 | 2.55 | 8,504 | 100% |
-| South Africa | 2001 | all | 45–59 | mx | −0.86 | 1.95 | 5,750 | 100% |
-| South Africa | 2001 | all | 60–74 | mx | −0.32 | 1.28 | 5,489 | 100% |
-| South Africa | 2001 | all | 15–59 | 45q15 | −0.79 | 1.86 | 20,193 | 100% |
-| South Africa | 2001 | male | 15–29 | mx | −0.80 | 1.84 | 2,835 | 100% |
-| South Africa | 2001 | male | 30–44 | mx | −1.14 | 2.57 | 4,564 | 100% |
-| South Africa | 2001 | male | 45–59 | mx | −0.82 | 1.95 | 3,558 | 100% |
-| South Africa | 2001 | male | 60–74 | mx | −0.51 | 1.48 | 2,983 | 100% |
-| South Africa | 2001 | male | 15–59 | 45q15 | −0.70 | 1.78 | 10,957 | 100% |
-| South Africa | 2001 | female | 15–29 | mx | −1.03 | 2.12 | 3,104 | 100% |
-| South Africa | 2001 | female | 30–44 | mx | −1.22 | 2.57 | 3,940 | 100% |
-| South Africa | 2001 | female | 45–59 | mx | −0.94 | 2.02 | 2,192 | 100% |
-| South Africa | 2001 | female | 60–74 | mx | −0.21 | 1.19 | 2,506 | 100% |
-| South Africa | 2001 | female | 15–59 | 45q15 | −0.89 | 1.98 | 9,236 | 100% |
-| South Africa | 2007 | all | 15–29 | mx | −1.21 | 2.35 | 2,421 | 100% |
-| South Africa | 2007 | all | 30–44 | mx | −1.25 | 2.41 | 4,353 | 100% |
-| South Africa | 2007 | all | 45–59 | mx | −1.21 | 2.25 | 2,693 | 100% |
-| South Africa | 2007 | all | 60–74 | mx | −0.56 | 1.41 | 1,963 | 100% |
-| South Africa | 2007 | all | 15–59 | 45q15 | −0.80 | 1.73 | 9,467 | 100% |
-| South Africa | 2007 | male | 15–29 | mx | −1.18 | 2.31 | 1,071 | 100% |
-| South Africa | 2007 | male | 30–44 | mx | −1.15 | 2.27 | 2,207 | 100% |
-| South Africa | 2007 | male | 45–59 | mx | −1.06 | 2.05 | 1,603 | 100% |
-| South Africa | 2007 | male | 60–74 | mx | −0.59 | 1.47 | 1,061 | 100% |
-| South Africa | 2007 | male | 15–59 | 45q15 | −0.68 | 1.60 | 4,881 | 100% |
-| South Africa | 2007 | female | 15–29 | mx | −1.24 | 2.40 | 1,350 | 100% |
-| South Africa | 2007 | female | 30–44 | mx | −1.34 | 2.53 | 2,146 | 100% |
-| South Africa | 2007 | female | 45–59 | mx | −1.40 | 2.51 | 1,090 | 100% |
-| South Africa | 2007 | female | 60–74 | mx | −0.62 | 1.41 | 902 | 100% |
-| South Africa | 2007 | female | 15–59 | 45q15 | −0.92 | 1.87 | 4,586 | 100% |
-| South Africa | 2011 | all | 30–44 | mx | −0.99 | 1.98 | 905 | 9% |
-| South Africa | 2011 | all | 15–59 | 45q15 | −0.80 | 1.75 | 2,098 | 9% |
-| South Africa | 2011 | male | 15–59 | 45q15 | −0.74 | 1.74 | 1,123 | 9% |
-| South Africa | 2011 | female | 15–59 | 45q15 | −0.87 | 1.76 | 972 | 9% |
-| Ethiopia | 2007 | all | 15–29 | mx | −0.87 | 1.79 | 1,957 | 100% |
-| Ethiopia | 2007 | all | 30–44 | mx | 0.08 | 0.93 | 1,472 | 100% |
-| Ethiopia | 2007 | all | 45–59 | mx | 0.58 | 0.66 | 900 | 100% |
+| South Africa | 2001 | all | 15–29 | mx | −1.04 | 2.32 | 5,939 | 100% |
+| South Africa | 2001 | all | 30–44 | mx | −1.45 | 3.35 | 8,504 | 100% |
+| South Africa | 2001 | all | 45–59 | mx | −0.98 | 2.29 | 5,750 | 100% |
+| South Africa | 2001 | all | 60–74 | mx | −0.34 | 1.40 | 5,489 | 100% |
+| South Africa | 2001 | all | 15–59 | 45q15 | −0.93 | 2.20 | 20,193 | 100% |
+| South Africa | 2001 | male | 15–29 | mx | −0.88 | 2.03 | 2,835 | 100% |
+| South Africa | 2001 | male | 30–44 | mx | −1.42 | 3.36 | 4,564 | 100% |
+| South Africa | 2001 | male | 45–59 | mx | −0.95 | 2.28 | 3,558 | 100% |
+| South Africa | 2001 | male | 60–74 | mx | −0.52 | 1.61 | 2,983 | 100% |
+| South Africa | 2001 | male | 15–59 | 45q15 | −0.84 | 2.06 | 10,957 | 100% |
+| South Africa | 2001 | female | 15–29 | mx | −1.21 | 2.69 | 3,104 | 100% |
+| South Africa | 2001 | female | 30–44 | mx | −1.49 | 3.40 | 3,940 | 100% |
+| South Africa | 2001 | female | 45–59 | mx | −1.05 | 2.40 | 2,192 | 100% |
+| South Africa | 2001 | female | 60–74 | mx | −0.26 | 1.31 | 2,506 | 100% |
+| South Africa | 2001 | female | 15–59 | 45q15 | −1.06 | 2.41 | 9,236 | 100% |
+| South Africa | 2007 | all | 15–29 | mx | −1.63 | 3.89 | 2,421 | 100% |
+| South Africa | 2007 | all | 30–44 | mx | −2.00 | 5.17 | 4,353 | 100% |
+| South Africa | 2007 | all | 45–59 | mx | −1.58 | 3.76 | 2,693 | 100% |
+| South Africa | 2007 | all | 60–74 | mx | −0.69 | 1.95 | 1,963 | 100% |
+| South Africa | 2007 | all | 15–59 | 45q15 | −1.23 | 2.82 | 9,467 | 100% |
+| South Africa | 2007 | male | 15–29 | mx | −1.36 | 3.05 | 1,071 | 100% |
+| South Africa | 2007 | male | 30–44 | mx | −1.94 | 4.87 | 2,207 | 100% |
+| South Africa | 2007 | male | 45–59 | mx | −1.52 | 3.50 | 1,603 | 100% |
+| South Africa | 2007 | male | 60–74 | mx | −0.81 | 2.08 | 1,061 | 100% |
+| South Africa | 2007 | male | 15–59 | 45q15 | −1.07 | 2.45 | 4,881 | 100% |
+| South Africa | 2007 | female | 15–29 | mx | −1.92 | 5.03 | 1,350 | 100% |
+| South Africa | 2007 | female | 30–44 | mx | −2.06 | 5.52 | 2,146 | 100% |
+| South Africa | 2007 | female | 45–59 | mx | −1.71 | 4.38 | 1,090 | 100% |
+| South Africa | 2007 | female | 60–74 | mx | −0.66 | 1.98 | 902 | 100% |
+| South Africa | 2007 | female | 15–59 | 45q15 | −1.42 | 3.37 | 4,586 | 100% |
+| Ethiopia | 2007 | all | 15–29 | mx | −0.83 | 1.77 | 1,957 | 100% |
+| Ethiopia | 2007 | all | 30–44 | mx | 0.00 | 0.93 | 1,472 | 100% |
+| Ethiopia | 2007 | all | 45–59 | mx | 0.42 | 0.66 | 900 | 100% |
 | Ethiopia | 2007 | all | 60–74 | mx | 0.44 | 0.75 | 957 | 100% |
-| Ethiopia | 2007 | all | 15–59 | 45q15 | 0.09 | 0.93 | 4,329 | 100% |
-| Ethiopia | 2007 | male | 15–29 | mx | −0.95 | 1.89 | 974 | 100% |
-| Ethiopia | 2007 | male | 15–59 | 45q15 | −0.13 | 1.07 | 2,247 | 100% |
-| Ethiopia | 2007 | female | 15–29 | mx | −0.80 | 1.70 | 983 | 100% |
-| Ethiopia | 2007 | female | 15–59 | 45q15 | 0.34 | 0.79 | 2,082 | 100% |
-| Zambia | 2010 | all | 15–29 | mx | −0.37 | 1.32 | 2,354 | 100% |
-| Zambia | 2010 | all | 30–44 | mx | −0.24 | 1.15 | 2,899 | 100% |
-| Zambia | 2010 | all | 45–59 | mx | −0.22 | 1.10 | 1,433 | 100% |
-| Zambia | 2010 | all | 60–74 | mx | 0.48 | 0.69 | 1,147 | 100% |
-| Zambia | 2010 | all | 15–59 | 45q15 | −0.18 | 1.11 | 6,686 | 100% |
-| Zambia | 2010 | male | 15–29 | mx | −0.36 | 1.30 | 1,147 | 100% |
-| Zambia | 2010 | male | 30–44 | mx | −0.32 | 1.19 | 1,652 | 100% |
-| Zambia | 2010 | male | 15–59 | 45q15 | −0.31 | 1.18 | 3,630 | 100% |
-| Zambia | 2010 | female | 15–29 | mx | −0.39 | 1.33 | 1,207 | 100% |
-| Zambia | 2010 | female | 30–44 | mx | −0.15 | 1.10 | 1,247 | 100% |
-| Zambia | 2010 | female | 15–59 | 45q15 | −0.06 | 1.05 | 3,056 | 100% |
-| Malawi | 2008 | all | 15–29 | mx | −0.71 | 1.65 | 1,941 | 99% |
-| Malawi | 2008 | all | 30–44 | mx | −0.50 | 1.30 | 2,243 | 99% |
-| Malawi | 2008 | all | 45–59 | mx | −0.10 | 0.95 | 1,059 | 99% |
-| Malawi | 2008 | all | 15–59 | 45q15 | −0.28 | 1.13 | 5,243 | 99% |
-| Malawi | 2008 | male | 30–44 | mx | −0.65 | 1.36 | 1,198 | 99% |
-| Malawi | 2008 | male | 15–59 | 45q15 | −0.45 | 1.25 | 2,724 | 99% |
-| Malawi | 2008 | female | 15–29 | mx | −0.55 | 1.46 | 1,054 | 99% |
-| Malawi | 2008 | female | 30–44 | mx | −0.33 | 1.23 | 1,045 | 99% |
-| Malawi | 2008 | female | 15–59 | 45q15 | −0.11 | 1.04 | 2,519 | 99% |
-| Mozambique | 2007 | all | 15–29 | mx | −0.62 | 1.66 | 4,110 | 100% |
-| Mozambique | 2007 | all | 30–44 | mx | 0.03 | 0.97 | 4,637 | 100% |
-| Mozambique | 2007 | all | 45–59 | mx | 0.19 | 0.84 | 2,863 | 100% |
-| Mozambique | 2007 | all | 60–74 | mx | 0.66 | 0.60 | 2,176 | 100% |
-| Mozambique | 2007 | all | 15–59 | 45q15 | −0.01 | 1.00 | 11,610 | 100% |
-| Mozambique | 2007 | male | 15–29 | mx | −0.75 | 1.84 | 1,794 | 100% |
-| Mozambique | 2007 | male | 30–44 | mx | −0.15 | 1.14 | 2,458 | 100% |
-| Mozambique | 2007 | male | 45–59 | mx | −0.16 | 1.07 | 1,657 | 100% |
-| Mozambique | 2007 | male | 60–74 | mx | 0.11 | 0.89 | 1,281 | 100% |
-| Mozambique | 2007 | male | 15–59 | 45q15 | −0.16 | 1.11 | 5,909 | 100% |
-| Mozambique | 2007 | female | 15–29 | mx | −0.50 | 1.51 | 2,297 | 100% |
-| Mozambique | 2007 | female | 30–44 | mx | 0.20 | 0.83 | 2,171 | 100% |
-| Mozambique | 2007 | female | 45–59 | mx | 0.49 | 0.68 | 1,193 | 100% |
-| Mozambique | 2007 | female | 15–59 | 45q15 | 0.12 | 0.91 | 5,661 | 100% |
-| Uganda | 2002 | all | 15–29 | mx | −0.18 | 1.15 | 3,905 | 100% |
-| Uganda | 2002 | all | 30–44 | mx | 0.34 | 0.72 | 4,511 | 100% |
-| Uganda | 2002 | all | 45–59 | mx | 0.29 | 0.74 | 2,054 | 100% |
-| Uganda | 2002 | all | 60–74 | mx | 0.44 | 0.72 | 1,905 | 100% |
-| Uganda | 2002 | all | 15–59 | 45q15 | 0.17 | 0.83 | 10,470 | 100% |
-| Uganda | 2002 | male | 15–29 | mx | −0.47 | 1.47 | 1,827 | 100% |
-| Uganda | 2002 | male | 30–44 | mx | 0.11 | 0.86 | 2,461 | 100% |
-| Uganda | 2002 | male | 45–59 | mx | 0.13 | 0.84 | 1,227 | 100% |
-| Uganda | 2002 | male | 60–74 | mx | −0.01 | 0.97 | 1,105 | 100% |
-| Uganda | 2002 | male | 15–59 | 45q15 | 0.01 | 0.95 | 5,515 | 100% |
-| Uganda | 2002 | female | 15–29 | mx | 0.10 | 0.91 | 2,078 | 100% |
-| Uganda | 2002 | female | 30–44 | mx | 0.61 | 0.57 | 2,050 | 100% |
-| Uganda | 2002 | female | 15–59 | 45q15 | 0.37 | 0.71 | 4,955 | 100% |
-| Rwanda | 2002 | all | 15–59 | 45q15 | −0.38 | 1.31 | 1,846 | 100% |
-| Rwanda | 2002 | male | 15–59 | 45q15 | −0.58 | 1.50 | 950 | 100% |
-| Rwanda | 2002 | female | 15–59 | 45q15 | −0.19 | 1.15 | 886 | 100% |
-| Senegal | 2002 | all | 15–29 | mx | −0.73 | 1.84 | 1,086 | 100% |
-| Senegal | 2002 | all | 30–44 | mx | −0.55 | 1.70 | 1,086 | 100% |
-| Senegal | 2002 | all | 60–74 | mx | −0.15 | 1.07 | 1,311 | 100% |
-| Senegal | 2002 | all | 15–59 | 45q15 | −0.34 | 1.33 | 3,039 | 100% |
-| Senegal | 2002 | male | 15–59 | 45q15 | −0.38 | 1.40 | 1,311 | 100% |
-| Senegal | 2002 | female | 15–59 | 45q15 | −0.28 | 1.25 | 1,725 | 100% |
-| Sierra Leone | 2004 | all | 15–29 | mx | −0.66 | 1.75 | 1,182 | 100% |
-| Sierra Leone | 2004 | all | 30–44 | mx | −0.25 | 1.28 | 1,057 | 100% |
-| Sierra Leone | 2004 | all | 60–74 | mx | −0.30 | 1.25 | 918 | 100% |
-| Sierra Leone | 2004 | all | 15–59 | 45q15 | −0.26 | 1.28 | 3,056 | 100% |
-| Sierra Leone | 2004 | male | 15–59 | 45q15 | −0.35 | 1.39 | 1,487 | 100% |
-| Sierra Leone | 2004 | female | 15–59 | 45q15 | −0.16 | 1.16 | 1,569 | 100% |
-| Lesotho | 2006 | all | 30–44 | mx | −0.96 | 2.51 | 1,186 | 100% |
-| Lesotho | 2006 | all | 15–59 | 45q15 | −0.43 | 1.47 | 2,572 | 100% |
-| Lesotho | 2006 | male | 15–59 | 45q15 | −0.35 | 1.37 | 1,270 | 100% |
-| Lesotho | 2006 | female | 15–59 | 45q15 | −0.51 | 1.58 | 1,302 | 100% |
-| Benin | 2013 | all | 15–59 | 45q15 | −0.66 | 1.81 | 1,555 | 100% |
-| Benin | 2013 | male | 15–59 | 45q15 | −0.90 | 2.32 | 875 | 100% |
-| Benin | 2013 | female | 15–59 | 45q15 | −0.36 | 1.31 | 680 | 100% |
-| Cote d'Ivoire | 1998 | all | 15–29 | mx | −0.94 | 2.14 | 2,128 | 100% |
-| Cote d'Ivoire | 1998 | all | 30–44 | mx | −0.76 | 1.84 | 2,240 | 100% |
-| Cote d'Ivoire | 1998 | all | 45–59 | mx | −0.36 | 1.37 | 1,561 | 100% |
-| Cote d'Ivoire | 1998 | all | 60–74 | mx | −0.04 | 0.94 | 1,621 | 100% |
-| Cote d'Ivoire | 1998 | all | 15–59 | 45q15 | −0.48 | 1.49 | 5,929 | 100% |
-| Cote d'Ivoire | 1998 | male | 15–29 | mx | −0.85 | 1.97 | 909 | 100% |
-| Cote d'Ivoire | 1998 | male | 30–44 | mx | −0.87 | 2.08 | 1,185 | 100% |
-| Cote d'Ivoire | 1998 | male | 15–59 | 45q15 | −0.56 | 1.62 | 2,990 | 100% |
-| Cote d'Ivoire | 1998 | female | 15–29 | mx | −1.00 | 2.26 | 1,219 | 100% |
-| Cote d'Ivoire | 1998 | female | 30–44 | mx | −0.66 | 1.65 | 1,055 | 100% |
-| Cote d'Ivoire | 1998 | female | 15–59 | 45q15 | −0.41 | 1.37 | 2,939 | 100% |
-| Malawi | 1998 | all | 15–29 | mx | −0.32 | 1.57 | 2,764 | 100% |
-| Malawi | 1998 | all | 30–44 | mx | −0.06 | 1.39 | 2,204 | 100% |
-| Malawi | 1998 | all | 45–59 | mx | 0.12 | 1.04 | 1,412 | 100% |
-| Malawi | 1998 | all | 15–59 | 45q15 | −0.02 | 1.18 | 6,380 | 100% |
-| Malawi | 1998 | male | 15–29 | mx | −0.52 | 1.78 | 1,507 | 100% |
-| Malawi | 1998 | male | 30–44 | mx | −0.23 | 1.65 | 1,182 | 100% |
-| Malawi | 1998 | male | 15–59 | 45q15 | −0.12 | 1.33 | 3,514 | 100% |
-| Malawi | 1998 | female | 15–29 | mx | −0.13 | 1.40 | 1,257 | 100% |
-| Malawi | 1998 | female | 30–44 | mx | 0.10 | 1.19 | 1,022 | 100% |
-| Malawi | 1998 | female | 15–59 | 45q15 | 0.07 | 1.04 | 2,866 | 100% |
-| Sudan | 2008 | all | 15–29 | mx | −1.17 | 2.24 | 7,995 | 100% |
-| Sudan | 2008 | all | 30–44 | mx | −0.85 | 1.77 | 5,739 | 100% |
-| Sudan | 2008 | all | 45–59 | mx | −0.13 | 1.08 | 3,980 | 100% |
-| Sudan | 2008 | all | 60–74 | mx | 0.43 | 0.76 | 4,544 | 100% |
-| Sudan | 2008 | all | 15–59 | 45q15 | −0.47 | 1.37 | 17,714 | 100% |
-| Sudan | 2008 | male | 15–29 | mx | −1.12 | 2.13 | 4,262 | 100% |
-| Sudan | 2008 | male | 30–44 | mx | −1.08 | 2.10 | 3,259 | 100% |
-| Sudan | 2008 | male | 45–59 | mx | −0.10 | 1.03 | 2,205 | 100% |
-| Sudan | 2008 | male | 60–74 | mx | 0.37 | 0.79 | 2,709 | 100% |
-| Sudan | 2008 | male | 15–59 | 45q15 | −0.51 | 1.39 | 9,726 | 100% |
-| Sudan | 2008 | female | 15–29 | mx | −1.22 | 2.37 | 3,733 | 100% |
-| Sudan | 2008 | female | 30–44 | mx | −0.60 | 1.47 | 2,480 | 100% |
-| Sudan | 2008 | female | 45–59 | mx | −0.18 | 1.14 | 1,775 | 100% |
-| Sudan | 2008 | female | 60–74 | mx | 0.50 | 0.73 | 1,835 | 100% |
-| Sudan | 2008 | female | 15–59 | 45q15 | −0.44 | 1.36 | 7,988 | 100% |
-| South Sudan | 2008 | all | 15–29 | mx | −0.98 | 1.79 | 1,857 | 100% |
-| South Sudan | 2008 | all | 15–59 | 45q15 | 0.09 | 0.95 | 2,859 | 100% |
-| South Sudan | 2008 | male | 15–29 | mx | −1.37 | 2.24 | 1,092 | 100% |
+| Ethiopia | 2007 | all | 15–59 | 45q15 | 0.01 | 0.92 | 4,329 | 100% |
+| Ethiopia | 2007 | male | 15–29 | mx | −0.91 | 1.88 | 974 | 100% |
+| Ethiopia | 2007 | male | 15–59 | 45q15 | −0.22 | 1.07 | 2,247 | 100% |
+| Ethiopia | 2007 | female | 15–29 | mx | −0.77 | 1.68 | 983 | 100% |
+| Ethiopia | 2007 | female | 15–59 | 45q15 | 0.26 | 0.78 | 2,082 | 100% |
+| Zambia | 2010 | all | 15–29 | mx | −0.51 | 1.53 | 2,354 | 100% |
+| Zambia | 2010 | all | 30–44 | mx | −0.26 | 1.20 | 2,899 | 100% |
+| Zambia | 2010 | all | 45–59 | mx | −0.00 | 0.97 | 1,433 | 100% |
+| Zambia | 2010 | all | 60–74 | mx | 0.59 | 0.67 | 1,147 | 100% |
+| Zambia | 2010 | all | 15–59 | 45q15 | −0.14 | 1.10 | 6,686 | 100% |
+| Zambia | 2010 | male | 15–29 | mx | −0.53 | 1.50 | 1,147 | 100% |
+| Zambia | 2010 | male | 30–44 | mx | −0.32 | 1.22 | 1,652 | 100% |
+| Zambia | 2010 | male | 15–59 | 45q15 | −0.26 | 1.16 | 3,630 | 100% |
+| Zambia | 2010 | female | 15–29 | mx | −0.50 | 1.55 | 1,207 | 100% |
+| Zambia | 2010 | female | 30–44 | mx | −0.20 | 1.18 | 1,247 | 100% |
+| Zambia | 2010 | female | 15–59 | 45q15 | −0.02 | 1.04 | 3,056 | 100% |
+| Malawi | 2008 | all | 15–29 | mx | −0.96 | 1.98 | 1,941 | 99% |
+| Malawi | 2008 | all | 30–44 | mx | −0.83 | 1.72 | 2,243 | 99% |
+| Malawi | 2008 | all | 45–59 | mx | −0.26 | 1.08 | 1,059 | 99% |
+| Malawi | 2008 | all | 15–59 | 45q15 | −0.47 | 1.32 | 5,243 | 99% |
+| Malawi | 2008 | male | 30–44 | mx | −1.21 | 2.20 | 1,198 | 99% |
+| Malawi | 2008 | male | 15–59 | 45q15 | −0.77 | 1.61 | 2,724 | 99% |
+| Malawi | 2008 | female | 15–29 | mx | −0.83 | 1.80 | 1,054 | 99% |
+| Malawi | 2008 | female | 30–44 | mx | −0.44 | 1.32 | 1,045 | 99% |
+| Malawi | 2008 | female | 15–59 | 45q15 | −0.17 | 1.08 | 2,519 | 99% |
+| Uganda | 2002 | all | 15–29 | mx | −0.20 | 1.13 | 3,905 | 100% |
+| Uganda | 2002 | all | 30–44 | mx | 0.30 | 0.72 | 4,511 | 100% |
+| Uganda | 2002 | all | 45–59 | mx | 0.25 | 0.75 | 2,054 | 100% |
+| Uganda | 2002 | all | 60–74 | mx | 0.39 | 0.73 | 1,905 | 100% |
+| Uganda | 2002 | all | 15–59 | 45q15 | 0.15 | 0.84 | 10,470 | 100% |
+| Uganda | 2002 | male | 15–29 | mx | −0.46 | 1.46 | 1,827 | 100% |
+| Uganda | 2002 | male | 30–44 | mx | 0.10 | 0.85 | 2,461 | 100% |
+| Uganda | 2002 | male | 45–59 | mx | 0.10 | 0.83 | 1,227 | 100% |
+| Uganda | 2002 | male | 60–74 | mx | −0.04 | 0.96 | 1,105 | 100% |
+| Uganda | 2002 | male | 15–59 | 45q15 | 0.00 | 0.94 | 5,515 | 100% |
+| Uganda | 2002 | female | 15–29 | mx | 0.04 | 0.89 | 2,078 | 100% |
+| Uganda | 2002 | female | 30–44 | mx | 0.54 | 0.59 | 2,050 | 100% |
+| Uganda | 2002 | female | 15–59 | 45q15 | 0.31 | 0.73 | 4,955 | 100% |
+| Senegal | 2002 | all | 15–29 | mx | −0.81 | 1.82 | 1,086 | 100% |
+| Senegal | 2002 | all | 30–44 | mx | −0.51 | 1.57 | 1,086 | 100% |
+| Senegal | 2002 | all | 60–74 | mx | −0.27 | 1.18 | 1,311 | 100% |
+| Senegal | 2002 | all | 15–59 | 45q15 | −0.34 | 1.29 | 3,039 | 100% |
+| Senegal | 2002 | male | 15–59 | 45q15 | −0.35 | 1.33 | 1,311 | 100% |
+| Senegal | 2002 | female | 15–59 | 45q15 | −0.32 | 1.25 | 1,725 | 100% |
+| Sierra Leone | 2004 | all | 15–29 | mx | −0.74 | 1.66 | 1,182 | 100% |
+| Sierra Leone | 2004 | all | 30–44 | mx | −0.19 | 1.14 | 1,057 | 100% |
+| Sierra Leone | 2004 | all | 60–74 | mx | −0.13 | 1.06 | 918 | 100% |
+| Sierra Leone | 2004 | all | 15–59 | 45q15 | −0.25 | 1.19 | 3,056 | 100% |
+| Sierra Leone | 2004 | male | 15–59 | 45q15 | −0.37 | 1.30 | 1,487 | 100% |
+| Sierra Leone | 2004 | female | 15–59 | 45q15 | −0.12 | 1.08 | 1,569 | 100% |
+| Lesotho | 2006 | all | 30–44 | mx | −0.86 | 2.01 | 1,186 | 100% |
+| Lesotho | 2006 | all | 15–59 | 45q15 | −0.36 | 1.34 | 2,572 | 100% |
+| Lesotho | 2006 | male | 15–59 | 45q15 | −0.29 | 1.28 | 1,270 | 100% |
+| Lesotho | 2006 | female | 15–59 | 45q15 | −0.43 | 1.41 | 1,302 | 100% |
+| Benin | 2013 | all | 15–59 | 45q15 | −0.57 | 1.75 | 1,555 | 100% |
+| Cote d'Ivoire | 1998 | all | 15–29 | mx | −0.90 | 2.31 | 2,128 | 100% |
+| Cote d'Ivoire | 1998 | all | 30–44 | mx | −0.73 | 1.94 | 2,240 | 100% |
+| Cote d'Ivoire | 1998 | all | 45–59 | mx | −0.35 | 1.34 | 1,561 | 100% |
+| Cote d'Ivoire | 1998 | all | 60–74 | mx | −0.02 | 1.00 | 1,621 | 100% |
+| Cote d'Ivoire | 1998 | all | 15–59 | 45q15 | −0.46 | 1.51 | 5,929 | 100% |
+| Cote d'Ivoire | 1998 | male | 15–29 | mx | −0.88 | 2.26 | 909 | 100% |
+| Cote d'Ivoire | 1998 | male | 30–44 | mx | −0.79 | 2.17 | 1,185 | 100% |
+| Cote d'Ivoire | 1998 | male | 15–59 | 45q15 | −0.49 | 1.63 | 2,990 | 100% |
+| Cote d'Ivoire | 1998 | female | 15–29 | mx | −0.93 | 2.35 | 1,219 | 100% |
+| Cote d'Ivoire | 1998 | female | 30–44 | mx | −0.69 | 1.75 | 1,055 | 100% |
+| Cote d'Ivoire | 1998 | female | 15–59 | 45q15 | −0.45 | 1.41 | 2,939 | 100% |
+| Malawi | 1998 | all | 15–29 | mx | −0.42 | 1.51 | 2,764 | 100% |
+| Malawi | 1998 | all | 30–44 | mx | −0.31 | 1.37 | 2,204 | 100% |
+| Malawi | 1998 | all | 45–59 | mx | −0.01 | 1.03 | 1,412 | 100% |
+| Malawi | 1998 | all | 15–59 | 45q15 | −0.14 | 1.17 | 6,380 | 100% |
+| Malawi | 1998 | male | 15–29 | mx | −0.58 | 1.71 | 1,507 | 100% |
+| Malawi | 1998 | male | 30–44 | mx | −0.52 | 1.63 | 1,182 | 100% |
+| Malawi | 1998 | male | 15–59 | 45q15 | −0.27 | 1.32 | 3,514 | 100% |
+| Malawi | 1998 | female | 15–29 | mx | −0.26 | 1.34 | 1,257 | 100% |
+| Malawi | 1998 | female | 30–44 | mx | −0.10 | 1.17 | 1,022 | 100% |
+| Malawi | 1998 | female | 15–59 | 45q15 | −0.01 | 1.03 | 2,866 | 100% |
+| Sudan | 2008 | all | 15–29 | mx | −1.09 | 2.19 | 7,995 | 100% |
+| Sudan | 2008 | all | 30–44 | mx | −0.75 | 1.72 | 5,739 | 100% |
+| Sudan | 2008 | all | 45–59 | mx | −0.10 | 1.09 | 3,980 | 100% |
+| Sudan | 2008 | all | 60–74 | mx | 0.41 | 0.77 | 4,544 | 100% |
+| Sudan | 2008 | all | 15–59 | 45q15 | −0.42 | 1.36 | 17,714 | 100% |
+| Sudan | 2008 | male | 15–29 | mx | −1.02 | 2.08 | 4,262 | 100% |
+| Sudan | 2008 | male | 30–44 | mx | −0.94 | 2.00 | 3,259 | 100% |
+| Sudan | 2008 | male | 45–59 | mx | −0.07 | 1.04 | 2,205 | 100% |
+| Sudan | 2008 | male | 60–74 | mx | 0.39 | 0.80 | 2,709 | 100% |
+| Sudan | 2008 | male | 15–59 | 45q15 | −0.44 | 1.37 | 9,726 | 100% |
+| Sudan | 2008 | female | 15–29 | mx | −1.18 | 2.33 | 3,733 | 100% |
+| Sudan | 2008 | female | 30–44 | mx | −0.56 | 1.44 | 2,480 | 100% |
+| Sudan | 2008 | female | 45–59 | mx | −0.15 | 1.14 | 1,775 | 100% |
+| Sudan | 2008 | female | 60–74 | mx | 0.42 | 0.73 | 1,835 | 100% |
+| Sudan | 2008 | female | 15–59 | 45q15 | −0.41 | 1.35 | 7,988 | 100% |
+| South Sudan | 2008 | all | 15–29 | mx | −0.97 | 1.77 | 1,857 | 100% |
+| South Sudan | 2008 | all | 15–59 | 45q15 | 0.08 | 0.95 | 2,859 | 100% |
+| South Sudan | 2008 | male | 15–29 | mx | −1.36 | 2.23 | 1,092 | 100% |
 | South Sudan | 2008 | male | 15–59 | 45q15 | −0.30 | 1.19 | 1,724 | 100% |
-| South Sudan | 2008 | female | 15–59 | 45q15 | 0.62 | 0.69 | 1,135 | 100% |
+| South Sudan | 2008 | female | 15–59 | 45q15 | 0.61 | 0.70 | 1,135 | 100% |
+| Brazil | 2010 | all | 15–29 | mx | −1.36 | 3.02 | 8,735 | 100% |
+| Brazil | 2010 | all | 30–44 | mx | −1.43 | 3.32 | 10,613 | 100% |
+| Brazil | 2010 | all | 45–59 | mx | −0.85 | 2.07 | 18,119 | 100% |
+| Brazil | 2010 | all | 60–74 | mx | −0.21 | 1.17 | 28,588 | 100% |
+| Brazil | 2010 | all | 15–59 | 45q15 | −1.00 | 2.33 | 37,467 | 100% |
+| Brazil | 2010 | male | 15–29 | mx | −1.45 | 3.23 | 6,859 | 100% |
+| Brazil | 2010 | male | 30–44 | mx | −1.47 | 3.44 | 7,310 | 100% |
+| Brazil | 2010 | male | 45–59 | mx | −0.71 | 1.85 | 11,238 | 100% |
+| Brazil | 2010 | male | 60–74 | mx | −0.12 | 1.09 | 16,440 | 100% |
+| Brazil | 2010 | male | 15–59 | 45q15 | −0.94 | 2.23 | 25,407 | 100% |
+| Brazil | 2010 | female | 15–29 | mx | −0.99 | 2.20 | 1,876 | 100% |
+| Brazil | 2010 | female | 30–44 | mx | −1.20 | 2.73 | 3,303 | 100% |
+| Brazil | 2010 | female | 45–59 | mx | −1.02 | 2.36 | 6,881 | 100% |
+| Brazil | 2010 | female | 60–74 | mx | −0.33 | 1.30 | 12,148 | 100% |
+| Brazil | 2010 | female | 15–59 | 45q15 | −1.01 | 2.34 | 12,060 | 100% |

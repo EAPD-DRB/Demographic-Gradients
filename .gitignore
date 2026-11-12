@@ -1,3 +1,4 @@
 # Local secrets - never committed
 .secrets/
 .DS_Store
+__pycache__/

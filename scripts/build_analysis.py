@@ -61,42 +61,45 @@ COUNTRY_NOTES = {
         "concentrated in wealthier households, which would bias the gradient. The "
         "IPUMS sample is retained in `scripts/build_adult_mortality.py` with "
         "`publish=False` and the supporting evidence.",
+        "The adult-mortality script is `scripts/build_adult_mortality_brazil.py`; it "
+        "downloads the microdata from IBGE's public server (about 1.5 GB, no "
+        "registration) and uses the same asset index as the other censuses.",
         "The DHS survey (1996) predates the census series. The census estimates "
-        "show the child-mortality gradient roughly halving between 1991 and 2010; "
-        "the census value is therefore used for `infmort_gradient`.",
+        "show the child-mortality gradient becoming considerably less steep between "
+        "1991 and 2010 (child-mortality table above); the census value is therefore used for "
+        "`infmort_gradient`.",
         "Census child-mortality estimates are published on two asset indices "
         "(`index` column): `full`, using all assets in each census, and `common`, "
-        "using only electricity, refrigerator, television and radio, which all "
-        "three censuses record. The `full` index is preferred; by 2010 nearly all "
-        "households own the four common assets, and that index separates only two "
-        "groups.",
+        "using only electricity, refrigerator, television, radio and car, which all "
+        "three censuses record. The `full` index is preferred. In 1991 the two "
+        "coincide, since the census records only the common assets; by 2010 nearly "
+        "all households own them, the common index separates fewer than three "
+        "groups, and no 2010 value is published on it.",
     ],
     "South Africa": [
-        "Three censuses (2001, 2007, 2011) and the 2016 DHS. The 2011 census links "
-        "about 9 percent of death records to household assets (`linked_share`), so "
-        "rate levels for that year are not meaningful. In a comparison made during "
-        "sample review, linked and unlinked deaths had the same distribution by "
-        "province, urban or rural residence, sex and age; the gradient is retained "
-        "on that basis.",
-        "In the IPUMS samples, `AUTOS` code 7 means that the household has a car "
-        "but the number is unspecified. Treating it as a count changed the 2011 "
-        "gradient from −0.80 to −1.14; the published estimate uses the corrected "
-        "coding.",
+        "Adult-mortality estimates are published for the 2001 and 2007 censuses; "
+        "2007 is the latest and is used for `mort_gradient`. In 2007 the death "
+        "records match the deaths households report in every wealth group. The 2001 "
+        "census does not record the number of deaths per household, so that check "
+        "could not be made.",
+        "The 2011 census is not published. Only about 9 percent of its death records "
+        "can be linked to a household, and the linked share is lower in wealthier "
+        "households: compared with the deaths households report, it falls by 15–20 "
+        "percent from the lowest to the highest wealth group. This would make the "
+        "gradient too steep by about 0.3.",
         "The 2016 DHS child-mortality rates by quintile are based on few deaths and "
         "are not monotonic in the upper quintiles; the gradient is usable, the "
         "individual quintile rates less so.",
-        "The country's own census estimate is used for `mort_gradient` in preference "
-        "to the general gradient.",
     ],
     "Ethiopia": [
         "The 2007 census collected assets and deaths in the long-form sample (about "
         "20 percent of households); the sample weights already gross up to national "
         "totals. Because 46 percent of persons live in households with none of the "
         "recorded assets, the asset index supports three wealth groups (`groups`).",
-        "The 45q15 gradient is close to zero, and from age 30 it is positive: "
-        "recorded death rates rise with household wealth. See the discussion of "
-        "older-age reversals in the general-gradient documentation before using the "
-        "older age bands.",
+        "The 45q15 gradient is close to zero. Recorded death rates fall with "
+        "household wealth at ages 15–29, show no gradient at 30–44 and rise with "
+        "wealth from age 45. See the discussion of older-age reversals in the "
+        "general-gradient documentation before using the older age bands.",
     ],
     "Philippines": [
         "No census with a household-deaths module is available, so adult mortality "
@@ -121,6 +124,31 @@ COUNTRY_NOTES = {
         "With two censuses (1998 and 2008), Malawi shows the adult-mortality "
         "gradient steepening as GNI per capita rose, in line with the income "
         "relationship described in the general-gradient documentation.",
+        "The 1998 census records only radio, electricity and toilet type. The asset "
+        "index built from them ranks some households with a flush toilet or "
+        "electricity below households with a latrine, so the 1998 wealth ranking "
+        "rests on little information; its estimates should be used with caution. "
+        "The 2008 census is used for `mort_gradient`.",
+    ],
+    "Mozambique": [
+        "The 2007 census includes a household-deaths module but is not published. "
+        "Compared with the deaths households report, the death records capture about "
+        "11 percent fewer deaths than average in the lowest wealth group, which "
+        "would make the gradient too flat by about 0.15. Adult "
+        "mortality therefore uses the general gradient.",
+    ],
+    "Rwanda": [
+        "The 2002 census includes a household-deaths module but is not published: "
+        "its asset data separate only two wealth groups, fewer than the three "
+        "required for a gradient. Adult mortality therefore uses the general "
+        "gradient.",
+    ],
+    "Cambodia": [
+        "The 2008 census includes a household-deaths module and passes the "
+        "population, linkage and completeness checks. It is held pending a second "
+        "Asian source: it would be the only Asian census in the set, and its 45q15 "
+        "estimate rests on about 1,250 death records. Adult mortality uses the "
+        "general gradient.",
     ],
 }
 
@@ -178,11 +206,10 @@ def census_child_mortality():
             "t0": ff.slope.iloc[0], "t1": ff.slope.iloc[-1],
             "chg_full": ff.slope.iloc[-1] - ff.slope.iloc[0],
             "chg_common": (cc.slope.iloc[-1] - cc.slope.iloc[0]) if len(cc) > 1 else float("nan"),
-            # 1991-2000: the span where the common index still separates four groups
+            # 1991-2000: the span the common index covers (2010 is not published on it)
             "f9100": float(ff[ff.year == 2000].slope.iloc[0] - ff[ff.year == 1991].slope.iloc[0]),
             "c9100": float(cc[cc.year == 2000].slope.iloc[0] - cc[cc.year == 1991].slope.iloc[0]),
             "n_common": len(str(cc.asset_vars.iloc[0]).split()),
-            "groups_common_last": int(cc.groups.iloc[-1]),
             "check": next((x for x in f["dhs_check"] if isinstance(x, str) and x), ""),
             "df": d}
 
@@ -349,11 +376,12 @@ subregion is available.
 
 | Candidate rule | Mean absolute error |
 |---|---|
-| A single value for all countries (pooled median, {fmt(gg_med)}) | {gg_mae_c:.3f} |
+| A single value for all countries (pooled median) | {gg_mae_c:.3f} |
 | **Linear in ln(GNI per capita)** | **{gg_mae_i:.3f}** |
 | Regional median | {gg_mae_r:.3f} |
 
-The income rule has the lowest error, and is used.{za_txt}
+The income rule has the lowest error, and is used.{za_txt} Where no GNI figure is available, the pooled
+median of all census estimates, {fmt(gg_med)}, is used.
 
 ## Age pattern
 
@@ -378,7 +406,8 @@ Because the gradient varies with income, a model projecting a low-income
 country over several decades should allow the gradient to steepen as income
 rises rather than hold it fixed. Malawi's two censuses illustrate this: between
 1998 and 2008 its 45q15 gradient moved from {fmt(gg_mw0)} to {fmt(gg_mw1)} as GNI per
-capita rose from about $290 to $530.
+capita rose from about $290 to $530 (the 1998 wealth ranking rests on only
+three asset variables; see the [Malawi page](../countries/malawi.md)).
 
 ## Scope
 
@@ -646,31 +675,31 @@ one row per country, census, sex and age band. Methods are described in
 [adult mortality from census household-death records](../methods/adult-mortality.md);
 countries without an estimate use the [general gradient](../methods/general-gradient.md).
 
-Households are ranked by an asset index; the assets used differ by census and
-are recorded in `scripts/build_adult_mortality.py`. `45q15` is the probability
+Households are ranked by an asset index, the first principal component of
+indicators for household assets and toilet type; the assets used differ by
+census and are recorded in `scripts/build_adult_mortality.py`. `45q15` is the probability
 of dying between ages 15 and 60; `mx` is the age-specific death rate for the
 band shown. The low/high ratio is the rate in the lowest wealth group divided
 by the rate in the highest. "Linked" is the share of the census's death
-records matched to household assets. Where it is well below 1 (South Africa
-2011), rate levels are not meaningful; the gradient is retained because linked
-and unlinked deaths have the same composition by province, residence, sex and
-age.
+records matched to household assets.
 
 Where the census records the number of deaths per household (`MORTNUM`), the
-deaths in the supplementary death file were compared with that number within
-each wealth group during sample review. Uniform under-recording does not affect
-a gradient; under-recording that varies with wealth does. The check could not
-be made for South Africa 2001 and 2007 or Côte d'Ivoire 1998. Four samples
-were not published: the IPUMS mortality supplement for Brazil 2010 (about half
-of the deaths the census reports, with the shortfall concentrated in wealthier
-households; the Brazil estimates below use IBGE's own microdata), Nepal 2001,
-El Salvador 2007 and Burkina Faso 1996 (deaths could not be assigned to
-households reliably). The evidence is recorded in
-`scripts/build_adult_mortality.py`.
+weighted death records are compared with that number within each wealth group;
+`scripts/build_adult_mortality.py` prints the comparison for every sample.
+Uniform under-recording does not affect a gradient; under-recording that varies
+with wealth does. The check could not be made for South Africa 2001 or Côte
+d'Ivoire 1998, which do not record `MORTNUM`. The following samples are not
+published, with the evidence recorded in the script: South Africa 2011,
+Mozambique 2007, Nepal 2001 and El Salvador 2007 (death records missing
+unevenly across wealth groups); the IPUMS supplement for Brazil 2010 (about
+half of the deaths the census reports, with the shortfall concentrated in
+wealthier households; the Brazil estimates below use IBGE's own microdata);
+Burkina Faso 1996 (deaths cannot be assigned to households reliably); Rwanda
+2002 (only two wealth groups); and Cambodia 2008 (held pending review).
 
-Age-band rates (`mx`) are published only where the band contains at least 900
-death records; 45q15 is published for every sample, and `Deaths` gives the
-number of records behind it. Rates are per 1,000.
+Age-band rates (`mx`) and 45q15 are published only where they rest on at least
+900 death records; `Deaths` gives the number of records behind each estimate.
+Rates are per 1,000.
 
 | Country | Year | Sex | Ages | Measure | Gradient | Low/high ratio | Deaths | Linked |
 |---|---|---|---|---|---|---|---|---|
@@ -1064,8 +1093,8 @@ The gradient changed from {fmt(ccm['t0'])} in {ccm['y0']} to {fmt(ccm['t1'])} in
 index restricted to the {ccm['n_common']} assets recorded in all three censuses,
 the 1991–2000 change is {fmt(ccm['c9100'])}, compared with {fmt(ccm['f9100'])} on the
 full index, so the change does not stem from the larger asset set of later
-censuses. The restricted index cannot be used for 2010, when it separates only
-{ccm['groups_common_last']} groups. For Brazil, the census estimate is used in
+censuses. In 2010 the restricted index separates fewer than three groups, so
+no 2010 value is published on it. For Brazil, the census estimate is used in
 preference to the 1996 survey.
 """
     if off is not None:

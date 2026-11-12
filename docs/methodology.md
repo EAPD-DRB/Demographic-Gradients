@@ -17,14 +17,15 @@ mortality, and child mortality for Brazil, come from population censuses.
 ## 2. Summary measures
 
 Each differential is summarized by the **wealth gradient** *b*, estimated by
-ordinary least squares from
+least squares from
 
     ln(rate_g) = a + b × rank_g
 
 where *g* indexes wealth groups and *rank_g* is the midpoint of group *g* on a
 wealth scale from 0 (poorest) to 1 (richest). For DHS quintiles the midpoints
-are 0.1, 0.3, 0.5, 0.7 and 0.9. Census groups need not be of equal size, and
-each is placed at the midpoint of its population share. A negative gradient
+are 0.1, 0.3, 0.5, 0.7 and 0.9, and the fit is ordinary least squares. Census
+groups need not be of equal size: each is placed at the midpoint of its
+population share, and the fit is weighted by that share. A negative gradient
 means the rate falls as wealth rises. On the log scale, the gradient is
 unaffected by proportional differences in the level of the rate. Gradients are
 most comparable within a source: a census divided into three or four wealth
@@ -41,21 +42,24 @@ group rates.
 
 ## 3. Wealth ranking
 
-Neither source collects reliable income data, so households are ranked by
-assets. DHS estimates use the DHS wealth index, a composite index of household
-assets and housing characteristics divided into quintiles of the household
-population.
+DHS surveys do not collect household income, and income recorded in a census
+after a death excludes the earnings of the deceased, so households are ranked
+by assets. DHS estimates use the DHS wealth index, a composite index of
+household assets and housing characteristics divided into quintiles of the
+household population.
 
-Census estimates use an asset score: one point for each durable good or
-amenity recorded in the census (for example electricity, a refrigerator or a
-television), the number of cars up to three and, for adult mortality, one or
-two points for an improved or flush toilet. The score is cut at the values
-closest to the 20th, 40th, 60th and 80th percentiles of the person-weighted
-distribution (persons aged 15–59 for adult mortality). Cut points that
-coincide, or that fall at the minimum or maximum of the score, are dropped, so
-a census may yield three or four groups. Assets are preferred to income
-because a death reduces a household's subsequent income; since assets are
-measured after the death, this reduces but does not remove reverse causation.
+Census estimates use an index built the same way (Filmer and Pritchett 2001):
+the first principal component of household indicators, one for each durable
+good or amenity recorded in the census (for example electricity, a
+refrigerator or a television) and one for each type of toilet. The assets
+available differ by census. The index is cut at the values closest to the
+20th, 40th, 60th and 80th percentiles of its distribution over the household
+population. Where many households have the same score, cut points can
+coincide or fall at the minimum or maximum, and are dropped; a group holding
+less than 10 percent of the population is merged with its smaller neighbour.
+A census may therefore yield three, four or five groups; one that yields fewer
+than three is not used. Because assets are measured after the death, ranking
+by assets reduces but does not remove reverse causation.
 
 ## 4. Fertility and infant mortality
 
@@ -120,10 +124,9 @@ of the same age. The probability of dying between ages 15 and 60 is
     45q15 = 1 − (1 − m₁₅)¹⁵ (1 − m₃₀)¹⁵ (1 − m₄₅)¹⁵
 
 where *m_x* is the death rate in the band starting at age *x*, treated as a
-constant annual probability. Band rates are published only where the band
-contains at least 900 death records; 45q15 is published for every sample, and
-the number of deaths behind it is given in the `n_deaths` column. Rates are
-stored per 1,000.
+constant annual probability. Band rates and 45q15 are published only where
+they rest on at least 900 death records; the number of records behind each
+estimate is given in the `n_deaths` column. Rates are stored per 1,000.
 
 `mort_gradient` uses the 45q15 gradient. It can be spread across ages with the
 pooled age offsets described in section 7 or, where a country's own band
@@ -132,14 +135,16 @@ gradients are published, with those.
 **Death reporting.** Censuses under-record deaths. Under-recording that is the
 same in every wealth group does not affect the gradient; under-recording that
 varies with wealth does. Where the census records the number of deaths per
-household, the deaths in the death file were compared with that number within
-each wealth group, and samples in which the ratio varied with wealth were not
-published. The check was made during sample review and is not
-part of the build script; it could not be made for South Africa 2001 and 2007
-or Côte d'Ivoire 1998. Four samples were not published on these grounds:
-Brazil 2010 (IPUMS supplement), Nepal 2001, El Salvador 2007 and Burkina Faso
-1996. Censuses also miss deaths that dissolve a household and
-deaths in institutions.
+household, the weighted death records are compared with that number within
+each wealth group; the build script prints the comparison for every such
+sample, and samples in which the ratio varies with wealth are not published.
+The check cannot be made for South Africa 2001 or Côte d'Ivoire 1998, which do
+not record that number. South Africa 2011, Mozambique 2007, Nepal 2001,
+El Salvador 2007 and the IPUMS supplement for Brazil 2010 are not published on
+these grounds; Burkina Faso 1996 is not published because its deaths cannot be
+assigned to households reliably, Rwanda 2002 because it yields two wealth
+groups, and Cambodia 2008 is held pending review. Censuses also miss deaths
+that dissolve a household and deaths in institutions.
 
 ## 7. Countries without an adult-mortality estimate
 
@@ -180,15 +185,16 @@ mortality sets were not tested; at adult death rates 1 − p is close to one
 |---|---|
 | Five times the sum of the ASFRs compared with the published TFR, by quintile | consistency of the fertility inputs |
 | Deaths in the death file compared with household-reported deaths, by wealth group, where available | whether under-recording varies with wealth |
-| South Africa 2011, where 9 percent of deaths are linked to households: linked and unlinked deaths compared by province, residence, sex and age | whether linked deaths are representative on observed characteristics |
+| Minimum of three wealth groups and 900 death records per estimate | stability of each census estimate |
 | Census and DHS child-mortality gradients compared for Brazil 2000 | comparability of the two sources (one comparison) |
 | Leave-one-country-out prediction of each census by the general gradient | out-of-sample accuracy of the income rule |
 | Pooled fertility offsets compared with country-specific patterns over consecutive surveys | choice of pooled offsets |
 | Conversion tested against OG-Core's code for DHS quintile sets | correct units for the model |
 
-Re-running the scripts on the same inputs reproduces the published files,
-except Brazil's adult-mortality rows, which were produced by an earlier
-IBGE-based script. DHS-based files reflect the date of the API download given
+Re-running the scripts on the same inputs reproduces the published census
+files exactly, including Brazil's adult-mortality rows. DHS-based files and
+the GNI figures behind the general gradient are downloaded from the DHS
+Program and World Bank APIs; DHS-based files reflect the download date given
 in the README.
 
 ## 10. Limitations
