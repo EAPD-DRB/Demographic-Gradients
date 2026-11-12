@@ -72,7 +72,14 @@ and the survey or census year.
 
 `data/general_gradient.csv` provides a fallback for any country:
 
-    gradient(45q15) = 1.639 − 0.302 × ln(GNI per capita, Atlas method, current US$)      ±0.17
+    gradient(45q15) = 1.639 − 0.302 × ln(GNI per capita, Atlas method, current US$)
+
+The slope has a standard error of 0.042 (95% CI −0.395 to −0.210), but a single
+country can lie well off the line: the 95% prediction interval for a country
+without its own estimate is about ±0.4 (residual standard error 0.18, n = 14).
+Report the prediction interval with any value taken from the rule; the file
+holds the terms needed to compute it at any GNI (formula in
+[docs/methods/general-gradient.md](docs/methods/general-gradient.md)).
 
 It was selected by leave-one-country-out prediction error against two
 alternatives: mean absolute error 0.175, compared with 0.316 for a single pooled
@@ -85,8 +92,8 @@ on GNI in current dollars of the census years (1998–2013); applying it to a
 recent GNI figure without adjusting for price change makes the predicted
 gradient somewhat steeper.
 
-Values at 2024 GNI per capita: Philippines −0.90 ($4,470), Indonesia −0.93
-($4,920). Countries with their own census estimate (for example South Africa
+Values at 2024 GNI per capita: Philippines −0.90 (95% prediction interval −1.33
+to −0.48; $4,470), Indonesia −0.93 (−1.36 to −0.50; $4,920). Countries with their own census estimate (for example South Africa
 2007, −1.23, and Ethiopia 2007, +0.01) use that estimate, not the rule.
 
 **There is no income-based fallback for fertility or infant mortality.** The
@@ -272,7 +279,11 @@ scripts, and the documentation is generated — respect that architecture.
   ~0.15). za2007a has MORTNUM and passes; za2001a and ci1998a have none.
 - Gradient steepness tracks national income, not region:
   `gradient ~ 1.64 - 0.302*ln(GNI per capita)`, r = -0.90 over 14 censuses
-  (PCA index, 2026-11-11). On the earlier index, excluding South Africa, the
+  (PCA index, 2026-11-11). Inference is classical OLS with n - 2 df (ruled
+  2026-11-12): slope SE 0.042, clustered-by-country SE 0.046; publish the 95%
+  prediction interval (~±0.4) with any value read off the rule. GNI is pinned
+  in `data/gni_census_years.csv` (WDI revises history); refresh only with
+  `--refresh-gni`, deliberately. On the earlier index, excluding South Africa, the
   gradient-vs-HIV-prevalence correlation was +0.00; not re-run since.
   Borrowing tables should key on income level; a long OG transition should
   expect the gradient to steepen as the country's income rises.

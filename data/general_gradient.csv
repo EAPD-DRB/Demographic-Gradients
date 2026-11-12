@@ -1,7 +1,15 @@
 component,key,value,note
 income_rule,intercept,1.6386,"tilt_45q15 = intercept + slope_ln_gni * ln(GNI per capita, current US$)"
 income_rule,slope_ln_gni,-0.3023,
-income_rule,residual_sd,0.1704,1 SD uncertainty band on a predicted tilt
+income_rule,se_intercept,0.295,"standard error, OLS"
+income_rule,se_slope,0.0423,"standard error, OLS"
+income_rule,slope_ci95_lo,-0.3946,"95% confidence interval, Student's t with n - 2 df"
+income_rule,slope_ci95_hi,-0.21,
+income_rule,se_slope_cluster,0.0459,sensitivity: slope standard error clustered by country
+income_rule,residual_sd,0.1774,"residual standard error, n - 2 df"
+income_rule,mean_ln_gni,6.8763,for the prediction interval (see the script docstring)
+income_rule,sxx_ln_gni,17.5436,sum of squared deviations of ln GNI
+income_rule,t_95,2.1788,"Student's t, 0.975 quantile, n - 2 df"
 income_rule,r,-0.9,
 income_rule,n_censuses,14.0,
 validation,loo_mae_income,0.1754,leave-one-out mean absolute error of the chosen rule

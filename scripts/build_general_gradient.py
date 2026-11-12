@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
-# dependencies = ["pandas", "numpy"]
+# dependencies = ["pandas", "numpy", "scipy"]
 # ///
 """The general adult-mortality gradient: a fallback any country can use.
 
@@ -24,12 +24,27 @@ because ogcore's `mort_gradient` accepts a tilt per age band.
 
     uv run scripts/build_general_gradient.py
 
-Writes data/general_gradient.csv (the rule) and data/general_gradient_points.csv
-(each census behind it: GNI, measured tilt, leave-one-out prediction). GNI per capita comes from the World Bank API
-(free, no key), matched to each census year.
+Writes data/general_gradient.csv (the rule, with its standard errors and what
+is needed for a prediction interval) and data/general_gradient_points.csv (each
+census behind it: GNI, measured tilt, leave-one-out prediction).
+
+GNI per capita (World Bank, Atlas method, current US$) is read from
+data/gni_census_years.csv, so the fit does not change when the World Bank
+revises its historical series. A census missing from that file is fetched from
+the World Bank API (free, no key) and appended with the retrieval date;
+`--refresh-gni` re-downloads every value.
+
+Inference is classical OLS: standard errors from the residual standard error
+with n - 2 degrees of freedom, 95% intervals from Student's t. The interval
+for a country without its own estimate is the prediction interval
+
+    pred +/- t * s * sqrt(1 + 1/n + (ln GNI - mean_ln_gni)^2 / sxx_ln_gni)
+
+whose terms are all written to the output.
 """
 
 import argparse
+import datetime
 import json
 import time
 import urllib.request
@@ -37,11 +52,13 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from scipy import stats
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "data" / "adult_mortality_gradients.csv"
 OUT = ROOT / "data" / "general_gradient.csv"
 POINTS = ROOT / "data" / "general_gradient_points.csv"
+GNI = ROOT / "data" / "gni_census_years.csv"
 BANDS = [(15, 29), (30, 44), (45, 59), (60, 74)]
 
 # World Bank ISO3 per country in the adult-mortality file
@@ -83,7 +100,27 @@ def wb(iso3, year, indicator="NY.GNP.PCAP.CD"):
     raise RuntimeError(f"World Bank API failed for {iso3} {year}: {err}")
 
 
-def observations():
+def census_gni(need, refresh=False):
+    """GNI per capita for each census, from the pinned file; fetch what is missing.
+
+    A value the World Bank does not have (South Sudan before 2011) is stored
+    as blank, so it is not requested again.
+    """
+    have = (pd.read_csv(GNI) if GNI.exists() and not refresh else
+            pd.DataFrame(columns=["country", "iso3", "year", "gni", "retrieved"]))
+    known = set(zip(have["country"], have["year"]))
+    today = datetime.date.today().isoformat()
+    new = [dict(country=c, iso3=ISO3[c], year=int(y), gni=wb(ISO3[c], int(y)), retrieved=today)
+           for c, y in need.itertuples(index=False) if (c, y) not in known]
+    if new:
+        have = pd.concat([have, pd.DataFrame(new)], ignore_index=True)
+        have = have.sort_values(["country", "year"])
+        have.to_csv(GNI, index=False)
+        print(f"fetched GNI for {len(new)} census(es) from the World Bank API; wrote {GNI}")
+    return have[["country", "year", "gni"]].astype({"year": int, "gni": float})
+
+
+def observations(refresh=False):
     """One tilt per census: the 45q15 'all' row, else the mean of the sexes."""
     a = pd.read_csv(SRC)
     q = a[a["measure"] == "45q15"]
@@ -95,7 +132,7 @@ def observations():
                          n_deaths=int(src["n_deaths"].max()),
                          region=REGION.get(c, "unknown")))
     d = pd.DataFrame(rows)
-    d["gni"] = [wb(ISO3[c], y) for c, y in zip(d["country"], d["year"])]
+    d = d.merge(census_gni(d[["country", "year"]], refresh), on=["country", "year"], how="left")
     for r in d[d["gni"].isna()].itertuples():
         print(f"no World Bank GNI for {r.country} {r.year}: excluded from the fit")
     d["lg"] = np.log(d["gni"])
@@ -146,10 +183,10 @@ def age_shape(src=SRC):
 
 
 def main():
-    # no options; argparse is here so `--help` behaves like the sibling scripts
-    # rather than silently running a full fit (which calls the World Bank API)
-    argparse.ArgumentParser(description=__doc__.splitlines()[0]).parse_args()
-    d = observations()
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--refresh-gni", action="store_true",
+                    help="re-download every census's GNI instead of using the pinned file")
+    d = observations(ap.parse_args().refresh_gni)
     print(f"{len(d)} census observations, {d['country'].nunique()} countries\n")
     e = loo_errors(d)
 
@@ -177,11 +214,28 @@ def main():
               f"{'n/a':>9}{'n/a':>8}")
 
     fit = d.dropna(subset=["lg", "tilt"])
+    n = len(fit)
     b, a_ = np.polyfit(fit["lg"], fit["tilt"], 1)
     r = np.corrcoef(fit["lg"], fit["tilt"])[0, 1]
     resid = fit["tilt"] - (a_ + b * fit["lg"])
-    print(f"\nfull-sample income rule: tilt = {a_:+.4f} {b:+.4f} * ln(GNI)")
-    print(f"   r = {r:+.3f}   R2 = {r**2:.2f}   residual SD = {resid.std():.3f}")
+    s_e = float(np.sqrt((resid ** 2).sum() / (n - 2)))     # residual standard error
+    xbar = float(fit["lg"].mean())
+    sxx = float(((fit["lg"] - xbar) ** 2).sum())
+    se_b = s_e / np.sqrt(sxx)
+    se_a = s_e * np.sqrt(1 / n + xbar ** 2 / sxx)
+    t95 = float(stats.t.ppf(0.975, n - 2))
+    # sensitivity: standard error of the slope clustered by country (two censuses
+    # of the same country are not independent), with the small-sample correction
+    X = np.column_stack([np.ones(n), fit["lg"]])
+    bread = np.linalg.inv(X.T @ X)
+    G = fit["country"].nunique()
+    meat = sum(np.outer(X[idx].T @ resid.values[idx], X[idx].T @ resid.values[idx])
+               for idx in fit.groupby("country").indices.values())
+    se_b_cl = float(np.sqrt((bread @ meat @ bread)[1, 1] * G / (G - 1) * (n - 1) / (n - 2)))
+    print(f"\nfull-sample income rule: tilt = {a_:+.4f} {b:+.4f} * ln(GNI)   (n = {n})")
+    print(f"   intercept SE {se_a:.4f}; slope SE {se_b:.4f}, 95% CI {b - t95 * se_b:+.3f} "
+          f"to {b + t95 * se_b:+.3f}; slope SE clustered by country {se_b_cl:.4f}")
+    print(f"   r = {r:+.3f}   R2 = {r**2:.2f}   residual standard error = {s_e:.3f}")
 
     shape = age_shape()
     print("\nBy-age shape (offset from the 15-59 tilt, pooled median):")
@@ -204,8 +258,24 @@ def main():
     recs = [dict(component="income_rule", key="intercept", value=round(float(a_), 4),
                  note="tilt_45q15 = intercept + slope_ln_gni * ln(GNI per capita, current US$)"),
             dict(component="income_rule", key="slope_ln_gni", value=round(float(b), 4), note=""),
-            dict(component="income_rule", key="residual_sd", value=round(float(resid.std()), 4),
-                 note="1 SD uncertainty band on a predicted tilt"),
+            dict(component="income_rule", key="se_intercept", value=round(float(se_a), 4),
+                 note="standard error, OLS"),
+            dict(component="income_rule", key="se_slope", value=round(float(se_b), 4),
+                 note="standard error, OLS"),
+            dict(component="income_rule", key="slope_ci95_lo", value=round(float(b - t95 * se_b), 4),
+                 note="95% confidence interval, Student's t with n - 2 df"),
+            dict(component="income_rule", key="slope_ci95_hi", value=round(float(b + t95 * se_b), 4),
+                 note=""),
+            dict(component="income_rule", key="se_slope_cluster", value=round(se_b_cl, 4),
+                 note="sensitivity: slope standard error clustered by country"),
+            dict(component="income_rule", key="residual_sd", value=round(s_e, 4),
+                 note="residual standard error, n - 2 df"),
+            dict(component="income_rule", key="mean_ln_gni", value=round(xbar, 4),
+                 note="for the prediction interval (see the script docstring)"),
+            dict(component="income_rule", key="sxx_ln_gni", value=round(sxx, 4),
+                 note="sum of squared deviations of ln GNI"),
+            dict(component="income_rule", key="t_95", value=round(t95, 4),
+                 note="Student's t, 0.975 quantile, n - 2 df"),
             dict(component="income_rule", key="r", value=round(float(r), 3), note=""),
             dict(component="income_rule", key="n_censuses", value=int(len(fit)), note=""),
             dict(component="validation", key=f"loo_mae_{best}", value=round(float(best_mae), 4),

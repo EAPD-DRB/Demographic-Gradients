@@ -259,11 +259,17 @@ def adult_mortality_vs_income():
     pts = pd.read_csv(pts_p).dropna(subset=["gni"])
     rule = pd.read_csv(rule_p).set_index(["component", "key"])["value"]
     a, b = rule[("income_rule", "intercept")], rule[("income_rule", "slope_ln_gni")]
-    sd, r = rule[("income_rule", "residual_sd")], rule[("income_rule", "r")]
+    s, r = rule[("income_rule", "residual_sd")], rule[("income_rule", "r")]
+    n, t95 = rule[("income_rule", "n_censuses")], rule[("income_rule", "t_95")]
+    xbar, sxx = rule[("income_rule", "mean_ln_gni")], rule[("income_rule", "sxx_ln_gni")]
     fig, ax = plt.subplots(figsize=(10, 5.4))
     grid(ax, "both")
     g = np.geomspace(120, 11000, 100)
-    ax.fill_between(g, a + b * np.log(g) - sd, a + b * np.log(g) + sd, color=HI, alpha=0.12,
+    lev = (np.log(g) - xbar) ** 2 / sxx
+    pi, ci = t95 * s * np.sqrt(1 + 1 / n + lev), t95 * s * np.sqrt(1 / n + lev)
+    ax.fill_between(g, a + b * np.log(g) - pi, a + b * np.log(g) + pi, color=HI, alpha=0.10,
+                    lw=0)
+    ax.fill_between(g, a + b * np.log(g) - ci, a + b * np.log(g) + ci, color=HI, alpha=0.22,
                     lw=0)
     ax.plot(g, a + b * np.log(g), color=HI, lw=2.5, zorder=2)
     ax.axhline(0, color=INK, lw=1, alpha=0.55, zorder=1)
@@ -288,14 +294,15 @@ def adult_mortality_vs_income():
     texts.append(ax.text(2600, a + b * np.log(2600) + 0.08,
                          f"fitted: {num(a, '.3f')} − {abs(b):.3f} × ln(GNI)", fontsize=9.5))
     adjust_text(texts, x=pts["gni"].values, y=pts["tilt_45q15"].values, ax=ax,
-                expand=(1.3, 1.6), force_text=(0.4, 0.6), force_static=(0.6, 0.8),
+                expand=(1.3, 1.8), force_text=(0.6, 0.9), force_static=(0.6, 0.8),
                 arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.6))
     frame(fig, "Wealth gradient in adult mortality (45q15) and GNI per capita, by census",
           "Each dot is one census (South Sudan 2008 is omitted: no GNI estimate). 45q15 is "
           "the probability of dying between ages 15 and 60. "
-          f"Line: least-squares\nfit (r = {num(r)}); band: ±1 residual standard deviation. "
+          f"Line: least-squares\nfit (r = {num(r)}); dark band: 95% confidence interval "
+          "for the line; light band: 95% prediction interval for a single census.\n"
           "A negative gradient means mortality falls as household wealth rises; zero means "
-          "no difference.", CENSUS)
+          "no difference.", CENSUS, bottom=0.23)
     save(fig, "adult_mortality_vs_income.png")
 
 

@@ -10,7 +10,7 @@ All files in [`data/`](../data/) are CSV and are rebuilt by the scripts in
 | [`gradient_library_latest.csv`](../data/gradient_library_latest.csv) | Wealth gradients from the latest DHS survey, by country and indicator | `fert_gradient` (`indicator == "TFR"`); `infmort_gradient` (`"IMR"`) |
 | [`fertility_age_offsets.csv`](../data/fertility_age_offsets.csv) | Age offsets for fertility, with the validation results | `fert_gradient` by age of mother |
 | [`adult_mortality_gradients.csv`](../data/adult_mortality_gradients.csv) | Census estimates of adult mortality by sex and age band | `mort_gradient` (`measure == "45q15"`, `sex == "all"`, latest census) for countries with a census estimate |
-| [`general_gradient.csv`](../data/general_gradient.csv) | Income relationship for adult mortality, age offsets and validation statistics | `mort_gradient` for other countries |
+| [`general_gradient.csv`](../data/general_gradient.csv) | Income relationship for adult mortality with its standard errors and prediction-interval terms, age offsets and validation statistics | `mort_gradient` for other countries |
 | [`census_child_mortality.csv`](../data/census_child_mortality.csv) | Census estimates of child mortality (Brazil 1991, 2000, 2010) | child mortality where the DHS survey is old or absent |
 
 ## Common columns
@@ -43,6 +43,7 @@ census; `common`, assets recorded in all three censuses); `n_mothers`;
 | [`dhs_gradients_raw.csv`](../data/dhs_gradients_raw.csv) | Quintile values as downloaded from the DHS API, including age-specific fertility rates |
 | [`fertility_age_tilts.csv`](../data/fertility_age_tilts.csv) | Fertility gradient by age for each survey, from which the age offsets are computed |
 | [`general_gradient_points.csv`](../data/general_gradient_points.csv) | Census observations behind the general gradient: GNI per capita, measured 45q15 gradient (`tilt_45q15`) and leave-one-out prediction |
+| [`gni_census_years.csv`](../data/gni_census_years.csv) | GNI per capita (World Bank, Atlas method, current US$) for each census year, with the retrieval date; the input to the general gradient |
 | [`dhs_regions.csv`](../data/dhs_regions.csv) | DHS Program region of each country |
 | [`ogcore_units_check.csv`](../data/ogcore_units_check.csv) | Results of the check that determines the conversion to OG-Core units |
 

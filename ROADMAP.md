@@ -120,10 +120,17 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 - [ ] **F5. Senegal 2002 death counts.** `n_deaths` repeats exactly (1,086 for
   15–29 and 30–44; 1,311 for 60–74 and male 45q15), and still does on the PCA
   index. Check against the microdata.
-- [R] **F6. Residual SD of the income rule.** `build_general_gradient.py`
-  computes it with an n − 1 denominator (0.170); the regression standard
-  error with two fitted parameters (n − 2) is 0.177. It sets the ±1 SD band
-  in the docs and figure. Small; change only on a ruling.
+- [x] **F6. Uncertainty of the income rule (2026-11-12).** Standard OLS
+  inference: residual standard error with n − 2 df (0.177, was 0.170 with
+  n − 1), coefficient SEs and 95% CIs, and the 95% prediction interval
+  (~±0.4) published with every value read off the rule; the figure shows the
+  confidence and prediction bands. Clustered-by-country SE (0.046) and one
+  census per country (slope −0.296) as sensitivity checks.
+- [x] **F7. GNI download (2026-11-12).** A transient World Bank API failure
+  silently dropped Sierra Leone from a re-run (the old code turned any
+  non-data reply into "no value"). Now: retries, then a hard error; and GNI is
+  pinned in `data/gni_census_years.csv` with retrieval dates, because WDI
+  revises historical values. `--refresh-gni` re-downloads deliberately.
 
 ## G. Wealth index (2026-11-11)
 

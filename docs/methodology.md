@@ -154,8 +154,11 @@ gradient on the logarithm of GNI per capita (World Bank, Atlas method, current
 US dollars) in the census year. All but one of the censuses are African; the
 exception is Brazil. The rule was selected over a single pooled value and over
 regional medians by leave-one-country-out prediction error, all three
-scored on the same censuses. It is
-spread across age bands by adding the median difference, across censuses,
+scored on the same censuses. Standard errors and confidence intervals are
+conventional OLS ones. For a country without its own estimate the rule is
+reported with a 95% prediction interval, which is much wider than the
+confidence interval of the line because individual censuses scatter around
+it. The rule is spread across age bands by adding the median difference, across censuses,
 between each band's gradient and the 45q15 gradient; these offsets are fitted
 in-sample, and those for ages 45–59 and 60–74 are the least reliable
 ([details](methods/general-gradient.md)).
@@ -192,10 +195,10 @@ mortality sets were not tested; at adult death rates 1 − p is close to one
 | Conversion tested against OG-Core's code for DHS quintile sets | correct units for the model |
 
 Re-running the scripts on the same inputs reproduces the published census
-files exactly, including Brazil's adult-mortality rows. DHS-based files and
-the GNI figures behind the general gradient are downloaded from the DHS
-Program and World Bank APIs; DHS-based files reflect the download date given
-in the README.
+files exactly, including Brazil's adult-mortality rows. The GNI figures behind
+the general gradient are stored with their retrieval date, since the World
+Bank revises historical values. DHS-based files are downloaded from the DHS
+Program API and reflect the download date given in the README.
 
 ## 10. Limitations
 

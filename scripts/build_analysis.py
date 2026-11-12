@@ -226,6 +226,22 @@ def general_gradient():
     return d
 
 
+def rule_predict(gg, gni):
+    """The general gradient at a GNI per capita, and its 95% prediction interval."""
+    a, b = gg["income_rule.intercept"], gg["income_rule.slope_ln_gni"]
+    x0 = np.log(gni)
+    half = (gg["income_rule.t_95"] * gg["income_rule.residual_sd"]
+            * np.sqrt(1 + 1 / gg["income_rule.n_censuses"]
+                      + (x0 - gg["income_rule.mean_ln_gni"]) ** 2 / gg["income_rule.sxx_ln_gni"]))
+    f = a + b * x0
+    return f, f - half, f + half
+
+
+def pi_text(gg, gni):
+    f, lo, hi = rule_predict(gg, gni)
+    return f"{fmt(f)} (95% prediction interval {fmt(lo)} to {fmt(hi)})"
+
+
 def imr_vs_u5mr(lib):
     """How much steeper the U5MR proxy is than the infant series it stands in for."""
     p = lib.pivot_table(index=["country", "year"], columns="indicator",
@@ -358,10 +374,34 @@ least squares on {gg_n:.0f} censuses:
 
     gradient(45q15) = {gg_a:.3f} {gg_bsign} {gg_babs:.3f} × ln(GNI per capita, current US$)
 
-with r = {fmt(gg_r)} and a residual standard deviation of {gg_sd:.2f}. A doubling
-of GNI per capita corresponds to a change of {fmt(gg_dbl)} in the gradient. The
-census observations, their GNI and the leave-one-out predictions are in
-[`data/general_gradient_points.csv`](../../data/general_gradient_points.csv).
+with r = {fmt(gg_r)} and a residual standard error of {gg_sd:.2f}. A doubling of
+GNI per capita corresponds to a change of {fmt(gg_dbl)} in the gradient.
+
+| | Estimate | Standard error | 95% confidence interval |
+|---|---|---|---|
+| Intercept | {gg_a:.3f} | {gg.get("income_rule.se_intercept", float("nan")):.3f} | |
+| Slope on ln(GNI per capita) | {NEG}{abs(gg_b):.3f} | {gg.get("income_rule.se_slope", float("nan")):.3f} | {NEG}{abs(gg.get("income_rule.slope_ci95_lo", float("nan"))):.3f} to {NEG}{abs(gg.get("income_rule.slope_ci95_hi", float("nan"))):.3f} |
+
+Intervals use Student's t with {gg_n - 2:.0f} degrees of freedom. Two countries
+contribute two censuses each; clustering the standard error of the slope by
+country gives {gg.get("income_rule.se_slope_cluster", float("nan")):.3f}, close to the
+conventional value.
+
+The slope is estimated precisely, but a single country can lie well off the
+line. For a country without its own estimate, the relevant uncertainty is the
+95% prediction interval,
+
+    prediction ± t × s × √(1 + 1/n + (ln GNI − mean ln GNI)² / Sxx)
+
+with s the residual standard error and the remaining terms in
+[`data/general_gradient.csv`](../../data/general_gradient.csv). At GNI per
+capita of $1,000 the general gradient is {pi_text(gg, 1000)}; at $5,000 it is
+{pi_text(gg, 5000)}. The leave-one-out prediction errors reported below are of
+the same order. The census observations, their GNI and the leave-one-out
+predictions are in
+[`data/general_gradient_points.csv`](../../data/general_gradient_points.csv);
+GNI per capita (World Bank, Atlas method, current US$, as retrieved on the date
+recorded) is in [`data/gni_census_years.csv`](../../data/gni_census_years.csv).
 
 ![Wealth gradient in adult mortality and GNI per capita](../../figures/adult_mortality_vs_income.png)
 
@@ -780,14 +820,16 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
                          "to household assets. The gradient is retained; rate levels for that "
                          "census are not meaningful.")
     elif c in WORKED_GNI:
-        rows.append(f"| `mort_gradient` | {fmt(a + b * np.log(WORKED_GNI[c]))} "
-                    f"| [general gradient](../methods/general-gradient.md) at GNI per capita "
-                    f"of ${WORKED_GNI[c]:,} (about 2024) |")
+        f, lo, hi = rule_predict(gg, WORKED_GNI[c])
+        rows.append(f"| `mort_gradient` | {fmt(f)} (95% prediction interval {fmt(lo)} to "
+                    f"{fmt(hi)}) | [general gradient](../methods/general-gradient.md) at GNI "
+                    f"per capita of ${WORKED_GNI[c]:,} (about 2024) |")
     else:
         rows.append(f"| `mort_gradient` | {fmt(a)} {NEG} {abs(b):.3f} × ln(GNI per capita) "
                     f"| [general gradient](../methods/general-gradient.md); for example "
                     f"{fmt(a + b * np.log(1000))} at $1,000 and {fmt(a + b * np.log(5000))} "
-                    "at $5,000 |")
+                    f"at $5,000, each with a 95% prediction interval of about "
+                    f"±{rule_predict(gg, 5000)[2] - rule_predict(gg, 5000)[0]:.1f} |")
     rows.append("| `imm_pctiles` | not provided | — |")
     out = ("## Values for OG-Core\n\n"
            "| OG-Core input | Wealth gradient | Source |\n|---|---|---|\n"

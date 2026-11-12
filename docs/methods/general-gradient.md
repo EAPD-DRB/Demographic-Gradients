@@ -14,10 +14,34 @@ least squares on 14 censuses:
 
     gradient(45q15) = 1.639 − 0.302 × ln(GNI per capita, current US$)
 
-with r = −0.90 and a residual standard deviation of 0.17. A doubling
-of GNI per capita corresponds to a change of −0.21 in the gradient. The
-census observations, their GNI and the leave-one-out predictions are in
-[`data/general_gradient_points.csv`](../../data/general_gradient_points.csv).
+with r = −0.90 and a residual standard error of 0.18. A doubling of
+GNI per capita corresponds to a change of −0.21 in the gradient.
+
+| | Estimate | Standard error | 95% confidence interval |
+|---|---|---|---|
+| Intercept | 1.639 | 0.295 | |
+| Slope on ln(GNI per capita) | −0.302 | 0.042 | −0.395 to −0.210 |
+
+Intervals use Student's t with 12 degrees of freedom. Two countries
+contribute two censuses each; clustering the standard error of the slope by
+country gives 0.046, close to the
+conventional value.
+
+The slope is estimated precisely, but a single country can lie well off the
+line. For a country without its own estimate, the relevant uncertainty is the
+95% prediction interval,
+
+    prediction ± t × s × √(1 + 1/n + (ln GNI − mean ln GNI)² / Sxx)
+
+with s the residual standard error and the remaining terms in
+[`data/general_gradient.csv`](../../data/general_gradient.csv). At GNI per
+capita of $1,000 the general gradient is −0.45 (95% prediction interval −0.85 to −0.05); at $5,000 it is
+−0.94 (95% prediction interval −1.36 to −0.51). The leave-one-out prediction errors reported below are of
+the same order. The census observations, their GNI and the leave-one-out
+predictions are in
+[`data/general_gradient_points.csv`](../../data/general_gradient_points.csv);
+GNI per capita (World Bank, Atlas method, current US$, as retrieved on the date
+recorded) is in [`data/gni_census_years.csv`](../../data/gni_census_years.csv).
 
 ![Wealth gradient in adult mortality and GNI per capita](../../figures/adult_mortality_vs_income.png)
 
