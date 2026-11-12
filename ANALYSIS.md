@@ -6,8 +6,8 @@ data. Differentials are reported as the **low/high ratio**, the rate in the
 lowest wealth quintile divided by the rate in the highest, and as the
 **wealth gradient**, the slope of the log rate on wealth rank (see the
 [glossary](docs/glossary.md)). The data cover 332 DHS surveys with a
-complete wealth-quintile breakdown in 78 countries, and census
-household-death records for adult mortality. All figures and numbers are
+complete wealth-quintile breakdown in 78 countries, and, for adult
+mortality, household-death records from censuses and DHS surveys. All figures and numbers are
 computed from the files in [`data/`](data/).
 
 ## Fertility and infant mortality by wealth quintile
@@ -128,30 +128,33 @@ comparison.
 
 ## Adult mortality and national income
 
-Household surveys cannot measure adult mortality by wealth, since the deceased
-are not interviewed. The library uses censuses that record deaths in the
-household during the previous year
+Adult mortality by wealth requires deaths recorded against the deceased's own
+household. The library uses censuses that record deaths of household members
+during a recent period, usually the previous year, and, for India, DHS surveys
+that record them for the previous two years
 ([methods](docs/methods/adult-mortality.md); [all estimates](docs/tables/adult_mortality.md)).
-Across the 14 censuses with a GNI estimate, the gradient in 45q15 is steeper
-in richer countries (r = −0.90): the fitted gradient is
-−0.24 at a GNI per capita of $500 and −0.94 at
-$5,000. This relationship, the general gradient, provides values for
-countries without a census estimate ([details](docs/methods/general-gradient.md)).
-It also implies that the gradient should steepen as income rises in long-run
-projections.
+Across the 17 censuses and surveys with a GNI estimate, the gradient in
+45q15 is steeper in richer countries (r = −0.84): the fitted
+gradient is −0.30 at a GNI per capita of $500 and
+−0.95 at $5,000. This relationship, the general gradient,
+provides values for countries without their own estimate
+([details](docs/methods/general-gradient.md)). Within countries the evidence
+is limited and mixed: Malawi's gradient steepened between its 1998 and 2008
+censuses, while India's changed little between 1999 and 2020 as its income rose
+about fourfold.
 
 ![Wealth gradient in adult mortality and GNI per capita](figures/adult_mortality_vs_income.png)
 
 ## Adult mortality by age
 
-In all 12 of the 12 censuses with estimates for more than one
-age band, the gradient is weaker at the oldest band measured than at ages
-15–29. In 4 censuses, all with GNI per capita of
+In all 14 censuses and surveys with estimates at ages 15–29
+and at least one older band, the gradient is weaker at the oldest band measured
+than at ages 15–29. In 4 censuses, all with GNI per capita of
 $1,350 or less, it is positive at the oldest band: recorded
 death rates rise with household wealth. Two explanations are consistent with
 this: small survival differences where most households are poor, and elderly
 people in poor health moving into better-off households before death. The
-census data do not distinguish between them, and the older-age estimates are
+data do not distinguish between them, and the older-age estimates are
 the least certain in the library.
 
 ![Wealth gradient in adult mortality by age](figures/adult_mortality_by_age.png)

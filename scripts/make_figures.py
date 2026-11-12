@@ -34,8 +34,8 @@ QUINTILES = ["Lowest", "Second", "Middle", "Fourth", "Highest"]
 RANK = np.array([0.1, 0.3, 0.5, 0.7, 0.9])
 RATIO_TICKS = [0.3, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 10]
 DHS = "Source: DHS Program indicator API; author's calculations."
-CENSUS = ("Source: IPUMS International and IBGE census microdata; World Bank GNI per "
-          "capita; author's calculations.")
+CENSUS = ("Source: IPUMS International and IBGE census microdata; DHS Program (India "
+          "NFHS); World Bank GNI per capita; author's calculations.")
 
 plt.style.use(Path(__file__).with_name("figures.mplstyle"))
 
@@ -260,7 +260,7 @@ def adult_mortality_vs_income():
     rule = pd.read_csv(rule_p).set_index(["component", "key"])["value"]
     a, b = rule[("income_rule", "intercept")], rule[("income_rule", "slope_ln_gni")]
     s, r = rule[("income_rule", "residual_sd")], rule[("income_rule", "r")]
-    n, t95 = rule[("income_rule", "n_censuses")], rule[("income_rule", "t_95")]
+    n, t95 = rule[("income_rule", "n_observations")], rule[("income_rule", "t_95")]
     xbar, sxx = rule[("income_rule", "mean_ln_gni")], rule[("income_rule", "sxx_ln_gni")]
     fig, ax = plt.subplots(figsize=(10, 5.4))
     grid(ax, "both")
@@ -273,41 +273,52 @@ def adult_mortality_vs_income():
                     lw=0)
     ax.plot(g, a + b * np.log(g), color=HI, lw=2.5, zorder=2)
     ax.axhline(0, color=INK, lw=1, alpha=0.55, zorder=1)
-    ax.scatter(pts["gni"], pts["tilt_45q15"], s=55, color=INK, edgecolors=SURF, linewidths=2,
-               zorder=3)
-    # every census labelled; adjustText places the labels clear of points and each other
-    za = pts[(pts["country"] == "South Africa") & (pts["year"] > 2001)]
-    rest = pts.drop(za.index)
+    # DHS survey observations (household-deaths module) drawn open, censuses filled
+    amr = pd.read_csv(DATA / "adult_mortality_gradients.csv")
+    survey = set(zip(amr.loc[amr["source"].str.startswith("The DHS Program"), "country"],
+                     amr.loc[amr["source"].str.startswith("The DHS Program"), "year"]))
+    is_s = np.array([(c, y) in survey for c, y in zip(pts["country"], pts["year"])])
+    ax.scatter(pts["gni"][~is_s], pts["tilt_45q15"][~is_s], s=55, color=INK, edgecolors=SURF,
+               linewidths=2, zorder=3, label="census")
+    ax.scatter(pts["gni"][is_s], pts["tilt_45q15"][is_s], s=55, facecolors=SURF,
+               edgecolors=INK, linewidths=1.8, zorder=3, label="DHS survey")
+    ax.legend(loc="lower left", frameon=False, fontsize=9.5)
+    # every point labelled; adjustText places the labels clear of points and each other.
+    # Adjacent observations of one country share a label, placed between them.
+    shared = [pts[(pts["country"] == "South Africa") & (pts["year"] > 2001)],
+              pts[(pts["country"] == "India") & (pts["year"] >= 2015)]]
+    shared = [g for g in shared if len(g) > 1]
+    rest = pts.drop([i for g in shared for i in g.index])
     texts = [ax.text(p["gni"], p["tilt_45q15"], f"{p['country']} {int(p['year'])}", fontsize=8.5)
              for _, p in rest.iterrows()]
-    if len(za):  # two adjacent censuses share one label, placed between them
-        texts.append(ax.text(np.exp(np.log(za["gni"]).mean()), za["tilt_45q15"].mean() + 0.05,
-                             "South Africa " + " and ".join(str(int(y)) for y in za["year"]),
+    for g in shared:
+        texts.append(ax.text(np.exp(np.log(g["gni"]).mean()), g["tilt_45q15"].mean() + 0.05,
+                             g["country"].iloc[0] + " " + " and ".join(str(int(y)) for y in g["year"]),
                              fontsize=8.5, ha="center"))
     ax.set_xscale("log")
     ax.set_xlim(120, 11000)
     ax.xaxis.set_major_locator(FixedLocator([200, 500, 1000, 2000, 5000, 10000]))
     ax.xaxis.set_minor_locator(NullLocator())
     ax.xaxis.set_ticklabels(["200", "500", "1,000", "2,000", "5,000", "10,000"])
-    ax.set_xlabel("GNI per capita in the census year (current US$, log scale)")
+    ax.set_xlabel("GNI per capita in the census or survey year (current US$, log scale)")
     ax.set_ylabel("wealth gradient in 45q15")
     texts.append(ax.text(2600, a + b * np.log(2600) + 0.08,
                          f"fitted: {num(a, '.3f')} − {abs(b):.3f} × ln(GNI)", fontsize=9.5))
     adjust_text(texts, x=pts["gni"].values, y=pts["tilt_45q15"].values, ax=ax,
                 expand=(1.3, 1.8), force_text=(0.6, 0.9), force_static=(0.6, 0.8),
                 arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.6))
-    frame(fig, "Wealth gradient in adult mortality (45q15) and GNI per capita, by census",
-          "Each dot is one census (South Sudan 2008 is omitted: no GNI estimate). 45q15 is "
-          "the probability of dying between ages 15 and 60. "
-          f"Line: least-squares\nfit (r = {num(r)}); dark band: 95% confidence interval "
-          "for the line; light band: 95% prediction interval for a single census.\n"
+    frame(fig, "Wealth gradient in adult mortality (45q15) and GNI per capita, by census or survey",
+          "Each dot is one census, or one DHS survey with a household-deaths module (South "
+          "Sudan 2008 is omitted: no GNI estimate). 45q15 is the probability of dying\nbetween "
+          f"ages 15 and 60. Line: least-squares fit (r = {num(r)}); dark band: 95% confidence "
+          "interval for the line; light band: 95% prediction interval for a single country.\n"
           "A negative gradient means mortality falls as household wealth rises; zero means "
           "no difference.", CENSUS, bottom=0.23)
     save(fig, "adult_mortality_vs_income.png")
 
 
 def adult_mortality_by_age():
-    """Gradient at ages 15-29 against the oldest age band measured, by census."""
+    """Gradient at ages 15-29 against the oldest age band measured, by census or survey."""
     p, pts_p = DATA / "adult_mortality_gradients.csv", DATA / "general_gradient_points.csv"
     if not (p.exists() and pts_p.exists()):
         return
@@ -320,7 +331,7 @@ def adult_mortality_by_age():
         g = (g[g["sex"] == "all"] if (g["sex"] == "all").any() else
              g[g["sex"].isin(["male", "female"])]).groupby(["age_lo", "age_hi"], as_index=False)[
             "slope"].mean().sort_values("age_lo")
-        if len(g) < 2:
+        if len(g) < 2 or g["age_lo"].iloc[0] != 15:  # needs 15-29 and an older band
             continue
         rows.append(dict(label=f"{c} {y}", gni=gni.get((c, y), np.nan),
                          young=g["slope"].iloc[0], old=g["slope"].iloc[-1],
@@ -345,8 +356,8 @@ def adult_mortality_by_age():
     ax.set_ylim(len(d) - 0.4, -0.7)
     ax.set_xlabel("wealth gradient in the age-specific death rate")
     ax.legend(loc="lower right", bbox_to_anchor=(1, 1.0), ncol=2, frameon=False, fontsize=9.5)
-    frame(fig, "Wealth gradient in adult mortality at ages 15–29 and at older ages, by census",
-          "Censuses with estimates for at least two age bands; both sexes; ordered by GNI "
+    frame(fig, "Wealth gradient in adult mortality at ages 15–29 and at older ages, by census or survey",
+          "Censuses and DHS surveys with estimates at ages 15–29 and at least one older band; both sexes; ordered by GNI "
           "per capita (current US$).\n"
           "The oldest band is 60–74 except where "
           "marked (too few deaths above 60). Positive values: death rates rise with "

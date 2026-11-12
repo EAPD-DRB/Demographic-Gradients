@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.54, by age as below | DHS 2021, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −1.30 | DHS 2021, infant mortality rate |
-| `mort_gradient` | 1.64 − 0.302 × ln(GNI per capita) | [general gradient](../methods/general-gradient.md); for example −0.45 at $1,000 and −0.94 at $5,000, each with a 95% prediction interval of about ±0.4 |
+| `mort_gradient` | 1.48 − 0.286 × ln(GNI per capita) | [general gradient](../methods/general-gradient.md); for example −0.49 at $1,000 and −0.95 at $5,000, each with a 95% prediction interval of about ±0.5 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -34,4 +34,4 @@ Latest survey with a complete wealth-quintile breakdown ([`gradient_library_late
 
 ## Notes
 
-- The 2008 census includes a household-deaths module and passes the population, linkage and completeness checks. It is held pending a second Asian source: it would be the only Asian census in the set, and its 45q15 estimate rests on about 1,250 death records. Adult mortality uses the general gradient.
+- The 2008 census includes a household-deaths module and passes the population, linkage and completeness checks. It is held pending review; its 45q15 estimate would rest on about 1,250 death records. Adult mortality uses the general gradient.

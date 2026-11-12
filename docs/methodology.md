@@ -12,7 +12,9 @@ the arguments with which OG-Core's `get_pop_objs` differentiates demographic
 rates across lifetime-income groups: `fert_gradient` (fertility),
 `infmort_gradient` (infant mortality) and `mort_gradient` (mortality by age).
 Fertility and child mortality come from surveys of the DHS Program; adult
-mortality, and child mortality for Brazil, come from population censuses.
+mortality comes from records of deaths in the household, in population
+censuses and, for India, in DHS surveys; child mortality for Brazil also comes
+from censuses.
 
 ## 2. Summary measures
 
@@ -106,16 +108,19 @@ available. Because the measure resembles under-five rather than infant
 mortality, using it for Brazil's `infmort_gradient` probably overstates the
 infant gradient somewhat.
 
-## 6. Adult mortality from censuses
+## 6. Adult mortality from household-death records
 
-Surveys provide adult mortality only through sibling histories, which record
-deaths of the respondent's siblings but not the deceased's own household; in
-tests on DHS data, under-reporting of deaths by poorer respondents produced
-gradients of implausible sign. The library therefore uses censuses that record
-deaths of household members during a recent reference period, usually twelve
-months, alongside the household's characteristics
-([details](methods/adult-mortality.md)). Samples come from IPUMS International,
-and for Brazil from IBGE's 2010 census sample microdata.
+Surveys usually provide adult mortality only through sibling histories, which
+record deaths of the respondent's siblings but not the deceased's own
+household; in tests on DHS data, under-reporting of deaths by poorer
+respondents produced gradients of implausible sign. The library therefore uses
+censuses and surveys that record deaths of household members during a recent
+reference period alongside the household's characteristics
+([details](methods/adult-mortality.md)). Census samples come from IPUMS
+International, and for Brazil from IBGE's 2010 census sample microdata; the
+reference period is usually twelve months. Survey estimates come from India's
+National Family Health Survey, using deaths in the two years before the
+interview, with households ranked by the DHS wealth quintiles.
 
 For each wealth group, the death rate in each age band (15–29, 30–44, 45–59
 and 60–74) is the weighted number of deaths divided by the weighted population
@@ -123,7 +128,8 @@ of the same age. The probability of dying between ages 15 and 60 is
 
     45q15 = 1 − (1 − m₁₅)¹⁵ (1 − m₃₀)¹⁵ (1 − m₄₅)¹⁵
 
-where *m_x* is the death rate in the band starting at age *x*, treated as a
+where *m_x* is the death rate in the band starting at age *x* (for surveys,
+deaths in the two-year window divided by twice the population), treated as a
 constant annual probability. Band rates and 45q15 are published only where
 they rest on at least 900 death records; the number of records behind each
 estimate is given in the `n_deaths` column. Rates are stored per 1,000.
@@ -143,30 +149,42 @@ not record that number. South Africa 2011, Mozambique 2007, Nepal 2001,
 El Salvador 2007 and the IPUMS supplement for Brazil 2010 are not published on
 these grounds; Burkina Faso 1996 is not published because its deaths cannot be
 assigned to households reliably, Rwanda 2002 because it yields two wealth
-groups, and Cambodia 2008 is held pending review. Censuses also miss deaths
-that dissolve a household and deaths in institutions.
+groups, and Cambodia 2008 is held pending review. Censuses and surveys also
+miss deaths that dissolve a household and deaths in institutions.
+
+Survey records are part of the household interview, so no records are lost
+between the interview and the data file. The survey script instead compares,
+by wealth quintile, deaths reported for the second year before the interview
+with those for the first (recall), and the shares of deaths with unknown age
+or date. Of the Indian surveys, NFHS-1 (1992–93) is not used because its data
+file contains no age at death; the Pakistan 2006–07 survey is not used because
+only a subsample with too few deaths can be ranked by wealth.
 
 ## 7. Countries without an adult-mortality estimate
 
-Across censuses, the adult-mortality gradient becomes more negative as income
-rises. The **general gradient** is the least-squares regression of the 45q15
-gradient on the logarithm of GNI per capita (World Bank, Atlas method, current
-US dollars) in the census year. All but one of the censuses are African; the
-exception is Brazil. The rule was selected over a single pooled value and over
-regional medians by leave-one-country-out prediction error, all three
-scored on the same censuses. Standard errors and confidence intervals are
-conventional OLS ones. For a country without its own estimate the rule is
-reported with a 95% prediction interval, which is much wider than the
-confidence interval of the line because individual censuses scatter around
-it. The rule is spread across age bands by adding the median difference, across censuses,
+Across countries, the adult-mortality gradient becomes more negative as
+income rises. The **general gradient** is the least-squares regression of the
+45q15 gradient on the logarithm of GNI per capita (World Bank, Atlas method,
+current US dollars) in the census or survey year. Census and survey
+observations enter with equal weight. Most observations are African censuses;
+the others are Brazil's 2010 census and India's surveys. The rule was selected
+over a single pooled value and over regional medians by leave-one-country-out
+prediction error, all three scored on the same observations. Standard errors
+and confidence intervals are conventional OLS ones. For a country without its
+own estimate the rule is reported with a 95% prediction interval, which is
+much wider than the confidence interval of the line because individual
+countries scatter around it. Within countries the evidence on change over time
+is limited: Malawi's gradient steepened between two censuses as income rose,
+while India's changed little over two decades of rising income. The rule is
+spread across age bands by adding the median difference, across estimates,
 between each band's gradient and the 45q15 gradient; these offsets are fitted
 in-sample, and those for ages 45–59 and 60–74 are the least reliable
 ([details](methods/general-gradient.md)).
 
-The rule is estimated on GNI in current dollars of the census years
-(1998–2013). Applied to a recent GNI figure, it does not adjust for price
+The rule is estimated on GNI in current dollars of the census and survey
+years (1998–2020). Applied to a recent GNI figure, it does not adjust for price
 change since then, which makes the predicted gradient somewhat steeper. The
-rule should not be extrapolated outside the income range of the censuses.
+rule should not be extrapolated outside the income range of the observations.
 
 ## 8. Conversion to OG-Core
 
@@ -188,14 +206,15 @@ mortality sets were not tested; at adult death rates 1 − p is close to one
 |---|---|
 | Five times the sum of the ASFRs compared with the published TFR, by quintile | consistency of the fertility inputs |
 | Deaths in the death file compared with household-reported deaths, by wealth group, where available | whether under-recording varies with wealth |
-| Minimum of three wealth groups and 900 death records per estimate | stability of each census estimate |
+| Minimum of three wealth groups and 900 death records per estimate | stability of each adult-mortality estimate |
+| Survey deaths reported for the second year before interview compared with the first, by wealth quintile | whether recall of deaths varies with wealth |
 | Census and DHS child-mortality gradients compared for Brazil 2000 | comparability of the two sources (one comparison) |
-| Leave-one-country-out prediction of each census by the general gradient | out-of-sample accuracy of the income rule |
+| Leave-one-country-out prediction of each census or survey by the general gradient | out-of-sample accuracy of the income rule |
 | Pooled fertility offsets compared with country-specific patterns over consecutive surveys | choice of pooled offsets |
 | Conversion tested against OG-Core's code for DHS quintile sets | correct units for the model |
 
 Re-running the scripts on the same inputs reproduces the published census
-files exactly, including Brazil's adult-mortality rows. The GNI figures behind
+and survey adult-mortality files exactly, including Brazil's rows. The GNI figures behind
 the general gradient are stored with their retrieval date, since the World
 Bank revises historical values. DHS-based files are downloaded from the DHS
 Program API and reflect the download date given in the README.
@@ -204,6 +223,6 @@ Program API and reflect the download date given in the README.
 
 Asset rank is used as a proxy for lifetime income; no source distinguishes
 groups within the richest quintile; some surveys are old; older-age
-adult-mortality estimates are uncertain; there is no census estimate for an
-Asian country; and no sampling uncertainty is published. See
+adult-mortality estimates are uncertain; the only Asian adult-mortality
+estimates are India's; and no sampling uncertainty is published. See
 [sources, citation and limitations](sources.md).

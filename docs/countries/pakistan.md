@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.65, by age as below | DHS 2017, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.53 | DHS 2017, infant mortality rate |
-| `mort_gradient` | 1.64 − 0.302 × ln(GNI per capita) | [general gradient](../methods/general-gradient.md); for example −0.45 at $1,000 and −0.94 at $5,000, each with a 95% prediction interval of about ±0.4 |
+| `mort_gradient` | 1.48 − 0.286 × ln(GNI per capita) | [general gradient](../methods/general-gradient.md); for example −0.49 at $1,000 and −0.95 at $5,000, each with a 95% prediction interval of about ±0.5 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -31,3 +31,7 @@ Latest survey with a complete wealth-quintile breakdown ([`gradient_library_late
 | Total fertility rate (births per woman) | 2017 | 4.9 | 3.6 | 3.8 | 3 | 2.8 | 1.75 | −0.65 |
 | Infant mortality rate (per 1,000 live births) | 2017 | 76 | 71 | 67 | 51 | 53 | 1.43 | −0.53 |
 | Under-five mortality rate (per 1,000 live births) | 2017 | 100 | 82 | 82 | 58 | 56 | 1.79 | −0.75 |
+
+## Notes
+
+- The 2006–07 DHS recorded deaths of household members in all sampled households, but household assets, and so the wealth index, only in the subsample that received the full questionnaire. That subsample holds fewer than 900 adult deaths in the two years before the survey, most of them of women, so no estimate is published. Adult mortality uses the general gradient.

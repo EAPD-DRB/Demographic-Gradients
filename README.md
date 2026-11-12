@@ -3,7 +3,7 @@
 Demographic-Gradients provides estimates of wealth differentials in fertility,
 infant mortality and adult mortality for low- and middle-income countries. The
 estimates are derived from Demographic and Health Surveys (DHS) and from census
-records of household deaths, and are intended for calibrating models in which
+and survey records of household deaths, and are intended for calibrating models in which
 demographic rates differ by income, in particular the
 [OG-Core](https://github.com/PSLmodels/OG-Core) family of overlapping-generations
 models (OG-ZAF, OG-PHL, OG-IDN, OG-ETH, OG-BRA and others). All data and code
@@ -24,7 +24,7 @@ it.
 |---|---|---|---|---|
 | Fertility, by age of mother | `fert_gradient` | DHS | 77 | 1.90 (TFR); 3.72 at ages 15–19 |
 | Infant mortality | `infmort_gradient` | DHS | 78 | 1.67 |
-| Adult mortality (45q15) | `mort_gradient` | census household-death records | 13; other countries through the general gradient | 1.32 |
+| Adult mortality (45q15) | `mort_gradient` | household-death records (censuses; DHS for India) | 14; other countries through the general gradient | 1.35 |
 | Income distribution of immigrants | `imm_pctiles` | not provided | — | — |
 <!-- END AUTO-GENERATED -->
 

@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.38, by age as below | DHS 2017, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.73 | DHS 2017, infant mortality rate |
-| `mort_gradient` | −0.93 (95% prediction interval −1.36 to −0.50) | [general gradient](../methods/general-gradient.md) at GNI per capita of $4,920 (about 2024) |
+| `mort_gradient` | −0.95 (95% prediction interval −1.44 to −0.46) | [general gradient](../methods/general-gradient.md) at GNI per capita of $4,920 (about 2024) |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -34,5 +34,5 @@ Latest survey with a complete wealth-quintile breakdown ([`gradient_library_late
 
 ## Notes
 
-- No census with a household-deaths module is available, so adult mortality uses the general gradient (value in the table above). Fertility and infant mortality come from the 2017 IDHS.
+- No census or survey with a household-deaths module is available (the DHS surveys record deaths of children only), so adult mortality uses the general gradient (value in the table above). Fertility and infant mortality come from the 2017 IDHS.
 - The wealth gradient in the total fertility rate is modest, while the gradient in adolescent fertility (ages 15–19) is among the steepest in the library: the differential is concentrated in the timing of births.

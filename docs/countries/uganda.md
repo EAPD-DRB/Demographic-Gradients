@@ -32,12 +32,12 @@ Latest survey with a complete wealth-quintile breakdown ([`gradient_library_late
 | Infant mortality rate (per 1,000 live births) | 2016 | 56 | 50 | 44 | 48 | 39 | 1.44 | −0.38 |
 | Under-five mortality rate (per 1,000 live births) | 2016 | 88 | 79 | 73 | 69 | 53 | 1.66 | −0.57 |
 
-### Adult mortality from censuses
+### Adult mortality from household-death records
 
 Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv); [methods](../methods/adult-mortality.md); estimates by sex in the [full table](../tables/adult_mortality.md)). Blank cells: too few deaths to publish.
 
-| Census | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
+| Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| 2002 | 0.15 | −0.20 | 0.30 | 0.25 | 0.39 | 4 | 10,470 |
+| Census 2002 | 0.15 | −0.20 | 0.30 | 0.25 | 0.39 | 4 | 10,470 |
 
 Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Uganda Bureau of Statistics.

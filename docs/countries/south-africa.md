@@ -32,14 +32,14 @@ Latest survey with a complete wealth-quintile breakdown ([`gradient_library_late
 | Infant mortality rate (per 1,000 live births) | 2016 | 54 | 44 | 46 | 27 | 40 | 1.35 | −0.54 |
 | Under-five mortality rate (per 1,000 live births) | 2016 | 67 | 52 | 51 | 34 | 41 | 1.63 | −0.70 |
 
-### Adult mortality from censuses
+### Adult mortality from household-death records
 
 Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv); [methods](../methods/adult-mortality.md); estimates by sex in the [full table](../tables/adult_mortality.md)). Blank cells: too few deaths to publish.
 
-| Census | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
+| Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| 2001 | −0.93 | −1.04 | −1.45 | −0.98 | −0.34 | 5 | 20,193 |
-| 2007 | −1.23 | −1.63 | −2.00 | −1.58 | −0.69 | 5 | 9,467 |
+| Census 2001 | −0.93 | −1.04 | −1.45 | −0.98 | −0.34 | 5 | 20,193 |
+| Census 2007 | −1.23 | −1.63 | −2.00 | −1.58 | −0.69 | 5 | 9,467 |
 
 Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Statistics South Africa.
 

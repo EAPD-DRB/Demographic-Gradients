@@ -11,7 +11,7 @@ Outputs (all overwritten on each run; never edit them by hand):
     docs/methods/general-gradient.md the income rule for adult mortality and its validation
     docs/methods/ogcore-units.md     converting a gradient to OG-Core's units
     docs/methods/fertility-by-age.md the fertility age offsets and their checks
-    docs/tables/adult_mortality.md   all census adult-mortality estimates
+    docs/tables/adult_mortality.md   all adult-mortality estimates
     docs/countries/<country>.md      one page per country
     docs/countries/README.md         index of the country pages
 
@@ -44,7 +44,7 @@ GENERATED_BANNER = (
 
 # GNI per capita, Atlas method, current US$, 2024 (World Bank NY.GNP.PCAP.CD,
 # retrieved 2026-11-11), used to print general-gradient values for OG-family
-# countries without a census estimate. Update when the World Bank revises.
+# countries without their own estimate. Update when the World Bank revises.
 WORKED_GNI = {"Philippines": 4470, "Indonesia": 4920}
 
 # Countries that get a provenance page even without census-based content
@@ -102,13 +102,15 @@ COUNTRY_NOTES = {
         "general-gradient documentation before using the older age bands.",
     ],
     "Philippines": [
-        "No census with a household-deaths module is available, so adult mortality "
-        "uses the general gradient (value in the table above). Fertility and infant "
+        "No census or survey with a household-deaths module is available (the DHS "
+        "surveys record deaths of children only), so adult mortality uses the "
+        "general gradient (value in the table above). Fertility and infant "
         "mortality come from the 2022 NDHS.",
     ],
     "Indonesia": [
-        "No census with a household-deaths module is available, so adult mortality "
-        "uses the general gradient (value in the table above). Fertility and infant "
+        "No census or survey with a household-deaths module is available (the DHS "
+        "surveys record deaths of children only), so adult mortality uses the "
+        "general gradient (value in the table above). Fertility and infant "
         "mortality come from the 2017 IDHS.",
         "The wealth gradient in the total fertility rate is modest, while the "
         "gradient in adolescent fertility (ages 15–19) is among the steepest in the "
@@ -145,9 +147,34 @@ COUNTRY_NOTES = {
     ],
     "Cambodia": [
         "The 2008 census includes a household-deaths module and passes the "
-        "population, linkage and completeness checks. It is held pending a second "
-        "Asian source: it would be the only Asian census in the set, and its 45q15 "
-        "estimate rests on about 1,250 death records. Adult mortality uses the "
+        "population, linkage and completeness checks. It is held pending review; "
+        "its 45q15 estimate would rest on about 1,250 death records. Adult "
+        "mortality uses the general gradient.",
+    ],
+    "India": [
+        "Adult-mortality estimates come from the household-deaths module of the "
+        "National Family Health Survey (NFHS-2, 1998–99; NFHS-4, 2015–16; NFHS-5, "
+        "2019–21): deaths of usual household members in the two years before the "
+        "interview, with households ranked by the DHS wealth index "
+        "([methods](../methods/adult-mortality.md)). NFHS-5, labelled 2020, is used "
+        "for `mort_gradient`. Men's and women's gradients are close to those "
+        "published by Dhakad and Saikia (Demographic Research 55(16), 2026) from the "
+        "same surveys.",
+        "NFHS-5 fieldwork was interrupted by the COVID-19 pandemic. Deaths and "
+        "exposure from March 2020 account for about 14 percent of the total; from "
+        "deaths and exposure before March 2020 alone the 45q15 gradient is −0.76, "
+        "against −0.72 for the whole period.",
+        "The 45q15 gradient is nearly the same in the three surveys while GNI per "
+        "capita rose about fourfold; see the general-gradient documentation.",
+        "NFHS-1 (1992–93) also recorded household deaths, but its released data "
+        "file contains no age at death, and it is not used.",
+    ],
+    "Pakistan": [
+        "The 2006–07 DHS recorded deaths of household members in all sampled "
+        "households, but household assets, and so the wealth index, only in the "
+        "subsample that received the full questionnaire. That subsample holds "
+        "fewer than 900 adult deaths in the two years before the survey, most of "
+        "them of women, so no estimate is published. Adult mortality uses the "
         "general gradient.",
     ],
 }
@@ -231,7 +258,7 @@ def rule_predict(gg, gni):
     a, b = gg["income_rule.intercept"], gg["income_rule.slope_ln_gni"]
     x0 = np.log(gni)
     half = (gg["income_rule.t_95"] * gg["income_rule.residual_sd"]
-            * np.sqrt(1 + 1 / gg["income_rule.n_censuses"]
+            * np.sqrt(1 + 1 / gg["income_rule.n_observations"]
                       + (x0 - gg["income_rule.mean_ln_gni"]) ** 2 / gg["income_rule.sxx_ln_gni"]))
     f = a + b * x0
     return f, f - half, f + half
@@ -258,8 +285,28 @@ def imr_vs_u5mr(lib):
             "worst": d.abs().idxmax(), "worst_gap": d.abs().max()}
 
 
+def basis(source):
+    """'DHS survey' for rows from build_adult_mortality_survey.py, else 'census'."""
+    return "DHS survey" if str(source).startswith("The DHS Program") else "census"
+
+
+def within_country(amr):
+    """Countries with two or more 45q15 estimates: (country, [(year, gradient)], [gni])."""
+    pts_p = DATA / "general_gradient_points.csv"
+    gni = (pd.read_csv(pts_p).set_index(["country", "year"])["gni"].to_dict()
+           if pts_p.exists() else {})
+    q = amr[(amr["measure"] == "45q15") & (amr["sex"] == "all")]
+    out = []
+    for c, g in q.groupby("country"):
+        if g["year"].nunique() > 1:
+            g = g.sort_values("year")
+            out.append((c, [(int(y), float(v)) for y, v in zip(g["year"], g["slope"])],
+                        [gni.get((c, int(y)), np.nan) for y in g["year"]]))
+    return out
+
+
 def amr_headline():
-    """One 45q15 observation per census: the 'all' row, else the sex mean."""
+    """One 45q15 observation per census or survey: the 'all' row, else the sex mean."""
     p = DATA / "adult_mortality_gradients.csv"
     if not p.exists():
         return None
@@ -274,7 +321,7 @@ def amr_headline():
         obs.append(float(src["slope"].mean()))
         ratios.append(float(src["ratio"].mean()))
     s, r = pd.Series(obs), pd.Series(ratios)
-    return {"n": q["country"].nunique(), "censuses": len(obs), "med": s.median(),
+    return {"n": q["country"].nunique(), "observations": len(obs), "med": s.median(),
             "q25": s.quantile(0.25), "q75": s.quantile(0.75), "ratio": r.median()}
 
 
@@ -309,7 +356,7 @@ def amr_table_rows(amr):
     out = ""
     for _, r in amr.iterrows():
         out += (
-            f"| {r['country']} | {r['year']} | {r['sex']} | {r['age_lo']}–{r['age_hi']} "
+            f"| {r['country']} | {r['year']} | {basis(r['source'])} | {r['sex']} | {r['age_lo']}–{r['age_hi']} "
             f"| {r['measure']} | {fmt(r['slope'])} | {r['ratio']:.2f} | {r['n_deaths']:,} "
             f"| {r.get('linked_share', 1.0):.0%} |\n"
         )
@@ -322,7 +369,7 @@ def write_general_gradient_page(amr):
     gg_a = gg.get("income_rule.intercept", float("nan"))
     gg_b = gg.get("income_rule.slope_ln_gni", float("nan"))
     gg_r = gg.get("income_rule.r", float("nan"))
-    gg_n = gg.get("income_rule.n_censuses", float("nan"))
+    gg_n = gg.get("income_rule.n_observations", float("nan"))
     gg_sd = gg.get("income_rule.residual_sd", float("nan"))
     gg_dbl = gg_b * 0.6931  # effect of doubling income
     gg_med = gg.get("fallback.pooled_median_tilt", float("nan"))
@@ -343,7 +390,20 @@ def write_general_gradient_page(amr):
     pts_p = DATA / "general_gradient_points.csv"
     pts = pd.read_csv(pts_p).dropna(subset=["gni"]) if pts_p.exists() else pd.DataFrame()
     n_fit_gg = len(pts)
-    n_africa = int((pts["country"] != "Brazil").sum()) if len(pts) else 0
+    n_africa = int((~pts["country"].isin(["Brazil", "India"])).sum()) if len(pts) else 0
+    n_india = int((pts["country"] == "India").sum()) if len(pts) else 0
+    multi = [c for c, ys, _ in within_country(amr) if c in set(pts.get("country", []))]
+    multi_txt = ", ".join(f"{c} {len(ys)}" for c, ys, _ in within_country(amr) if c in multi)
+    ind = [w for w in within_country(amr) if w[0] == "India"]
+    if ind:
+        _, ind_ys, ind_g = ind[0]
+        india_txt = (f"India's three surveys do not show it within a country: the gradient was "
+                     f"{', '.join(fmt(v) for _, v in ind_ys)} in "
+                     f"{', '.join(str(y) for y, _ in ind_ys[:-1])} and {ind_ys[-1][0]}, while GNI "
+                     f"per capita rose from about ${ind_g[0]:,.0f} to ${ind_g[-1]:,.0f}; "
+                     f"the {ind_ys[0][0]} survey lies well off the cross-country line.")
+    else:
+        india_txt = ""
     mxa = amr[amr["measure"] == "mx"]
     rev = []
     for (c, y), g in mxa.groupby(["country", "year"]):
@@ -359,18 +419,20 @@ def write_general_gradient_page(amr):
         r_ = za_pt.iloc[-1]
         za_txt = (f" For South Africa {int(r_.year)} the out-of-sample prediction is "
                   f"{fmt(r_.loo_prediction)} against a measured {fmt(r_.tilt_45q15)}.")
-    doc = f"""{GENERATED_BANNER}# The general gradient: adult mortality in countries without a census estimate
+    doc = f"""{GENERATED_BANNER}# The general gradient: adult mortality in countries without their own estimate
 
-Most countries have no census-based estimate of the wealth gradient in adult
-mortality. For these countries the library provides a fallback, the *general
-gradient*, in [`data/general_gradient.csv`](../../data/general_gradient.csv). A
-country's own census estimate, where one exists, is always preferred.
+Most countries have no estimate of the wealth gradient in adult mortality from
+household-death records. For these countries the library provides a fallback,
+the *general gradient*, in
+[`data/general_gradient.csv`](../../data/general_gradient.csv). A country's own
+estimate, where one exists, is always preferred.
 
 ## The income relationship
 
-Across censuses, the gradient in 45q15 (the probability of dying between ages
+Across countries, the gradient in 45q15 (the probability of dying between ages
 15 and 60) becomes steeper as national income rises. Estimated by ordinary
-least squares on {gg_n:.0f} censuses:
+least squares on {gg_n:.0f} observations, censuses and DHS surveys with a
+household-deaths module, each with equal weight:
 
     gradient(45q15) = {gg_a:.3f} {gg_bsign} {gg_babs:.3f} × ln(GNI per capita, current US$)
 
@@ -382,9 +444,9 @@ GNI per capita corresponds to a change of {fmt(gg_dbl)} in the gradient.
 | Intercept | {gg_a:.3f} | {gg.get("income_rule.se_intercept", float("nan")):.3f} | |
 | Slope on ln(GNI per capita) | {NEG}{abs(gg_b):.3f} | {gg.get("income_rule.se_slope", float("nan")):.3f} | {NEG}{abs(gg.get("income_rule.slope_ci95_lo", float("nan"))):.3f} to {NEG}{abs(gg.get("income_rule.slope_ci95_hi", float("nan"))):.3f} |
 
-Intervals use Student's t with {gg_n - 2:.0f} degrees of freedom. Two countries
-contribute two censuses each; clustering the standard error of the slope by
-country gives {gg.get("income_rule.se_slope_cluster", float("nan")):.3f}, close to the
+Intervals use Student's t with {gg_n - 2:.0f} degrees of freedom. Some countries
+contribute more than one observation ({multi_txt}); clustering the standard
+error of the slope by country gives {gg.get("income_rule.se_slope_cluster", float("nan")):.3f}, close to the
 conventional value.
 
 The slope is estimated precisely, but a single country can lie well off the
@@ -397,7 +459,7 @@ with s the residual standard error and the remaining terms in
 [`data/general_gradient.csv`](../../data/general_gradient.csv). At GNI per
 capita of $1,000 the general gradient is {pi_text(gg, 1000)}; at $5,000 it is
 {pi_text(gg, 5000)}. The leave-one-out prediction errors reported below are of
-the same order. The census observations, their GNI and the leave-one-out
+the same order. The observations, their GNI and the leave-one-out
 predictions are in
 [`data/general_gradient_points.csv`](../../data/general_gradient_points.csv);
 GNI per capita (World Bank, Atlas method, current US$, as retrieved on the date
@@ -408,10 +470,10 @@ recorded) is in [`data/gni_census_years.csv`](../../data/gni_census_years.csv).
 ## Choice of rule
 
 Three candidate rules were compared by leave-one-country-out prediction: each
-census is predicted from a rule estimated without any census of the same
-country, which matches the use case of a country with no estimate of its own.
-All three are scored on the same censuses; the regional rule uses UN
-subregions and falls back to the pooled median where no other census in the
+observation is predicted from a rule estimated without any observation of the
+same country, which matches the use case of a country with no estimate of its
+own. All three are scored on the same observations; the regional rule uses UN
+subregions and falls back to the pooled median where no other country in the
 subregion is available.
 
 | Candidate rule | Mean absolute error |
@@ -421,19 +483,19 @@ subregion is available.
 | Regional median | {gg_mae_r:.3f} |
 
 The income rule has the lowest error, and is used.{za_txt} Where no GNI figure is available, the pooled
-median of all census estimates, {fmt(gg_med)}, is used.
+median of all estimates, {fmt(gg_med)}, is used.
 
 ## Age pattern
 
 `mort_gradient` accepts a gradient by age. The general gradient is spread across
 age bands by adding pooled offsets, estimated as the median difference between
-each census's band gradient and its 45q15 gradient:
+each estimate's band gradient and its 45q15 gradient:
 
 | Age band | Offset | |
 |---|---|---|
 {gg_agerows}
 
-Applied to the censuses' own 45q15 gradients, the offsets reproduce the
+Applied to the estimates' own 45q15 gradients, the offsets reproduce the
 measured band gradients with a median absolute error of {gg_agemae:.2f}. The
 offsets for ages 45–59 and 60–74 are the least reliable values in the library:
 they are positive because, in several low-income censuses, recorded mortality
@@ -442,19 +504,23 @@ mortality is what matters, the 15–29 and 30–44 offsets are the more reliable
 
 ## Use over long horizons
 
-Because the gradient varies with income, a model projecting a low-income
-country over several decades should allow the gradient to steepen as income
-rises rather than hold it fixed. Malawi's two censuses illustrate this: between
-1998 and 2008 its 45q15 gradient moved from {fmt(gg_mw0)} to {fmt(gg_mw1)} as GNI per
-capita rose from about $290 to $530 (the 1998 wealth ranking rests on only
-three asset variables; see the [Malawi page](../countries/malawi.md)).
+Across countries the gradient is steeper at higher income, which implies that
+it steepens as a country's income rises. The evidence within countries is
+limited and mixed. Between Malawi's 1998 and 2008 censuses the 45q15 gradient
+moved from {fmt(gg_mw0)} to {fmt(gg_mw1)} as GNI per capita rose from about $290 to
+$530 (the 1998 wealth ranking rests on only three asset variables; see the
+[Malawi page](../countries/malawi.md)). {india_txt} A model projecting a country
+over several decades can hold the gradient fixed or let it follow the income
+relationship; the two bracket the evidence.
 
 ## Scope
 
-The rule is estimated on censuses with GNI per capita between about $200 and
-$10,000 and should not be extrapolated beyond that range. Of the {n_fit_gg}
-censuses, {n_africa} are African and one is Brazilian; none is Asian, so
-predictions for Asian countries are extrapolations.
+The rule is estimated on observations with GNI per capita between about $200
+and $10,000 and should not be extrapolated beyond that range. Of the
+{n_fit_gg} observations, {n_africa} are African censuses, one is a Brazilian
+census and {n_india} are Indian surveys. There is no estimate for East or
+Southeast Asia, so predictions for the Philippines or Indonesia rest on a
+relationship estimated largely outside their region.
 
 ## Older-age reversals
 
@@ -469,7 +535,7 @@ Evidence from DHS sibling histories suggests that reporting contributes. In
 those data, poorer and less educated respondents report fewer siblings than
 wealthier respondents despite higher fertility, and the shortfall increases
 with recall period; under-reporting of deaths by poorer households flattens or
-reverses a measured gradient in the same way. The census data alone cannot
+reverses a measured gradient in the same way. The household-death data alone cannot
 distinguish the two explanations, which is why the older-age offsets carry a
 caution.
 
@@ -706,22 +772,25 @@ Source: DHS Program indicator API, age-specific fertility rates
 
 
 def write_adult_table_page(amr):
-    """docs/tables/adult_mortality.md — the full per-census table + column notes."""
-    doc = f"""{GENERATED_BANNER}# Adult mortality by household wealth: all census estimates
+    """docs/tables/adult_mortality.md — the full table of estimates + column notes."""
+    doc = f"""{GENERATED_BANNER}# Adult mortality by household wealth: all estimates
 
 All published estimates in
 [`data/adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv),
-one row per country, census, sex and age band. Methods are described in
-[adult mortality from census household-death records](../methods/adult-mortality.md);
+one row per country, census or survey, sex and age band. Methods are described
+in [adult mortality from household-death records](../methods/adult-mortality.md);
 countries without an estimate use the [general gradient](../methods/general-gradient.md).
 
-Households are ranked by an asset index, the first principal component of
-indicators for household assets and toilet type; the assets used differ by
-census and are recorded in `scripts/build_adult_mortality.py`. `45q15` is the probability
+In censuses, households are ranked by an asset index, the first principal
+component of indicators for household assets and toilet type; the assets used
+differ by census and are recorded in `scripts/build_adult_mortality.py`. In DHS
+surveys, households are ranked by the DHS wealth index, and deaths are those
+of the two years before the interview (`scripts/build_adult_mortality_survey.py`). `45q15` is the probability
 of dying between ages 15 and 60; `mx` is the age-specific death rate for the
 band shown. The low/high ratio is the rate in the lowest wealth group divided
 by the rate in the highest. "Linked" is the share of the census's death
-records matched to household assets.
+records matched to household assets; survey death records are part of the
+household interview and are all linked.
 
 Where the census records the number of deaths per household (`MORTNUM`), the
 weighted death records are compared with that number within each wealth group;
@@ -735,14 +804,18 @@ unevenly across wealth groups); the IPUMS supplement for Brazil 2010 (about
 half of the deaths the census reports, with the shortfall concentrated in
 wealthier households; the Brazil estimates below use IBGE's own microdata);
 Burkina Faso 1996 (deaths cannot be assigned to households reliably); Rwanda
-2002 (only two wealth groups); and Cambodia 2008 (held pending review).
+2002 (only two wealth groups); and Cambodia 2008 (held pending review). Of the
+DHS surveys with a household-deaths module, India NFHS-1 (1992–93) is not
+published because its data file contains no age at death, and Pakistan 2006–07
+because only the subsample with asset data can be ranked, and it holds too few
+deaths.
 
 Age-band rates (`mx`) and 45q15 are published only where they rest on at least
 900 death records; `Deaths` gives the number of records behind each estimate.
 Rates are per 1,000.
 
-| Country | Year | Sex | Ages | Measure | Gradient | Low/high ratio | Deaths | Linked |
-|---|---|---|---|---|---|---|---|---|
+| Country | Year | Source | Sex | Ages | Measure | Gradient | Low/high ratio | Deaths | Linked |
+|---|---|---|---|---|---|---|---|---|---|
 {amr_table_rows(amr)}"""
     (DOCS / "tables" / "adult_mortality.md").write_text(doc)
 
@@ -755,7 +828,7 @@ REGION_ANCHOR = "regional-medians"  # ANALYSIS.md heading that carries the regio
 
 
 def own_adult(amr, country):
-    """The latest census's 45q15 tilt, both sexes (else the mean of the sexes)."""
+    """The latest 45q15 tilt (census or survey), both sexes (else the mean of the sexes)."""
     q = amr[(amr["country"] == country) & (amr["measure"] == "45q15")]
     if not len(q):
         return None
@@ -764,7 +837,8 @@ def own_adult(amr, country):
     a = g[g["sex"] == "all"]
     src = a if len(a) else g[g["sex"].isin(["male", "female"])]
     return {"year": int(y), "tilt": float(src["slope"].mean()),
-            "both": bool(len(a)), "linked": float(g["linked_share"].min())}
+            "both": bool(len(a)), "linked": float(g["linked_share"].min()),
+            "basis": basis(g["source"].iloc[0])}
 
 
 def what_to_use(c, latest, amr, ccm_df, off, regions):
@@ -814,7 +888,7 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
     a = gg.get("income_rule.intercept", float("nan"))
     b = gg.get("income_rule.slope_ln_gni", float("nan"))
     if own:
-        rows.append(f"| `mort_gradient` | {fmt(own['tilt'])} | census {own['year']}, 45q15 |")
+        rows.append(f"| `mort_gradient` | {fmt(own['tilt'])} | {own['basis']} {own['year']}, 45q15 |")
         if own["linked"] < 0.95:
             notes.append(f"The {own['year']} census links {own['linked']:.0%} of death records "
                          "to household assets. The gradient is retained; rate levels for that "
@@ -851,7 +925,7 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
 
 
 def deaths_15_60(g):
-    """Deaths behind a census's 15-60 estimate: both sexes, summed if only by sex."""
+    """Deaths behind a 15-60 estimate: both sexes, summed if only by sex."""
     q = g[g["measure"] == "45q15"]
     a = q[q["sex"] == "all"]
     return int(a["n_deaths"].sum() if len(a) else q[q["sex"].isin(["male", "female"])]["n_deaths"].sum())
@@ -907,13 +981,13 @@ def country_amr_block(amr, country):
         return ""
     srcs = sorted(rows["source"].dropna().unique())
     bands = [(15, 29), (30, 44), (45, 59), (60, 74)]
-    out = ("### Adult mortality from censuses\n\n"
+    out = ("### Adult mortality from household-death records\n\n"
            "Wealth gradients in 45q15 and in age-specific death rates, both sexes "
            "([`adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv); "
            "[methods](../methods/adult-mortality.md); estimates by sex in the "
            "[full table](../tables/adult_mortality.md)). Blank cells: too few deaths to "
            "publish.\n\n"
-           "| Census | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |\n"
+           "| Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |\n"
            "|---|---|---|---|---|---|---|---|\n")
     for y, g in rows.groupby("year"):
         s = g[g["sex"] == "all"] if (g["sex"] == "all").any() else g
@@ -922,7 +996,8 @@ def country_amr_block(amr, country):
         def cell(meas, lo=None):
             m = s[(s["measure"] == meas) & ((s["age_lo"] == lo) if lo is not None else True)]
             return "" if not len(m) else fmt(float(m["slope"].mean()))
-        out += (f"| {y}{lbl} | {cell('45q15')} | "
+        b_ = basis(g["source"].iloc[0])
+        out += (f"| {b_[0].upper() + b_[1:]} {y}{lbl} | {cell('45q15')} | "
                 + " | ".join(cell("mx", lo) for lo, _ in bands)
                 + f" | {int(g['groups'].iloc[0])} | {deaths_15_60(g):,} |\n")
     out += "\nSource: " + "; ".join(srcs) + ".\n"
@@ -960,11 +1035,11 @@ def write_country_pages(latest, amr, ccm):
                           f"{', '.join(map(str, child)) or '—'} |")
     idx = (f"{GENERATED_BANNER}# Countries\n\n"
            "One page per country, giving the values for an OG-Core calibration and the "
-           "estimates behind them. Countries without a census estimate of adult mortality "
+           "estimates behind them. Countries without their own estimate of adult mortality "
            "use the [general gradient](../methods/general-gradient.md). Countries not listed "
            "have no DHS survey with a wealth breakdown; regional medians are given in "
            f"[the main results](../../ANALYSIS.md#{REGION_ANCHOR}).\n\n"
-           "| Country | DHS region | Latest DHS survey | Census, adult mortality "
+           "| Country | DHS region | Latest DHS survey | Adult mortality "
            "| Census, child mortality |\n|---|---|---|---|---|\n"
            + "\n".join(index_rows) + "\n")
     (DOCS / "countries" / "README.md").write_text(idx)
@@ -972,14 +1047,14 @@ def write_country_pages(latest, amr, ccm):
 
 
 def age_fade(amr):
-    """Censuses measured at two or more ages (both sexes): how many weaken / reverse."""
+    """Estimates at two or more ages (both sexes): how many weaken / reverse."""
     mx = amr[amr["measure"] == "mx"]
     rows = []
     for (c, y), g in mx.groupby(["country", "year"]):
         # both sexes where published, else the mean of men and women in each band
         g = (g[g["sex"] == "all"] if (g["sex"] == "all").any() else
              g[g["sex"].isin(["male", "female"])]).groupby("age_lo")["slope"].mean().sort_index()
-        if len(g) > 1:
+        if len(g) > 1 and g.index[0] == 15:  # needs 15-29 and an older band
             rows.append({"country": c, "year": y, "first": g.iloc[0], "last": g.iloc[-1]})
     d = pd.DataFrame(rows)
     pts = DATA / "general_gradient_points.csv"
@@ -1017,8 +1092,8 @@ def main():
         f"| Infant mortality | `infmort_gradient` | DHS | {imr['n']} | {imr['ratio']:.2f} |\n"
     )
     if amr_h:
-        table += (f"| Adult mortality (45q15) | `mort_gradient` | census household-death "
-                  f"records | {amr_h['n']}; other countries through the general gradient | "
+        table += (f"| Adult mortality (45q15) | `mort_gradient` | household-death records "
+                  f"(censuses; DHS for India) | {amr_h['n']}; other countries through the general gradient | "
                   f"{amr_h['ratio']:.2f} |\n")
     table += "| Income distribution of immigrants | `imm_pctiles` | not provided | — | — |"
     readme = replace_between(
@@ -1060,8 +1135,8 @@ data. Differentials are reported as the **low/high ratio**, the rate in the
 lowest wealth quintile divided by the rate in the highest, and as the
 **wealth gradient**, the slope of the log rate on wealth rank (see the
 [glossary](docs/glossary.md)). The data cover {n_surveys} DHS surveys with a
-complete wealth-quintile breakdown in {n_countries} countries, and census
-household-death records for adult mortality. All figures and numbers are
+complete wealth-quintile breakdown in {n_countries} countries, and, for adult
+mortality, household-death records from censuses and DHS surveys. All figures and numbers are
 computed from the files in [`data/`](data/).
 
 ## Fertility and infant mortality by wealth quintile
@@ -1173,34 +1248,37 @@ comparison.
     if amr is not None and gg:
         a, b = gg["income_rule.intercept"], gg["income_rule.slope_ln_gni"]
         fade = age_fade(amr)
-        n_fit = int(gg["income_rule.n_censuses"])
+        n_fit = int(gg["income_rule.n_observations"])
         doc += f"""
 ## Adult mortality and national income
 
-Household surveys cannot measure adult mortality by wealth, since the deceased
-are not interviewed. The library uses censuses that record deaths in the
-household during the previous year
+Adult mortality by wealth requires deaths recorded against the deceased's own
+household. The library uses censuses that record deaths of household members
+during a recent period, usually the previous year, and, for India, DHS surveys
+that record them for the previous two years
 ([methods](docs/methods/adult-mortality.md); [all estimates](docs/tables/adult_mortality.md)).
-Across the {n_fit} censuses with a GNI estimate, the gradient in 45q15 is steeper
-in richer countries (r = {fmt(gg['income_rule.r'])}): the fitted gradient is
-{fmt(a + b * np.log(500))} at a GNI per capita of $500 and {fmt(a + b * np.log(5000))} at
-$5,000. This relationship, the general gradient, provides values for
-countries without a census estimate ([details](docs/methods/general-gradient.md)).
-It also implies that the gradient should steepen as income rises in long-run
-projections.
+Across the {n_fit} censuses and surveys with a GNI estimate, the gradient in
+45q15 is steeper in richer countries (r = {fmt(gg['income_rule.r'])}): the fitted
+gradient is {fmt(a + b * np.log(500))} at a GNI per capita of $500 and
+{fmt(a + b * np.log(5000))} at $5,000. This relationship, the general gradient,
+provides values for countries without their own estimate
+([details](docs/methods/general-gradient.md)). Within countries the evidence
+is limited and mixed: Malawi's gradient steepened between its 1998 and 2008
+censuses, while India's changed little between 1999 and 2020 as its income rose
+about fourfold.
 
 ![Wealth gradient in adult mortality and GNI per capita](figures/adult_mortality_vs_income.png)
 
 ## Adult mortality by age
 
-In {'all ' if fade['weaker'] == fade['n'] else ''}{fade['weaker']} of the {fade['n']} censuses with estimates for more than one
-age band, the gradient is weaker at the oldest band measured than at ages
-15–29. In {fade['reversed']} censuses, all with GNI per capita of
+In {f"all {fade['n']}" if fade['weaker'] == fade['n'] else f"{fade['weaker']} of the {fade['n']}"} censuses and surveys with estimates at ages 15–29
+and at least one older band, the gradient is weaker at the oldest band measured
+than at ages 15–29. In {fade['reversed']} censuses, all with GNI per capita of
 ${fade['rev_max_gni']:,.0f} or less, it is positive at the oldest band: recorded
 death rates rise with household wealth. Two explanations are consistent with
 this: small survival differences where most households are poor, and elderly
 people in poor health moving into better-off households before death. The
-census data do not distinguish between them, and the older-age estimates are
+data do not distinguish between them, and the older-age estimates are
 the least certain in the library.
 
 ![Wealth gradient in adult mortality by age](figures/adult_mortality_by_age.png)

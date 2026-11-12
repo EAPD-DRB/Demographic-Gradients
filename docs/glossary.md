@@ -28,11 +28,12 @@ gradient in a summary measure. For fertility, the difference between each
 age-specific gradient and the TFR gradient, pooled across countries
 ([fertility by age](methods/fertility-by-age.md)); for adult mortality, the
 difference between each age band's gradient and the 45q15 gradient, pooled
-across censuses ([general gradient](methods/general-gradient.md)).
+across censuses and surveys ([general gradient](methods/general-gradient.md)).
 
 ### General gradient
 The relationship between the adult-mortality gradient and GNI per capita,
-estimated across censuses, used for countries without a census estimate. See
+estimated across censuses and surveys, used for countries without their own
+estimate. See
 [the general gradient](methods/general-gradient.md).
 
 ## Wealth ranking
@@ -85,11 +86,14 @@ Nationally representative household surveys in low- and middle-income
 countries, conducted since the 1980s with support from USAID. The DHS Program
 publishes fertility and child-mortality indicators by wealth quintile.
 
-### Census household-death records
-Questions in some censuses on deaths in the household during the previous
-twelve months (the reference period varies by census), recorded alongside the household's characteristics. They are
-the source for adult mortality by wealth, which household surveys cannot
-measure.
+### Household-death records
+Questions in some censuses, and in a few DHS-type surveys such as India's
+National Family Health Survey, on deaths of household members during a recent
+period (usually the previous twelve months in censuses; several years in the
+Indian surveys, of which the library uses the last two), recorded alongside
+the household's characteristics. They are the source for adult mortality by
+wealth, which sibling histories cannot measure because they do not identify
+the deceased's household.
 
 ### IPUMS International
 A project at the University of Minnesota that harmonizes census microdata

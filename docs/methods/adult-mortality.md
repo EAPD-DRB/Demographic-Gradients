@@ -1,4 +1,4 @@
-# Adult mortality by wealth: census household-death records
+# Adult mortality by wealth: household-death records
 
 This page describes how the estimates in
 [`data/adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv)
@@ -8,15 +8,26 @@ use the [general gradient](general-gradient.md).
 
 ## Data
 
-Household surveys cannot measure adult mortality by household wealth, since
-the deceased are not interviewed, and sibling histories do not record the
-deceased person's household. Some censuses, however, ask each household about
-deaths of members during a recent reference period (usually the previous
-twelve months), with the age and sex of the deceased. These records, linked to
-the household's assets, are the basis of the estimates. The census samples
-come from IPUMS International; Brazil's come from IBGE's 2010 census sample
-microdata. Microdata are processed locally and only aggregate estimates are
-published, as the IPUMS license requires.
+Measuring adult mortality by household wealth requires deaths recorded against
+the deceased person's own household. Sibling histories, the usual survey
+source of adult mortality, do not provide this: they record deaths of the
+respondent's siblings, who mostly lived in other households. Some censuses,
+and a few DHS-type surveys, instead ask each household about deaths of its
+members during a recent reference period, with the age and sex of the
+deceased. These records, linked to the household's assets, are the basis of
+the estimates.
+
+- **Censuses.** Samples come from IPUMS International; Brazil's come from
+  IBGE's 2010 census sample microdata. The reference period is usually the
+  previous twelve months.
+- **DHS surveys.** India's National Family Health Survey records deaths of
+  usual household members since a fixed date several years before the
+  interview, with sex, age and month and year of death. The estimates use the
+  deaths of the two years before the interview, since reporting of earlier
+  deaths falls off.
+
+Microdata are processed locally and only aggregate estimates are published,
+as the IPUMS license and the DHS terms of use require.
 
 ## Wealth ranking
 
@@ -35,9 +46,13 @@ oriented so that it rises with the number of assets owned
 recorded for each sample in `scripts/build_adult_mortality.py`; for Brazil the
 index uses ten durable goods and the number of bathrooms.
 
+Survey estimates use the DHS wealth index distributed with each survey, an
+index of the same kind built from a larger set of assets and housing
+characteristics, divided into quintiles of the household population.
+
 ## Estimation
 
-Wealth groups are formed by cutting the index at the values closest to the
+In censuses, wealth groups are formed by cutting the index at the values closest to the
 20th, 40th, 60th and 80th percentiles of its distribution over the household
 population. Where many households share a score, cut points can coincide or
 fall at the minimum or maximum, and are dropped; a group holding less than 10
@@ -45,24 +60,31 @@ percent of the population is merged with its smaller neighbour. The number of
 groups therefore depends on the asset distribution (`groups` column): fewer
 than five where many households share the same index value, as where most own
 none of the recorded assets. A census yielding fewer than three groups is not
-published.
+published. Survey estimates use the five DHS wealth quintiles.
 
 For each group, the age-specific death rate (`mx`) for 15–29, 30–44, 45–59 and
 60–74 is the weighted number of deaths at those ages divided by the weighted
-population of the same ages in the group. Deaths are weighted by the weight in
-the supplementary death file where one is provided, and otherwise by the
-household weight. The probability of dying between ages 15 and 60 is computed
+population of the same ages in the group. In censuses, deaths are weighted by
+the weight in the supplementary death file where one is provided, and
+otherwise by the household weight. In surveys, deaths and population are
+weighted by the household sample weight; the population is the de jure
+(usual-resident) household population, and the deaths of the two-year window
+are divided by twice that population. The probability of dying between ages 15 and 60 is computed
 from the first three bands as 45q15 = 1 − ∏(1 − mx)¹⁵, treating each band's
 rate as a constant annual probability. Band rates and 45q15 are published only
 where they rest on at least 900 death records, given in `n_deaths`.
 
 The wealth gradient is the slope of the log rate on wealth rank, with each
 group placed at the midpoint of its realized population share and weighted by
-that share. Because the index takes a limited number of distinct values,
-groups do not always contain equal shares of the population, and the realized
-midpoints are used rather than nominal quintile midpoints.
+that share. Because the census index takes a limited number of distinct
+values, groups do not always contain equal shares of the population, and the
+realized midpoints are used rather than nominal quintile midpoints. DHS
+quintiles hold equal shares, and the fit reduces to ordinary least squares at
+0.1, 0.3, 0.5, 0.7 and 0.9.
 
 ## Completeness of death reporting
+
+### Censuses
 
 Censuses under-record deaths. Under-recording that is uniform across wealth
 groups does not affect a gradient; under-recording that varies with wealth
@@ -85,15 +107,47 @@ are retained in `scripts/build_adult_mortality.py` with `publish=False`.
 | Brazil 2010 (IPUMS supplement) | About half of the deaths the census reports, with the shortfall concentrated in wealthier households; Brazil's estimates use IBGE's own microdata instead |
 | Burkina Faso 1996 | Death records identify the dwelling, not the household, so deaths cannot be assigned to households reliably |
 | Rwanda 2002 | Only two wealth groups |
-| Cambodia 2008 | Held pending a second Asian source: it passes the checks, but it would be the only Asian census in the set |
-
-The library therefore has no census estimate for an Asian country.
+| Cambodia 2008 | Held pending review; it passes the checks |
 
 Brazil's estimates are produced by `scripts/build_adult_mortality_brazil.py`,
 which downloads the 2010 census sample microdata from IBGE's public server
 and applies the same index and rules.
 
+### Surveys
+
+Survey estimates are produced by `scripts/build_adult_mortality_survey.py`,
+which prints the following checks for each survey:
+
+- recorded death records against the number of deaths each household reports,
+  by quintile (records lost to the questionnaire's limit on the number of
+  deaths would show here);
+- recall: adult deaths in the second year before the interview relative to
+  the first, by quintile; forgetting that varies with wealth would show as a
+  trend;
+- the shares of deaths with unknown date or unknown age, by quintile;
+- age heaping at ages ending in 0 or 5, by quintile, and the gradient with
+  persons and deaths at the band boundaries divided between adjacent bands;
+- the national 45q15 by sex, for comparison with UN and World Bank estimates;
+- a cluster-bootstrap standard error of the 45q15 gradient.
+
+Age heaping is more common in poorer households in the Indian surveys, but
+dividing the boundary ages changes the gradient little. For the 2019–21
+survey, whose fieldwork spanned the onset of COVID-19, the gradient is also
+computed from deaths and exposure before March 2020 alone; the two differ by
+less than one standard error.
+
+| Survey | Reason not published |
+|---|---|
+| India NFHS-1, 1992–93 | The released data file contains no age at death |
+| Pakistan 2006–07 | Deaths were recorded in all households, but assets only in the subsample given the full questionnaire; that subsample has too few adult deaths, most of them of women |
+
+The DHS surveys of the Philippines, Indonesia, Bangladesh, Cambodia, Nepal and
+other Asian countries were examined and have no module recording deaths at all
+ages. India is therefore the only Asian country with an estimate.
+
 ## Verification for new samples
+
+For censuses:
 
 1. The weighted population of the extract reproduces the census total.
 2. The share of death records linked to households is recorded; where it is

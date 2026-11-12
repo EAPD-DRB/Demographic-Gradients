@@ -5,15 +5,19 @@
 """The general adult-mortality gradient: a fallback any country can use.
 
 A country model should use its own measured tilt when it has one. Most do not.
+The observations are every 45q15 estimate in adult_mortality_gradients.csv:
+censuses, and DHS surveys with a household-deaths module (India; ruled
+2026-11-12 that survey rows enter the rule on the same footing).
 This builds the fallback and, more importantly, shows how well it would have
 served the countries that DO have a measured tilt - so a user can see what
 accuracy they are accepting.
 
 Three candidate rules are compared by leave-one-country-out prediction error:
-each census is predicted from a rule estimated without any census of the same
-country, which matches the use case of a country with no estimate of its own.
-All rules are scored on the same censuses (those with a GNI figure); the region
-rule falls back to the pooled median where a region has no other census.
+each observation is predicted from a rule estimated without any observation of
+the same country, which matches the use case of a country with no estimate of
+its own. All rules are scored on the same observations (those with a GNI
+figure); the region rule falls back to the pooled median where a region has no
+other country.
 
     constant   one number for everyone (the pooled median)
     income     tilt ~ a + b * ln(GNI per capita)
@@ -26,11 +30,11 @@ because ogcore's `mort_gradient` accepts a tilt per age band.
 
 Writes data/general_gradient.csv (the rule, with its standard errors and what
 is needed for a prediction interval) and data/general_gradient_points.csv (each
-census behind it: GNI, measured tilt, leave-one-out prediction).
+census or survey behind it: GNI, measured tilt, leave-one-out prediction).
 
 GNI per capita (World Bank, Atlas method, current US$) is read from
 data/gni_census_years.csv, so the fit does not change when the World Bank
-revises its historical series. A census missing from that file is fetched from
+revises its historical series. A year missing from that file is fetched from
 the World Bank API (free, no key) and appended with the retrieval date;
 `--refresh-gni` re-downloads every value.
 
@@ -66,7 +70,7 @@ ISO3 = {"South Africa": "ZAF", "Ethiopia": "ETH", "Brazil": "BRA", "Zambia": "ZM
         "Malawi": "MWI", "Mozambique": "MOZ", "Uganda": "UGA", "Rwanda": "RWA",
         "Senegal": "SEN", "Sierra Leone": "SLE", "Lesotho": "LSO", "Benin": "BEN",
         "Sudan": "SDN", "South Sudan": "SSD", "Burkina Faso": "BFA",
-        "Cote d'Ivoire": "CIV", "Mali": "MLI"}
+        "Cote d'Ivoire": "CIV", "Mali": "MLI", "India": "IND"}
 # UN/World Bank regional grouping, for the region rule
 REGION = {"South Africa": "Southern Africa", "Lesotho": "Southern Africa",
           "Zambia": "Eastern Africa", "Malawi": "Eastern Africa",
@@ -76,14 +80,14 @@ REGION = {"South Africa": "Southern Africa", "Lesotho": "Southern Africa",
           "Senegal": "Western Africa", "Sierra Leone": "Western Africa",
           "Benin": "Western Africa", "Burkina Faso": "Western Africa",
           "Cote d'Ivoire": "Western Africa", "Mali": "Western Africa",
-          "Brazil": "Latin America"}
+          "Brazil": "Latin America", "India": "South Asia"}
 
 
 def wb(iso3, year, indicator="NY.GNP.PCAP.CD"):
     """The World Bank value, or None only when the API has no value for it.
 
     Any other failure (network, an error message in place of data) is retried
-    and then raised, so a transient outage cannot silently drop a census.
+    and then raised, so a transient outage cannot silently drop an observation.
     """
     url = (f"https://api.worldbank.org/v2/country/{iso3}/indicator/{indicator}"
            f"?date={year}&format=json")
@@ -101,7 +105,7 @@ def wb(iso3, year, indicator="NY.GNP.PCAP.CD"):
 
 
 def census_gni(need, refresh=False):
-    """GNI per capita for each census, from the pinned file; fetch what is missing.
+    """GNI per capita for each census or survey year, from the pinned file; fetch what is missing.
 
     A value the World Bank does not have (South Sudan before 2011) is stored
     as blank, so it is not requested again.
@@ -116,12 +120,12 @@ def census_gni(need, refresh=False):
         have = pd.concat([have, pd.DataFrame(new)], ignore_index=True)
         have = have.sort_values(["country", "year"])
         have.to_csv(GNI, index=False)
-        print(f"fetched GNI for {len(new)} census(es) from the World Bank API; wrote {GNI}")
+        print(f"fetched GNI for {len(new)} observation(s) from the World Bank API; wrote {GNI}")
     return have[["country", "year", "gni"]].astype({"year": int, "gni": float})
 
 
 def observations(refresh=False):
-    """One tilt per census: the 45q15 'all' row, else the mean of the sexes."""
+    """One tilt per census or survey: the 45q15 'all' row, else the mean of the sexes."""
     a = pd.read_csv(SRC)
     q = a[a["measure"] == "45q15"]
     rows = []
@@ -142,10 +146,10 @@ def observations(refresh=False):
 def loo_errors(d):
     """Leave-one-country-out prediction error for each candidate rule.
 
-    A country's censuses are all left out together (South Africa and Malawi
-    have two each), matching the use case of a country with no estimate of its
-    own. Censuses without a GNI figure are dropped first, so every rule is
-    scored on the same observations.
+    A country's observations are all left out together (South Africa and
+    Malawi have two censuses, India three surveys), matching the use case of a
+    country with no estimate of its own. Observations without a GNI figure are
+    dropped first, so every rule is scored on the same observations.
     """
     d = d.dropna(subset=["lg", "tilt"])
     out = []
@@ -185,9 +189,9 @@ def age_shape(src=SRC):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--refresh-gni", action="store_true",
-                    help="re-download every census's GNI instead of using the pinned file")
+                    help="re-download every observation's GNI instead of using the pinned file")
     d = observations(ap.parse_args().refresh_gni)
-    print(f"{len(d)} census observations, {d['country'].nunique()} countries\n")
+    print(f"{len(d)} observations ({d['country'].nunique()} countries)\n")
     e = loo_errors(d)
 
     print("Leave-one-out accuracy of each candidate general rule:")
@@ -224,8 +228,8 @@ def main():
     se_b = s_e / np.sqrt(sxx)
     se_a = s_e * np.sqrt(1 / n + xbar ** 2 / sxx)
     t95 = float(stats.t.ppf(0.975, n - 2))
-    # sensitivity: standard error of the slope clustered by country (two censuses
-    # of the same country are not independent), with the small-sample correction
+    # sensitivity: standard error of the slope clustered by country (two
+    # observations of the same country are not independent), with the small-sample correction
     X = np.column_stack([np.ones(n), fit["lg"]])
     bread = np.linalg.inv(X.T @ X)
     G = fit["country"].nunique()
@@ -277,7 +281,8 @@ def main():
             dict(component="income_rule", key="t_95", value=round(t95, 4),
                  note="Student's t, 0.975 quantile, n - 2 df"),
             dict(component="income_rule", key="r", value=round(float(r), 3), note=""),
-            dict(component="income_rule", key="n_censuses", value=int(len(fit)), note=""),
+            dict(component="income_rule", key="n_observations", value=int(len(fit)),
+                 note="censuses and surveys in the fit"),
             dict(component="validation", key=f"loo_mae_{best}", value=round(float(best_mae), 4),
                  note="leave-one-out mean absolute error of the chosen rule"),
             dict(component="fallback", key="pooled_median_tilt",

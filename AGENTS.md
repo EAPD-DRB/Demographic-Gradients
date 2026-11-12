@@ -25,7 +25,7 @@ demographic rates by income group. The library supplies three:
 |---|---|---|---|
 | `fert_gradient` | `data/gradient_library_latest.csv` + `data/fertility_age_offsets.csv` | `indicator == "TFR"`, plus the offset by age | 77 countries |
 | `infmort_gradient` | `data/gradient_library_latest.csv` | `indicator == "IMR"` | 78 countries |
-| `mort_gradient` | `data/adult_mortality_gradients.csv` | `measure == "45q15"`, `sex == "all"`, latest census | 13 countries |
+| `mort_gradient` | `data/adult_mortality_gradients.csv` | `measure == "45q15"`, `sex == "all"`, latest year | 14 countries (13 by census, India by DHS survey) |
 | `imm_pctiles` | not provided | — | — |
 
 `imm_pctiles` is not a gradient: it is the lifetime-income distribution of new
@@ -68,37 +68,40 @@ mortality (below) or the regional median for fertility and infant mortality.
 Never substitute another country's value without saying so; state the source
 and the survey or census year.
 
-## Adult mortality for countries without a census estimate
+## Adult mortality for countries without their own estimate
 
 `data/general_gradient.csv` provides a fallback for any country:
 
-    gradient(45q15) = 1.639 − 0.302 × ln(GNI per capita, Atlas method, current US$)
+    gradient(45q15) = 1.481 − 0.286 × ln(GNI per capita, Atlas method, current US$)
 
-The slope has a standard error of 0.042 (95% CI −0.395 to −0.210), but a single
-country can lie well off the line: the 95% prediction interval for a country
-without its own estimate is about ±0.4 (residual standard error 0.18, n = 14).
+It is fitted on 17 observations: 14 censuses and India's three DHS surveys with
+a household-deaths module (NFHS-2, -4, -5), with equal weight. The slope has a
+standard error of 0.048 (95% CI −0.388 to −0.184), but a single country can lie
+well off the line: the 95% prediction interval for a country without its own
+estimate is about ±0.45–0.5 (residual standard error 0.21).
 Report the prediction interval with any value taken from the rule; the file
 holds the terms needed to compute it at any GNI (formula in
 [docs/methods/general-gradient.md](docs/methods/general-gradient.md)).
 
 It was selected by leave-one-country-out prediction error against two
-alternatives: mean absolute error 0.175, compared with 0.316 for a single pooled
-value and 0.336 for regional medians, scored on the same 14 censuses. The error
-is 0.12 for censuses below $1,000 per capita and 0.23 above, where the two
-South African censuses lie well off the line (−0.93 and −1.23 measured against
-−0.68 and −0.86 predicted). The same file contains age offsets and a
-pooled median for use when no GNI figure is available. The rule is estimated
-on GNI in current dollars of the census years (1998–2013); applying it to a
-recent GNI figure without adjusting for price change makes the predicted
-gradient somewhat steeper.
+alternatives: mean absolute error 0.176, compared with 0.311 for a single pooled
+value and 0.331 for regional medians, scored on the same 17 observations. The
+error is 0.15 below $1,000 per capita and 0.20 above. The largest misses are
+India 1999 (−0.73 measured against −0.20 predicted) and the two South African
+censuses (−0.93 and −1.23 against −0.74 and −0.92). The same file contains age
+offsets and a pooled median for use when no GNI figure is available. The rule
+is estimated on GNI in current dollars of the census and survey years
+(1998–2020); applying it to a recent GNI figure without adjusting for price
+change makes the predicted gradient somewhat steeper.
 
-Values at 2024 GNI per capita: Philippines −0.90 (95% prediction interval −1.33
-to −0.48; $4,470), Indonesia −0.93 (−1.36 to −0.50; $4,920). Countries with their own census estimate (for example South Africa
-2007, −1.23, and Ethiopia 2007, +0.01) use that estimate, not the rule.
+Values at 2024 GNI per capita: Philippines −0.92 (95% prediction interval −1.41
+to −0.44; $4,470), Indonesia −0.95 (−1.44 to −0.46; $4,920). Countries with
+their own estimate (for example South Africa 2007, −1.23; Ethiopia 2007, +0.01;
+India 2020, −0.72) use that estimate, not the rule.
 
 **There is no income-based fallback for fertility or infant mortality.** The
 same comparison was run for them: an income rule improved on a single pooled
-value by 0.4 percent for fertility, against 44 percent for adult mortality,
+value by 0.4 percent for fertility, against 43 percent for adult mortality,
 because these gradients vary little with national income. For a country with no
 DHS survey, use the regional median and interquartile range from
 [ANALYSIS.md](ANALYSIS.md#regional-medians) and report the value as borrowed.
@@ -110,7 +113,8 @@ DHS survey, use the regional median and interquartile range from
   Nigeria 2018. Every survey in the library that reports U5MR by quintile also
   reports IMR; U5MR is published for comparison only.
 - **Do not pool measurement bases.** `gradient_library*.csv` contains DHS survey
-  rates; `adult_mortality_gradients.csv` census death records;
+  rates; `adult_mortality_gradients.csv` household death records (censuses, and
+  for India DHS surveys, whose rows have `ranking == "dhs_wealth_index"`);
   `census_child_mortality.csv` a census cumulative proportion. Their gradients
   agree where they have been compared, but their levels (`q1..q5`) measure
   different quantities.
@@ -130,7 +134,7 @@ DHS survey, use the regional median and interquartile range from
   each group placed at its realized population midpoint. The `q1..q5` columns stop at the last group, and the
   low/high ratio then compares the lowest and highest of those groups.
 - **`linked_share` is the share of death records matched to a household.**
-  Every published row is above 0.99. A sample with low linkage is publishable
+  Every published row is above 0.99 (survey rows are 1 by construction). A sample with low linkage is publishable
   only if linkage does not vary with wealth; South Africa 2011 (9 percent
   linked, linkage lower in richer households) failed that test and is not
   published.
@@ -147,10 +151,14 @@ documentation.
 
 ## Long-run projections
 
-The adult-mortality gradient becomes more negative as national income rises
-(r = −0.90 across censuses). A model projecting several decades ahead should
-let the gradient steepen along its income path rather than hold it fixed; a
-doubling of income per capita corresponds to about −0.21 in the gradient. The
+Across countries the adult-mortality gradient is more negative at higher
+national income (r = −0.84); a doubling of income per capita corresponds to
+about −0.20 in the gradient. Within countries the evidence is limited and
+mixed: Malawi's gradient steepened between its 1998 and 2008 censuses as income
+rose, but India's was −0.73, −0.74 and −0.72 in 1999, 2015 and 2020 while GNI
+per capita rose from $440 to $1,900. A model projecting several decades ahead
+can hold the gradient fixed or let it follow the income relationship; report
+which, and treat the two as a range. The
 pooled fertility and infant gradients change little across 35 years of
 surveys, although a single country can change considerably, as Brazil shows.
 
@@ -163,9 +171,10 @@ State the gap rather than interpolating:
   estimated between about $200 and $10,000 GNI per capita. It must not be
   extrapolated to high-income countries; if asked, say the library does not
   cover them.
-- There is no Asian census estimate of adult mortality. The Philippine and
-  Indonesian values are extrapolations from a relationship estimated on African
-  censuses and Brazil.
+- The only Asian estimates of adult mortality are India's (DHS surveys). There
+  is none for East or Southeast Asia: the Philippine and Indonesian DHS surveys
+  have no module on deaths at all ages, and their values come from a
+  relationship estimated mostly on African censuses.
 - DHS sibling histories were tested as a source for adult mortality and
   rejected: they reproduce national levels but give wealth gradients of the
   wrong sign, because poorer respondents under-report deaths. Do not propose
@@ -176,7 +185,8 @@ State the gap rather than interpolating:
 Cite The DHS Program for fertility and child mortality; IPUMS International
 (Ruggles et al., doi:10.18128/D020.V7.7) plus the originating statistical office
 for census-based estimates; IBGE directly for Brazil's adult-mortality rows,
-which come from IBGE's own microdata rather than IPUMS. The `source` column is
+which come from IBGE's own microdata rather than IPUMS; The DHS Program and IIPS
+for India's adult-mortality rows (NFHS). The `source` column is
 accurate row by row — use it.
 
 ---
@@ -278,17 +288,34 @@ scripts, and the documentation is generated — respect that architecture.
   biases steep by ~0.3) and mz2007a (0.89/1.09/0.97/1.05 - biases flat by
   ~0.15). za2007a has MORTNUM and passes; za2001a and ci1998a have none.
 - Gradient steepness tracks national income, not region:
-  `gradient ~ 1.64 - 0.302*ln(GNI per capita)`, r = -0.90 over 14 censuses
-  (PCA index, 2026-11-11). Inference is classical OLS with n - 2 df (ruled
-  2026-11-12): slope SE 0.042, clustered-by-country SE 0.046; publish the 95%
-  prediction interval (~±0.4) with any value read off the rule. GNI is pinned
+  `gradient ~ 1.48 - 0.286*ln(GNI per capita)`, r = -0.84 over 17
+  observations (14 censuses + India NFHS-2/-4/-5; survey rows enter the rule
+  on the same footing as censuses, ruled 2026-11-12). Inference is classical
+  OLS with n - 2 df (ruled 2026-11-12): slope SE 0.048, clustered-by-country
+  SE 0.044; publish the 95% prediction interval (~±0.45-0.5) with any value
+  read off the rule. GNI is pinned
   in `data/gni_census_years.csv` (WDI revises history); refresh only with
   `--refresh-gni`, deliberately. On the earlier index, excluding South Africa, the
   gradient-vs-HIV-prevalence correlation was +0.00; not re-run since.
-  Borrowing tables should key on income level; a long OG transition should
-  expect the gradient to steepen as the country's income rises.
-- The gradient fades with age in every census measured at more than one
-  age (12/12, mean drift +0.87 from 15-29 to the oldest band), and in 4
+  Borrowing tables should key on income level. Within-country change is
+  NOT established: Malawi steepened 1998->2008, India stayed flat
+  (-0.73/-0.74/-0.72, 1999-2020, GNI $440->$1,900). Present "fixed" and
+  "follows the income rule" as a range for long OG transitions.
+- **DHS household-deaths modules** (`scripts/build_adult_mortality_survey.py`,
+  ruled 2026-11-12) are the census design in a survey, not sibling
+  histories: deaths of usual members in the 24 months before interview over
+  2 × the de jure population, DHS wealth quintiles (OLS at 0.1…0.9), hv005
+  weights, the same 900-record minimum; rows go into
+  `adult_mortality_gradients.csv` with `source` starting "The DHS Program"
+  and `ranking == "dhs_wealth_index"`. Year = the DHS API's survey year
+  (NFHS-5 is 2020). The script prints the survey analogues of the census
+  gates: records vs the household's own death count, year-2/year-1 recall by
+  quintile, unknown date/age by quintile, heaping and a boundary-split
+  sensitivity, national 45q15 against WDI, cluster-bootstrap SE. Only India
+  qualifies so far; every Asian DHS since 1997 and every DHS tagged for
+  causes of death was scanned (ROADMAP H1).
+- The gradient fades with age in every census and survey measured at 15-29
+  and an older band (14/14, mean drift +0.89 from 15-29 to the oldest band), and in 4
   censuses, all with GNI <= $1,350 (Ethiopia, Uganda, Zambia, Sudan), it becomes
   positive at older ages -
   measured mortality is higher in wealthier households at 45+. Real
@@ -297,6 +324,16 @@ scripts, and the documentation is generated — respect that architecture.
   within-census check separates them. Say so rather than smoothing it.
 
 ## Per-sample gotchas already paid for
+
+- DHS recode gotchas: NFHS-1 (IAHR23) ships the age-at-death number blank for
+  every record (the .FRQ file confirms) - unusable; Pakistan 2006-07
+  (PKHR53) asked deaths in all 95k households but assets/hv270 only in the
+  13.8k long-form ones, whose deaths are mostly women's - unusable. Older
+  recodes store numeric codes in object columns and pre-hv270 surveys keep
+  the wealth quintile in a separate WI file (whhid = hhid). NFHS-4's module is
+  labelled "since January 2011" but its dates begin in 2012. Record visitor
+  deaths separately where the module has them (NFHS-1, Pakistan) and keep
+  usual members only.
 
 - IPUMS extract variables differ by census — start a new sample's
   `asset_extra` from `WISH` and let the API's 400 errors name what to drop
@@ -368,7 +405,8 @@ scripts, and the documentation is generated — respect that architecture.
    count (World Bank crude death rate x population). Wealth-uniform
    under-reporting is fine and cancels; record the capture rate as a caveat
    (bj2013a 35% publishes; note its ~16-month window). kh2008a (48%) passes
-   every check but is held by ruling (2026-11-11) pending a second Asian source.
+   every check but is held by ruling (2026-11-12) until the new-source review
+   (ROADMAP H) is finished.
 5. Gradient cross-checked against the library's existing range and any published
    national evidence.
 6. The shipped script — not session code — produces the committed rows,

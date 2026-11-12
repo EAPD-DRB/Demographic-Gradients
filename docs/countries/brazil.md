@@ -48,13 +48,13 @@ Proportion of children ever born who have died, mothers aged 25–29 ([`census_c
 
 Comparison with the DHS: the 2000 census gradient (−1.42) is close to the under-five mortality gradient in the Brazil 1996 DHS (−1.46).
 
-### Adult mortality from censuses
+### Adult mortality from household-death records
 
 Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv); [methods](../methods/adult-mortality.md); estimates by sex in the [full table](../tables/adult_mortality.md)). Blank cells: too few deaths to publish.
 
-| Census | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
+| Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| 2010 | −1.00 | −1.36 | −1.43 | −0.85 | −0.21 | 5 | 37,467 |
+| Census 2010 | −1.00 | −1.36 | −1.43 | −0.85 | −0.21 | 5 | 37,467 |
 
 Source: IBGE Census 2010 sample microdata, household deaths module.
 

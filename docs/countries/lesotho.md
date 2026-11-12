@@ -32,12 +32,12 @@ Latest survey with a complete wealth-quintile breakdown ([`gradient_library_late
 | Infant mortality rate (per 1,000 live births) | 2023 | 47 | 40 | 52 | 43 | 42 | 1.12 | −0.08 |
 | Under-five mortality rate (per 1,000 live births) | 2023 | 64 | 46 | 64 | 63 | 54 | 1.19 | −0.01 |
 
-### Adult mortality from censuses
+### Adult mortality from household-death records
 
 Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv); [methods](../methods/adult-mortality.md); estimates by sex in the [full table](../tables/adult_mortality.md)). Blank cells: too few deaths to publish.
 
-| Census | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
+| Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| 2006 | −0.36 |  | −0.86 |  |  | 4 | 2,572 |
+| Census 2006 | −0.36 |  | −0.86 |  |  | 4 | 2,572 |
 
 Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Bureau of Statistics, Lesotho.

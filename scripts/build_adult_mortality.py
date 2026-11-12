@@ -173,8 +173,8 @@ SAMPLES = {
     "np2001a": dict(country="Nepal", year=2001, publish=False, asset_extra=["MORTNUM"],
                     drop=["PHONE", "CELL", "REFRIG", "COMPUTER"], death_weight=None,
                     nso="Central Bureau of Statistics, Nepal"),
-    # kh2008a: HELD (publish=False; ruled 2026-11-11) pending a second Asian
-    # source. Passes population (13.40m) and linkage (99.8%); death coverage
+    # kh2008a: HELD (publish=False; ruled 2026-11-11, renewed 2026-11-12)
+    # until the new-source review (ROADMAP H) is finished. Passes population (13.40m) and linkage (99.8%); death coverage
     # 48% of the expected national total; the MORTNUM check passes (the death
     # file reproduces MORTNUM exactly, ratio 1.00 in every group);
     # 1,250 death records at 15-59, none of the age bands reaches 900. The
