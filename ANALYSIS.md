@@ -33,7 +33,7 @@ interquartile range as a sensitivity range.
 
 | Region | Countries | Median gradient | Interquartile range | Median low/high ratio |
 |---|---|---|---|---|
-| Latin America & Caribbean | 16 | −1.11 | −1.22 to −0.94 | 2.46 |
+| Latin America & Caribbean | 16 | −1.11 | −1.22 to −0.87 | 2.46 |
 | Sub-Saharan Africa | 40 | −0.83 | −0.94 to −0.64 | 1.96 |
 | Oceania | 4 | −0.61 | −0.67 to −0.54 | 1.62 |
 | North Africa/West Asia/Europe | 15 | −0.57 | −0.74 to −0.43 | 1.54 |
@@ -67,7 +67,7 @@ interquartile range as a sensitivity range.
 ## Changes over time
 
 Across all surveys, the median low/high ratio of the total fertility rate was
-2.21 in surveys before 2000 and 1.89 in surveys from 2015; for the
+2.21 in surveys before 2000 and 1.90 in surveys from 2015; for the
 infant mortality rate it was 1.80 and 1.67. The change in the pooled
 differential is small relative to the variation between countries. Individual
 countries can change considerably, as the Brazilian census series below

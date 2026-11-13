@@ -283,7 +283,8 @@ scripts, and the documentation is generated — respect that architecture.
   and rulings: the World Bank file holds the adolescent birth rate column under
   TFR for CAR, Chad, Guinea-Bissau, Honduras, São Tomé, Algeria 2019 and
   Tunisia 2018 — true TFR by quintile transcribed from the reports
-  (`mics_tfr_from_reports.csv`; Honduras pending, its report not obtained);
+  (`mics_tfr_from_reports.csv`, with table and page; Honduras's report is only
+  on mics.unicef.org, read in a browser after its human check);
   sets with a quintile rate of 3 or less per 1,000 (Paraguay 2016, Tonga 2019,
   Belize 2016) are correct but excluded as too imprecise; the WDI-based TFR
   check flags but does not exclude (North Macedonia 2019 is correct; its survey
