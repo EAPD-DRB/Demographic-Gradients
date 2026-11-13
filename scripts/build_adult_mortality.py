@@ -464,8 +464,10 @@ def cmd_estimate(args):
                                    ("death file", (Path(args.deaths_dir) / f"{sample}_mortality.dta").exists())]
                    if not ok]
         if missing:
-            print(f"skipping {sample}: no {' or '.join(missing)}")
-            continue
+            # fail rather than skip: every IPUMS row is rebuilt below, so a
+            # missing input would silently delete that sample's published rows
+            raise SystemExit(f"{sample}: no {' or '.join(missing)}; nothing written "
+                             "(the published rows are unchanged)")
         print(f"estimating {sample} ...")
         rows += estimate_sample(sample, cfg, args.extracts_dir, args.deaths_dir)
     new = pd.DataFrame(rows)

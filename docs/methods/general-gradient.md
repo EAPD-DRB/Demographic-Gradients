@@ -62,7 +62,7 @@ subregion is available.
 | **Linear in ln(GNI per capita)** | **0.176** |
 | Regional median | 0.331 |
 
-The income rule has the lowest error, and is used. For South Africa 2007 the out-of-sample prediction is −0.92 against a measured −1.23. Where no GNI figure is available, the pooled
+The income rule has the lowest error, and is used. The largest out-of-sample error is for India 1999: a prediction of −0.20 against a measured −0.73. Where no GNI figure is available, the pooled
 median of all estimates, −0.44, is used.
 
 ## Age pattern
@@ -87,21 +87,20 @@ mortality is what matters, the 15–29 and 30–44 offsets are the more reliable
 
 ## Use over long horizons
 
-Across countries the gradient is steeper at higher income, which implies that
-it steepens as a country's income rises. The evidence within countries is
-limited and mixed. Between Malawi's 1998 and 2008 censuses the 45q15 gradient
-moved from −0.14 to −0.47 as GNI per capita rose from about $290 to
-$530 (the 1998 wealth ranking rests on only three asset variables; see the
-[Malawi page](../countries/malawi.md)). India's three surveys do not show it within a country: the gradient was −0.73, −0.74, −0.72 in 1999, 2015 and 2020, while GNI per capita rose from about $440 to $1,900; the 1999 survey lies well off the cross-country line. A model projecting a country
-over several decades can hold the gradient fixed or let it follow the income
-relationship; the two bracket the evidence.
+Across countries the gradient is steeper at higher income. Whether a
+country's gradient steepens as its own income rises is not established; the
+evidence within countries is limited and mixed. Between Malawi's 1998 and 2008
+censuses the 45q15 gradient moved from −0.14 to −0.47 as GNI per
+capita rose from about $290 to $530 (the 1998 wealth ranking rests on only
+three asset variables; see the [Malawi page](../countries/malawi.md)). India's three estimates show no such change: the gradient was −0.73, −0.74 and −0.72 in 1999, 2015 and 2020, while GNI per capita rose from about $440 to $1,900.
+A model projecting a country over several decades can hold the gradient fixed
+or let it follow the income relationship; the two bracket the evidence.
 
 ## Scope
 
 The rule is estimated on observations with GNI per capita between about $200
-and $10,000 and should not be extrapolated beyond that range. Of the
-17 observations, 13 are African censuses, one is a Brazilian
-census and 3 are Indian surveys. There is no estimate for East or
+and $10,000 and should not be extrapolated beyond that range. The
+17 observations are 13 African censuses, 3 South Asian surveys and 1 Latin American census. There is no estimate for East or
 Southeast Asia, so predictions for the Philippines or Indonesia rest on a
 relationship estimated largely outside their region.
 

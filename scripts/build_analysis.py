@@ -102,14 +102,14 @@ COUNTRY_NOTES = {
         "general-gradient documentation before using the older age bands.",
     ],
     "Philippines": [
-        "No census or survey with a household-deaths module is available (the DHS "
-        "surveys record deaths of children only), so adult mortality uses the "
+        "No census or survey with a household-deaths module is available (the country's DHS "
+        "surveys have no module on deaths of household members at all ages), so adult mortality uses the "
         "general gradient (value in the table above). Fertility and infant "
         "mortality come from the 2022 NDHS.",
     ],
     "Indonesia": [
-        "No census or survey with a household-deaths module is available (the DHS "
-        "surveys record deaths of children only), so adult mortality uses the "
+        "No census or survey with a household-deaths module is available (the country's DHS "
+        "surveys have no module on deaths of household members at all ages), so adult mortality uses the "
         "general gradient (value in the table above). Fertility and infant "
         "mortality come from the 2017 IDHS.",
         "The wealth gradient in the total fertility rate is modest, while the "
@@ -160,10 +160,11 @@ COUNTRY_NOTES = {
         "for `mort_gradient`. Men's and women's gradients are close to those "
         "published by Dhakad and Saikia (Demographic Research 55(16), 2026) from the "
         "same surveys.",
-        "NFHS-5 fieldwork was interrupted by the COVID-19 pandemic. Deaths and "
-        "exposure from March 2020 account for about 14 percent of the total; from "
-        "deaths and exposure before March 2020 alone the 45q15 gradient is −0.76, "
-        "against −0.72 for the whole period.",
+        "NFHS-5 fieldwork was interrupted by the COVID-19 pandemic. About one "
+        "seventh of the exposure, and a little under one fifth of the adult deaths, "
+        "fall in March 2020 or later. The 45q15 gradient is −0.76 from deaths and "
+        "exposure before March 2020 and −0.56 from those from March 2020; the "
+        "published value, for the whole period, is −0.72.",
         "The 45q15 gradient is nearly the same in the three surveys while GNI per "
         "capita rose about fourfold; see the general-gradient documentation.",
         "NFHS-1 (1992–93) also recorded household deaths, but its released data "
@@ -285,6 +286,9 @@ def imr_vs_u5mr(lib):
             "worst": d.abs().idxmax(), "worst_gap": d.abs().max()}
 
 
+NUMWORD = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}
+
+
 def basis(source):
     """'DHS survey' for rows from build_adult_mortality_survey.py, else 'census'."""
     return "DHS survey" if str(source).startswith("The DHS Program") else "census"
@@ -390,20 +394,29 @@ def write_general_gradient_page(amr):
     pts_p = DATA / "general_gradient_points.csv"
     pts = pd.read_csv(pts_p).dropna(subset=["gni"]) if pts_p.exists() else pd.DataFrame()
     n_fit_gg = len(pts)
-    n_africa = int((~pts["country"].isin(["Brazil", "India"])).sum()) if len(pts) else 0
-    n_india = int((pts["country"] == "India").sum()) if len(pts) else 0
+    # composition of the fit: continent (from the rule's region column) and basis
+    src = amr.groupby(["country", "year"])["source"].first()
+    comp = {}
+    for r in pts.itertuples():
+        reg = str(getattr(r, "region", "unknown"))
+        cont = ("African" if "Africa" in reg else "Latin American" if "Latin" in reg
+                else "South Asian" if "South Asia" in reg else reg)
+        kind = basis(src.get((r.country, r.year), ""))
+        kind = "survey" if kind == "DHS survey" else "census"
+        comp[(cont, kind)] = comp.get((cont, kind), 0) + 1
+    parts = [f"{n} {c} {k}{'es' if k == 'census' and n > 1 else 's' if n > 1 else ''}"
+             for (c, k), n in sorted(comp.items(), key=lambda kv: -kv[1])]
+    comp_txt = ", ".join(parts[:-1]) + " and " + parts[-1] if len(parts) > 1 else "".join(parts)
     multi = [c for c, ys, _ in within_country(amr) if c in set(pts.get("country", []))]
     multi_txt = ", ".join(f"{c} {len(ys)}" for c, ys, _ in within_country(amr) if c in multi)
-    ind = [w for w in within_country(amr) if w[0] == "India"]
-    if ind:
-        _, ind_ys, ind_g = ind[0]
-        india_txt = (f"India's three surveys do not show it within a country: the gradient was "
-                     f"{', '.join(fmt(v) for _, v in ind_ys)} in "
-                     f"{', '.join(str(y) for y, _ in ind_ys[:-1])} and {ind_ys[-1][0]}, while GNI "
-                     f"per capita rose from about ${ind_g[0]:,.0f} to ${ind_g[-1]:,.0f}; "
-                     f"the {ind_ys[0][0]} survey lies well off the cross-country line.")
-    else:
-        india_txt = ""
+    flat_txt = ""
+    for c, ys, gs in within_country(amr):
+        vals = [v for _, v in ys]
+        if len(ys) > 2 and max(vals) - min(vals) < 0.1 and gs[-1] > 2 * gs[0]:
+            flat_txt += (f" {c}'s {NUMWORD.get(len(ys), len(ys))} estimates show no such change: the gradient was "
+                         f"{', '.join(fmt(v) for v in vals[:-1])} and {fmt(vals[-1])} in "
+                         f"{', '.join(str(y) for y, _ in ys[:-1])} and {ys[-1][0]}, while GNI "
+                         f"per capita rose from about ${gs[0]:,.0f} to ${gs[-1]:,.0f}.")
     mxa = amr[amr["measure"] == "mx"]
     rev = []
     for (c, y), g in mxa.groupby(["country", "year"]):
@@ -412,13 +425,12 @@ def write_general_gradient_page(amr):
         if len(g) > 1 and g.iloc[-1] > 0:
             rev.append(f"{c} {y}")
     reversal_list = ", ".join(rev[:-1]) + " and " + rev[-1] if len(rev) > 1 else "".join(rev)
-    za = amr[(amr.country == "South Africa") & (amr.measure == "45q15") & (amr.sex == "all")]
-    za_pt = pts[(pts.country == "South Africa")].sort_values("year") if len(pts) else pts
     za_txt = ""
-    if len(za_pt):
-        r_ = za_pt.iloc[-1]
-        za_txt = (f" For South Africa {int(r_.year)} the out-of-sample prediction is "
-                  f"{fmt(r_.loo_prediction)} against a measured {fmt(r_.tilt_45q15)}.")
+    if len(pts):
+        r_ = pts.loc[(pts["loo_prediction"] - pts["tilt_45q15"]).abs().idxmax()]
+        za_txt = (f" The largest out-of-sample error is for {r_.country} {int(r_.year)}: a "
+                  f"prediction of {fmt(r_.loo_prediction)} against a measured "
+                  f"{fmt(r_.tilt_45q15)}.")
     doc = f"""{GENERATED_BANNER}# The general gradient: adult mortality in countries without their own estimate
 
 Most countries have no estimate of the wealth gradient in adult mortality from
@@ -504,21 +516,20 @@ mortality is what matters, the 15–29 and 30–44 offsets are the more reliable
 
 ## Use over long horizons
 
-Across countries the gradient is steeper at higher income, which implies that
-it steepens as a country's income rises. The evidence within countries is
-limited and mixed. Between Malawi's 1998 and 2008 censuses the 45q15 gradient
-moved from {fmt(gg_mw0)} to {fmt(gg_mw1)} as GNI per capita rose from about $290 to
-$530 (the 1998 wealth ranking rests on only three asset variables; see the
-[Malawi page](../countries/malawi.md)). {india_txt} A model projecting a country
-over several decades can hold the gradient fixed or let it follow the income
-relationship; the two bracket the evidence.
+Across countries the gradient is steeper at higher income. Whether a
+country's gradient steepens as its own income rises is not established; the
+evidence within countries is limited and mixed. Between Malawi's 1998 and 2008
+censuses the 45q15 gradient moved from {fmt(gg_mw0)} to {fmt(gg_mw1)} as GNI per
+capita rose from about $290 to $530 (the 1998 wealth ranking rests on only
+three asset variables; see the [Malawi page](../countries/malawi.md)).{flat_txt}
+A model projecting a country over several decades can hold the gradient fixed
+or let it follow the income relationship; the two bracket the evidence.
 
 ## Scope
 
 The rule is estimated on observations with GNI per capita between about $200
-and $10,000 and should not be extrapolated beyond that range. Of the
-{n_fit_gg} observations, {n_africa} are African censuses, one is a Brazilian
-census and {n_india} are Indian surveys. There is no estimate for East or
+and $10,000 and should not be extrapolated beyond that range. The
+{n_fit_gg} observations are {comp_txt}. There is no estimate for East or
 Southeast Asia, so predictions for the Philippines or Indonesia rest on a
 relationship estimated largely outside their region.
 

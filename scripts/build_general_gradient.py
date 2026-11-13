@@ -299,7 +299,8 @@ def main():
                          value=round(float(s.abs().mean()), 4), note=""))
     pd.DataFrame(recs).to_csv(OUT, index=False)
     print(f"\nwrote {OUT}")
-    pts = m[["country", "year", "gni", "actual", f"pred_{best}"]].rename(
+    pts = m.assign(region=m["country"].map(REGION).fillna("unknown"))[
+        ["country", "year", "region", "gni", "actual", f"pred_{best}"]].rename(
         columns={"actual": "tilt_45q15", f"pred_{best}": "loo_prediction"})
     pts.sort_values("gni").to_csv(POINTS, index=False)
     print(f"wrote {POINTS}")

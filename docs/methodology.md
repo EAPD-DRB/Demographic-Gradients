@@ -182,7 +182,7 @@ in-sample, and those for ages 45–59 and 60–74 are the least reliable
 ([details](methods/general-gradient.md)).
 
 The rule is estimated on GNI in current dollars of the census and survey
-years (1998–2020). Applied to a recent GNI figure, it does not adjust for price
+years. Applied to a recent GNI figure, it does not adjust for price
 change since then, which makes the predicted gradient somewhat steeper. The
 rule should not be extrapolated outside the income range of the observations.
 

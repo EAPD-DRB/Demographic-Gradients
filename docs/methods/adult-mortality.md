@@ -133,8 +133,10 @@ which prints the following checks for each survey:
 Age heaping is more common in poorer households in the Indian surveys, but
 dividing the boundary ages changes the gradient little. For the 2019–21
 survey, whose fieldwork spanned the onset of COVID-19, the gradient is also
-computed from deaths and exposure before March 2020 alone; the two differ by
-less than one standard error.
+computed separately for deaths and exposure before and from March 2020. It is
+flatter in the later period, which accounts for a minority of the exposure;
+the published value covers the whole period and lies close to the
+pre-pandemic one (see the [India page](../countries/india.md)).
 
 | Survey | Reason not published |
 |---|---|

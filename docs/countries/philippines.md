@@ -34,4 +34,4 @@ Latest survey with a complete wealth-quintile breakdown ([`gradient_library_late
 
 ## Notes
 
-- No census or survey with a household-deaths module is available (the DHS surveys record deaths of children only), so adult mortality uses the general gradient (value in the table above). Fertility and infant mortality come from the 2022 NDHS.
+- No census or survey with a household-deaths module is available (the country's DHS surveys have no module on deaths of household members at all ages), so adult mortality uses the general gradient (value in the table above). Fertility and infant mortality come from the 2022 NDHS.

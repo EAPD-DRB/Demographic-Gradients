@@ -44,7 +44,7 @@ census; `common`, assets recorded in all three censuses); `n_mothers`;
 | [`gradient_library.csv`](../data/gradient_library.csv) | Wealth gradients for every DHS survey |
 | [`dhs_gradients_raw.csv`](../data/dhs_gradients_raw.csv) | Quintile values as downloaded from the DHS API, including age-specific fertility rates |
 | [`fertility_age_tilts.csv`](../data/fertility_age_tilts.csv) | Fertility gradient by age for each survey, from which the age offsets are computed |
-| [`general_gradient_points.csv`](../data/general_gradient_points.csv) | Census and survey observations behind the general gradient: GNI per capita, measured 45q15 gradient (`tilt_45q15`) and leave-one-out prediction |
+| [`general_gradient_points.csv`](../data/general_gradient_points.csv) | Census and survey observations behind the general gradient: UN subregion (`region`), GNI per capita, measured 45q15 gradient (`tilt_45q15`) and leave-one-out prediction |
 | [`gni_census_years.csv`](../data/gni_census_years.csv) | GNI per capita (World Bank, Atlas method, current US$) for each census or survey year, with the retrieval date; the input to the general gradient |
 | [`dhs_regions.csv`](../data/dhs_regions.csv) | DHS Program region of each country |
 | [`ogcore_units_check.csv`](../data/ogcore_units_check.csv) | Results of the check that determines the conversion to OG-Core units |

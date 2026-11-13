@@ -153,7 +153,7 @@ def load(cfg, path, dhs_dir):
     _, meta = pyreadstat.read_dta(str(path), metadataonly=True)
     have = set(meta.column_names)
     wq = cfg["wealth"] if isinstance(cfg["wealth"], str) else None
-    cols = ["hhid", "hv005", "hv008", "hv021", "hv022", cfg["reported"]] + ([wq] if wq else [])
+    cols = ["hhid", "hv005", "hv008", "hv021", "hv022", "hv024", cfg["reported"]] + ([wq] if wq else [])
     for s in range(1, ROSTER_MAX + 1):
         for v in ("hv102", "hv104", "hv105"):
             if f"{v}_{s:02d}" in have:
@@ -179,6 +179,11 @@ def load(cfg, path, dhs_dir):
     h["q"] = h["q"].astype(int)
     h["w"] = h["hv005"] / 1e6
     h["hh"] = np.arange(len(h))
+    # sampling clusters and strata, qualified by state: NFHS-2 numbers its
+    # PSUs (hv021) and strata (hv022) within each state, so the bare codes
+    # would merge different places
+    h["psu_id"] = h.groupby(["hv024", "hv021"]).ngroup()
+    h["strat_id"] = h.groupby(["hv024", "hv022"]).ngroup()
     return h
 
 
@@ -189,7 +194,7 @@ def persons(h):
         c = f"hv102_{s:02d}"
         if c not in h.columns:
             continue
-        p = h[["hh", "hv021", "hv022", "hv008", "w", "q", c, f"hv104_{s:02d}", f"hv105_{s:02d}"]]
+        p = h[["hh", "psu_id", "strat_id", "hv008", "w", "q", c, f"hv104_{s:02d}", f"hv105_{s:02d}"]]
         p.columns = ["hh", "psu", "strat", "cmc_int", "w", "q", "res", "sex", "age"]
         out.append(p[(p["res"] == 1) & (p["age"] < 95)])  # top and don't-know codes start at 95-98
     return pd.concat(out, ignore_index=True)
@@ -200,7 +205,7 @@ def deaths(h, cfg):
     out = []
     for i in range(1, cfg["slots"] + 1):
         k = {key: cfg[key].format(i=i) for key in FIELDS if key in cfg}
-        d = h[["hh", "hv021", "hv022", "w", "q", "hv008"] + list(k.values())].copy()
+        d = h[["hh", "psu_id", "strat_id", "w", "q", "hv008"] + list(k.values())].copy()
         d.columns = ["hh", "psu", "strat", "w", "q", "cmc_int"] + list(k)
         out.append(d[d[["sex", "month", "year_d"]].notna().any(axis=1)])
     d = pd.concat(out, ignore_index=True)
@@ -284,7 +289,7 @@ def checks(h, p, d, cfg, win):
     E = pe.groupby(["psu", "q", "b"])["w"].sum().unstack(["q", "b"], fill_value=0).sort_index(axis=1)
     D = (de.groupby(["psu", "q", "b"])["w"].sum().unstack(["q", "b"], fill_value=0)
          .reindex(index=E.index, columns=E.columns, fill_value=0))
-    strat = h.groupby("hv021")["hv022"].first().reindex(E.index).values
+    strat = h.groupby("psu_id")["strat_id"].first().reindex(E.index).values
     Ev, Dv = E.values, D.values
 
     def g(ix):
@@ -304,8 +309,10 @@ def estimate(code, cfg, dhs_dir):
         return []
     path = find(dhs_dir, cfg["file"])
     if path is None:
-        print(f"skipping {code}: {cfg['file']} not found under {dhs_dir}")
-        return []
+        # fail rather than skip: main() replaces every survey row, so a
+        # missing file would silently delete that survey's published rows
+        raise SystemExit(f"{code}: {cfg['file']} not found under {dhs_dir}; "
+                         "nothing written (the published survey rows are unchanged)")
     print(f"estimating {code} ({cfg['country']} {cfg['survey']}) from {path}")
     h = load(cfg, path, dhs_dir)
     p, d = persons(h), deaths(h, cfg)

@@ -77,14 +77,15 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 
 ## D. Coverage gaps (separate tracks)
 
-- [ ] **D1. An Asian adult-mortality observation.** None exists, so the
-  Philippines and Indonesia rest on the income rule. Routes: Vietnam 1999
-  census (mortality as household-record variables, untried), or published
-  IFLS life tables by consumption quartile (Sudharsanan 2019). Cambodia 2008
-  passes every check but is held (ruling 2026-11-11): 1,250 adult death
-  records, no band reaches 900, 45q15 gradient −0.73; revisit with a second
-  Asian source (Benin 2013, published, is comparably thin: 1,555 records,
-  35% coverage, so the hold rests on the Asian question, not the checks).
+- [ ] **D1. An East or Southeast Asian adult-mortality observation.** India
+  (NFHS, H2) is now the only Asian estimate; the Philippines and Indonesia
+  still rest on the income rule. Routes: Vietnam 1999 census (mortality as
+  household-record variables, untried), or published IFLS life tables by
+  consumption quartile (Sudharsanan 2019). Cambodia 2008 passes every check
+  but is held (ruling 2026-11-11, renewed 2026-11-12 until the H review is
+  finished): 1,250 adult death records, no band reaches 900, 45q15 gradient
+  −0.73 (Benin 2013, published, is comparably thin: 1,555 records, 35%
+  coverage).
 - [ ] **D2. `imm_pctiles`** — the lifetime-income distribution of new
   immigrants. Not covered. Scope before building.
 
@@ -182,16 +183,22 @@ these are done, since they may change the picture for Asia.
   with a DHS `source` (`scripts/build_adult_mortality_survey.py`); survey
   rows enter the income rule on the same footing as censuses (ruled
   2026-11-12). Done 2026-11-12:
-  - [x] NFHS-2 1998–99 (labelled 1999): 45q15 −0.733 (SE 0.055), 2,422 records;
-    men −0.72, women −0.76 (benchmark −0.71/−0.68); national 45q15 243/197
-    against WDI 250/192. Only the 45–59 and 60–74 bands reach 900 records.
+  - [x] NFHS-2 1998–99 (labelled 1999): 45q15 −0.733 (SE 0.060, PSUs and
+    strata qualified by state — NFHS-2 numbers them within states), 2,422
+    records; men −0.72, women −0.76 (benchmark −0.71/−0.68); national 45q15
+    243/197 against WDI 250/192. Only the 45–59 and 60–74 bands reach 900
+    records. Weaker checks than the later rounds: recall year 2/year 1 runs
+    1.17 → 0.92 from poorest to richest (relative to mean), unknown date 2.1%
+    → 0.9% (dropping undated deaths moves the gradient by about 0.015).
   - [x] NFHS-4 2015–16 (2015): −0.742 (SE 0.050), 11,330 records; men −0.65,
     women −0.94 (benchmark −0.61/−0.88); window 12/24/36 months
     −0.72/−0.74/−0.72; heaping falls with wealth but boundary split gives
     −0.762; national 194/117 against WDI 205/141.
-  - [x] NFHS-5 2019–21 (2020): −0.725 (SE 0.042), 11,994 records; men −0.73,
+  - [x] NFHS-5 2019–21 (2020): −0.725 (SE 0.044), 11,994 records; men −0.73,
     women −0.74 (benchmark −0.69/−0.68). Before March 2020 only −0.763
-    (86% of exposure); from March 2020 −0.564. Full window kept.
+    (86% of exposure, 82% of adult deaths); from March 2020 −0.564. Full
+    window kept (ruling); the published value is pulled toward the pandemic
+    period.
   - [x] NFHS-1 1992–93: not published — age at death blank for every record
     in the released recode (DHS .FRQ confirms).
   - [x] Pakistan 2006–07: not published — assets only in the 13.8k long-form
@@ -199,9 +206,36 @@ these are done, since they may change the picture for Asia.
   - Rule now 1.481 − 0.286 ln(GNI), n = 17, r −0.84, residual SE 0.208, LOO
     MAE 0.176. India's gradient is flat over 1999–2020 while GNI quadrupled;
     long-run guidance changed from "should steepen" to a fixed/rule range.
-- [ ] **H3. World Bank "HNP Statistics by Wealth Quintile"** (API source 39):
-  TFR, IMR and U5MR by quintile from DHS and MICS. Count the countries it adds
-  beyond the DHS API, and check its values against ours where both exist.
+- [ ] **H3. World Bank "HNP Statistics by Wealth Quintile"** (API source 39,
+  last updated 2022-12-13): TFR, IMR and U5MR by quintile, each value
+  footnoted with its survey. Examined 2026-11-12 (scratch analysis, nothing
+  added to `data/` yet):
+  - 1,055 complete quintile sets: ~270 per indicator from DHS, 64–72 from
+    MICS (41–46 countries), ~20 with no footnote (a mix of DHS and 2006 MICS3).
+  - DHS-sourced sets are copies of the DHS API (retrieved 2022-12-02): 801 of
+    804 matched sets identical to ours. Exceptions: India "2021" IMR/U5MR
+    (WB quintiles 51/46/25/12/13, not monotonic; ours from the DHS API
+    48/41/34/27/19 — keep ours) and Peru 2006 vs our 2007 (different surveys).
+  - MICS-footnoted sets add 19 countries we lack (Algeria, Belize, El
+    Salvador, Guinea-Bissau, Iraq, Kiribati, Lao PDR, Mongolia, Samoa,
+    Suriname, Tonga, Sudan [IMR/U5MR], and TFR only for Argentina, Bhutan,
+    Jamaica, North Macedonia, Serbia, Thailand, Tunisia) and newer surveys in
+    14 we cover, several replacing very old DHS: CAR 2019 (ours 1994),
+    Paraguay 2016 (1990), Kazakhstan 2015 (1999), Turkmenistan 2019 (2000),
+    Eswatini 2014 (2006), Sao Tome 2019 (2008), Honduras 2019 (2011), Ukraine
+    2012 (2007). Kosovo, Syria, West Bank and Gaza and Uzbekistan 2006 appear
+    only in sets with no source footnote.
+  - Agreement: MICS vs DHS within 3 years (61 pairs, MICS-footnoted sets
+    only), SD of the gradient difference 0.16 TFR / 0.36 IMR / 0.32 U5MR,
+    median difference within ±0.08; DHS vs the next DHS 1–5 years later:
+    0.19 / 0.38 / 0.32. MICS is as consistent
+    with DHS as DHS is with itself.
+  - Open: MICS child-mortality method (direct birth history vs indirect) is
+    not stated per value; the frozen 2022 compilation misses later MICS6/7
+    rounds (UNICEF's own data warehouse may be the better long-run source).
+  - **Ruling needed:** add MICS (which indicators; where — new countries only,
+    or also where newer than our DHS; schema: a `source` column or a separate
+    file).
 - [ ] **H4. Constant-price GNI** (WDI constant 2015 US$ or constant PPP) for
   the income rule — resolves F1's price-basis problem.
 - [ ] **H5. IPUMS mortality supplements not yet tried:** Mali 1987 and 1998,
