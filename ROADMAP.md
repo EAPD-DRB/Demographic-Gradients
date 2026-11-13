@@ -235,13 +235,16 @@ these are done, since they may change the picture for Asia.
     rounds (UNICEF's own data warehouse may be the better long-run source).
   - **Done 2026-11-13** (ruling: all MICS surveys into the full file with a
     `source` column; latest of either kind; mortality only from direct
-    estimates). Matching UNICEF's method records by first fieldwork year
-    classifies 47 MICS surveys as direct, 10 indirect, 8 not recorded (the
-    earlier 37/6/21 matched on the wrong year). The import found the World Bank
-    file mislabels six MICS6 adolescent birth rates as TFR and has a corrupt
-    Tunisia 2018 set; checks for these, and a minimum mortality rate, are
-    described in `docs/methods/dhs-gradients.md`. Result: TFR 77 → 95
-    countries, IMR 78 → 87; DHS rows unchanged.
+    estimates). Exclusions then verified against the MICS reports: the World
+    Bank file mislabels seven adolescent birth rate sets as TFR (true values
+    transcribed from the reports, Honduras pending); low-rate mortality sets
+    are correct but excluded as imprecise; three surveys were wrongly excluded
+    by year-label matching and one (Lao 2012) for lack of a UNICEF record.
+    Result: TFR 77 → 96 countries, IMR 78 → 88; DHS rows unchanged.
+  - Open: Honduras 2019 TFR by quintile (report table TM.2.1) — the report is
+    only on mics.unicef.org, which needs a browser check. Guinea-Bissau 2010,
+    Myanmar 2009-10 and Sudan 2006 mortality method undocumented (reports not
+    found; those rounds were normally indirect).
   - Later: MICS6/7 surveys after 2022 are not in the compilation. UNICEF
     publishes no TFR or IMR by quintile through its API (only U5MR); adding
     them would mean reading the MICS reports' tables.

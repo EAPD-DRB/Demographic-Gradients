@@ -29,9 +29,11 @@ compilation written by fetch_mics.py. Every survey of either kind goes into
 gradient_library.csv, with a `source` column (DHS or MICS); the latest file
 takes each country's most recent survey of either kind, the DHS survey where
 both are from the same year. MICS infant and under-five mortality are used
-only where UNICEF records the survey's rates as direct estimates from a full
-birth history, the basis of the DHS rates; mics_surveys.csv records the
-classification of every survey and what is used from it. Surveys from
+only where UNICEF (or, where UNICEF has no record, the survey report) records
+the rates as direct estimates from a full birth history, the basis of the DHS
+rates; mics_surveys.csv records the classification of every survey and what
+is used from it. Values were checked against the MICS reports: see the MICS
+checks below. Surveys from
 countries classified as high income in the survey year are outside the
 library's scope. The fertility age offsets use DHS surveys only: the MICS compilation
 has no age-specific rates by quintile.
@@ -72,14 +74,24 @@ QUINTILE_MIDPOINTS = {
     "Highest": 0.90,
 }
 MID = list(QUINTILE_MIDPOINTS.values())
-# MICS checks. The World Bank compilation files some MICS adolescent birth
-# rates, and a few corrupted sets, as TFR: a TFR set is used only if its
-# quintile mean is within a factor of 1.4 of the national TFR, the largest
-# discrepancy among the DHS surveys (0.84 to 1.35). Mortality is compiled in
-# whole numbers; a quintile rate under 5 per 1,000 (none in the DHS sets, whose
-# minimum is 5) leaves the gradient to rounding and small numbers.
-TFR_BOUND = 1.4
-MIN_MORT_RATE = 5
+# MICS checks, verified against the MICS survey reports (2026-11-13).
+# - The World Bank compilation files the adolescent birth rate column of MICS6
+#   table TM.2.1 under TFR for seven surveys. Their TFR by quintile is taken
+#   from the reports (mics_tfr_from_reports.csv; a row with blank values is a
+#   known mislabel whose report has not been read, and is excluded).
+# - Guard: any other MICS TFR set whose quintile mean is more than 1.4 times
+#   from the national TFR (WDI; the widest DHS discrepancy is 1.35) stops the
+#   build, unless verified against its report below. Survey and WDI TFRs can
+#   differ legitimately, so the guard flags, it does not exclude.
+# - Mortality is published mostly in whole numbers; a quintile rate of 3 or
+#   less per 1,000 (none in the DHS sets, whose minimum is 5) leaves the
+#   gradient to rounding and to a handful of deaths. Correct but too imprecise.
+TFR_GUARD = 1.4
+MAX_IMPRECISE_RATE = 3
+MICS_TFR_VERIFIED = {
+    ("MKD", 2019): "report table TM.2.1 gives the same values; the survey's national TFR "
+                   "is 1.9 against 1.34 in WDI",
+}
 SOURCE_ORDER = {"MICS": 0, "DHS": 1}  # on a same-year tie the DHS survey is latest
 # World Bank country names that differ from the DHS Program's
 WB_NAMES = {"Congo, Rep.": "Congo", "Gambia, The": "Gambia"}
@@ -221,35 +233,58 @@ def mics_surveys():
     raw["label"] = (raw["footnote"].str.extract(r"(MICS.*)$", flags=re.I)[0]
                     .str.replace(r"\.\s.*$", "", regex=True).str.strip()
                     .fillna(raw["footnote"]))
-    first = raw["label"].str.extract(r"((?:19|20)\d{2})")[0]
-    raw["first_year"] = first.fillna(raw["year"].astype(str)).astype(int)
-    meth["first_year"] = meth["series_year"].str[:4].astype(int)
-    unicef = meth.groupby(["iso3", "first_year"])["method"].agg(lambda m: "/".join(sorted(set(m))))
+    yrs = raw["label"].str.extract(r"((?:19|20)\d{2})(?:\s*-\s*(\d{2,4}))?")
+    raw["y0"] = yrs[0].fillna(raw["year"].astype(str)).astype(int)
+    end = yrs[1].fillna("").map(lambda e: (2000 + int(e) if len(e) == 2 else int(e)) if e else 0)
+    raw["y1"] = np.maximum(raw["y0"], np.maximum(end, raw["year"]))
+    meth["y0"] = meth["series_year"].str[:4].astype(int)
+    meth["y1"] = meth["series_year"].str[-4:].astype(int)
+    reports = pd.read_csv(DATA_DIR / "mics_methods_reports.csv").set_index(["iso3", "year"])
+    tfr_rep = pd.read_csv(DATA_DIR / "mics_tfr_from_reports.csv").set_index(["iso3", "year"])
     rows = []
     for (iso, ctry, yr), g in raw.groupby(["iso3", "country", "year"]):
-        fy = int(g["first_year"].iloc[0])
-        m = unicef.get((iso, fy), "")
+        # UNICEF's record for the same survey: fieldwork years overlap. The two
+        # sources label some surveys differently (Congo: World Bank 2015-16,
+        # UNICEF and the report 2014-15).
+        a, b = int(g["y0"].min()), int(g["y1"].max())
+        u = meth[(meth["iso3"] == iso) & (meth["y0"] <= b) & (meth["y1"] >= a)]
+        m = "/".join(sorted(set(u["method"])))
+        src = "UNICEF"
+        if not m and (iso, yr) in reports.index:
+            m, src = reports.loc[(iso, yr), "method"], "report"
         method = {"FBH": "direct", "SBH": "indirect", "": "not recorded"}.get(m, f"mixed ({m})")
+        if m in ("FBH", "SBH"):
+            method += f" ({src})"
         inds = set(g["indicator"])
         mort = inds & {"IMR", "U5MR"}
-        use, excl = [], []
+        use, excl, tfr_note = [], [], ""
         if (g["income_level"] == "High income").any():
             excl.append("high-income country")
         else:
             t = g[g["indicator"] == "TFR"]
-            if len(t):
-                r = t["value"].mean() / t["national_tfr"].iloc[0]
-                if not (1 / TFR_BOUND <= r <= TFR_BOUND):
-                    excl.append(f"TFR: quintile mean {r:.2f} times the national TFR")
-                else:
+            if len(t) and (iso, yr) in tfr_rep.index:
+                fix = tfr_rep.loc[(iso, yr)]
+                if fix[["q1", "q2", "q3", "q4", "q5"]].notna().all():
                     use.append("TFR")
+                    tfr_note = f"TFR from the report (table {fix['table']}, p. {int(fix['page'])})"
+                else:
+                    excl.append("TFR: World Bank value is the adolescent birth rate; "
+                                "report not yet read")
+            elif len(t):
+                r = t["value"].mean() / t["national_tfr"].iloc[0]
+                if not (1 / TFR_GUARD <= r <= TFR_GUARD) and (iso, yr) not in MICS_TFR_VERIFIED:
+                    sys.exit(f"MICS TFR check: {ctry} {yr} quintile mean is {r:.2f} times the "
+                             "national TFR. Read the survey report: add the true values to "
+                             "mics_tfr_from_reports.csv, or MICS_TFR_VERIFIED if correct.")
+                use.append("TFR")
             if mort:
                 mv = g[g["indicator"].isin(mort)]["value"]
-                if method != "direct":
+                if not method.startswith("direct"):
                     excl.append("mortality: " + ("method not recorded" if method == "not recorded"
                                                  else f"{method} estimate"))
-                elif (mv < MIN_MORT_RATE).any():
-                    excl.append(f"mortality: quintile rate below {MIN_MORT_RATE} per 1,000")
+                elif (mv <= MAX_IMPRECISE_RATE).any():
+                    excl.append(f"mortality: a quintile rate of {MAX_IMPRECISE_RATE} or less per "
+                                "1,000 (correct as published, too imprecise for a gradient)")
                 else:
                     use.append(", ".join(sorted(mort, key=["IMR", "U5MR"].index)))
         rows.append({"country": ctry, "iso3": iso, "year": yr,
@@ -258,7 +293,7 @@ def mics_surveys():
                                                     key=["TFR", "IMR", "U5MR"].index)),
                      "mortality_method": method if mort else "",
                      "income_level": g["income_level"].iloc[0],
-                     "used": ", ".join(use), "excluded": "; ".join(excl)})
+                     "used": ", ".join(use), "excluded": "; ".join(excl), "note": tfr_note})
     sv = pd.DataFrame(rows).sort_values(["country", "year"])
     return raw, sv
 
@@ -270,6 +305,12 @@ def mics_library(raw, sv):
             if ind in r.used.split(", "):
                 keep.add((ind, r.country, r.year))
     d = raw[[k in keep for k in zip(raw["indicator"], raw["country"], raw["year"])]].copy()
+    # TFR sets the World Bank mislabels: values from the survey reports
+    fix = pd.read_csv(DATA_DIR / "mics_tfr_from_reports.csv").dropna(subset=["q1"])
+    for f in fix.itertuples():
+        m = (d["indicator"] == "TFR") & (d["iso3"] == f.iso3) & (d["year"] == f.year)
+        d.loc[m, "value"] = d.loc[m, "quintile"].map(
+            {i: getattr(f, f"q{i}") for i in range(1, 6)})
     d["pct"] = d["quintile"].map(dict(enumerate(MID, start=1)))
     return gradient_rows(d, "MICS")
 

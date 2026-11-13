@@ -23,8 +23,8 @@ demographic rates by income group. The library supplies three:
 
 | Argument | File | Selection | Coverage |
 |---|---|---|---|
-| `fert_gradient` | `data/gradient_library_latest.csv` + `data/fertility_age_offsets.csv` | `indicator == "TFR"`, plus the offset by age | 95 countries (DHS or MICS) |
-| `infmort_gradient` | `data/gradient_library_latest.csv` | `indicator == "IMR"` | 87 countries (DHS or MICS) |
+| `fert_gradient` | `data/gradient_library_latest.csv` + `data/fertility_age_offsets.csv` | `indicator == "TFR"`, plus the offset by age | 96 countries (DHS or MICS) |
+| `infmort_gradient` | `data/gradient_library_latest.csv` | `indicator == "IMR"` | 88 countries (DHS or MICS) |
 | `mort_gradient` | `data/adult_mortality_gradients.csv` | `measure == "45q15"`, `sex == "all"`, latest year | 14 countries (13 by census, India by DHS survey) |
 | `imm_pctiles` | not provided | — | — |
 
@@ -109,7 +109,7 @@ DHS or MICS survey, use the regional median and interquartile range from
 ## Known pitfalls
 
 - **Use `IMR`, not `U5MR`, for `infmort_gradient`.** The under-five gradient is
-  steeper: across 335 surveys reporting both, by a median 0.14, and by 0.67 in
+  steeper: across 339 surveys reporting both, by a median 0.14, and by 0.67 in
   Nigeria 2018. Every survey in the library that reports U5MR by quintile also
   reports IMR; U5MR is published for comparison only.
 - **DHS and MICS rows share one basis.** `gradient_library*.csv` holds both,
@@ -273,19 +273,23 @@ scripts, and the documentation is generated — respect that architecture.
 - **MICS is a second survey source** for TFR, IMR and U5MR (ruled 2026-11-13):
   every MICS survey goes into `gradient_library.csv` with `source`; the latest
   file takes the newest survey of either kind (DHS on a same-year tie). MICS
-  mortality only where UNICEF's CME database classifies the survey as FBH
-  (direct); SBH and unclassified surveys are excluded. Checks added at import
-  (`build_gradient_library.py`): a MICS TFR set is used only if its quintile
-  mean is within ×1.4 of the WDI national TFR (DHS range 0.84–1.35) — the World
-  Bank compilation files some MICS6 adolescent birth rates as TFR (CAR, Chad,
-  Guinea-Bissau, Honduras, São Tomé, Algeria 2019) and has corrupt sets
-  (Tunisia 2018); mortality sets with a quintile rate under 5 per 1,000 are
-  dropped (Paraguay 2016, Tonga 2019, Suriname 2018; no DHS set is under 5);
-  surveys from countries high income in the survey year (OGHIST) are out of
-  scope (Barbados). Fertility age offsets stay DHS-only (no MICS ASFR by
-  quintile). The MICS inputs are pinned; refresh only with
-  `scripts/fetch_mics.py`, deliberately, and review the diff — UNICEF matches
-  surveys by first fieldwork year, the World Bank labels them by the last.
+  mortality only from direct (FBH) estimates: UNICEF's CME classification,
+  matched by overlapping fieldwork years (the World Bank and UNICEF label some
+  surveys differently: Congo 2015-16 vs 2014-15), else the report
+  (`mics_methods_reports.csv`); undocumented methods excluded. Every exclusion
+  was checked against the MICS reports (2026-11-13; copies at
+  mics.ipums.org/mics/resources/enum_materials_pdf/report_<iso2><year>a_<lang>.pdf,
+  since mics.unicef.org and its S3 bucket refuse scripted downloads). Findings
+  and rulings: the World Bank file holds the adolescent birth rate column under
+  TFR for CAR, Chad, Guinea-Bissau, Honduras, São Tomé, Algeria 2019 and
+  Tunisia 2018 — true TFR by quintile transcribed from the reports
+  (`mics_tfr_from_reports.csv`; Honduras pending, its report not obtained);
+  sets with a quintile rate of 3 or less per 1,000 (Paraguay 2016, Tonga 2019,
+  Belize 2016) are correct but excluded as too imprecise; the WDI-based TFR
+  check flags but does not exclude (North Macedonia 2019 is correct; its survey
+  TFR is 1.9); surveys high income in the survey year are out of scope
+  (Barbados). Fertility age offsets stay DHS-only. MICS inputs are pinned;
+  refresh only with `scripts/fetch_mics.py`, deliberately.
 - Adult mortality ranks households by an **asset index**, never post-death
   household income (reverse causation; São Paulo validation: assets monotonic,
   income jagged). Asset components vary by census and are recorded per sample

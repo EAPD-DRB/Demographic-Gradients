@@ -1,82 +1,82 @@
-country,iso3,year,survey,indicators,mortality_method,income_level,used,excluded
-Afghanistan,AFG,2011,MICS4 2010-11,"IMR, U5MR",indirect,Low income,,mortality: indirect estimate
-Algeria,DZA,2013,MICS 4 2012-13,"TFR, IMR, U5MR",direct,Upper middle income,"TFR, IMR, U5MR",
-Algeria,DZA,2019,"MICS6, 2018-19","TFR, IMR, U5MR",direct,Lower middle income,"IMR, U5MR",TFR: quintile mean 4.20 times the national TFR
-Argentina,ARG,2012,MICS 4 2011-12,TFR,,Upper middle income,TFR,
-Bangladesh,BGD,2013,MICS 5 2012-13,"TFR, IMR, U5MR",indirect,Low income,TFR,mortality: indirect estimate
-Bangladesh,BGD,2019,"MICS6, 2019","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Barbados,BRB,2012,MICS 4 2012,TFR,,High income,,high-income country
-Belize,BLZ,2011,"MICS4, 2011",TFR,,Lower middle income,TFR,
-Belize,BLZ,2016,"MICS 5, 2016","TFR, IMR, U5MR",not recorded,Upper middle income,TFR,mortality: method not recorded
-Benin,BEN,2014,"MICS 5, 2014","TFR, IMR, U5MR",direct,Low income,"TFR, IMR, U5MR",
-Bhutan,BTN,2010,"MICS4, 2010","TFR, IMR, U5MR",indirect,Lower middle income,TFR,mortality: indirect estimate
-Cameroon,CMR,2014,"MICS 5, 2014","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Central African Republic,CAF,2010,"MICS4, 2010","TFR, IMR, U5MR",indirect,Low income,TFR,mortality: indirect estimate
-Central African Republic,CAF,2019,"MICS6, 2018-19","TFR, IMR, U5MR",direct,Low income,"IMR, U5MR",TFR: quintile mean 31.10 times the national TFR
-Chad,TCD,2010,"MICS4, 2010","TFR, IMR, U5MR",indirect,Low income,TFR,mortality: indirect estimate
-Chad,TCD,2019,"MICS6, 2018-19","TFR, IMR, U5MR",not recorded,Low income,,TFR: quintile mean 22.02 times the national TFR; mortality: method not recorded
-Congo,COG,2016,"MICS 5, 2015-16","TFR, IMR, U5MR",not recorded,Lower middle income,TFR,mortality: method not recorded
-Cote d'Ivoire,CIV,2016,"MICS 5, 2016","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Dominican Republic,DOM,2014,"MICS 5, 2014","TFR, IMR, U5MR",direct,Upper middle income,"TFR, IMR, U5MR",
-El Salvador,SLV,2014,"MICS 5, 2014","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Eswatini,SWZ,2010,"MICS4, 2010","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Eswatini,SWZ,2014,"MICS 5, 2014","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Gambia,GMB,2010,MICS 4 2010,"TFR, IMR, U5MR",not recorded,Low income,TFR,mortality: method not recorded
-Gambia,GMB,2018,"MICS 6, 2018","TFR, IMR, U5MR",direct,Low income,"TFR, IMR, U5MR",
-Ghana,GHA,2011,"MICS4, 2011","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Ghana,GHA,2018,"MICS6, 2017-18","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Guinea,GIN,2016,"MICS 5, 2016","TFR, IMR, U5MR",direct,Low income,"TFR, IMR, U5MR",
-Guinea-Bissau,GNB,2010,"MICS4, 2010","TFR, IMR, U5MR",not recorded,Low income,TFR,mortality: method not recorded
-Guinea-Bissau,GNB,2014,"MICS 5, 2014","TFR, IMR, U5MR",direct,Low income,"TFR, IMR, U5MR",
-Guinea-Bissau,GNB,2019,"MICS6, 2018-19","TFR, IMR, U5MR",direct,Low income,"IMR, U5MR",TFR: quintile mean 21.67 times the national TFR
-Guyana,GUY,2014,MICS 5 2014,TFR,,Lower middle income,TFR,
-Honduras,HND,2019,"MICS 6, 2019","TFR, IMR, U5MR",direct,Lower middle income,"IMR, U5MR",TFR: quintile mean 37.69 times the national TFR
-Iraq,IRQ,2011,"MICS4, 2011","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Iraq,IRQ,2018,"MICS 6, 2018","TFR, IMR, U5MR",direct,Upper middle income,"TFR, IMR, U5MR",
-Jamaica,JAM,2011,MICS4 2011,TFR,,Upper middle income,TFR,
-Kazakhstan,KAZ,2011,"MICS4, 2010-2011","TFR, IMR, U5MR",indirect,Upper middle income,TFR,mortality: indirect estimate
-Kazakhstan,KAZ,2015,"MICS 5, 2015",TFR,,Upper middle income,TFR,
-Kiribati,KIR,2019,"MICS6, 2018-19","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Kyrgyz Republic,KGZ,2014,MICS 5 2014,"TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Kyrgyz Republic,KGZ,2018,"MICS 6, 2018","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Lao PDR,LAO,2012,MICS4 2011-12,"TFR, IMR, U5MR",not recorded,Lower middle income,TFR,mortality: method not recorded
-Lao PDR,LAO,2017,"MICS 6, 2017","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Lesotho,LSO,2018,"MICS 6, 2018","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Malawi,MWI,2014,MICS 5 2013-14,"IMR, U5MR",direct,Low income,"IMR, U5MR",
-Mali,MLI,2015,"MICS 5, 2015","IMR, U5MR",direct,Low income,"IMR, U5MR",
-Mauritania,MRT,2011,MICS4 2011,"TFR, IMR, U5MR",direct,Low income,"TFR, IMR, U5MR",
-Mauritania,MRT,2015,"MICS 5, 2015","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Mongolia,MNG,2010,MICS 4 2010,"TFR, IMR, U5MR",indirect,Lower middle income,TFR,mortality: indirect estimate
-Mongolia,MNG,2014,MICS 5 2013-14,"TFR, IMR, U5MR",direct,Upper middle income,"TFR, IMR, U5MR",
-Mongolia,MNG,2018,"MICS 6, 2018","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Myanmar,MMR,2010,MICS 3 2009-10,"IMR, U5MR",not recorded,Low income,,mortality: method not recorded
-Nepal,NPL,2014,MICS 5 2014,"TFR, IMR, U5MR",direct,Low income,"TFR, IMR, U5MR",
-Nepal,NPL,2019,"MICS6, 2019","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Nigeria,NGA,2011,MICS4 2011,"TFR, IMR, U5MR",indirect,Lower middle income,TFR,mortality: indirect estimate
-Nigeria,NGA,2017,"MICS 5, 2016-17","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-North Macedonia,MKD,2019,"MICS6, 2018-19",TFR,,Upper middle income,,TFR: quintile mean 1.48 times the national TFR
-Paraguay,PRY,2016,"MICS 5, 2016","TFR, IMR, U5MR",direct,Upper middle income,TFR,"mortality: quintile rate below 5 per 1,000"
-Samoa,WSM,2020,"MICS6, 2019-20","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
-Sao Tome and Principe,STP,2014,MICS 5 2014,TFR,,Lower middle income,TFR,
-Sao Tome and Principe,STP,2019,"MICS6, 2019","TFR, IMR, U5MR",direct,Lower middle income,"IMR, U5MR",TFR: quintile mean 22.21 times the national TFR
-Serbia,SRB,2010,"MICS4, 2010",TFR,,Upper middle income,TFR,
-Sierra Leone,SLE,2010,"MICS4, 2010","TFR, IMR, U5MR",indirect,Low income,TFR,mortality: indirect estimate
-Sierra Leone,SLE,2017,"MICS 6, 2017","TFR, IMR, U5MR",direct,Low income,"TFR, IMR, U5MR",
-Sudan,SDN,2006,MICS3 - PAPFAM Survey,"IMR, U5MR",not recorded,Low income,,mortality: method not recorded
-Sudan,SDN,2010,"MICS4, 2010","IMR, U5MR",direct,Lower middle income,"IMR, U5MR",
-Sudan,SDN,2014,MICS 5 2014,"IMR, U5MR",direct,Lower middle income,"IMR, U5MR",
-Suriname,SUR,2018,"MICS 6, 2018","TFR, IMR, U5MR",direct,Upper middle income,TFR,"mortality: quintile rate below 5 per 1,000"
-Thailand,THA,2012,MICS4 2012,TFR,,Upper middle income,TFR,
-Thailand,THA,2016,"MICS 5, 2015-16",TFR,,Upper middle income,TFR,
-Thailand,THA,2019,"MICS6, 2019",TFR,,Upper middle income,TFR,
-Togo,TGO,2010,"MICS4, 2010","TFR, IMR, U5MR",indirect,Low income,TFR,mortality: indirect estimate
-Tonga,TON,2019,"MICS6, 2019","TFR, IMR, U5MR",direct,Upper middle income,TFR,"mortality: quintile rate below 5 per 1,000"
-Tunisia,TUN,2012,MICS4 2011-12,TFR,,Upper middle income,TFR,
-Tunisia,TUN,2018,"MICS 6, 2018",TFR,,Lower middle income,,TFR: quintile mean 1.97 times the national TFR
-Turkmenistan,TKM,2016,"MICS 5, 2015-16","TFR, IMR, U5MR",direct,Upper middle income,"TFR, IMR, U5MR",
-Turkmenistan,TKM,2019,"MICS6, 2019","TFR, IMR, U5MR",direct,Upper middle income,"TFR, IMR, U5MR",
-Ukraine,UKR,2012,MICS4 2012,TFR,,Lower middle income,TFR,
-Vietnam,VNM,2011,"MICS4, 2011",TFR,,Lower middle income,TFR,
-Zimbabwe,ZWE,2009,MICS3 2009,"TFR, IMR, U5MR",direct,Low income,"TFR, IMR, U5MR",
-Zimbabwe,ZWE,2014,MICS 5 2014,"TFR, IMR, U5MR",direct,Low income,"TFR, IMR, U5MR",
-Zimbabwe,ZWE,2019,"MICS6, 2019","TFR, IMR, U5MR",direct,Lower middle income,"TFR, IMR, U5MR",
+country,iso3,year,survey,indicators,mortality_method,income_level,used,excluded,note
+Afghanistan,AFG,2011,MICS4 2010-11,"IMR, U5MR",indirect (UNICEF),Low income,,mortality: indirect (UNICEF) estimate,
+Algeria,DZA,2013,MICS 4 2012-13,"TFR, IMR, U5MR",direct (UNICEF),Upper middle income,"TFR, IMR, U5MR",,
+Algeria,DZA,2019,"MICS6, 2018-19","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,"TFR from the report (table TM.2.1, p. 134)"
+Argentina,ARG,2012,MICS 4 2011-12,TFR,,Upper middle income,TFR,,
+Bangladesh,BGD,2013,MICS 5 2012-13,"TFR, IMR, U5MR",indirect (UNICEF),Low income,TFR,mortality: indirect (UNICEF) estimate,
+Bangladesh,BGD,2019,"MICS6, 2019","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Barbados,BRB,2012,MICS 4 2012,TFR,,High income,,high-income country,
+Belize,BLZ,2011,"MICS4, 2011",TFR,,Lower middle income,TFR,,
+Belize,BLZ,2016,"MICS 5, 2016","TFR, IMR, U5MR",direct (UNICEF),Upper middle income,TFR,"mortality: a quintile rate of 3 or less per 1,000 (correct as published, too imprecise for a gradient)",
+Benin,BEN,2014,"MICS 5, 2014","TFR, IMR, U5MR",direct (UNICEF),Low income,"TFR, IMR, U5MR",,
+Bhutan,BTN,2010,"MICS4, 2010","TFR, IMR, U5MR",indirect (UNICEF),Lower middle income,TFR,mortality: indirect (UNICEF) estimate,
+Cameroon,CMR,2014,"MICS 5, 2014","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Central African Republic,CAF,2010,"MICS4, 2010","TFR, IMR, U5MR",indirect (UNICEF),Low income,TFR,mortality: indirect (UNICEF) estimate,
+Central African Republic,CAF,2019,"MICS6, 2018-19","TFR, IMR, U5MR",direct (UNICEF),Low income,"TFR, IMR, U5MR",,"TFR from the report (table TM.2.1, p. 125)"
+Chad,TCD,2010,"MICS4, 2010","TFR, IMR, U5MR",indirect (UNICEF),Low income,TFR,mortality: indirect (UNICEF) estimate,
+Chad,TCD,2019,"MICS6, 2018-19","TFR, IMR, U5MR",direct (UNICEF),Low income,"TFR, IMR, U5MR",,"TFR from the report (table TM.2.1, p. 118)"
+Congo,COG,2016,"MICS 5, 2015-16","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Cote d'Ivoire,CIV,2016,"MICS 5, 2016","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Dominican Republic,DOM,2014,"MICS 5, 2014","TFR, IMR, U5MR",direct (UNICEF),Upper middle income,"TFR, IMR, U5MR",,
+El Salvador,SLV,2014,"MICS 5, 2014","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Eswatini,SWZ,2010,"MICS4, 2010","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Eswatini,SWZ,2014,"MICS 5, 2014","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Gambia,GMB,2010,MICS 4 2010,"TFR, IMR, U5MR",indirect (report),Low income,TFR,mortality: indirect (report) estimate,
+Gambia,GMB,2018,"MICS 6, 2018","TFR, IMR, U5MR",direct (UNICEF),Low income,"TFR, IMR, U5MR",,
+Ghana,GHA,2011,"MICS4, 2011","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Ghana,GHA,2018,"MICS6, 2017-18","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Guinea,GIN,2016,"MICS 5, 2016","TFR, IMR, U5MR",direct (UNICEF),Low income,"TFR, IMR, U5MR",,
+Guinea-Bissau,GNB,2010,"MICS4, 2010","TFR, IMR, U5MR",not recorded,Low income,TFR,mortality: method not recorded,
+Guinea-Bissau,GNB,2014,"MICS 5, 2014","TFR, IMR, U5MR",direct (UNICEF),Low income,"TFR, IMR, U5MR",,
+Guinea-Bissau,GNB,2019,"MICS6, 2018-19","TFR, IMR, U5MR",direct (UNICEF),Low income,"TFR, IMR, U5MR",,"TFR from the report (table TM.2.1, p. 142)"
+Guyana,GUY,2014,MICS 5 2014,TFR,,Lower middle income,TFR,,
+Honduras,HND,2019,"MICS 6, 2019","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"IMR, U5MR",TFR: World Bank value is the adolescent birth rate; report not yet read,
+Iraq,IRQ,2011,"MICS4, 2011","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Iraq,IRQ,2018,"MICS 6, 2018","TFR, IMR, U5MR",direct (UNICEF),Upper middle income,"TFR, IMR, U5MR",,
+Jamaica,JAM,2011,MICS4 2011,TFR,,Upper middle income,TFR,,
+Kazakhstan,KAZ,2011,"MICS4, 2010-2011","TFR, IMR, U5MR",indirect (UNICEF),Upper middle income,TFR,mortality: indirect (UNICEF) estimate,
+Kazakhstan,KAZ,2015,"MICS 5, 2015",TFR,,Upper middle income,TFR,,
+Kiribati,KIR,2019,"MICS6, 2018-19","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Kyrgyz Republic,KGZ,2014,MICS 5 2014,"TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Kyrgyz Republic,KGZ,2018,"MICS 6, 2018","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Lao PDR,LAO,2012,MICS4 2011-12,"TFR, IMR, U5MR",direct (report),Lower middle income,"TFR, IMR, U5MR",,
+Lao PDR,LAO,2017,"MICS 6, 2017","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Lesotho,LSO,2018,"MICS 6, 2018","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Malawi,MWI,2014,MICS 5 2013-14,"IMR, U5MR",direct (UNICEF),Low income,"IMR, U5MR",,
+Mali,MLI,2015,"MICS 5, 2015","IMR, U5MR",direct (UNICEF),Low income,"IMR, U5MR",,
+Mauritania,MRT,2011,MICS4 2011,"TFR, IMR, U5MR",direct (UNICEF),Low income,"TFR, IMR, U5MR",,
+Mauritania,MRT,2015,"MICS 5, 2015","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Mongolia,MNG,2010,MICS 4 2010,"TFR, IMR, U5MR",indirect (UNICEF),Lower middle income,TFR,mortality: indirect (UNICEF) estimate,
+Mongolia,MNG,2014,MICS 5 2013-14,"TFR, IMR, U5MR",direct (UNICEF),Upper middle income,"TFR, IMR, U5MR",,
+Mongolia,MNG,2018,"MICS 6, 2018","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Myanmar,MMR,2010,MICS 3 2009-10,"IMR, U5MR",not recorded,Low income,,mortality: method not recorded,
+Nepal,NPL,2014,MICS 5 2014,"TFR, IMR, U5MR",direct (UNICEF),Low income,"TFR, IMR, U5MR",,
+Nepal,NPL,2019,"MICS6, 2019","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Nigeria,NGA,2011,MICS4 2011,"TFR, IMR, U5MR",indirect (UNICEF),Lower middle income,TFR,mortality: indirect (UNICEF) estimate,
+Nigeria,NGA,2017,"MICS 5, 2016-17","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+North Macedonia,MKD,2019,"MICS6, 2018-19",TFR,,Upper middle income,TFR,,
+Paraguay,PRY,2016,"MICS 5, 2016","TFR, IMR, U5MR",direct (UNICEF),Upper middle income,TFR,"mortality: a quintile rate of 3 or less per 1,000 (correct as published, too imprecise for a gradient)",
+Samoa,WSM,2020,"MICS6, 2019-20","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,
+Sao Tome and Principe,STP,2014,MICS 5 2014,TFR,,Lower middle income,TFR,,
+Sao Tome and Principe,STP,2019,"MICS6, 2019","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,"TFR from the report (table TM.2.1, p. 71)"
+Serbia,SRB,2010,"MICS4, 2010",TFR,,Upper middle income,TFR,,
+Sierra Leone,SLE,2010,"MICS4, 2010","TFR, IMR, U5MR",indirect (UNICEF),Low income,TFR,mortality: indirect (UNICEF) estimate,
+Sierra Leone,SLE,2017,"MICS 6, 2017","TFR, IMR, U5MR",direct (UNICEF),Low income,"TFR, IMR, U5MR",,
+Sudan,SDN,2006,MICS3 - PAPFAM Survey,"IMR, U5MR",not recorded,Low income,,mortality: method not recorded,
+Sudan,SDN,2010,"MICS4, 2010","IMR, U5MR",direct (UNICEF),Lower middle income,"IMR, U5MR",,
+Sudan,SDN,2014,MICS 5 2014,"IMR, U5MR",direct (UNICEF),Lower middle income,"IMR, U5MR",,
+Suriname,SUR,2018,"MICS 6, 2018","TFR, IMR, U5MR",direct (UNICEF),Upper middle income,"TFR, IMR, U5MR",,
+Thailand,THA,2012,MICS4 2012,TFR,,Upper middle income,TFR,,
+Thailand,THA,2016,"MICS 5, 2015-16",TFR,,Upper middle income,TFR,,
+Thailand,THA,2019,"MICS6, 2019",TFR,,Upper middle income,TFR,,
+Togo,TGO,2010,"MICS4, 2010","TFR, IMR, U5MR",indirect (UNICEF),Low income,TFR,mortality: indirect (UNICEF) estimate,
+Tonga,TON,2019,"MICS6, 2019","TFR, IMR, U5MR",direct (UNICEF),Upper middle income,TFR,"mortality: a quintile rate of 3 or less per 1,000 (correct as published, too imprecise for a gradient)",
+Tunisia,TUN,2012,MICS4 2011-12,TFR,,Upper middle income,TFR,,
+Tunisia,TUN,2018,"MICS 6, 2018",TFR,,Lower middle income,TFR,,"TFR from the report (table TM.2.1, p. 86)"
+Turkmenistan,TKM,2016,"MICS 5, 2015-16","TFR, IMR, U5MR",direct (UNICEF),Upper middle income,"TFR, IMR, U5MR",,
+Turkmenistan,TKM,2019,"MICS6, 2019","TFR, IMR, U5MR",direct (UNICEF),Upper middle income,"TFR, IMR, U5MR",,
+Ukraine,UKR,2012,MICS4 2012,TFR,,Lower middle income,TFR,,
+Vietnam,VNM,2011,"MICS4, 2011",TFR,,Lower middle income,TFR,,
+Zimbabwe,ZWE,2009,MICS3 2009,"TFR, IMR, U5MR",direct (UNICEF),Low income,"TFR, IMR, U5MR",,
+Zimbabwe,ZWE,2014,MICS 5 2014,"TFR, IMR, U5MR",direct (UNICEF),Low income,"TFR, IMR, U5MR",,
+Zimbabwe,ZWE,2019,"MICS6, 2019","TFR, IMR, U5MR",direct (UNICEF),Lower middle income,"TFR, IMR, U5MR",,

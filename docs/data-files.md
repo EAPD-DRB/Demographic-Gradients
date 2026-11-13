@@ -51,6 +51,8 @@ census; `common`, assets recorded in all three censuses); `n_mothers`;
 | [`mics_quintiles_raw.csv`](../data/mics_quintiles_raw.csv) | MICS quintile values as downloaded from the World Bank's compilation, with the footnote naming the survey, the income group in the survey year and the national TFR |
 | [`mics_methods_unicef.csv`](../data/mics_methods_unicef.csv) | UNICEF's classification of each MICS survey's child-mortality estimates: `FBH` (direct, full birth history) or `SBH` (indirect) |
 | [`mics_surveys.csv`](../data/mics_surveys.csv) | Each MICS survey, its mortality method, and what is used from it or why it is excluded |
+| [`mics_tfr_from_reports.csv`](../data/mics_tfr_from_reports.csv) | Total fertility rate by quintile transcribed from the MICS report (table and page) for surveys whose compiled value is the adolescent birth rate |
+| [`mics_methods_reports.csv`](../data/mics_methods_reports.csv) | Child-mortality method from the MICS report, for surveys UNICEF does not classify |
 | [`dhs_regions.csv`](../data/dhs_regions.csv) | DHS Program region of each country; countries surveyed only by MICS are assigned to a region (`classification == "assigned"`) |
 | [`ogcore_units_check.csv`](../data/ogcore_units_check.csv) | Results of the check that determines the conversion to OG-Core units |
 

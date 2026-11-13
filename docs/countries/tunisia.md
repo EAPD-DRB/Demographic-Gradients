@@ -7,7 +7,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
-| `fert_gradient` | −0.18, by age as below | MICS 2012, TFR, plus [age offsets](../methods/fertility-by-age.md) |
+| `fert_gradient` | −0.34, by age as below | MICS 2018, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | — | no DHS or MICS survey with a wealth breakdown; regional median for North Africa/West Asia/Europe ([table](../../ANALYSIS.md#regional-medians)) |
 | `mort_gradient` | 1.48 − 0.286 × ln(GNI per capita) | [general gradient](../methods/general-gradient.md); for example −0.49 at $1,000 and −0.95 at $5,000, each with a 95% prediction interval of about ±0.5 |
 | `imm_pctiles` | not provided | — |
@@ -18,7 +18,7 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 
 | 15–19 | 20–24 | 25–29 | 30–34 | 35–39 | 40–44 | 45–49 |
 |---|---|---|---|---|---|---|
-| −0.96 | −0.28 | 0.03 | 0.15 | −0.09 | −0.57 | −1.16 |
+| −1.12 | −0.44 | −0.13 | −0.02 | −0.25 | −0.73 | −1.32 |
 
 ## Estimates
 
@@ -28,4 +28,4 @@ Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey 
 
 | Indicator | Survey | Lowest | Second | Middle | Fourth | Highest | Low/high ratio | Gradient |
 |---|---|---|---|---|---|---|---|---|
-| Total fertility rate (births per woman) | MICS 2012 | 2.2 | 2.2 | 2 | 2.3 | 1.8 | 1.22 | −0.18 |
+| Total fertility rate (births per woman) | MICS 2018 | 2.2 | 2.3 | 2.1 | 2.2 | 1.6 | 1.38 | −0.34 |

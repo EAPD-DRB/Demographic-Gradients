@@ -28,25 +28,40 @@ a MICS survey are used; the database's DHS values are copies of the DHS
 indicators and are taken from the DHS API instead. The database is no longer
 updated, and a copy is kept in the repository (`mics_quintiles_raw.csv`,
 written by `scripts/fetch_mics.py`). Each MICS survey's classification and the
-reason for any exclusion are recorded in `mics_surveys.csv`. MICS values are
-used subject to the following rules.
+reason for any exclusion are recorded in `mics_surveys.csv`. The compiled
+values were checked against the MICS survey reports for every excluded set and
+a sample of included ones; apart from the error described under fertility,
+they reproduce the reports' tables exactly. MICS values are used subject to
+the following rules.
 
 - **Child mortality.** MICS surveys estimate child mortality either directly,
   from a full birth history as the DHS does, or indirectly, from the number of
   children ever born and surviving. Only direct estimates are used, according
   to UNICEF's classification of each survey in its child-mortality database
-  (`mics_methods_unicef.csv`); surveys UNICEF does not classify are not used.
-  Mortality sets with a quintile rate below 5 per 1,000 are also excluded: the
-  compilation mostly records whole numbers, and at such levels rounding and small
-  numbers of deaths determine the gradient. No DHS set has a rate that low.
-- **Fertility.** In some recent surveys the compilation files the adolescent
-  birth rate, or values that cannot be total fertility rates, under the total
-  fertility rate. A set is used only if the mean of its quintile rates is
-  within a factor of 1.4 of the national total fertility rate in the survey
-  year (World Development Indicators), the widest discrepancy found among DHS
-  surveys.
+  (`mics_methods_unicef.csv`), or the survey report where UNICEF has no record
+  (`mics_methods_reports.csv`). Surveys whose method is not documented in
+  either are not used. A survey is matched to UNICEF's record by overlapping
+  fieldwork years, since the two sources sometimes label the same survey with
+  different years. Mortality sets with a quintile rate of 3 or less per 1,000
+  are excluded: such rates are correct as published but rest on very few
+  deaths, and rounding alone changes the gradient substantially. No DHS set has
+  a rate below 5.
+- **Fertility.** For seven surveys of 2018–19 the compilation files the
+  adolescent birth rate, the column beside the total fertility rate in the
+  MICS fertility table, under the total fertility rate. The total fertility
+  rates by quintile for these surveys are taken from the reports
+  (`mics_tfr_from_reports.csv`, with table and page); where the report has not
+  been read, the set is excluded. As a guard against similar errors, the build
+  stops if any other MICS set's quintile mean differs from the national total
+  fertility rate (World Development Indicators) by more than a factor of 1.4,
+  the widest discrepancy among DHS surveys, unless the set has been checked
+  against its report. A survey's own national rate can differ from the WDI
+  estimate; North Macedonia 2018–19 (1.9 against 1.34) is correct as published.
 - **Scope.** Surveys in countries classified by the World Bank as high income
   in the survey year are excluded.
+- **Reference period.** MICS rates by wealth refer to the five or ten years
+  before the survey, depending on the survey; DHS rates by wealth refer to ten
+  years. The measure is the same, but some MICS sets rest on fewer births.
 
 The compilation has no age-specific fertility rates by quintile, so the age
 offsets below rest on DHS surveys only. Where a country has a DHS and a MICS

@@ -8,7 +8,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
 | `fert_gradient` | −1.08, by age as below | MICS 2016, TFR, plus [age offsets](../methods/fertility-by-age.md) |
-| `infmort_gradient` | −0.46 | DHS 2011, infant mortality rate |
+| `infmort_gradient` | −0.88 | MICS 2016, infant mortality rate |
 | `mort_gradient` | 1.48 − 0.286 × ln(GNI per capita) | [general gradient](../methods/general-gradient.md); for example −0.49 at $1,000 and −0.95 at $5,000, each with a 95% prediction interval of about ±0.5 |
 | `imm_pctiles` | not provided | — |
 
@@ -29,5 +29,5 @@ Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey 
 | Indicator | Survey | Lowest | Second | Middle | Fourth | Highest | Low/high ratio | Gradient |
 |---|---|---|---|---|---|---|---|---|
 | Total fertility rate (births per woman) | MICS 2016 | 7.1 | 5.1 | 4.3 | 3.5 | 2.9 | 2.45 | −1.08 |
-| Infant mortality rate (per 1,000 live births) | DHS 2011 | 52 | 55 | 42 | 46 | 36 | 1.44 | −0.46 |
-| Under-five mortality rate (per 1,000 live births) | DHS 2011 | 89 | 98 | 81 | 74 | 54 | 1.65 | −0.64 |
+| Infant mortality rate (per 1,000 live births) | MICS 2016 | 51.8 | 34.9 | 35.7 | 15.9 | 31.7 | 1.63 | −0.88 |
+| Under-five mortality rate (per 1,000 live births) | MICS 2016 | 77.1 | 58.4 | 46 | 31.5 | 34.2 | 2.25 | −1.12 |

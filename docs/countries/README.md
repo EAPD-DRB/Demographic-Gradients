@@ -23,7 +23,7 @@ One page per country, giving the values for an OG-Core calibration and the estim
 | [Cambodia](cambodia.md) | South & Southeast Asia | DHS 2021 | — | — |
 | [Cameroon](cameroon.md) | Sub-Saharan Africa | DHS 2022 | — | — |
 | [Central African Republic](central-african-republic.md) | Sub-Saharan Africa | MICS 2019 | — | — |
-| [Chad](chad.md) | Sub-Saharan Africa | DHS 2014 | — | — |
+| [Chad](chad.md) | Sub-Saharan Africa | MICS 2019 | — | — |
 | [Colombia](colombia.md) | Latin America & Caribbean | DHS 2015 | — | — |
 | [Comoros](comoros.md) | Sub-Saharan Africa | DHS 2012 | — | — |
 | [Congo](congo.md) | Sub-Saharan Africa | MICS 2016 | — | — |
@@ -71,6 +71,7 @@ One page per country, giving the values for an OG-Core calibration and the estim
 | [Nicaragua](nicaragua.md) | Latin America & Caribbean | DHS 2001 | — | — |
 | [Niger](niger.md) | Sub-Saharan Africa | DHS 2021 | — | — |
 | [Nigeria](nigeria.md) | Sub-Saharan Africa | DHS 2024 | — | — |
+| [North Macedonia](north-macedonia.md) | North Africa/West Asia/Europe | MICS 2019 | — | — |
 | [Pakistan](pakistan.md) | South & Southeast Asia | DHS 2017 | — | — |
 | [Papua New Guinea](papua-new-guinea.md) | Oceania | DHS 2017 | — | — |
 | [Paraguay](paraguay.md) | Latin America & Caribbean | MICS 2016 | — | — |
@@ -92,7 +93,7 @@ One page per country, giving the values for an OG-Core calibration and the estim
 | [Timor-Leste](timor-leste.md) | South & Southeast Asia | DHS 2016 | — | — |
 | [Togo](togo.md) | Sub-Saharan Africa | DHS 2017 | — | — |
 | [Tonga](tonga.md) | Oceania | MICS 2019 | — | — |
-| [Tunisia](tunisia.md) | North Africa/West Asia/Europe | MICS 2012 | — | — |
+| [Tunisia](tunisia.md) | North Africa/West Asia/Europe | MICS 2018 | — | — |
 | [Turkey](turkey.md) | North Africa/West Asia/Europe | DHS 2013 | — | — |
 | [Turkmenistan](turkmenistan.md) | Central Asia | MICS 2019 | — | — |
 | [Uganda](uganda.md) | Sub-Saharan Africa | DHS 2024 | 2002 | — |

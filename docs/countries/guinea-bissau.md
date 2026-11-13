@@ -7,7 +7,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
-| `fert_gradient` | −1.11, by age as below | MICS 2014, TFR, plus [age offsets](../methods/fertility-by-age.md) |
+| `fert_gradient` | −0.96, by age as below | MICS 2019, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | 0.28 | MICS 2019, infant mortality rate |
 | `mort_gradient` | 1.48 − 0.286 × ln(GNI per capita) | [general gradient](../methods/general-gradient.md); for example −0.49 at $1,000 and −0.95 at $5,000, each with a 95% prediction interval of about ±0.5 |
 | `imm_pctiles` | not provided | — |
@@ -18,7 +18,7 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 
 | 15–19 | 20–24 | 25–29 | 30–34 | 35–39 | 40–44 | 45–49 |
 |---|---|---|---|---|---|---|
-| −1.88 | −1.21 | −0.90 | −0.78 | −1.01 | −1.50 | −2.09 |
+| −1.74 | −1.06 | −0.76 | −0.64 | −0.87 | −1.36 | −1.95 |
 
 ## Estimates
 
@@ -28,6 +28,6 @@ Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey 
 
 | Indicator | Survey | Lowest | Second | Middle | Fourth | Highest | Low/high ratio | Gradient |
 |---|---|---|---|---|---|---|---|---|
-| Total fertility rate (births per woman) | MICS 2014 | 6.4 | 6.5 | 5.8 | 4 | 2.7 | 2.37 | −1.11 |
+| Total fertility rate (births per woman) | MICS 2019 | 5.3 | 5.5 | 5 | 3.9 | 2.4 | 2.21 | −0.96 |
 | Infant mortality rate (per 1,000 live births) | MICS 2019 | 35 | 35 | 29 | 39 | 44 | 0.80 | 0.28 |
 | Under-five mortality rate (per 1,000 live births) | MICS 2019 | 60 | 58 | 51 | 56 | 59 | 1.02 | −0.03 |

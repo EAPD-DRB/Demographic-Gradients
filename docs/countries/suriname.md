@@ -8,7 +8,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
 | `fert_gradient` | −1.22, by age as below | MICS 2018, TFR, plus [age offsets](../methods/fertility-by-age.md) |
-| `infmort_gradient` | — | no DHS or MICS survey with a wealth breakdown; regional median for Latin America & Caribbean ([table](../../ANALYSIS.md#regional-medians)) |
+| `infmort_gradient` | −1.03 | MICS 2018, infant mortality rate |
 | `mort_gradient` | 1.48 − 0.286 × ln(GNI per capita) | [general gradient](../methods/general-gradient.md); for example −0.49 at $1,000 and −0.95 at $5,000, each with a 95% prediction interval of about ±0.5 |
 | `imm_pctiles` | not provided | — |
 
@@ -29,3 +29,5 @@ Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey 
 | Indicator | Survey | Lowest | Second | Middle | Fourth | Highest | Low/high ratio | Gradient |
 |---|---|---|---|---|---|---|---|---|
 | Total fertility rate (births per woman) | MICS 2018 | 4.5 | 3.2 | 2.5 | 2.2 | 1.6 | 2.81 | −1.22 |
+| Infant mortality rate (per 1,000 live births) | MICS 2018 | 15 | 14 | 27 | 25 | 4 | 3.75 | −1.03 |
+| Under-five mortality rate (per 1,000 live births) | MICS 2018 | 16 | 20 | 28 | 25 | 5 | 3.20 | −1.05 |
