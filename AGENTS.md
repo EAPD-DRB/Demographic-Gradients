@@ -72,30 +72,33 @@ and the survey or census year.
 
 `data/general_gradient.csv` provides a fallback for any country:
 
-    gradient(45q15) = 1.481 − 0.286 × ln(GNI per capita, Atlas method, current US$)
+    gradient(45q15) = 2.610 − 0.378 × ln(GDP per capita, PPP, constant 2021 international $)
+
+Income is the World Bank's `NY.GDP.PCAP.PP.KD`: it is comparable across
+countries and years, so the rule is applied to the same series for any year
+with no conversion. Do not plug in GNI in current US dollars (the measure used
+before 2026-11-13).
 
 It is fitted on 17 observations: 14 censuses and India's three DHS surveys with
 a household-deaths module (NFHS-2, -4, -5), with equal weight. The slope has a
-standard error of 0.048 (95% CI −0.388 to −0.184), but a single country can lie
+standard error of 0.058 (95% CI −0.502 to −0.254), but a single country can lie
 well off the line: the 95% prediction interval for a country without its own
-estimate is about ±0.45–0.5 (residual standard error 0.21).
+estimate is about ±0.45 (residual standard error 0.20).
 Report the prediction interval with any value taken from the rule; the file
-holds the terms needed to compute it at any GNI (formula in
+holds the terms needed to compute it at any income (formula in
 [docs/methods/general-gradient.md](docs/methods/general-gradient.md)).
 
 It was selected by leave-one-country-out prediction error against two
-alternatives: mean absolute error 0.176, compared with 0.311 for a single pooled
+alternatives: mean absolute error 0.175, compared with 0.311 for a single pooled
 value and 0.331 for regional medians, scored on the same 17 observations. The
-error is 0.15 below $1,000 per capita and 0.20 above. The largest misses are
-India 1999 (−0.73 measured against −0.20 predicted) and the two South African
-censuses (−0.93 and −1.23 against −0.74 and −0.92). The same file contains age
-offsets and a pooled median for use when no GNI figure is available. The rule
-is estimated on GNI in current dollars of the census and survey years
-(1998–2020); applying it to a recent GNI figure without adjusting for price
-change makes the predicted gradient somewhat steeper.
+error is 0.20 below $3,000 per capita (PPP) and 0.15 above. The largest misses
+are Malawi 2008 (−0.47 measured against −0.04 predicted), India 1999 (−0.73
+against −0.38), Uganda 2002 (+0.15 against −0.22) and Zambia 2010 (−0.14
+against −0.47). The same file contains age offsets and a pooled median for use
+when no income figure is available.
 
-Values at 2024 GNI per capita: Philippines −0.92 (95% prediction interval −1.41
-to −0.44; $4,470), Indonesia −0.95 (−1.44 to −0.46; $4,920). Countries with
+Values at 2024 GDP per capita (PPP): Philippines −0.88 (95% prediction interval
+−1.33 to −0.43; $10,378), Indonesia −1.01 (−1.47 to −0.55; $14,471). Countries with
 their own estimate (for example South Africa 2007, −1.23; Ethiopia 2007, +0.01;
 India 2020, −0.72) use that estimate, not the rule.
 
@@ -159,11 +162,11 @@ documentation.
 ## Long-run projections
 
 Across countries the adult-mortality gradient is more negative at higher
-national income (r = −0.84); a doubling of income per capita corresponds to
-about −0.20 in the gradient. Within countries the evidence is limited and
+national income (r = −0.86); a doubling of income per capita corresponds to
+about −0.26 in the gradient. Within countries the evidence is limited and
 mixed: Malawi's gradient steepened between its 1998 and 2008 censuses as income
-rose, but India's was −0.73, −0.74 and −0.72 in 1999, 2015 and 2020 while GNI
-per capita rose from $440 to $1,900. A model projecting several decades ahead
+rose, but India's was −0.73, −0.74 and −0.72 in 1999, 2015 and 2020 while GDP
+per capita (PPP) rose from about $3,000 to $7,200. A model projecting several decades ahead
 can hold the gradient fixed or let it follow the income relationship; report
 which, and treat the two as a range. The
 pooled fertility and infant gradients change little across 35 years of
@@ -175,7 +178,8 @@ State the gap rather than interpolating:
 
 - **High-income countries are outside the library's scope.** Its sources are
   designed for low- and middle-income countries, and the income rule is
-  estimated between about $200 and $10,000 GNI per capita. It must not be
+  estimated between about $1,100 and $18,000 GDP per capita (PPP, constant
+  2021 international $). It must not be
   extrapolated to high-income countries; if asked, say the library does not
   cover them.
 - The only Asian estimates of adult mortality are India's (DHS surveys). There
@@ -317,18 +321,25 @@ scripts, and the documentation is generated — respect that architecture.
   biases steep by ~0.3) and mz2007a (0.89/1.09/0.97/1.05 - biases flat by
   ~0.15). za2007a has MORTNUM and passes; za2001a and ci1998a have none.
 - Gradient steepness tracks national income, not region:
-  `gradient ~ 1.48 - 0.286*ln(GNI per capita)`, r = -0.84 over 17
-  observations (14 censuses + India NFHS-2/-4/-5; survey rows enter the rule
-  on the same footing as censuses, ruled 2026-11-12). Inference is classical
-  OLS with n - 2 df (ruled 2026-11-12): slope SE 0.048, clustered-by-country
-  SE 0.044; publish the 95% prediction interval (~±0.45-0.5) with any value
-  read off the rule. GNI is pinned
-  in `data/gni_census_years.csv` (WDI revises history); refresh only with
-  `--refresh-gni`, deliberately. On the earlier index, excluding South Africa, the
+  `gradient ~ 2.61 - 0.378*ln(GDP per capita, PPP, constant 2021 intl $)`,
+  r = -0.86 over 17 observations (14 censuses + India NFHS-2/-4/-5; survey
+  rows enter the rule on the same footing as censuses, ruled 2026-11-12).
+  Income measure ruled 2026-11-13: GDP per capita PPP constant
+  (NY.GDP.PCAP.PP.KD), the standard for cross-country living-standard and
+  health-income comparisons; it replaced Atlas GNI in current US$, which mixed
+  price years (applied to recent GNI it made predictions ~0.1 too steep).
+  Same fit quality (LOCO MAE 0.175 vs 0.176). Constant-price GNI (US$ or PPP)
+  was rejected: WDI lacks it for 7 of the 17 observations. Inference is
+  classical OLS with n - 2 df (ruled 2026-11-12): slope SE 0.058,
+  clustered-by-country SE 0.058; publish the 95% prediction interval (~±0.45)
+  with any value read off the rule. Income is pinned in
+  `data/income_census_years.csv` (WDI revises history; each ICP round revises
+  PPPs), with Atlas GNI kept for reference; refresh only with
+  `--refresh-income`, deliberately. On the earlier index, excluding South Africa, the
   gradient-vs-HIV-prevalence correlation was +0.00; not re-run since.
   Borrowing tables should key on income level. Within-country change is
   NOT established: Malawi steepened 1998->2008, India stayed flat
-  (-0.73/-0.74/-0.72, 1999-2020, GNI $440->$1,900). Present "fixed" and
+  (-0.73/-0.74/-0.72, 1999-2020, GDP pc PPP $2,954->$7,187). Present "fixed" and
   "follows the income rule" as a range for long OG transitions.
 - **DHS household-deaths modules** (`scripts/build_adult_mortality_survey.py`,
   ruled 2026-11-12) are the census design in a survey, not sibling
@@ -345,7 +356,7 @@ scripts, and the documentation is generated — respect that architecture.
   causes of death was scanned (ROADMAP H1).
 - The gradient fades with age in every census and survey measured at 15-29
   and an older band (14/14, mean drift +0.89 from 15-29 to the oldest band), and in 4
-  censuses, all with GNI <= $1,350 (Ethiopia, Uganda, Zambia, Sudan), it becomes
+  censuses, all with GDP pc PPP <= $4,446 (Ethiopia, Uganda, Zambia, Sudan), it becomes
   positive at older ages -
   measured mortality is higher in wealthier households at 45+. Real
   (low income compresses survival differences) and artefactual (frail elders

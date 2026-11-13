@@ -46,8 +46,8 @@ census; `common`, assets recorded in all three censuses); `n_mothers`;
 | [`gradient_library.csv`](../data/gradient_library.csv) | Wealth gradients for every DHS and MICS survey |
 | [`dhs_gradients_raw.csv`](../data/dhs_gradients_raw.csv) | Quintile values as downloaded from the DHS API, including age-specific fertility rates |
 | [`fertility_age_tilts.csv`](../data/fertility_age_tilts.csv) | Fertility gradient by age for each survey, from which the age offsets are computed |
-| [`general_gradient_points.csv`](../data/general_gradient_points.csv) | Census and survey observations behind the general gradient: UN subregion (`region`), GNI per capita, measured 45q15 gradient (`tilt_45q15`) and leave-one-out prediction |
-| [`gni_census_years.csv`](../data/gni_census_years.csv) | GNI per capita (World Bank, Atlas method, current US$) for each census or survey year, with the retrieval date; the input to the general gradient |
+| [`general_gradient_points.csv`](../data/general_gradient_points.csv) | Census and survey observations behind the general gradient: UN subregion (`region`), GDP per capita PPP (`gdp_ppp`, the rule's income) and GNI per capita (`gni_atlas`, reference), measured 45q15 gradient (`tilt_45q15`) and leave-one-out prediction |
+| [`income_census_years.csv`](../data/income_census_years.csv) | For each census or survey year: GDP per capita, PPP, constant 2021 international $ (`gdp_ppp`, the input to the general gradient) and GNI per capita, Atlas method, current US$ (`gni_atlas`, reference), each with its retrieval date |
 | [`mics_quintiles_raw.csv`](../data/mics_quintiles_raw.csv) | MICS quintile values as downloaded from the World Bank's compilation, with the footnote naming the survey, the income group in the survey year and the national TFR |
 | [`mics_methods_unicef.csv`](../data/mics_methods_unicef.csv) | UNICEF's classification of each MICS survey's child-mortality estimates: `FBH` (direct, full birth history) or `SBH` (indirect) |
 | [`mics_surveys.csv`](../data/mics_surveys.csv) | Each MICS survey, its mortality method, and what is used from it or why it is excluded |

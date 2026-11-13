@@ -31,7 +31,8 @@ difference between each age band's gradient and the 45q15 gradient, pooled
 across censuses and surveys ([general gradient](methods/general-gradient.md)).
 
 ### General gradient
-The relationship between the adult-mortality gradient and GNI per capita,
+The relationship between the adult-mortality gradient and GDP per capita
+(PPP),
 estimated across censuses and surveys, used for countries without their own
 estimate. See
 [the general gradient](methods/general-gradient.md).
@@ -106,9 +107,17 @@ provided by national statistical offices. Most census estimates in the library
 use IPUMS samples; Brazil's adult-mortality estimates use IBGE microdata
 directly.
 
+### GDP per capita (PPP)
+Gross domestic product per person at purchasing-power parity, in constant 2021
+international dollars (World Bank). Purchasing-power parity converts national
+currencies at rates that equalize the cost of a common basket of goods, so the
+measure compares living standards across countries; constant prices make it
+comparable over time. The income measure of the general gradient.
+
 ### GNI per capita
 Gross national income per person in current US dollars (World Bank, Atlas
-method).
+method). Used by the World Bank to classify countries by income group; kept in
+the library for reference.
 
 ## OG-Core
 

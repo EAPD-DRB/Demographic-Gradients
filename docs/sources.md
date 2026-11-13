@@ -27,8 +27,9 @@ the National Family Health Survey from the [DHS Program](https://dhsprogram.com)
 published here, as the IPUMS license and the DHS terms of use require; no
 microdata are included in the repository.
 
-**National income.** World Bank, GNI per capita, Atlas method
-(`NY.GNP.PCAP.CD`).
+**National income.** World Bank, GDP per capita, PPP, constant 2021
+international dollars (`NY.GDP.PCAP.PP.KD`), for the general gradient; GNI per
+capita, Atlas method (`NY.GNP.PCAP.CD`), is kept beside it for reference.
 
 **OG-Core.** The conversion to OG-Core units is verified against the published
 OG-Core source code.
@@ -86,9 +87,10 @@ Cite this repository together with the underlying sources:
   deaths in institutions are not recorded.
 - **Sampling uncertainty.** No standard errors are published; each gradient is
   fitted to five or fewer group rates.
-- **National income.** The general gradient is estimated on GNI in current
-  dollars of the census and survey years; applied to recent GNI without adjustment for
-  price change, it predicts a somewhat steeper gradient.
+- **National income.** Purchasing-power parities are revised with each round
+  of the International Comparison Program; the income figures behind the
+  general gradient are pinned with their retrieval date, and a country's
+  income should be taken from the same series and vintage where possible.
 - **Regional coverage of adult mortality.** The general gradient is estimated
   mainly from African censuses, with one Brazilian census and India's surveys;
   there is no estimate for East or Southeast Asia, so values for those

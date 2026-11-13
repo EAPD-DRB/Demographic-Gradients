@@ -170,8 +170,10 @@ only a subsample with too few deaths can be ranked by wealth.
 
 Across countries, the adult-mortality gradient becomes more negative as
 income rises. The **general gradient** is the least-squares regression of the
-45q15 gradient on the logarithm of GNI per capita (World Bank, Atlas method,
-current US dollars) in the census or survey year. Census and survey
+45q15 gradient on the logarithm of GDP per capita at purchasing-power parity,
+in constant international dollars (World Bank), in the census or survey year:
+the conventional measure for comparing living standards across countries and
+over time. Census and survey
 observations enter with equal weight. Most observations are African censuses;
 the others are Brazil's 2010 census and India's surveys. The rule was selected
 over a single pooled value and over regional medians by leave-one-country-out
@@ -187,9 +189,10 @@ between each band's gradient and the 45q15 gradient; these offsets are fitted
 in-sample, and those for ages 45–59 and 60–74 are the least reliable
 ([details](methods/general-gradient.md)).
 
-The rule is estimated on GNI in current dollars of the census and survey
-years. Applied to a recent GNI figure, it does not adjust for price
-change since then, which makes the predicted gradient somewhat steeper. The
+Because income is measured in constant prices and at purchasing-power parity,
+the rule applies to the same series for any year without conversion. It
+replaced an earlier version estimated on GNI in current US dollars, which
+mixed the price levels of different years and fitted about equally well. The
 rule should not be extrapolated outside the income range of the observations.
 
 ## 8. Conversion to OG-Core
@@ -221,9 +224,9 @@ mortality sets were not tested; at adult death rates 1 − p is close to one
 | MICS fertility rates compared with the national TFR; MICS mortality limited to direct estimates | that MICS values measure the same quantities as the DHS values |
 
 Re-running the scripts on the same inputs reproduces the published census
-and survey adult-mortality files exactly, including Brazil's rows. The GNI figures behind
+and survey adult-mortality files exactly, including Brazil's rows. The income figures behind
 the general gradient are stored with their retrieval date, since the World
-Bank revises historical values. DHS-based files are downloaded from the DHS
+Bank revises historical values and purchasing-power parities. DHS-based files are downloaded from the DHS
 Program API and reflect the download date given in the README; MICS values are
 kept as downloaded from the World Bank's compilation, which is no longer
 updated.

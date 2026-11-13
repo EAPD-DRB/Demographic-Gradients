@@ -15,12 +15,12 @@ accuracy they are accepting.
 Three candidate rules are compared by leave-one-country-out prediction error:
 each observation is predicted from a rule estimated without any observation of
 the same country, which matches the use case of a country with no estimate of
-its own. All rules are scored on the same observations (those with a GNI
+its own. All rules are scored on the same observations (those with an income
 figure); the region rule falls back to the pooled median where a region has no
 other country.
 
     constant   one number for everyone (the pooled median)
-    income     tilt ~ a + b * ln(GNI per capita)
+    income     tilt ~ a + b * ln(GDP per capita, PPP)
     region     the median tilt of the country's region
 
 The level comes from the winning rule; the by-age shape is pooled separately,
@@ -30,19 +30,26 @@ because ogcore's `mort_gradient` accepts a tilt per age band.
 
 Writes data/general_gradient.csv (the rule, with its standard errors and what
 is needed for a prediction interval) and data/general_gradient_points.csv (each
-census or survey behind it: GNI, measured tilt, leave-one-out prediction).
+census or survey behind it: income, measured tilt, leave-one-out prediction).
 
-GNI per capita (World Bank, Atlas method, current US$) is read from
-data/gni_census_years.csv, so the fit does not change when the World Bank
-revises its historical series. A year missing from that file is fetched from
-the World Bank API (free, no key) and appended with the retrieval date;
-`--refresh-gni` re-downloads every value.
+Income is GDP per capita at purchasing-power parity in constant 2021
+international dollars (World Bank NY.GDP.PCAP.PP.KD; ruled 2026-11-13), the
+standard measure for comparing living standards across countries and years:
+it removes both price change over time and differences in price levels
+between countries. A user applies the rule to the same series for any year,
+with no conversion. GNI per capita (Atlas method, current US$), the measure
+used before, is kept beside it for reference. Both are read from
+data/income_census_years.csv, so the fit does not change when the World Bank
+revises its series (PPP values are revised with each new ICP benchmark); a
+year missing from that file is fetched from the World Bank API (free, no key)
+and appended with the retrieval date; `--refresh-income` re-downloads every
+value.
 
 Inference is classical OLS: standard errors from the residual standard error
 with n - 2 degrees of freedom, 95% intervals from Student's t. The interval
 for a country without its own estimate is the prediction interval
 
-    pred +/- t * s * sqrt(1 + 1/n + (ln GNI - mean_ln_gni)^2 / sxx_ln_gni)
+    pred +/- t * s * sqrt(1 + 1/n + (ln income - mean_ln_income)^2 / sxx_ln_income)
 
 whose terms are all written to the output.
 """
@@ -62,7 +69,9 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "data" / "adult_mortality_gradients.csv"
 OUT = ROOT / "data" / "general_gradient.csv"
 POINTS = ROOT / "data" / "general_gradient_points.csv"
-GNI = ROOT / "data" / "gni_census_years.csv"
+INCOME = ROOT / "data" / "income_census_years.csv"
+PPP = "NY.GDP.PCAP.PP.KD"   # GDP per capita, PPP, constant 2021 international $
+ATLAS = "NY.GNP.PCAP.CD"    # GNI per capita, Atlas method, current US$ (reference)
 BANDS = [(15, 29), (30, 44), (45, 59), (60, 74)]
 
 # World Bank ISO3 per country in the adult-mortality file
@@ -104,24 +113,32 @@ def wb(iso3, year, indicator="NY.GNP.PCAP.CD"):
     raise RuntimeError(f"World Bank API failed for {iso3} {year}: {err}")
 
 
-def census_gni(need, refresh=False):
-    """GNI per capita for each census or survey year, from the pinned file; fetch what is missing.
+def census_income(need, refresh=False):
+    """Income for each census or survey year, from the pinned file; fetch what is missing.
 
-    A value the World Bank does not have (South Sudan before 2011) is stored
-    as blank, so it is not requested again.
+    Columns gdp_ppp (the rule's measure) and gni_atlas (reference), each with
+    its retrieval date. A value the World Bank does not have (South Sudan
+    2008) is stored as blank, so it is not requested again.
     """
-    have = (pd.read_csv(GNI) if GNI.exists() and not refresh else
-            pd.DataFrame(columns=["country", "iso3", "year", "gni", "retrieved"]))
-    known = set(zip(have["country"], have["year"]))
+    cols = ["country", "iso3", "year", "gdp_ppp", "gdp_ppp_retrieved", "gni_atlas",
+            "gni_atlas_retrieved"]
+    have = (pd.read_csv(INCOME, dtype={"gdp_ppp_retrieved": object, "gni_atlas_retrieved": object})
+            if INCOME.exists() and not refresh else pd.DataFrame(columns=cols))
     today = datetime.date.today().isoformat()
-    new = [dict(country=c, iso3=ISO3[c], year=int(y), gni=wb(ISO3[c], int(y)), retrieved=today)
-           for c, y in need.itertuples(index=False) if (c, y) not in known]
-    if new:
-        have = pd.concat([have, pd.DataFrame(new)], ignore_index=True)
+    have = have.merge(need.assign(iso3=need["country"].map(ISO3)), on=["country", "year", "iso3"],
+                      how="outer").reindex(columns=cols)
+    fetched = 0
+    for col, ind in (("gdp_ppp", PPP), ("gni_atlas", ATLAS)):
+        for i in have.index[have[f"{col}_retrieved"].isna()]:
+            have.loc[i, col] = wb(have.loc[i, "iso3"], int(have.loc[i, "year"]), ind)
+            have.loc[i, f"{col}_retrieved"] = today
+            fetched += 1
+    if fetched or not INCOME.exists():
         have = have.sort_values(["country", "year"])
-        have.to_csv(GNI, index=False)
-        print(f"fetched GNI for {len(new)} observation(s) from the World Bank API; wrote {GNI}")
-    return have[["country", "year", "gni"]].astype({"year": int, "gni": float})
+        have.to_csv(INCOME, index=False)
+        print(f"fetched {fetched} income value(s) from the World Bank API; wrote {INCOME}")
+    return have[["country", "year", "gdp_ppp", "gni_atlas"]].astype(
+        {"year": int, "gdp_ppp": float, "gni_atlas": float})
 
 
 def observations(refresh=False):
@@ -136,10 +153,10 @@ def observations(refresh=False):
                          n_deaths=int(src["n_deaths"].max()),
                          region=REGION.get(c, "unknown")))
     d = pd.DataFrame(rows)
-    d = d.merge(census_gni(d[["country", "year"]], refresh), on=["country", "year"], how="left")
-    for r in d[d["gni"].isna()].itertuples():
-        print(f"no World Bank GNI for {r.country} {r.year}: excluded from the fit")
-    d["lg"] = np.log(d["gni"])
+    d = d.merge(census_income(d[["country", "year"]], refresh), on=["country", "year"], how="left")
+    for r in d[d["gdp_ppp"].isna()].itertuples():
+        print(f"no World Bank GDP per capita (PPP) for {r.country} {r.year}: excluded from the fit")
+    d["lg"] = np.log(d["gdp_ppp"])
     return d
 
 
@@ -148,7 +165,7 @@ def loo_errors(d):
 
     A country's observations are all left out together (South Africa and
     Malawi have two censuses, India three surveys), matching the use case of a
-    country with no estimate of its own. Observations without a GNI figure are
+    country with no estimate of its own. Observations without an income figure are
     dropped first, so every rule is scored on the same observations.
     """
     d = d.dropna(subset=["lg", "tilt"])
@@ -188,9 +205,9 @@ def age_shape(src=SRC):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--refresh-gni", action="store_true",
-                    help="re-download every observation's GNI instead of using the pinned file")
-    d = observations(ap.parse_args().refresh_gni)
+    ap.add_argument("--refresh-income", action="store_true",
+                    help="re-download every observation's income instead of using the pinned file")
+    d = observations(ap.parse_args().refresh_income)
     print(f"{len(d)} observations ({d['country'].nunique()} countries)\n")
     e = loo_errors(d)
 
@@ -207,10 +224,10 @@ def main():
     print(f"\nbest rule: {best}\n")
 
     print("Per-country: what the general rule would have predicted vs the measured tilt")
-    print(f"{'country':<15}{'year':>6}{'GNI':>8}{'measured':>10}{'general':>9}{'error':>8}")
-    m = e.merge(d[["country", "year", "gni"]], on=["country", "year"])
-    for _, r in m.sort_values("gni").iterrows():
-        g = f"{r['gni']:,.0f}" if pd.notna(r["gni"]) else "n/a"
+    print(f"{'country':<15}{'year':>6}{'GDP PPP':>8}{'measured':>10}{'general':>9}{'error':>8}")
+    m = e.merge(d[["country", "year", "gdp_ppp", "gni_atlas"]], on=["country", "year"])
+    for _, r in m.sort_values("gdp_ppp").iterrows():
+        g = f"{r['gdp_ppp']:,.0f}" if pd.notna(r["gdp_ppp"]) else "n/a"
         p, err = r[f"pred_{best}"], r[f"err_{best}"]
         print(f"{r['country']:<15}{int(r['year']):>6}{g:>8}{r['actual']:>10.3f}"
               f"{p:>9.3f}{err:>8.3f}" if pd.notna(p) else
@@ -236,7 +253,7 @@ def main():
     meat = sum(np.outer(X[idx].T @ resid.values[idx], X[idx].T @ resid.values[idx])
                for idx in fit.groupby("country").indices.values())
     se_b_cl = float(np.sqrt((bread @ meat @ bread)[1, 1] * G / (G - 1) * (n - 1) / (n - 2)))
-    print(f"\nfull-sample income rule: tilt = {a_:+.4f} {b:+.4f} * ln(GNI)   (n = {n})")
+    print(f"\nfull-sample income rule: tilt = {a_:+.4f} {b:+.4f} * ln(GDP pc PPP)   (n = {n})")
     print(f"   intercept SE {se_a:.4f}; slope SE {se_b:.4f}, 95% CI {b - t95 * se_b:+.3f} "
           f"to {b + t95 * se_b:+.3f}; slope SE clustered by country {se_b_cl:.4f}")
     print(f"   r = {r:+.3f}   R2 = {r**2:.2f}   residual standard error = {s_e:.3f}")
@@ -260,8 +277,9 @@ def main():
 
     # --- write the rule out
     recs = [dict(component="income_rule", key="intercept", value=round(float(a_), 4),
-                 note="tilt_45q15 = intercept + slope_ln_gni * ln(GNI per capita, current US$)"),
-            dict(component="income_rule", key="slope_ln_gni", value=round(float(b), 4), note=""),
+                 note="tilt_45q15 = intercept + slope_ln_income * ln(GDP per capita, PPP, "
+                      "constant 2021 international $; World Bank NY.GDP.PCAP.PP.KD)"),
+            dict(component="income_rule", key="slope_ln_income", value=round(float(b), 4), note=""),
             dict(component="income_rule", key="se_intercept", value=round(float(se_a), 4),
                  note="standard error, OLS"),
             dict(component="income_rule", key="se_slope", value=round(float(se_b), 4),
@@ -274,10 +292,10 @@ def main():
                  note="sensitivity: slope standard error clustered by country"),
             dict(component="income_rule", key="residual_sd", value=round(s_e, 4),
                  note="residual standard error, n - 2 df"),
-            dict(component="income_rule", key="mean_ln_gni", value=round(xbar, 4),
+            dict(component="income_rule", key="mean_ln_income", value=round(xbar, 4),
                  note="for the prediction interval (see the script docstring)"),
-            dict(component="income_rule", key="sxx_ln_gni", value=round(sxx, 4),
-                 note="sum of squared deviations of ln GNI"),
+            dict(component="income_rule", key="sxx_ln_income", value=round(sxx, 4),
+                 note="sum of squared deviations of ln income"),
             dict(component="income_rule", key="t_95", value=round(t95, 4),
                  note="Student's t, 0.975 quantile, n - 2 df"),
             dict(component="income_rule", key="r", value=round(float(r), 3), note=""),
@@ -287,7 +305,7 @@ def main():
                  note="leave-one-out mean absolute error of the chosen rule"),
             dict(component="fallback", key="pooled_median_tilt",
                  value=round(float(d["tilt"].median()), 4),
-                 note="use when GNI is unavailable")]
+                 note="use when income is unavailable")]
     for band, row in shape.iterrows():
         recs.append(dict(component="age_offset", key=band, value=round(float(row["median"]), 4),
                          note="add to the 45q15 tilt to get this band's tilt"))
@@ -300,9 +318,10 @@ def main():
     pd.DataFrame(recs).to_csv(OUT, index=False)
     print(f"\nwrote {OUT}")
     pts = m.assign(region=m["country"].map(REGION).fillna("unknown"))[
-        ["country", "year", "region", "gni", "actual", f"pred_{best}"]].rename(
+        ["country", "year", "region", "gdp_ppp", "gni_atlas", "actual", f"pred_{best}"]].rename(
         columns={"actual": "tilt_45q15", f"pred_{best}": "loo_prediction"})
-    pts.sort_values("gni").to_csv(POINTS, index=False)
+    pts["gdp_ppp"] = pts["gdp_ppp"].round(0)
+    pts.sort_values("gdp_ppp").to_csv(POINTS, index=False)
     print(f"wrote {POINTS}")
 
 

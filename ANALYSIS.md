@@ -134,24 +134,25 @@ household. The library uses censuses that record deaths of household members
 during a recent period, usually the previous year, and, for India, DHS surveys
 that record them for the previous two years
 ([methods](docs/methods/adult-mortality.md); [all estimates](docs/tables/adult_mortality.md)).
-Across the 17 censuses and surveys with a GNI estimate, the gradient in
-45q15 is steeper in richer countries (r = −0.84): the fitted
-gradient is −0.30 at a GNI per capita of $500 and
-−0.95 at $5,000. This relationship, the general gradient,
+Across the 17 censuses and surveys with an income estimate, the gradient in
+45q15 is steeper in richer countries (r = −0.86): the fitted
+gradient is −0.26 at a GDP per capita (PPP, constant 2021
+international $) of $2,000 and
+−0.87 at $10,000. This relationship, the general gradient,
 provides values for countries without their own estimate
 ([details](docs/methods/general-gradient.md)). Within countries the evidence
 is limited and mixed: Malawi's gradient steepened between its 1998 and 2008
-censuses, while India's changed little between 1999 and 2020 as its income rose
-about fourfold.
+censuses, while India's changed little between 1999 and 2020 as its income per
+capita rose by a factor of 2.4.
 
-![Wealth gradient in adult mortality and GNI per capita](figures/adult_mortality_vs_income.png)
+![Wealth gradient in adult mortality and income per capita](figures/adult_mortality_vs_income.png)
 
 ## Adult mortality by age
 
 In all 14 censuses and surveys with estimates at ages 15–29
 and at least one older band, the gradient is weaker at the oldest band measured
-than at ages 15–29. In 4 censuses, all with GNI per capita of
-$1,350 or less, it is positive at the oldest band: recorded
+than at ages 15–29. In 4 censuses, all with GDP per capita (PPP) of
+$4,446 or less, it is positive at the oldest band: recorded
 death rates rise with household wealth. Two explanations are consistent with
 this: small survival differences where most households are poor, and elderly
 people in poor health moving into better-off households before death. The

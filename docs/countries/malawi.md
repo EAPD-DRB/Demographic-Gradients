@@ -45,5 +45,5 @@ Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original d
 
 ## Notes
 
-- With two censuses (1998 and 2008), Malawi shows the adult-mortality gradient steepening as GNI per capita rose, in line with the income relationship described in the general-gradient documentation.
+- With two censuses (1998 and 2008), Malawi shows the adult-mortality gradient steepening as income per capita rose, in line with the income relationship described in the general-gradient documentation.
 - The 1998 census records only radio, electricity and toilet type. The asset index built from them ranks some households with a flush toilet or electricity below households with a latrine, so the 1998 wealth ranking rests on little information; its estimates should be used with caution. The 2008 census is used for `mort_gradient`.

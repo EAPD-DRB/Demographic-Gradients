@@ -14,38 +14,48 @@ Across countries, the gradient in 45q15 (the probability of dying between ages
 least squares on 17 observations, censuses and DHS surveys with a
 household-deaths module, each with equal weight:
 
-    gradient(45q15) = 1.481 − 0.286 × ln(GNI per capita, current US$)
+    gradient(45q15) = 2.610 − 0.378 × ln(GDP per capita, PPP, constant 2021 international $)
 
-with r = −0.84 and a residual standard error of 0.21. A doubling of
-GNI per capita corresponds to a change of −0.20 in the gradient.
+with r = −0.86 and a residual standard error of 0.20. A doubling of
+income per capita corresponds to a change of −0.26 in the gradient.
+
+Income is GDP per capita at purchasing-power parity in constant 2021
+international dollars (World Bank, `NY.GDP.PCAP.PP.KD`), the measure
+conventionally used to compare living standards across countries and over
+time: it removes differences in price levels between countries and price
+change over time. The rule applies to the same series for any year, with no
+conversion. It replaced GNI per capita in current US dollars (Atlas method),
+which mixed price levels of different years; on the same observations the
+two fit about equally well.
 
 | | Estimate | Standard error | 95% confidence interval |
 |---|---|---|---|
-| Intercept | 1.481 | 0.335 | |
-| Slope on ln(GNI per capita) | −0.286 | 0.048 | −0.388 to −0.184 |
+| Intercept | 2.610 | 0.480 | |
+| Slope on ln(income per capita) | −0.378 | 0.058 | −0.502 to −0.254 |
 
 Intervals use Student's t with 15 degrees of freedom. Some countries
 contribute more than one observation (India 3, Malawi 2, South Africa 2); clustering the standard
-error of the slope by country gives 0.044, close to the
+error of the slope by country gives 0.058, close to the
 conventional value.
 
 The slope is estimated precisely, but a single country can lie well off the
 line. For a country without its own estimate, the relevant uncertainty is the
 95% prediction interval,
 
-    prediction ± t × s × √(1 + 1/n + (ln GNI − mean ln GNI)² / Sxx)
+    prediction ± t × s × √(1 + 1/n + (ln income − mean ln income)² / Sxx)
 
 with s the residual standard error and the remaining terms in
-[`data/general_gradient.csv`](../../data/general_gradient.csv). At GNI per
-capita of $1,000 the general gradient is −0.49 (95% prediction interval −0.95 to −0.04); at $5,000 it is
-−0.95 (95% prediction interval −1.44 to −0.47). The leave-one-out prediction errors reported below are of
-the same order. The observations, their GNI and the leave-one-out
+[`data/general_gradient.csv`](../../data/general_gradient.csv). At GDP per
+capita (PPP) of $2,000 the general gradient is −0.26 (95% prediction interval −0.70 to 0.17); at $10,000 it
+is −0.87 (95% prediction interval −1.32 to −0.42). The leave-one-out prediction errors reported below are of
+the same order. The observations, their income and the leave-one-out
 predictions are in
 [`data/general_gradient_points.csv`](../../data/general_gradient_points.csv);
-GNI per capita (World Bank, Atlas method, current US$, as retrieved on the date
-recorded) is in [`data/gni_census_years.csv`](../../data/gni_census_years.csv).
+the income figures, with the dates they were retrieved and GNI per capita
+(Atlas method, current US$) for reference, are in
+[`data/income_census_years.csv`](../../data/income_census_years.csv).
 
-![Wealth gradient in adult mortality and GNI per capita](../../figures/adult_mortality_vs_income.png)
+![Wealth gradient in adult mortality and income per capita](../../figures/adult_mortality_vs_income.png)
 
 ## Choice of rule
 
@@ -59,10 +69,10 @@ subregion is available.
 | Candidate rule | Mean absolute error |
 |---|---|
 | A single value for all countries (pooled median) | 0.311 |
-| **Linear in ln(GNI per capita)** | **0.176** |
+| **Linear in ln(income per capita)** | **0.174** |
 | Regional median | 0.331 |
 
-The income rule has the lowest error, and is used. The largest out-of-sample error is for India 1999: a prediction of −0.20 against a measured −0.73. Where no GNI figure is available, the pooled
+The income rule has the lowest error, and is used. The largest out-of-sample error is for Malawi 2008: a prediction of −0.04 against a measured −0.47. Where no income figure is available, the pooled
 median of all estimates, −0.44, is used.
 
 ## Age pattern
@@ -90,16 +100,16 @@ mortality is what matters, the 15–29 and 30–44 offsets are the more reliable
 Across countries the gradient is steeper at higher income. Whether a
 country's gradient steepens as its own income rises is not established; the
 evidence within countries is limited and mixed. Between Malawi's 1998 and 2008
-censuses the 45q15 gradient moved from −0.14 to −0.47 as GNI per
-capita rose from about $290 to $530 (the 1998 wealth ranking rests on only
-three asset variables; see the [Malawi page](../countries/malawi.md)). India's three estimates show no such change: the gradient was −0.73, −0.74 and −0.72 in 1999, 2015 and 2020, while GNI per capita rose from about $440 to $1,900.
+censuses the 45q15 gradient moved from −0.14 to −0.47 as GDP per
+capita (PPP) rose from about $1,242 to $1,378 (the 1998 wealth ranking rests on only
+three asset variables; see the [Malawi page](../countries/malawi.md)). India's three estimates show no such change: the gradient was −0.73, −0.74 and −0.72 in 1999, 2015 and 2020, while GDP per capita (PPP) rose from about $2,954 to $7,187.
 A model projecting a country over several decades can hold the gradient fixed
 or let it follow the income relationship; the two bracket the evidence.
 
 ## Scope
 
-The rule is estimated on observations with GNI per capita between about $200
-and $10,000 and should not be extrapolated beyond that range. The
+The rule is estimated on observations with GDP per capita (PPP) between about
+$1,100 and $18,000 and should not be extrapolated beyond that range. The
 17 observations are 13 African censuses, 3 South Asian surveys and 1 Latin American census. There is no estimate for East or
 Southeast Asia, so predictions for the Philippines or Indonesia rest on a
 relationship estimated largely outside their region.

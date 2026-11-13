@@ -48,5 +48,5 @@ Source: The DHS Program, India NFHS-2 1998-99, household deaths module; original
 
 - Adult-mortality estimates come from the household-deaths module of the National Family Health Survey (NFHS-2, 1998–99; NFHS-4, 2015–16; NFHS-5, 2019–21): deaths of usual household members in the two years before the interview, with households ranked by the DHS wealth index ([methods](../methods/adult-mortality.md)). NFHS-5, labelled 2020, is used for `mort_gradient`. Men's and women's gradients are close to those published by Dhakad and Saikia (Demographic Research 55(16), 2026) from the same surveys.
 - NFHS-5 fieldwork was interrupted by the COVID-19 pandemic. About one seventh of the exposure, and a little under one fifth of the adult deaths, fall in March 2020 or later. The 45q15 gradient is −0.76 from deaths and exposure before March 2020 and −0.56 from those from March 2020; the published value, for the whole period, is −0.72.
-- The 45q15 gradient is nearly the same in the three surveys while GNI per capita rose about fourfold; see the general-gradient documentation.
+- The 45q15 gradient is nearly the same in the three surveys while income per capita rose substantially; see the general-gradient documentation.
 - NFHS-1 (1992–93) also recorded household deaths, but its released data file contains no age at death, and it is not used.

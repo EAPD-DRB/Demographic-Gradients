@@ -101,7 +101,7 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 
 ## F. Questions raised by the documentation review (2026-11-11)
 
-- [R] **F1. GNI price basis.** The general gradient is fitted on GNI in current
+- [x] **F1. GNI price basis.** Resolved by H4 (2026-11-13). The general gradient is fitted on GNI in current
   dollars of the census years (1998–2013) and applied to recent current-dollar
   GNI. Price change since then makes predicted gradients about 0.1–0.15 steeper
   (close to one residual SD). Option: deflate GNI to a common year before
@@ -132,6 +132,7 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
   non-data reply into "no value"). Now: retries, then a hard error; and GNI is
   pinned in `data/gni_census_years.csv` with retrieval dates, because WDI
   revises historical values. `--refresh-gni` re-downloads deliberately.
+  (Since H4: `data/income_census_years.csv`, `--refresh-income`.)
 
 ## G. Wealth index (2026-11-11)
 
@@ -249,8 +250,16 @@ these are done, since they may change the picture for Asia.
     them would mean reading the MICS reports' tables.
   - Note: `figures/adult_mortality_vs_income.png` is not byte-reproducible
     (label placement varies between runs); seed adjustText.
-- [ ] **H4. Constant-price GNI** (WDI constant 2015 US$ or constant PPP) for
-  the income rule — resolves F1's price-basis problem.
+- [x] **H4. Constant-price income** for the income rule — done 2026-11-13.
+  Compared on the same 17 observations (leave-one-country-out MAE): Atlas GNI
+  current US$ 0.176; Atlas GNI deflated to 2015 US$ 0.176; GDP per capita
+  constant 2015 US$ 0.200; GDP per capita PPP constant 2021 intl $ 0.175.
+  Constant-price GNI (US$ or PPP) is missing in WDI for 7 of 17. Ruling: GDP
+  per capita PPP constant (`NY.GDP.PCAP.PP.KD`), the standard measure for
+  cross-country health-income relationships. Rule 2.610 − 0.378 ln(income),
+  r −0.86, slope SE 0.058. Also fixed: the income figure is now
+  byte-reproducible (adjustText stopped on a 1-second clock; now a fixed
+  iteration count).
 - [ ] **H5. IPUMS mortality supplements not yet tried:** Mali 1987 and 1998,
   Malawi 1987, Benin 1992 and 2002, El Salvador 1992, Indonesia 1976, Guinea
   1983, Lesotho 1996. Same pipeline and gates; adds points to the income rule.
@@ -281,6 +290,13 @@ these are done, since they may change the picture for Asia.
   −0.286, intercept 1.639 → 1.481; Philippines −0.90 → −0.92 (PI −1.41 to
   −0.44); Indonesia −0.93 → −0.95; age offsets 15–29 −0.47, 30–44 −0.27,
   45–59 +0.13, 60–74 +0.43. India gets its own estimate (NFHS-5, −0.72).
+- After H4 (income rule on GDP per capita PPP, 2026-11-13): intercept 1.481 →
+  2.610, slope −0.286 → −0.378 on ln(GDP pc PPP, constant 2021 intl $);
+  Philippines −0.92 → −0.88 (PI −1.33 to −0.43; $10,378 in 2024), Indonesia
+  −0.95 → −1.01 (PI −1.47 to −0.55; $14,471). OG-ETH and OG-PHL hard-code the
+  rule and project it on current-dollar GNI growth: switch their income input
+  to GDP per capita PPP (constant) and the new coefficients. Age offsets
+  unchanged.
 - OG-ETH, OG-PHL: still pass plain `tilt / 100` and one TFR tilt at every
   age; switch to the A1 conversion and the A2 age offsets, then align with
   the C1 recipe once written.
