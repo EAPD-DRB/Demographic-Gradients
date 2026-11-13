@@ -208,7 +208,7 @@ scripts, and the documentation is generated — respect that architecture.
 ## Non-negotiables
 
 - **Never hand-edit the generated docs** — `ANALYSIS.md`, the README's marked
-  coverage table, `docs/methods/general-gradient.md`,
+  coverage table, the marked line-fit table in `docs/methods/dhs-gradients.md`, `docs/methods/general-gradient.md`,
   `docs/methods/ogcore-units.md`, `docs/methods/fertility-by-age.md`,
   `docs/tables/adult_mortality.md`, and
   everything under `docs/countries/`
