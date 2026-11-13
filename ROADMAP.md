@@ -260,9 +260,18 @@ these are done, since they may change the picture for Asia.
   r −0.86, slope SE 0.058. Also fixed: the income figure is now
   byte-reproducible (adjustText stopped on a 1-second clock; now a fixed
   iteration count).
-- [ ] **H5. IPUMS mortality supplements not yet tried:** Mali 1987 and 1998,
+- [x] **H5. IPUMS mortality supplements not yet tried:** Mali 1987 and 1998,
   Malawi 1987, Benin 1992 and 2002, El Salvador 1992, Indonesia 1976, Guinea
-  1983, Lesotho 1996. Same pipeline and gates; adds points to the income rule.
+  1983, Lesotho 1996. Screened 2026-11-13: none publishable on the current
+  index. Benin 1992 and Lesotho 1996 have too few adult deaths (541, 775);
+  Benin 2002, Guinea 1983, Indonesia 1976, Mali 1987/1998 and Malawi 1987 have
+  too few asset variables for three wealth groups; El Salvador 1992 fails the
+  MORTNUM check (bias ~0.13) and links 89%. Configs kept with publish=False.
+  Also: the PPP income series starts in 1990, so pre-1990 censuses could not
+  enter the income rule without back-casting income. Open option (method
+  change, needs a ruling): add housing characteristics (floor, wall, roof,
+  water, cooking fuel, rooms) to the index, as the DHS wealth index does —
+  may rescue the two-group samples, but changes every published census.
 - [ ] **H6. Colombia 2018 census** (DANE, free download): deaths in 2017 by
   age and sex, with death-certificate flag. Housing and services only (no
   durable goods), so the index is coarse.

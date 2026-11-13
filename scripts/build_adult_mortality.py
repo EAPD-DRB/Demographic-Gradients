@@ -226,6 +226,57 @@ SAMPLES = {
     "ss2008a": dict(country="South Sudan", year=2008, asset_extra=["AUTOS", "MORTNUM"],
                     death_weight="weightd",
                     nso="Southern Sudan Centre for Census, Statistics and Evaluation"),
+    # --- ROADMAP H5 (2026-11-13): supplements not tried before. None passes
+    # the gates on the current (assets + toilet) index:
+    # - bj1992a (541 adult death records) and ls1996a (775) are below
+    #   MIN_BAND_DEATHS for 45q15 and are not configured.
+    # - 2 wealth groups or fewer (too few asset variables): bj2002a (toilet,
+    #   electricity), gn1983a (electricity only), id1976a (electricity, fridge,
+    #   TV, radio, car; no toilet), ml1987a and ml1998a (toilet, electricity),
+    #   mw1987a (toilet, radio, car).
+    # - sv1992a: 5 groups and 1,050 records, but the MORTNUM check is not flat
+    #   (1.04/1.09/0.94/0.95/0.98 - records short in richer groups, biasing the
+    #   gradient steep by ~0.13, the size that rejected mz2007a) and only 89% of
+    #   death records link to an asset-universe household. 45q15 gradient -0.17.
+    # Envelope (weighted records / CDR x population): gn 37%, ml1987 58%,
+    # ml1998 57%, mw1987 64%, sv1992 85%, id1976 137% (wtmort; not resolved).
+    # bj2002a: agedyr 33 holds 370 records (12-41 at neighbouring ages), 362 of
+    # them women, with birth years 1922-2000 - a coding artefact, not age 33;
+    # treated as unknown with 999 (missing; infants are coded in agedday/agedmo).
+    "bj2002a": dict(country="Benin", year=2002, publish=False, asset_extra=["MORTNUM"],
+                    drop=["PHONE", "CELL", "REFRIG", "TV", "RADIO", "COMPUTER"],
+                    death_weight=None, age_col="agedyr", age_unknown=[33, 999],
+                    nso="Institut National de la Statistique et de l'Analyse Economique, Benin"),
+    "gn1983a": dict(country="Guinea", year=1983, publish=False, asset_extra=[],
+                    drop=["TOILET", "PHONE", "CELL", "REFRIG", "TV", "RADIO", "COMPUTER"],
+                    death_weight=None,
+                    nso="Direction Nationale de la Statistique, Guinea"),
+    # id1976a: aged 99 = unknown (96 records against 2-12 at ages 90-97)
+    "id1976a": dict(country="Indonesia", year=1976, publish=False, asset_extra=["AUTOS"],
+                    drop=["TOILET", "PHONE", "CELL", "COMPUTER"],
+                    death_weight="wtmort", age_col="aged", age_unknown=[99],
+                    nso="Badan Pusat Statistik, Indonesia"),
+    # ml1987a: value + unit (ageunitd 1 days, 2 months, 3 years); 99 = unknown
+    "ml1987a": dict(country="Mali", year=1987, publish=False, asset_extra=["MORTNUM"],
+                    drop=["PHONE", "CELL", "REFRIG", "TV", "RADIO", "COMPUTER"],
+                    death_weight=None, age_col="aged", age_unit_col="ageunitd",
+                    age_unknown=[99],
+                    nso="Direction Nationale de la Statistique et de l'Informatique, Mali"),
+    # ml1998a: aged = 100 x unit + value (301 = 1 year); unit 0 and 399 = unknown
+    "ml1998a": dict(country="Mali", year=1998, publish=False, asset_extra=["MORTNUM"],
+                    drop=["PHONE", "CELL", "REFRIG", "TV", "RADIO", "COMPUTER"],
+                    death_weight=None, age_col="aged", age_unit_col="ageunitd",
+                    age_hundreds=True, age_unknown=[99],
+                    nso="Direction Nationale de la Statistique et de l'Informatique, Mali"),
+    # mw1987a: a third Malawi census; aged 99 = not reported
+    "mw1987a": dict(country="Malawi", year=1987, publish=False, asset_extra=["AUTOS"],
+                    drop=["ELECTRIC", "PHONE", "CELL", "REFRIG", "TV", "COMPUTER"],
+                    death_weight=None, age_col="aged", age_unknown=[99],
+                    nso="National Statistical Office, Malawi"),
+    "sv1992a": dict(country="El Salvador", year=1992, publish=False,
+                    asset_extra=["AUTOS", "WASHER", "MORTNUM"], drop=["CELL", "COMPUTER"],
+                    death_weight=None,
+                    nso="Direccion General de Estadistica y Censos, El Salvador"),
 }
 
 # SAMPLE-code country prefixes (ISO numeric, zero-padded to 3 digits) used by
@@ -233,7 +284,8 @@ SAMPLES = {
 CCODE = {"za": "710", "br": "076", "et": "231", "zm": "894", "mw": "454",
          "mz": "508", "ug": "800", "rw": "646", "sn": "686", "sl": "694",
          "ls": "426", "bj": "204", "sv": "222", "np": "524", "kh": "116",
-         "sd": "729", "ss": "728", "bf": "854", "ci": "384"}
+         "sd": "729", "ss": "728", "bf": "854", "ci": "384", "ml": "466", "gn": "324",
+         "id": "360"}
 
 
 def api_key():
@@ -376,7 +428,12 @@ def estimate_sample(sample, cfg, extracts_dir, deaths_dir):
     if cfg.get("age_unit_col"):
         u = pd.to_numeric(m[cfg["age_unit_col"]], errors="coerce")
         v = pd.to_numeric(m[cfg["age_col"]], errors="coerce")
+        if cfg.get("age_hundreds"):  # ml1998a: aged = 100 x unit + value
+            v = v - 100 * u
         m["aged"] = np.select([u == 3, u == 2, u == 1], [v, v / 12, v / 365], np.nan)
+        # an unknown-age code applies to the value in years, before decoding
+        if cfg.get("age_unknown"):
+            m.loc[(u == 3) & v.isin(cfg["age_unknown"]), "aged"] = np.nan
     elif cfg.get("age_col"):
         m["aged"] = pd.to_numeric(m[cfg["age_col"]], errors="coerce")
     if cfg.get("age_unknown"):
