@@ -86,6 +86,11 @@ Nationally representative household surveys in low- and middle-income
 countries, conducted since the 1980s with support from USAID. The DHS Program
 publishes fertility and child-mortality indicators by wealth quintile.
 
+### Multiple Indicator Cluster Surveys (MICS)
+Nationally representative household surveys conducted by national statistical
+offices with support from UNICEF. Their reports include fertility and child
+mortality by wealth quintile, computed with methods close to those of the DHS.
+
 ### Household-death records
 Questions in some censuses, and in a few DHS-type surveys such as India's
 National Family Health Survey, on deaths of household members during a recent

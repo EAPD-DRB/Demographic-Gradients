@@ -34,6 +34,8 @@ QUINTILES = ["Lowest", "Second", "Middle", "Fourth", "Highest"]
 RANK = np.array([0.1, 0.3, 0.5, 0.7, 0.9])
 RATIO_TICKS = [0.3, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 10]
 DHS = "Source: DHS Program indicator API; author's calculations."
+SURVEYS = ("Source: DHS Program indicator API; UNICEF MICS, as compiled in the World Bank's "
+           "Health Nutrition and Population Statistics by Wealth Quintile; author's calculations.")
 CENSUS = ("Source: IPUMS International and IBGE census microdata; DHS Program (India "
           "NFHS); World Bank GNI per capita; author's calculations.")
 
@@ -103,11 +105,11 @@ def what_is_a_gradient(latest, country="Philippines"):
     ax.set_ylabel("births per woman")
     ax.set_xlabel("household wealth quintile")
     frame(fig, f"Total fertility rate by household wealth quintile, {country}, "
-          f"DHS {int(r['year'])}",
+          f"{r['source']} {int(r['year'])}",
           "Bars are the published quintile rates. Each quintile is placed at the midpoint "
           "of its wealth rank (0.1, 0.3, ..., 0.9); the\ngradient is the slope of the "
           "fitted line on a log scale. A negative gradient means the rate falls as "
-          "wealth rises.", DHS, top=0.9, bottom=0.22)
+          "wealth rises.", DHS if r["source"] == "DHS" else SURVEYS, top=0.9, bottom=0.22)
     fig.subplots_adjust(right=0.76)
     save(fig, "what_is_a_gradient.png")
 
@@ -133,9 +135,9 @@ def by_wealth(latest):
         ax.set_xlabel("household wealth quintile")
         ax.set_title(ttl)
     frame(fig, "Total fertility rate and infant mortality rate by household wealth quintile, "
-          "latest DHS survey",
+          "latest DHS or MICS survey",
           "Grey lines are individual countries (latest survey with a complete quintile "
-          "breakdown); the blue line is the median across countries.", DHS)
+          "breakdown); the blue line is the median across countries.", SURVEYS)
     save(fig, "by_wealth.png")
 
 
@@ -167,11 +169,11 @@ def by_region(latest):
     axes[0].set_yticks(range(len(regions)), [short.get(r, r) for r in regions])
     axes[0].tick_params(axis="y", length=0)
     frame(fig, "Low/high ratio of the total fertility rate and the infant mortality rate, "
-          "by DHS region",
+          "by region",
           "Low/high ratio = rate in the lowest wealth quintile divided by the rate in the "
           "highest. Dots are countries (latest survey); the tick is\nthe regional median "
-          "and the band the interquartile range; n = number of countries. Regions follow "
-          "the DHS Program's classification.", DHS)
+          "and the band the interquartile range; n = number of countries. Regions: DHS "
+          "Program classification (MICS-only countries assigned).", SURVEYS)
     fig.subplots_adjust(left=0.235, right=0.95, wspace=0.14)
     save(fig, "by_region.png")
 
@@ -193,12 +195,12 @@ def over_time(lib):
     axes[0].set_ylabel("low/high ratio (log scale)")
     frame(fig, "Low/high ratio of the total fertility rate and the infant mortality rate, "
           f"by survey year, {int(lib['year'].min())}–{int(lib['year'].max())}",
-          "Dots are surveys with a complete wealth-quintile breakdown. The line is the "
-          "median over a nine-year centered window.", DHS)
+          "Dots are DHS and MICS surveys with a complete wealth-quintile breakdown. The "
+          "line is the median over a nine-year centered window.", SURVEYS)
     save(fig, "over_time.png")
 
 
-def fertility_by_age(latest):
+def fertility_by_age(lib):
     """Low/high ratio by mother's age, and the age offsets the library publishes."""
     tilts, offs = DATA / "fertility_age_tilts.csv", DATA / "fertility_age_offsets.csv"
     if not (tilts.exists() and offs.exists()):
@@ -212,7 +214,9 @@ def fertility_by_age(latest):
     labels = [f"{a}–{b}" for a, b in zip(o["age_lo"], o["age_hi"])]
     by_age = t.groupby("age_lo")["ratio"]
     med, q25, q75 = by_age.median(), by_age.quantile(0.25), by_age.quantile(0.75)
-    tfr_ratio = latest.loc[latest["indicator"] == "TFR", "ratio"].median()
+    # the TFR reference line on the same surveys: each country's latest DHS
+    dhs = lib[(lib["source"] == "DHS") & (lib["indicator"] == "TFR")]
+    tfr_ratio = dhs.groupby("country").tail(1)["ratio"].median()
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(11, 5), gridspec_kw={"wspace": 0.25})
     for ax in (a1, a2):
         grid(ax)
@@ -375,7 +379,7 @@ def main():
     by_wealth(latest)
     by_region(latest)
     over_time(lib)
-    fertility_by_age(latest)
+    fertility_by_age(lib)
     adult_mortality_vs_income()
     adult_mortality_by_age()
     print(f"wrote {len(list(FIG.glob('*.png')))} figures to figures/")

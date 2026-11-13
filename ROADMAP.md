@@ -206,7 +206,7 @@ these are done, since they may change the picture for Asia.
   - Rule now 1.481 − 0.286 ln(GNI), n = 17, r −0.84, residual SE 0.208, LOO
     MAE 0.176. India's gradient is flat over 1999–2020 while GNI quadrupled;
     long-run guidance changed from "should steepen" to a fixed/rule range.
-- [ ] **H3. World Bank "HNP Statistics by Wealth Quintile"** (API source 39,
+- [x] **H3. World Bank "HNP Statistics by Wealth Quintile"** (API source 39,
   last updated 2022-12-13): TFR, IMR and U5MR by quintile, each value
   footnoted with its survey. Examined 2026-11-12 (scratch analysis, nothing
   added to `data/` yet):
@@ -233,9 +233,20 @@ these are done, since they may change the picture for Asia.
   - Open: MICS child-mortality method (direct birth history vs indirect) is
     not stated per value; the frozen 2022 compilation misses later MICS6/7
     rounds (UNICEF's own data warehouse may be the better long-run source).
-  - **Ruling needed:** add MICS (which indicators; where — new countries only,
-    or also where newer than our DHS; schema: a `source` column or a separate
-    file).
+  - **Done 2026-11-13** (ruling: all MICS surveys into the full file with a
+    `source` column; latest of either kind; mortality only from direct
+    estimates). Matching UNICEF's method records by first fieldwork year
+    classifies 47 MICS surveys as direct, 10 indirect, 8 not recorded (the
+    earlier 37/6/21 matched on the wrong year). The import found the World Bank
+    file mislabels six MICS6 adolescent birth rates as TFR and has a corrupt
+    Tunisia 2018 set; checks for these, and a minimum mortality rate, are
+    described in `docs/methods/dhs-gradients.md`. Result: TFR 77 → 95
+    countries, IMR 78 → 87; DHS rows unchanged.
+  - Later: MICS6/7 surveys after 2022 are not in the compilation. UNICEF
+    publishes no TFR or IMR by quintile through its API (only U5MR); adding
+    them would mean reading the MICS reports' tables.
+  - Note: `figures/adult_mortality_vs_income.png` is not byte-reproducible
+    (label placement varies between runs); seed adjustText.
 - [ ] **H4. Constant-price GNI** (WDI constant 2015 US$ or constant PPP) for
   the income rule — resolves F1's price-basis problem.
 - [ ] **H5. IPUMS mortality supplements not yet tried:** Mali 1987 and 1998,

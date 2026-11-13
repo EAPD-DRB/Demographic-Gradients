@@ -8,7 +8,16 @@ fertility rate (`FE_FRTR_W_TFR`), age-specific fertility rates
 (`FE_FRTR_W_A15` … `FE_FRTR_W_A45`), the infant mortality rate (`CM_ECMR_C_IMR`)
 and the under-five mortality rate (`CM_ECMR_C_U5M`). Access is free and does not
 require registration. Surveys without a complete quintile breakdown are
-excluded.
+excluded. Multiple Indicator Cluster Survey (MICS) rates by wealth quintile
+come from the World Bank's [Health Nutrition and Population Statistics by
+Wealth Quintile](https://databank.worldbank.org/source/health-nutrition-and-population-statistics-by-wealth-quintile)
+database, which compiles them from the MICS reports; UNICEF's child-mortality
+database ([data.unicef.org](https://data.unicef.org)) records whether each
+survey's mortality rates are direct or indirect estimates, and the World Bank's
+historical income classification and World Development Indicators supply the
+checks described in [the methods](methods/dhs-gradients.md#multiple-indicator-cluster-surveys).
+A copy of these downloads is kept in `data/` and refreshed with
+`scripts/fetch_mics.py`.
 
 **Adult mortality.** Census microdata with household-death modules, from
 [IPUMS International](https://international.ipums.org) (free registration) and,
@@ -30,7 +39,7 @@ OG-Core source code.
 uv run scripts/refresh.py
 ```
 
-downloads the survey data and rebuilds the DHS-based files, the OG-Core units
+downloads the DHS data and rebuilds the survey-based files, the OG-Core units
 check, the figures and the generated pages. Census-based files are rebuilt
 separately: adult mortality with `scripts/build_adult_mortality.py` and child
 mortality with `scripts/build_census_child_mortality.py` (both require an IPUMS
@@ -45,7 +54,9 @@ The census scripts share the asset index in `scripts/asset_index.py`.
 
 Cite this repository together with the underlying sources:
 
-- Fertility and child mortality: The DHS Program, ICF.
+- Fertility and child mortality: The DHS Program, ICF; for MICS surveys, UNICEF
+  and the national statistical office that conducted the survey (`source ==
+  "MICS"`), as compiled by the World Bank.
 - Census-based estimates: Ruggles, S. et al., *Integrated Public Use Microdata
   Series, International*, Minneapolis, MN: IPUMS, doi:10.18128/D020.V7.7, and
   the national statistical office that conducted the census (given in the

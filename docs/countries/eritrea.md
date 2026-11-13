@@ -20,16 +20,16 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 |---|---|---|---|---|---|---|
 | −1.62 | −0.95 | −0.64 | −0.52 | −0.75 | −1.24 | −1.83 |
 
-*Note:* The most recent DHS survey with a wealth breakdown is from 2002. Gradients can change substantially over such a period; state the survey year when using these values.
+*Note:* The most recent survey with a wealth breakdown is from 2002. Gradients can change substantially over such a period; state the survey year when using these values.
 
 ## Estimates
 
-### Demographic and Health Surveys
+### Household surveys
 
-Latest survey with a complete wealth-quintile breakdown ([`gradient_library_latest.csv`](../../data/gradient_library_latest.csv); earlier surveys in `gradient_library.csv`).
+Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey (MICS) with a complete wealth-quintile breakdown, for each indicator ([`gradient_library_latest.csv`](../../data/gradient_library_latest.csv); earlier surveys in `gradient_library.csv`).
 
 | Indicator | Survey | Lowest | Second | Middle | Fourth | Highest | Low/high ratio | Gradient |
 |---|---|---|---|---|---|---|---|---|
-| Total fertility rate (births per woman) | 2002 | 6.2 | 5.6 | 5.2 | 4.4 | 3 | 2.07 | −0.85 |
-| Infant mortality rate (per 1,000 live births) | 2002 | 48 | 68 | 81 | 47 | 38 | 1.26 | −0.42 |
-| Under-five mortality rate (per 1,000 live births) | 2002 | 100 | 127 | 142 | 88 | 65 | 1.54 | −0.61 |
+| Total fertility rate (births per woman) | DHS 2002 | 6.2 | 5.6 | 5.2 | 4.4 | 3 | 2.07 | −0.85 |
+| Infant mortality rate (per 1,000 live births) | DHS 2002 | 48 | 68 | 81 | 47 | 38 | 1.26 | −0.42 |
+| Under-five mortality rate (per 1,000 live births) | DHS 2002 | 100 | 127 | 142 | 88 | 65 | 1.54 | −0.61 |

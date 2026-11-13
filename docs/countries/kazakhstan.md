@@ -7,7 +7,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
-| `fert_gradient` | −1.26, by age as below | DHS 1999, TFR, plus [age offsets](../methods/fertility-by-age.md) |
+| `fert_gradient` | −0.78, by age as below | MICS 2015, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.92 | DHS 1999, infant mortality rate |
 | `mort_gradient` | 1.48 − 0.286 × ln(GNI per capita) | [general gradient](../methods/general-gradient.md); for example −0.49 at $1,000 and −0.95 at $5,000, each with a 95% prediction interval of about ±0.5 |
 | `imm_pctiles` | not provided | — |
@@ -18,18 +18,18 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 
 | 15–19 | 20–24 | 25–29 | 30–34 | 35–39 | 40–44 | 45–49 |
 |---|---|---|---|---|---|---|
-| −2.04 | −1.36 | −1.06 | −0.94 | −1.17 | −1.66 | −2.25 |
+| −1.56 | −0.88 | −0.57 | −0.46 | −0.69 | −1.17 | −1.76 |
 
-*Note:* The most recent DHS survey with a wealth breakdown is from 1999. Gradients can change substantially over such a period; state the survey year when using these values.
+*Note:* The most recent survey with infant mortality by wealth quintile is from 1999. Gradients can change substantially over such a period; state the survey year when using this value.
 
 ## Estimates
 
-### Demographic and Health Surveys
+### Household surveys
 
-Latest survey with a complete wealth-quintile breakdown ([`gradient_library_latest.csv`](../../data/gradient_library_latest.csv); earlier surveys in `gradient_library.csv`).
+Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey (MICS) with a complete wealth-quintile breakdown, for each indicator ([`gradient_library_latest.csv`](../../data/gradient_library_latest.csv); earlier surveys in `gradient_library.csv`). MICS rates are taken from the World Bank's compilation of survey results by wealth quintile ([sources](../sources.md)).
 
 | Indicator | Survey | Lowest | Second | Middle | Fourth | Highest | Low/high ratio | Gradient |
 |---|---|---|---|---|---|---|---|---|
-| Total fertility rate (births per woman) | 1999 | 3.4 | 2.5 | 2.1 | 1.6 | 1.2 | 2.83 | −1.26 |
-| Infant mortality rate (per 1,000 live births) | 1999 | 68 | 65 | 66 | 27 | 42 | 1.62 | −0.92 |
-| Under-five mortality rate (per 1,000 live births) | 1999 | 82 | 73 | 72 | 36 | 45 | 1.82 | −0.95 |
+| Total fertility rate (births per woman) | MICS 2015 | 3.5 | 3.9 | 3.6 | 2.5 | 2 | 1.75 | −0.78 |
+| Infant mortality rate (per 1,000 live births) | DHS 1999 | 68 | 65 | 66 | 27 | 42 | 1.62 | −0.92 |
+| Under-five mortality rate (per 1,000 live births) | DHS 1999 | 82 | 73 | 72 | 36 | 45 | 1.82 | −0.95 |

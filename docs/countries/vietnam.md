@@ -7,20 +7,29 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
-| `fert_gradient` | — | no DHS survey with a wealth breakdown; regional median for South & Southeast Asia ([table](../../ANALYSIS.md#regional-medians)), plus age offsets |
+| `fert_gradient` | −0.48, by age as below | MICS 2011, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −1.34 | DHS 2002, infant mortality rate |
 | `mort_gradient` | 1.48 − 0.286 × ln(GNI per capita) | [general gradient](../methods/general-gradient.md); for example −0.49 at $1,000 and −0.95 at $5,000, each with a 95% prediction interval of about ±0.5 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
 
+**Fertility gradient by age of mother** (`fert_gradient`; ages below 15 use the 15–19 value, ages 50 and above the 45–49 value):
+
+| 15–19 | 20–24 | 25–29 | 30–34 | 35–39 | 40–44 | 45–49 |
+|---|---|---|---|---|---|---|
+| −1.26 | −0.58 | −0.27 | −0.16 | −0.39 | −0.87 | −1.46 |
+
+*Note:* The most recent survey with infant mortality by wealth quintile is from 2002. Gradients can change substantially over such a period; state the survey year when using this value.
+
 ## Estimates
 
-### Demographic and Health Surveys
+### Household surveys
 
-Latest survey with a complete wealth-quintile breakdown ([`gradient_library_latest.csv`](../../data/gradient_library_latest.csv); earlier surveys in `gradient_library.csv`).
+Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey (MICS) with a complete wealth-quintile breakdown, for each indicator ([`gradient_library_latest.csv`](../../data/gradient_library_latest.csv); earlier surveys in `gradient_library.csv`). MICS rates are taken from the World Bank's compilation of survey results by wealth quintile ([sources](../sources.md)).
 
 | Indicator | Survey | Lowest | Second | Middle | Fourth | Highest | Low/high ratio | Gradient |
 |---|---|---|---|---|---|---|---|---|
-| Infant mortality rate (per 1,000 live births) | 2002 | 39 | 28 | 20 | 15 | 14 | 2.79 | −1.34 |
-| Under-five mortality rate (per 1,000 live births) | 2002 | 53 | 38 | 23 | 22 | 16 | 3.31 | −1.47 |
+| Total fertility rate (births per woman) | MICS 2011 | 2.5 | 2.3 | 1.8 | 1.7 | 1.8 | 1.39 | −0.48 |
+| Infant mortality rate (per 1,000 live births) | DHS 2002 | 39 | 28 | 20 | 15 | 14 | 2.79 | −1.34 |
+| Under-five mortality rate (per 1,000 live births) | DHS 2002 | 53 | 38 | 23 | 22 | 16 | 3.31 | −1.47 |

@@ -7,8 +7,8 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
-| `fert_gradient` | — | no DHS survey with a wealth breakdown; regional median ([table](../../ANALYSIS.md#regional-medians)), plus age offsets |
-| `infmort_gradient` | — | no DHS survey with a wealth breakdown; regional median ([table](../../ANALYSIS.md#regional-medians)) |
+| `fert_gradient` | — | no DHS or MICS survey with a wealth breakdown; regional median ([table](../../ANALYSIS.md#regional-medians)), plus age offsets |
+| `infmort_gradient` | — | no DHS or MICS survey with a wealth breakdown; regional median ([table](../../ANALYSIS.md#regional-medians)) |
 | `mort_gradient` | 0.08 | census 2008, 45q15 |
 | `imm_pctiles` | not provided | — |
 

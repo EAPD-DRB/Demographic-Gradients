@@ -272,7 +272,7 @@ def pi_text(gg, gni):
 
 def imr_vs_u5mr(lib):
     """How much steeper the U5MR proxy is than the infant series it stands in for."""
-    p = lib.pivot_table(index=["country", "year"], columns="indicator",
+    p = lib.pivot_table(index=["country", "year", "source"], columns="indicator",
                         values="slope")
     if "IMR" not in p.columns:
         return None
@@ -857,16 +857,16 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
     rows, notes = [], []
     tfr = latest[(latest["country"] == c) & (latest["indicator"] == "TFR")]
     region = regions.get(c)
-    borrow = (f"no DHS survey with a wealth breakdown; regional median for {region} "
+    borrow = (f"no DHS or MICS survey with a wealth breakdown; regional median for {region} "
               f"([table](../../ANALYSIS.md#{REGION_ANCHOR}))" if region else
-              "no DHS survey with a wealth breakdown; regional median "
+              "no DHS or MICS survey with a wealth breakdown; regional median "
               f"([table](../../ANALYSIS.md#{REGION_ANCHOR}))")
     if len(tfr):
         t, y = float(tfr["slope"].iloc[0]), int(tfr["year"].iloc[0])
-        rows.append(f"| `fert_gradient` | {fmt(t)}, by age as below | DHS {y}, TFR, plus "
-                    "[age offsets](../methods/fertility-by-age.md) |")
+        rows.append(f"| `fert_gradient` | {fmt(t)}, by age as below | {tfr['source'].iloc[0]} "
+                    f"{y}, TFR, plus [age offsets](../methods/fertility-by-age.md) |")
         if y < STALE_YEAR:
-            notes.append(f"The most recent DHS survey with a wealth breakdown is from {y}. "
+            notes.append(f"The most recent survey with a wealth breakdown is from {y}. "
                          "Gradients can change substantially over such a period; state the "
                          "survey year when using these values.")
     else:
@@ -882,15 +882,20 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
         rows.append(f"| `infmort_gradient` | {fmt(r['slope'])} | census {int(r['year'])}, "
                     "proportion of children ever born who have died (mothers 25–29). This "
                     "measure resembles under-five mortality and probably overstates the "
-                    + (f"infant gradient; the alternative is the DHS {dhs_year} infant "
-                       f"gradient ({fmt(float(imr['slope'].iloc[0]))}) |" if len(imr)
+                    + (f"infant gradient; the alternative is the {imr['source'].iloc[0]} "
+                       f"{dhs_year} infant gradient ({fmt(float(imr['slope'].iloc[0]))}) |"
+                       if len(imr)
                        else "infant gradient |"))
     elif len(imr):
         rows.append(f"| `infmort_gradient` | {fmt(float(imr['slope'].iloc[0]))} "
-                    f"| DHS {int(imr['year'].iloc[0])}, infant mortality rate |")
+                    f"| {imr['source'].iloc[0]} {int(imr['year'].iloc[0])}, infant mortality rate |")
+        if int(imr["year"].iloc[0]) < STALE_YEAR and (t is None or int(imr["year"].iloc[0]) != y):
+            notes.append(f"The most recent survey with infant mortality by wealth quintile is "
+                         f"from {int(imr['year'].iloc[0])}. Gradients can change substantially "
+                         "over such a period; state the survey year when using this value.")
     elif len(u5):
         rows.append(f"| `infmort_gradient` | {fmt(float(u5['slope'].iloc[0]))} "
-                    f"| DHS {int(u5['year'].iloc[0])}, under-five mortality rate (no infant "
+                    f"| {u5['source'].iloc[0]} {int(u5['year'].iloc[0])}, under-five mortality rate (no infant "
                     "rate by quintile; somewhat steeper) |")
     else:
         rows.append(f"| `infmort_gradient` | — | {borrow} |")
@@ -946,16 +951,21 @@ def country_dhs_block(latest, country):
     rows = latest[latest["country"] == country]
     if not len(rows):
         return ""
-    out = ("### Demographic and Health Surveys\n\n"
-           "Latest survey with a complete wealth-quintile breakdown "
+    srcs = set(rows["source"])
+    out = ("### Household surveys\n\n"
+           "Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster "
+           "Survey (MICS) with a complete wealth-quintile breakdown, for each indicator "
            "([`gradient_library_latest.csv`](../../data/gradient_library_latest.csv); earlier "
-           "surveys in `gradient_library.csv`).\n\n"
+           "surveys in `gradient_library.csv`)."
+           + (" MICS rates are taken from the World Bank's compilation of survey results "
+              "by wealth quintile ([sources](../sources.md))." if "MICS" in srcs else "")
+           + "\n\n"
            "| Indicator | Survey | Lowest | Second | Middle | Fourth | Highest | Low/high ratio "
            "| Gradient |\n|---|---|---|---|---|---|---|---|---|\n")
     order = {"TFR": 0, "IMR": 1, "U5MR": 2}
     for _, r in rows.sort_values("indicator", key=lambda s: s.map(order)).iterrows():
         qs = " | ".join("" if pd.isna(r[q]) else f"{r[q]:g}" for q in ["q1", "q2", "q3", "q4", "q5"])
-        out += (f"| {IND_NAME[r['indicator']]} | {int(r['year'])} | {qs} | {r['ratio']:.2f} "
+        out += (f"| {IND_NAME[r['indicator']]} | {r['source']} {int(r['year'])} | {qs} | {r['ratio']:.2f} "
                 f"| {fmt(r['slope'])} |\n")
     return out
 
@@ -1037,7 +1047,11 @@ def write_country_pages(latest, amr, ccm):
         (DOCS / "countries" / f"{slug(c)}.md").write_text(doc)
         what = []
         dhs_rows = latest[latest["country"] == c]
-        dhs = str(int(dhs_rows["year"].max())) if len(dhs_rows) else "—"
+        if len(dhs_rows):
+            top = dhs_rows.sort_values("year").iloc[-1]
+            dhs = f"{top['source']} {int(top['year'])}"
+        else:
+            dhs = "—"
         cens = sorted(set(amr[amr["country"] == c]["year"]))
         child = (sorted(set(ccm_df[ccm_df["country"] == c]["year"]))
                  if ccm_df is not None else [])
@@ -1048,9 +1062,9 @@ def write_country_pages(latest, amr, ccm):
            "One page per country, giving the values for an OG-Core calibration and the "
            "estimates behind them. Countries without their own estimate of adult mortality "
            "use the [general gradient](../methods/general-gradient.md). Countries not listed "
-           "have no DHS survey with a wealth breakdown; regional medians are given in "
+           "have no DHS or MICS survey with a wealth breakdown; regional medians are given in "
            f"[the main results](../../ANALYSIS.md#{REGION_ANCHOR}).\n\n"
-           "| Country | DHS region | Latest DHS survey | Adult mortality "
+           "| Country | Region | Latest survey | Adult mortality "
            "| Census, child mortality |\n|---|---|---|---|---|\n"
            + "\n".join(index_rows) + "\n")
     (DOCS / "countries" / "README.md").write_text(idx)
@@ -1080,8 +1094,9 @@ def age_fade(amr):
 def main():
     lib, latest = load()
     tfr, u5, imr = headline(latest, "TFR"), headline(latest, "U5MR"), headline(latest, "IMR")
-    # lib has one row per country x year x indicator; a "survey" is a country-year
-    n_surveys = lib.groupby(["country", "year"]).ngroups
+    # lib has one row per survey x indicator; a survey is a country-year-source
+    n_by_src = lib.groupby("source").apply(lambda d: d.groupby(["country", "year"]).ngroups)
+    n_surveys = int(n_by_src.sum())
     n_obs = len(lib)
     n_countries = latest["country"].nunique()
     off = fertility_offsets()
@@ -1097,10 +1112,10 @@ def main():
     table = (
         "| Indicator | OG-Core input | Source | Countries | Median low/high ratio |\n"
         "|---|---|---|---|---|\n"
-        f"| Fertility, by age of mother | `fert_gradient` | DHS | {tfr['n']} | "
+        f"| Fertility, by age of mother | `fert_gradient` | DHS, MICS | {tfr['n']} | "
         f"{tfr['ratio']:.2f} (TFR)"
         + (f"; {ar.loc[15]:.2f} at ages 15–19" if ar is not None else "") + " |\n"
-        f"| Infant mortality | `infmort_gradient` | DHS | {imr['n']} | {imr['ratio']:.2f} |\n"
+        f"| Infant mortality | `infmort_gradient` | DHS, MICS | {imr['n']} | {imr['ratio']:.2f} |\n"
     )
     if amr_h:
         table += (f"| Adult mortality (45q15) | `mort_gradient` | household-death records "
@@ -1145,7 +1160,8 @@ Wealth differentials in fertility and mortality, summarized from the library's
 data. Differentials are reported as the **low/high ratio**, the rate in the
 lowest wealth quintile divided by the rate in the highest, and as the
 **wealth gradient**, the slope of the log rate on wealth rank (see the
-[glossary](docs/glossary.md)). The data cover {n_surveys} DHS surveys with a
+[glossary](docs/glossary.md)). The data cover {n_by_src['DHS']} Demographic and Health
+Surveys (DHS) and {n_by_src['MICS']} Multiple Indicator Cluster Surveys (MICS) with a
 complete wealth-quintile breakdown in {n_countries} countries, and, for adult
 mortality, household-death records from censuses and DHS surveys. All figures and numbers are
 computed from the files in [`data/`](data/).

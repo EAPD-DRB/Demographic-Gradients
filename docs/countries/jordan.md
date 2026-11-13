@@ -22,12 +22,12 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 
 ## Estimates
 
-### Demographic and Health Surveys
+### Household surveys
 
-Latest survey with a complete wealth-quintile breakdown ([`gradient_library_latest.csv`](../../data/gradient_library_latest.csv); earlier surveys in `gradient_library.csv`).
+Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey (MICS) with a complete wealth-quintile breakdown, for each indicator ([`gradient_library_latest.csv`](../../data/gradient_library_latest.csv); earlier surveys in `gradient_library.csv`).
 
 | Indicator | Survey | Lowest | Second | Middle | Fourth | Highest | Low/high ratio | Gradient |
 |---|---|---|---|---|---|---|---|---|
-| Total fertility rate (births per woman) | 2023 | 3.9 | 3 | 2.6 | 2.2 | 1.4 | 2.79 | −1.18 |
-| Infant mortality rate (per 1,000 live births) | 2023 | 16 | 17 | 19 | 8 | 10 | 1.60 | −0.85 |
-| Under-five mortality rate (per 1,000 live births) | 2023 | 18 | 18 | 19 | 10 | 10 | 1.80 | −0.88 |
+| Total fertility rate (births per woman) | DHS 2023 | 3.9 | 3 | 2.6 | 2.2 | 1.4 | 2.79 | −1.18 |
+| Infant mortality rate (per 1,000 live births) | DHS 2023 | 16 | 17 | 19 | 8 | 10 | 1.60 | −0.85 |
+| Under-five mortality rate (per 1,000 live births) | DHS 2023 | 18 | 18 | 19 | 10 | 10 | 1.80 | −0.88 |

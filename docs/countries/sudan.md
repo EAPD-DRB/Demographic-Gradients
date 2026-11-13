@@ -7,14 +7,23 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
-| `fert_gradient` | — | no DHS survey with a wealth breakdown; regional median for Sub-Saharan Africa ([table](../../ANALYSIS.md#regional-medians)), plus age offsets |
-| `infmort_gradient` | — | no DHS survey with a wealth breakdown; regional median for Sub-Saharan Africa ([table](../../ANALYSIS.md#regional-medians)) |
+| `fert_gradient` | — | no DHS or MICS survey with a wealth breakdown; regional median for Sub-Saharan Africa ([table](../../ANALYSIS.md#regional-medians)), plus age offsets |
+| `infmort_gradient` | −0.82 | MICS 2014, infant mortality rate |
 | `mort_gradient` | −0.42 | census 2008, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
 
 ## Estimates
+
+### Household surveys
+
+Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey (MICS) with a complete wealth-quintile breakdown, for each indicator ([`gradient_library_latest.csv`](../../data/gradient_library_latest.csv); earlier surveys in `gradient_library.csv`). MICS rates are taken from the World Bank's compilation of survey results by wealth quintile ([sources](../sources.md)).
+
+| Indicator | Survey | Lowest | Second | Middle | Fourth | Highest | Low/high ratio | Gradient |
+|---|---|---|---|---|---|---|---|---|
+| Infant mortality rate (per 1,000 live births) | MICS 2014 | 64.9 | 60.3 | 50.3 | 42.7 | 33.9 | 1.91 | −0.82 |
+| Under-five mortality rate (per 1,000 live births) | MICS 2014 | 84.2 | 79.9 | 67.7 | 59.6 | 39.4 | 2.14 | −0.91 |
 
 ### Adult mortality from household-death records
 

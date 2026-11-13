@@ -11,7 +11,8 @@ richer households in low- and middle-income countries. It supplies three of
 the arguments with which OG-Core's `get_pop_objs` differentiates demographic
 rates across lifetime-income groups: `fert_gradient` (fertility),
 `infmort_gradient` (infant mortality) and `mort_gradient` (mortality by age).
-Fertility and child mortality come from surveys of the DHS Program; adult
+Fertility and child mortality come from surveys of the DHS Program and from
+UNICEF's Multiple Indicator Cluster Surveys (MICS); adult
 mortality comes from records of deaths in the household, in population
 censuses and, for India, in DHS surveys; child mortality for Brazil also comes
 from censuses.
@@ -69,7 +70,12 @@ Rates by wealth quintile are taken from the DHS Program indicator API: the
 total fertility rate (TFR), age-specific fertility rates (ASFR), the infant
 mortality rate (IMR) and the under-five mortality rate (U5MR). The surveys are
 Demographic and Health Surveys and, for a few countries, Malaria Indicator
-Surveys. Fertility rates refer to the three years before the survey and
+Surveys. TFR, IMR and U5MR from MICS surveys are added from the World Bank's
+compilation of survey results, with infant and under-five mortality only where
+they are direct estimates from a full birth history, as in the DHS, and with
+checks that exclude values filed under the wrong indicator
+([details](methods/dhs-gradients.md#multiple-indicator-cluster-surveys)). All
+surveys are kept; each row records its source. Fertility rates refer to the three years before the survey and
 mortality rates to the ten years before it. Surveys without a positive value
 for every quintile are excluded. A gradient is estimated for each survey, and
 calibrations use the latest survey for each country
@@ -212,12 +218,15 @@ mortality sets were not tested; at adult death rates 1 − p is close to one
 | Leave-one-country-out prediction of each census or survey by the general gradient | out-of-sample accuracy of the income rule |
 | Pooled fertility offsets compared with country-specific patterns over consecutive surveys | choice of pooled offsets |
 | Conversion tested against OG-Core's code for DHS quintile sets | correct units for the model |
+| MICS fertility rates compared with the national TFR; MICS mortality limited to direct estimates | that MICS values measure the same quantities as the DHS values |
 
 Re-running the scripts on the same inputs reproduces the published census
 and survey adult-mortality files exactly, including Brazil's rows. The GNI figures behind
 the general gradient are stored with their retrieval date, since the World
 Bank revises historical values. DHS-based files are downloaded from the DHS
-Program API and reflect the download date given in the README.
+Program API and reflect the download date given in the README; MICS values are
+kept as downloaded from the World Bank's compilation, which is no longer
+updated.
 
 ## 10. Limitations
 

@@ -23,8 +23,8 @@ demographic rates by income group. The library supplies three:
 
 | Argument | File | Selection | Coverage |
 |---|---|---|---|
-| `fert_gradient` | `data/gradient_library_latest.csv` + `data/fertility_age_offsets.csv` | `indicator == "TFR"`, plus the offset by age | 77 countries |
-| `infmort_gradient` | `data/gradient_library_latest.csv` | `indicator == "IMR"` | 78 countries |
+| `fert_gradient` | `data/gradient_library_latest.csv` + `data/fertility_age_offsets.csv` | `indicator == "TFR"`, plus the offset by age | 95 countries (DHS or MICS) |
+| `infmort_gradient` | `data/gradient_library_latest.csv` | `indicator == "IMR"` | 87 countries (DHS or MICS) |
 | `mort_gradient` | `data/adult_mortality_gradients.csv` | `measure == "45q15"`, `sex == "all"`, latest year | 14 countries (13 by census, India by DHS survey) |
 | `imm_pctiles` | not provided | — | — |
 
@@ -103,17 +103,24 @@ India 2020, −0.72) use that estimate, not the rule.
 same comparison was run for them: an income rule improved on a single pooled
 value by 0.4 percent for fertility, against 43 percent for adult mortality,
 because these gradients vary little with national income. For a country with no
-DHS survey, use the regional median and interquartile range from
+DHS or MICS survey, use the regional median and interquartile range from
 [ANALYSIS.md](ANALYSIS.md#regional-medians) and report the value as borrowed.
 
 ## Known pitfalls
 
 - **Use `IMR`, not `U5MR`, for `infmort_gradient`.** The under-five gradient is
-  steeper: across 291 surveys reporting both, by a median 0.14, and by 0.67 in
+  steeper: across 335 surveys reporting both, by a median 0.14, and by 0.67 in
   Nigeria 2018. Every survey in the library that reports U5MR by quintile also
   reports IMR; U5MR is published for comparison only.
-- **Do not pool measurement bases.** `gradient_library*.csv` contains DHS survey
-  rates; `adult_mortality_gradients.csv` household death records (censuses, and
+- **DHS and MICS rows share one basis.** `gradient_library*.csv` holds both,
+  marked in `source`. MICS rows are UNICEF survey rates taken from the World
+  Bank's compilation (pinned in `mics_quintiles_raw.csv`), mortality only where
+  UNICEF records a direct (full birth history) estimate; `mics_surveys.csv`
+  says what each survey contributes and why anything is excluded. Name the
+  source with the year ("MICS 2019"). A country's history can switch source
+  between surveys; part of the change may be the switch.
+- **Do not pool measurement bases.** `gradient_library*.csv` contains DHS and
+  MICS survey rates; `adult_mortality_gradients.csv` household death records (censuses, and
   for India DHS surveys, whose rows have `ranking == "dhs_wealth_index"`);
   `census_child_mortality.csv` a census cumulative proportion. Their gradients
   agree where they have been compared, but their levels (`q1..q5`) measure
@@ -182,7 +189,8 @@ State the gap rather than interpolating:
 
 ## Citation
 
-Cite The DHS Program for fertility and child mortality; IPUMS International
+Cite The DHS Program for fertility and child mortality, and UNICEF (MICS) plus
+the originating statistical office for rows with `source == "MICS"`; IPUMS International
 (Ruggles et al., doi:10.18128/D020.V7.7) plus the originating statistical office
 for census-based estimates; IBGE directly for Brazil's adult-mortality rows,
 which come from IBGE's own microdata rather than IPUMS; The DHS Program and IIPS
@@ -262,6 +270,22 @@ scripts, and the documentation is generated — respect that architecture.
   shows a country's own age shape predicts about as well overall (better
   under 30, worse from 35), while the pooled offsets have no gaps at 45–49.
   Ruled 2026-11-05 — offsets, not per-country age gradients.
+- **MICS is a second survey source** for TFR, IMR and U5MR (ruled 2026-11-13):
+  every MICS survey goes into `gradient_library.csv` with `source`; the latest
+  file takes the newest survey of either kind (DHS on a same-year tie). MICS
+  mortality only where UNICEF's CME database classifies the survey as FBH
+  (direct); SBH and unclassified surveys are excluded. Checks added at import
+  (`build_gradient_library.py`): a MICS TFR set is used only if its quintile
+  mean is within ×1.4 of the WDI national TFR (DHS range 0.84–1.35) — the World
+  Bank compilation files some MICS6 adolescent birth rates as TFR (CAR, Chad,
+  Guinea-Bissau, Honduras, São Tomé, Algeria 2019) and has corrupt sets
+  (Tunisia 2018); mortality sets with a quintile rate under 5 per 1,000 are
+  dropped (Paraguay 2016, Tonga 2019, Suriname 2018; no DHS set is under 5);
+  surveys from countries high income in the survey year (OGHIST) are out of
+  scope (Barbados). Fertility age offsets stay DHS-only (no MICS ASFR by
+  quintile). The MICS inputs are pinned; refresh only with
+  `scripts/fetch_mics.py`, deliberately, and review the diff — UNICEF matches
+  surveys by first fieldwork year, the World Bank labels them by the last.
 - Adult mortality ranks households by an **asset index**, never post-death
   household income (reverse causation; São Paulo validation: assets monotonic,
   income jagged). Asset components vary by census and are recorded per sample

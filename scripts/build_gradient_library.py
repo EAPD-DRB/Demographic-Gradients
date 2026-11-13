@@ -2,7 +2,7 @@
 # requires-python = ">=3.10"
 # dependencies = ["pandas"]
 # ///
-"""Rebuild the demographic gradient library from the DHS Program public API.
+"""Rebuild the demographic gradient library from DHS and MICS surveys.
 
 Pulls total fertility (FE_FRTR_W_TFR), infant mortality (CM_ECMR_C_IMR) and
 under-5 mortality (CM_ECMR_C_U5M) by wealth quintile for every DHS survey,
@@ -24,15 +24,30 @@ comparison: its gradient is steeper in most surveys that report both, because
 it includes deaths at ages 1-4, where infectious causes weigh more. Every
 survey in the library that reports U5MR by quintile also reports IMR.
 
-The API is free and public (https://api.dhsprogram.com) — no key, no
+MICS surveys (UNICEF) are added from the pinned copy of the World Bank's
+compilation written by fetch_mics.py. Every survey of either kind goes into
+gradient_library.csv, with a `source` column (DHS or MICS); the latest file
+takes each country's most recent survey of either kind, the DHS survey where
+both are from the same year. MICS infant and under-five mortality are used
+only where UNICEF records the survey's rates as direct estimates from a full
+birth history, the basis of the DHS rates; mics_surveys.csv records the
+classification of every survey and what is used from it. Surveys from
+countries classified as high income in the survey year are outside the
+library's scope. The fertility age offsets use DHS surveys only: the MICS compilation
+has no age-specific rates by quintile.
+
+The DHS API is free and public (https://api.dhsprogram.com) — no key, no
 registration. Run:
 
-    uv run scripts/build_gradient_library.py
+    uv run scripts/build_gradient_library.py            # re-pull the DHS API
+    uv run scripts/build_gradient_library.py --no-pull  # rebuild from data/
 """
 
+import argparse
 import datetime
 import json
 import re
+import sys
 import time
 import urllib.request
 from pathlib import Path
@@ -55,6 +70,37 @@ QUINTILE_MIDPOINTS = {
     "Middle": 0.50,
     "Fourth": 0.70,
     "Highest": 0.90,
+}
+MID = list(QUINTILE_MIDPOINTS.values())
+# MICS checks. The World Bank compilation files some MICS adolescent birth
+# rates, and a few corrupted sets, as TFR: a TFR set is used only if its
+# quintile mean is within a factor of 1.4 of the national TFR, the largest
+# discrepancy among the DHS surveys (0.84 to 1.35). Mortality is compiled in
+# whole numbers; a quintile rate under 5 per 1,000 (none in the DHS sets, whose
+# minimum is 5) leaves the gradient to rounding and small numbers.
+TFR_BOUND = 1.4
+MIN_MORT_RATE = 5
+SOURCE_ORDER = {"MICS": 0, "DHS": 1}  # on a same-year tie the DHS survey is latest
+# World Bank country names that differ from the DHS Program's
+WB_NAMES = {"Congo, Rep.": "Congo", "Gambia, The": "Gambia"}
+# Countries with a MICS survey but no DHS survey are not in the DHS Program's
+# region list; each is placed in the DHS region it would belong to. The DHS
+# scheme has no East Asia region; Mongolia is placed with Central Asia.
+MICS_REGIONS = {
+    "Algeria": "North Africa/West Asia/Europe",
+    "Argentina": "Latin America & Caribbean",
+    "Belize": "Latin America & Caribbean",
+    "Bhutan": "South & Southeast Asia",
+    "Guinea-Bissau": "Sub-Saharan Africa",
+    "Iraq": "North Africa/West Asia/Europe",
+    "Jamaica": "Latin America & Caribbean",
+    "Kiribati": "Oceania",
+    "Lao PDR": "South & Southeast Asia",
+    "Mongolia": "Central Asia",
+    "North Macedonia": "North Africa/West Asia/Europe",
+    "Serbia": "North Africa/West Asia/Europe",
+    "Suriname": "Latin America & Caribbean",
+    "Tonga": "Oceania",
 }
 
 
@@ -141,10 +187,184 @@ def fertility_age_offsets(ages):
     return pd.DataFrame(rows)
 
 
+def gradient_rows(df, source):
+    """One wealth gradient per indicator and survey from long quintile data.
+
+    df has indicator, country, year, pct (quintile midpoint) and value.
+    Incomplete quintets and zero rates are dropped, not imputed.
+    """
+    df = df.dropna(subset=["value"])
+    df = df[df["value"] > 0]
+    out = []
+    for (ind, ctry, yr), g in df.groupby(["indicator", "country", "year"]):
+        if g["pct"].nunique() != 5:
+            continue
+        slope = np.polyfit(g["pct"].values, np.log(g["value"].values), 1)[0]
+        q = {f"q{i + 1}": g.loc[g["pct"] == p, "value"].iloc[0] for i, p in enumerate(MID)}
+        out.append({"indicator": ind, "country": ctry, "year": yr, "source": source,
+                    "slope": slope, "ratio": q["q1"] / q["q5"], **q})
+    return pd.DataFrame(out)
+
+
+def mics_surveys():
+    """The pinned MICS values, each survey classified for use.
+
+    Returns the quintile values (with the DHS country name) and one row per
+    survey recording its label, mortality method and what is used from it.
+    """
+    raw = pd.read_csv(DATA_DIR / "mics_quintiles_raw.csv")
+    meth = pd.read_csv(DATA_DIR / "mics_methods_unicef.csv", dtype=str)
+    raw["country"] = raw["wb_country"].replace(WB_NAMES)
+    # Survey label from the footnote ("Source: MICS6, 2018-19" -> "MICS6, 2018-19");
+    # UNICEF identifies a survey by its first fieldwork year ("2018_2019"), the
+    # World Bank by its last (2019).
+    raw["label"] = (raw["footnote"].str.extract(r"(MICS.*)$", flags=re.I)[0]
+                    .str.replace(r"\.\s.*$", "", regex=True).str.strip()
+                    .fillna(raw["footnote"]))
+    first = raw["label"].str.extract(r"((?:19|20)\d{2})")[0]
+    raw["first_year"] = first.fillna(raw["year"].astype(str)).astype(int)
+    meth["first_year"] = meth["series_year"].str[:4].astype(int)
+    unicef = meth.groupby(["iso3", "first_year"])["method"].agg(lambda m: "/".join(sorted(set(m))))
+    rows = []
+    for (iso, ctry, yr), g in raw.groupby(["iso3", "country", "year"]):
+        fy = int(g["first_year"].iloc[0])
+        m = unicef.get((iso, fy), "")
+        method = {"FBH": "direct", "SBH": "indirect", "": "not recorded"}.get(m, f"mixed ({m})")
+        inds = set(g["indicator"])
+        mort = inds & {"IMR", "U5MR"}
+        use, excl = [], []
+        if (g["income_level"] == "High income").any():
+            excl.append("high-income country")
+        else:
+            t = g[g["indicator"] == "TFR"]
+            if len(t):
+                r = t["value"].mean() / t["national_tfr"].iloc[0]
+                if not (1 / TFR_BOUND <= r <= TFR_BOUND):
+                    excl.append(f"TFR: quintile mean {r:.2f} times the national TFR")
+                else:
+                    use.append("TFR")
+            if mort:
+                mv = g[g["indicator"].isin(mort)]["value"]
+                if method != "direct":
+                    excl.append("mortality: " + ("method not recorded" if method == "not recorded"
+                                                 else f"{method} estimate"))
+                elif (mv < MIN_MORT_RATE).any():
+                    excl.append(f"mortality: quintile rate below {MIN_MORT_RATE} per 1,000")
+                else:
+                    use.append(", ".join(sorted(mort, key=["IMR", "U5MR"].index)))
+        rows.append({"country": ctry, "iso3": iso, "year": yr,
+                     "survey": g["label"].iloc[0],
+                     "indicators": ", ".join(sorted(set(g["indicator"]),
+                                                    key=["TFR", "IMR", "U5MR"].index)),
+                     "mortality_method": method if mort else "",
+                     "income_level": g["income_level"].iloc[0],
+                     "used": ", ".join(use), "excluded": "; ".join(excl)})
+    sv = pd.DataFrame(rows).sort_values(["country", "year"])
+    return raw, sv
+
+
+def mics_library(raw, sv):
+    keep = set()
+    for r in sv.itertuples():
+        for ind in ("TFR", "IMR", "U5MR"):
+            if ind in r.used.split(", "):
+                keep.add((ind, r.country, r.year))
+    d = raw[[k in keep for k in zip(raw["indicator"], raw["country"], raw["year"])]].copy()
+    d["pct"] = d["quintile"].map(dict(enumerate(MID, start=1)))
+    return gradient_rows(d, "MICS")
+
+
+def regions_table(dhs_regions, countries):
+    """DHS regions, plus the MICS-only countries placed in them."""
+    known = set(dhs_regions["country"])
+    missing = sorted(set(countries) - known - set(MICS_REGIONS))
+    if missing:
+        sys.exit(f"no region for {missing}: add them to MICS_REGIONS")
+    extra = pd.DataFrame([{"country": c, "region": MICS_REGIONS[c]}
+                          for c in sorted(set(countries) - known)])
+    out = pd.concat([dhs_regions.assign(classification="DHS Program"),
+                     extra.assign(classification="assigned")], ignore_index=True)
+    return out.sort_values("country")
+
+
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--no-pull", action="store_true",
+                    help="rebuild from data/dhs_gradients_raw.csv instead of the DHS API")
+    args = ap.parse_args()
     DATA_DIR.mkdir(exist_ok=True)
 
-    # 1. Raw quintile-level observations
+    if args.no_pull:
+        raw = pd.read_csv(DATA_DIR / "dhs_gradients_raw.csv")
+        regions = pd.read_csv(DATA_DIR / "dhs_regions.csv")
+        if "classification" in regions:
+            regions = regions[regions["classification"] == "DHS Program"]
+        regions = regions[["country", "region"]]
+    else:
+        raw, regions = pull()
+
+    # 3. One wealth gradient per survey: slope of ln(rate) on rank midpoint.
+    #    On this scale a slope of -0.79 means the poorest decile's rate is
+    #    about exp(0.79 * 0.8) ~ 1.9x the richest decile's.
+    df = raw[raw["quintile"].isin(QUINTILE_MIDPOINTS)
+             & raw["indicator"].isin(INDICATORS.values())].copy()
+    df["pct"] = df["quintile"].map(QUINTILE_MIDPOINTS)
+    df["value"] = pd.to_numeric(df["value"], errors="coerce")
+    dhs = gradient_rows(df, "DHS")
+
+    mraw, sv = mics_surveys()
+    sv.to_csv(DATA_DIR / "mics_surveys.csv", index=False)
+    mics = mics_library(mraw, sv)
+    print(f"MICS: {len(sv)} surveys, {sv['country'].nunique()} countries; use: "
+          + "; ".join(f"{k or 'nothing'} {v}" for k, v in sv["used"].value_counts().items()))
+    for r in sv[sv["excluded"] != ""].itertuples():
+        print(f"  excluded: {r.country} {r.year} ({r.survey}): {r.excluded}")
+    print("MICS mortality method: " + "; ".join(
+        f"{k} {v}" for k, v in sv.loc[sv["mortality_method"] != "", "mortality_method"]
+        .value_counts().items()))
+
+    lib = pd.concat([dhs, mics], ignore_index=True)
+    lib["_o"] = lib["source"].map(SOURCE_ORDER)
+    lib = lib.sort_values(["indicator", "country", "year", "_o"]).drop(columns="_o")
+    lib.to_csv(DATA_DIR / "gradient_library.csv", index=False)
+    regions_table(regions, lib["country"]).to_csv(DATA_DIR / "dhs_regions.csv", index=False)
+
+    latest = lib.groupby(["indicator", "country"]).tail(1)
+    latest.to_csv(DATA_DIR / "gradient_library_latest.csv", index=False)
+
+    for ind in INDICATORS.values():
+        l = latest[latest["indicator"] == ind]
+        print(
+            f"{ind}: {len(l)} countries ({(l['source'] == 'MICS').sum()} from MICS) | "
+            f"median gradient {l['slope'].median():.3f} "
+            f"IQR [{l['slope'].quantile(0.25):.3f}, {l['slope'].quantile(0.75):.3f}] "
+            f"| median low/high ratio {l['ratio'].median():.2f}"
+        )
+    print(f"surveys with complete quintets: {lib.groupby(['country', 'year', 'source']).ngroups} "
+          f"({len(lib)} country-survey-indicator gradients)")
+
+    # 4. Fertility by age: per-survey age gradients and the pooled offsets (DHS)
+    ages = fertility_age_tilts(raw)
+    ages.to_csv(DATA_DIR / "fertility_age_tilts.csv", index=False)
+    offsets = fertility_age_offsets(ages)
+    offsets.to_csv(DATA_DIR / "fertility_age_offsets.csv", index=False)
+    print(f"fertility by age: {ages['survey'].nunique()} surveys, "
+          f"{ages['country'].nunique()} countries | offsets "
+          + " ".join(f"{r.age_lo}-{r.age_hi} {r.offset:+.2f}" for r in offsets.itertuples()))
+
+    if args.no_pull:
+        return
+    # Stamp the data vintage where the README states it: the script that pulls
+    # owns the stamp, so it cannot drift when this runs outside refresh.py.
+    readme = DATA_DIR.parent / "README.md"
+    today = datetime.date.today().strftime("%-d %B %Y")
+    readme.write_text(re.sub(r"API pull of \d{1,2} \w+ \d{4}",
+                             f"API pull of {today}", readme.read_text()))
+    print(f"stamped data vintage: {today}")
+
+
+def pull():
+    """Raw quintile-level observations and the region list from the DHS API."""
     rows = []
     for ind_id, name in {**INDICATORS, **ASFR}.items():
         n = 0
@@ -164,77 +384,13 @@ def main():
         print(f"{name}: {n} wealth-quintile observations")
     raw = pd.DataFrame(rows)
     raw.to_csv(DATA_DIR / "dhs_gradients_raw.csv", index=False)
-
-    # 2. Country -> DHS region map
     regions = pd.DataFrame(
         [
             {"country": c["CountryName"], "region": c["RegionName"]}
             for c in api_pages(f"{API}/countries?f=json")
         ]
     )
-    regions.to_csv(DATA_DIR / "dhs_regions.csv", index=False)
-
-    # 3. One wealth gradient per survey: slope of ln(rate) on rank midpoint.
-    #    On this scale a slope of -0.79 means the poorest decile's rate is
-    #    about exp(0.79 * 0.8) ~ 1.9x the richest decile's.
-    df = raw[raw["quintile"].isin(QUINTILE_MIDPOINTS)
-             & raw["indicator"].isin(INDICATORS.values())].copy()
-    df["pct"] = df["quintile"].map(QUINTILE_MIDPOINTS)
-    df["value"] = pd.to_numeric(df["value"], errors="coerce")
-    df = df.dropna(subset=["value"])
-    df = df[df["value"] > 0]
-
-    out = []
-    for (ind, ctry, yr), g in df.groupby(["indicator", "country", "year"]):
-        if g["pct"].nunique() != 5:
-            continue  # incomplete quintets are dropped, not imputed
-        slope = np.polyfit(g["pct"].values, np.log(g["value"].values), 1)[0]
-        q = {
-            f"q{i + 1}": g.loc[g["pct"] == p, "value"].iloc[0]
-            for i, p in enumerate([0.10, 0.30, 0.50, 0.70, 0.90])
-        }
-        out.append(
-            {
-                "indicator": ind,
-                "country": ctry,
-                "year": yr,
-                "slope": slope,
-                "ratio": q["q1"] / q["q5"],
-                **q,
-            }
-        )
-    lib = pd.DataFrame(out).sort_values(["indicator", "country", "year"])
-    lib.to_csv(DATA_DIR / "gradient_library.csv", index=False)
-
-    latest = lib.groupby(["indicator", "country"]).tail(1)
-    latest.to_csv(DATA_DIR / "gradient_library_latest.csv", index=False)
-
-    for ind in INDICATORS.values():
-        l = latest[latest["indicator"] == ind]
-        print(
-            f"{ind}: {len(l)} countries | median gradient {l['slope'].median():.3f} "
-            f"IQR [{l['slope'].quantile(0.25):.3f}, {l['slope'].quantile(0.75):.3f}] "
-            f"| median low/high ratio {l['ratio'].median():.2f}"
-        )
-    print(f"surveys with complete quintets: {lib.groupby(['country', 'year']).ngroups} "
-          f"({len(lib)} country-survey-indicator gradients)")
-
-    # 4. Fertility by age: per-survey age gradients and the pooled offsets
-    ages = fertility_age_tilts(raw)
-    ages.to_csv(DATA_DIR / "fertility_age_tilts.csv", index=False)
-    offsets = fertility_age_offsets(ages)
-    offsets.to_csv(DATA_DIR / "fertility_age_offsets.csv", index=False)
-    print(f"fertility by age: {ages['survey'].nunique()} surveys, "
-          f"{ages['country'].nunique()} countries | offsets "
-          + " ".join(f"{r.age_lo}-{r.age_hi} {r.offset:+.2f}" for r in offsets.itertuples()))
-
-    # Stamp the data vintage where the README states it: the script that pulls
-    # owns the stamp, so it cannot drift when this runs outside refresh.py.
-    readme = DATA_DIR.parent / "README.md"
-    today = datetime.date.today().strftime("%-d %B %Y")
-    readme.write_text(re.sub(r"API pull of \d{1,2} \w+ \d{4}",
-                             f"API pull of {today}", readme.read_text()))
-    print(f"stamped data vintage: {today}")
+    return raw, regions
 
 
 if __name__ == "__main__":

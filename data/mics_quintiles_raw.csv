@@ -1,0 +1,1014 @@
+indicator,iso3,wb_country,year,quintile,value,footnote,income_level,national_tfr
+IMR,AFG,Afghanistan,2011,1,75.0,Source: MICS4 2010-11,Low income,
+IMR,AFG,Afghanistan,2011,2,68.0,Source: MICS4 2010-11,Low income,
+IMR,AFG,Afghanistan,2011,3,80.0,Source: MICS4 2010-11,Low income,
+IMR,AFG,Afghanistan,2011,4,80.0,Source: MICS4 2010-11,Low income,
+IMR,AFG,Afghanistan,2011,5,62.0,Source: MICS4 2010-11,Low income,
+IMR,BEN,Benin,2014,1,76.0,"Source: MICS 5, 2014",Low income,
+IMR,BEN,Benin,2014,2,68.0,"Source: MICS 5, 2014",Low income,
+IMR,BEN,Benin,2014,3,73.0,"Source: MICS 5, 2014",Low income,
+IMR,BEN,Benin,2014,4,66.0,"Source: MICS 5, 2014",Low income,
+IMR,BEN,Benin,2014,5,45.0,"Source: MICS 5, 2014",Low income,
+IMR,BGD,Bangladesh,2013,1,59.0,Source: MICS 5 2012-13,Low income,
+IMR,BGD,Bangladesh,2013,2,46.0,Source: MICS 5 2012-13,Low income,
+IMR,BGD,Bangladesh,2013,3,47.0,Source: MICS 5 2012-13,Low income,
+IMR,BGD,Bangladesh,2013,4,41.0,Source: MICS 5 2012-13,Low income,
+IMR,BGD,Bangladesh,2013,5,29.0,Source: MICS 5 2012-13,Low income,
+IMR,BGD,Bangladesh,2019,1,42.0,"Source: MICS6, 2019",Lower middle income,
+IMR,BGD,Bangladesh,2019,2,37.0,"Source: MICS6, 2019",Lower middle income,
+IMR,BGD,Bangladesh,2019,3,35.0,"Source: MICS6, 2019",Lower middle income,
+IMR,BGD,Bangladesh,2019,4,29.0,"Source: MICS6, 2019",Lower middle income,
+IMR,BGD,Bangladesh,2019,5,24.0,"Source: MICS6, 2019",Lower middle income,
+IMR,BLZ,Belize,2016,1,14.0,"Source: MICS 5, 2016",Upper middle income,
+IMR,BLZ,Belize,2016,2,8.0,"Source: MICS 5, 2016",Upper middle income,
+IMR,BLZ,Belize,2016,3,12.0,"Source: MICS 5, 2016",Upper middle income,
+IMR,BLZ,Belize,2016,4,3.0,"Source: MICS 5, 2016",Upper middle income,
+IMR,BLZ,Belize,2016,5,4.0,"Source: MICS 5, 2016",Upper middle income,
+IMR,BTN,Bhutan,2010,1,68.0,"Source: MICS4, 2010",Lower middle income,
+IMR,BTN,Bhutan,2010,2,58.0,"Source: MICS4, 2010",Lower middle income,
+IMR,BTN,Bhutan,2010,3,50.0,"Source: MICS4, 2010",Lower middle income,
+IMR,CAF,Central African Republic,2010,1,127.0,"Source: MICS4, 2010",Low income,
+IMR,CAF,Central African Republic,2010,2,135.0,"Source: MICS4, 2010",Low income,
+IMR,CAF,Central African Republic,2010,3,121.0,"Source: MICS4, 2010",Low income,
+IMR,CAF,Central African Republic,2010,4,108.0,"Source: MICS4, 2010",Low income,
+IMR,CAF,Central African Republic,2010,5,85.0,"Source: MICS4, 2010",Low income,
+IMR,CAF,Central African Republic,2019,1,79.0,"Source: MICS6, 2018-19",Low income,
+IMR,CAF,Central African Republic,2019,2,66.0,"Source: MICS6, 2018-19",Low income,
+IMR,CAF,Central African Republic,2019,3,67.0,"Source: MICS6, 2018-19",Low income,
+IMR,CAF,Central African Republic,2019,4,59.0,"Source: MICS6, 2018-19",Low income,
+IMR,CAF,Central African Republic,2019,5,49.0,"Source: MICS6, 2018-19",Low income,
+IMR,CIV,Cote d'Ivoire,2016,1,83.0,"Source: MICS 5, 2016",Lower middle income,
+IMR,CIV,Cote d'Ivoire,2016,2,54.0,"Source: MICS 5, 2016",Lower middle income,
+IMR,CIV,Cote d'Ivoire,2016,3,55.0,"Source: MICS 5, 2016",Lower middle income,
+IMR,CIV,Cote d'Ivoire,2016,4,56.0,"Source: MICS 5, 2016",Lower middle income,
+IMR,CIV,Cote d'Ivoire,2016,5,39.0,"Source: MICS 5, 2016",Lower middle income,
+IMR,CMR,Cameroon,2014,1,93.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,CMR,Cameroon,2014,2,74.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,CMR,Cameroon,2014,3,58.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,CMR,Cameroon,2014,4,45.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,CMR,Cameroon,2014,5,46.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,COG,"Congo, Rep.",2016,1,51.8,"Source: MICS 5, 2015-16",Lower middle income,
+IMR,COG,"Congo, Rep.",2016,2,34.9,"Source: MICS 5, 2015-16",Lower middle income,
+IMR,COG,"Congo, Rep.",2016,3,35.7,"Source: MICS 5, 2015-16",Lower middle income,
+IMR,COG,"Congo, Rep.",2016,4,15.9,"Source: MICS 5, 2015-16",Lower middle income,
+IMR,COG,"Congo, Rep.",2016,5,31.7,"Source: MICS 5, 2015-16",Lower middle income,
+IMR,DOM,Dominican Republic,2014,1,33.0,"Source: MICS 5, 2014",Upper middle income,
+IMR,DOM,Dominican Republic,2014,2,36.0,"Source: MICS 5, 2014",Upper middle income,
+IMR,DOM,Dominican Republic,2014,3,27.0,"Source: MICS 5, 2014",Upper middle income,
+IMR,DOM,Dominican Republic,2014,4,36.0,"Source: MICS 5, 2014",Upper middle income,
+IMR,DOM,Dominican Republic,2014,5,21.0,"Source: MICS 5, 2014",Upper middle income,
+IMR,DZA,Algeria,2013,1,31.3,Source: MICS 4 2012-13,Upper middle income,
+IMR,DZA,Algeria,2013,2,17.7,Source: MICS 4 2012-13,Upper middle income,
+IMR,DZA,Algeria,2013,3,18.2,Source: MICS 4 2012-13,Upper middle income,
+IMR,DZA,Algeria,2013,4,20.3,Source: MICS 4 2012-13,Upper middle income,
+IMR,DZA,Algeria,2013,5,17.5,Source: MICS 4 2012-13,Upper middle income,
+IMR,DZA,Algeria,2019,1,23.0,"Source: MICS6, 2018-19",Lower middle income,
+IMR,DZA,Algeria,2019,2,14.0,"Source: MICS6, 2018-19",Lower middle income,
+IMR,DZA,Algeria,2019,3,16.0,"Source: MICS6, 2018-19",Lower middle income,
+IMR,DZA,Algeria,2019,4,15.0,"Source: MICS6, 2018-19",Lower middle income,
+IMR,DZA,Algeria,2019,5,14.0,"Source: MICS6, 2018-19",Lower middle income,
+IMR,GHA,Ghana,2011,1,61.0,"Source: MICS4, 2011",Lower middle income,
+IMR,GHA,Ghana,2011,2,50.0,"Source: MICS4, 2011",Lower middle income,
+IMR,GHA,Ghana,2011,3,54.0,"Source: MICS4, 2011",Lower middle income,
+IMR,GHA,Ghana,2011,4,52.0,"Source: MICS4, 2011",Lower middle income,
+IMR,GHA,Ghana,2011,5,38.0,"Source: MICS4, 2011",Lower middle income,
+IMR,GHA,Ghana,2018,1,34.0,"Source: MICS6, 2017-18",Lower middle income,
+IMR,GHA,Ghana,2018,2,31.0,"Source: MICS6, 2017-18",Lower middle income,
+IMR,GHA,Ghana,2018,3,72.0,"Source: MICS6, 2017-18",Lower middle income,
+IMR,GHA,Ghana,2018,4,33.0,"Source: MICS6, 2017-18",Lower middle income,
+IMR,GHA,Ghana,2018,5,33.0,"Source: MICS6, 2017-18",Lower middle income,
+IMR,GIN,Guinea,2016,1,68.0,"Source: MICS 5, 2016",Low income,
+IMR,GIN,Guinea,2016,2,46.0,"Source: MICS 5, 2016",Low income,
+IMR,GIN,Guinea,2016,3,40.0,"Source: MICS 5, 2016",Low income,
+IMR,GIN,Guinea,2016,4,37.0,"Source: MICS 5, 2016",Low income,
+IMR,GIN,Guinea,2016,5,20.0,"Source: MICS 5, 2016",Low income,
+IMR,GMB,"Gambia, The",2010,1,88.0,Source: MICS 4 2010,Low income,
+IMR,GMB,"Gambia, The",2010,2,83.0,Source: MICS 4 2010,Low income,
+IMR,GMB,"Gambia, The",2010,3,83.0,Source: MICS 4 2010,Low income,
+IMR,GMB,"Gambia, The",2010,4,82.0,Source: MICS 4 2010,Low income,
+IMR,GMB,"Gambia, The",2010,5,64.0,Source: MICS 4 2010,Low income,
+IMR,GMB,"Gambia, The",2018,1,49.0,"Source: MICS 6, 2018",Low income,
+IMR,GMB,"Gambia, The",2018,2,46.0,"Source: MICS 6, 2018",Low income,
+IMR,GMB,"Gambia, The",2018,3,41.0,"Source: MICS 6, 2018",Low income,
+IMR,GMB,"Gambia, The",2018,4,36.0,"Source: MICS 6, 2018",Low income,
+IMR,GMB,"Gambia, The",2018,5,27.0,"Source: MICS 6, 2018",Low income,
+IMR,GNB,Guinea-Bissau,2010,1,67.0,"Source: MICS4, 2010",Low income,
+IMR,GNB,Guinea-Bissau,2010,2,56.0,"Source: MICS4, 2010",Low income,
+IMR,GNB,Guinea-Bissau,2010,3,64.0,"Source: MICS4, 2010",Low income,
+IMR,GNB,Guinea-Bissau,2010,4,78.0,"Source: MICS4, 2010",Low income,
+IMR,GNB,Guinea-Bissau,2010,5,46.0,"Source: MICS4, 2010",Low income,
+IMR,GNB,Guinea-Bissau,2014,1,42.2,"Source: MICS 5, 2014",Low income,
+IMR,GNB,Guinea-Bissau,2014,2,61.1,"Source: MICS 5, 2014",Low income,
+IMR,GNB,Guinea-Bissau,2014,3,65.6,"Source: MICS 5, 2014",Low income,
+IMR,GNB,Guinea-Bissau,2014,4,53.6,"Source: MICS 5, 2014",Low income,
+IMR,GNB,Guinea-Bissau,2014,5,54.3,"Source: MICS 5, 2014",Low income,
+IMR,GNB,Guinea-Bissau,2019,1,35.0,"Source: MICS6, 2018-19",Low income,
+IMR,GNB,Guinea-Bissau,2019,2,35.0,"Source: MICS6, 2018-19",Low income,
+IMR,GNB,Guinea-Bissau,2019,3,29.0,"Source: MICS6, 2018-19",Low income,
+IMR,GNB,Guinea-Bissau,2019,4,39.0,"Source: MICS6, 2018-19",Low income,
+IMR,GNB,Guinea-Bissau,2019,5,44.0,"Source: MICS6, 2018-19",Low income,
+IMR,HND,Honduras,2019,1,22.0,"Source: MICS 6, 2019",Lower middle income,
+IMR,HND,Honduras,2019,2,26.0,"Source: MICS 6, 2019",Lower middle income,
+IMR,HND,Honduras,2019,3,16.0,"Source: MICS 6, 2019",Lower middle income,
+IMR,HND,Honduras,2019,4,13.0,"Source: MICS 6, 2019",Lower middle income,
+IMR,HND,Honduras,2019,5,17.0,"Source: MICS 6, 2019",Lower middle income,
+IMR,IRQ,Iraq,2011,1,35.0,"Source: MICS4, 2011",Lower middle income,
+IMR,IRQ,Iraq,2011,2,32.0,"Source: MICS4, 2011",Lower middle income,
+IMR,IRQ,Iraq,2011,3,29.0,"Source: MICS4, 2011",Lower middle income,
+IMR,IRQ,Iraq,2011,4,31.0,"Source: MICS4, 2011",Lower middle income,
+IMR,IRQ,Iraq,2011,5,33.0,"Source: MICS4, 2011",Lower middle income,
+IMR,IRQ,Iraq,2018,1,27.0,"Source: MICS 6, 2018",Upper middle income,
+IMR,IRQ,Iraq,2018,2,22.0,"Source: MICS 6, 2018",Upper middle income,
+IMR,IRQ,Iraq,2018,3,23.0,"Source: MICS 6, 2018",Upper middle income,
+IMR,IRQ,Iraq,2018,4,25.0,"Source: MICS 6, 2018",Upper middle income,
+IMR,IRQ,Iraq,2018,5,15.0,"Source: MICS 6, 2018",Upper middle income,
+IMR,KAZ,Kazakhstan,2011,1,34.0,"Source: MICS4, 2010-2011",Upper middle income,
+IMR,KAZ,Kazakhstan,2011,2,27.0,"Source: MICS4, 2010-2011",Upper middle income,
+IMR,KAZ,Kazakhstan,2011,3,29.0,"Source: MICS4, 2010-2011",Upper middle income,
+IMR,KAZ,Kazakhstan,2011,4,18.0,"Source: MICS4, 2010-2011",Upper middle income,
+IMR,KAZ,Kazakhstan,2011,5,24.0,"Source: MICS4, 2010-2011",Upper middle income,
+IMR,KGZ,Kyrgyz Republic,2014,1,35.0,Source: MICS 5 2014,Lower middle income,
+IMR,KGZ,Kyrgyz Republic,2014,2,23.0,Source: MICS 5 2014,Lower middle income,
+IMR,KGZ,Kyrgyz Republic,2014,3,22.0,Source: MICS 5 2014,Lower middle income,
+IMR,KGZ,Kyrgyz Republic,2014,4,22.0,Source: MICS 5 2014,Lower middle income,
+IMR,KGZ,Kyrgyz Republic,2014,5,15.0,Source: MICS 5 2014,Lower middle income,
+IMR,KGZ,Kyrgyz Republic,2018,1,13.0,"Source: MICS 6, 2018",Lower middle income,
+IMR,KGZ,Kyrgyz Republic,2018,2,22.0,"Source: MICS 6, 2018",Lower middle income,
+IMR,KGZ,Kyrgyz Republic,2018,3,15.0,"Source: MICS 6, 2018",Lower middle income,
+IMR,KGZ,Kyrgyz Republic,2018,4,27.0,"Source: MICS 6, 2018",Lower middle income,
+IMR,KGZ,Kyrgyz Republic,2018,5,7.0,"Source: MICS 6, 2018",Lower middle income,
+IMR,KIR,Kiribati,2019,1,61.0,"Source: MICS6, 2018-19",Lower middle income,
+IMR,KIR,Kiribati,2019,2,33.0,"Source: MICS6, 2018-19",Lower middle income,
+IMR,KIR,Kiribati,2019,3,32.0,"The data is based on 250-499 unweighted person-years of exposure to the risk of death. Source: MICS6, 2018-19",Lower middle income,
+IMR,KIR,Kiribati,2019,4,41.0,"The data is based on 250-499 unweighted person-years of exposure to the risk of death. Source: MICS6, 2018-19",Lower middle income,
+IMR,KIR,Kiribati,2019,5,32.0,"The data is based on 250-499 unweighted person-years of exposure to the risk of death. Source: MICS6, 2018-19",Lower middle income,
+IMR,LAO,Lao PDR,2012,1,95.0,Source: MICS4 2011-12,Lower middle income,
+IMR,LAO,Lao PDR,2012,2,98.0,Source: MICS4 2011-12,Lower middle income,
+IMR,LAO,Lao PDR,2012,3,77.0,Source: MICS4 2011-12,Lower middle income,
+IMR,LAO,Lao PDR,2012,4,47.0,Source: MICS4 2011-12,Lower middle income,
+IMR,LAO,Lao PDR,2012,5,27.0,Source: MICS4 2011-12,Lower middle income,
+IMR,LAO,Lao PDR,2017,1,56.0,"Source: MICS 6, 2017",Lower middle income,
+IMR,LAO,Lao PDR,2017,2,57.0,"Source: MICS 6, 2017",Lower middle income,
+IMR,LAO,Lao PDR,2017,3,31.0,"Source: MICS 6, 2017",Lower middle income,
+IMR,LAO,Lao PDR,2017,4,21.0,"Source: MICS 6, 2017",Lower middle income,
+IMR,LAO,Lao PDR,2017,5,19.0,"Source: MICS 6, 2017",Lower middle income,
+IMR,LSO,Lesotho,2018,1,64.9,"Source: MICS 6, 2018",Lower middle income,
+IMR,LSO,Lesotho,2018,2,69.6,"Source: MICS 6, 2018",Lower middle income,
+IMR,LSO,Lesotho,2018,3,79.7,"Source: MICS 6, 2018",Lower middle income,
+IMR,LSO,Lesotho,2018,4,81.3,"Source: MICS 6, 2018",Lower middle income,
+IMR,LSO,Lesotho,2018,5,63.9,"Source: MICS 6, 2018",Lower middle income,
+IMR,MLI,Mali,2015,1,56.0,"Source: MICS 5, 2015",Low income,
+IMR,MLI,Mali,2015,2,64.0,"Source: MICS 5, 2015",Low income,
+IMR,MLI,Mali,2015,3,67.0,"Source: MICS 5, 2015",Low income,
+IMR,MLI,Mali,2015,4,48.0,"Source: MICS 5, 2015",Low income,
+IMR,MLI,Mali,2015,5,39.0,"Source: MICS 5, 2015",Low income,
+IMR,MMR,Myanmar,2010,1,49.2,Source: MICS 3 2009-10,Low income,
+IMR,MMR,Myanmar,2010,2,52.2,Source: MICS 3 2009-10,Low income,
+IMR,MMR,Myanmar,2010,3,40.4,Source: MICS 3 2009-10,Low income,
+IMR,MMR,Myanmar,2010,4,23.5,Source: MICS 3 2009-10,Low income,
+IMR,MMR,Myanmar,2010,5,13.2,Source: MICS 3 2009-10,Low income,
+IMR,MNG,Mongolia,2010,1,51.0,Source: MICS 4 2010,Lower middle income,
+IMR,MNG,Mongolia,2010,2,38.0,Source: MICS 4 2010,Lower middle income,
+IMR,MNG,Mongolia,2010,3,27.0,Source: MICS 4 2010,Lower middle income,
+IMR,MNG,Mongolia,2010,4,25.0,Source: MICS 4 2010,Lower middle income,
+IMR,MNG,Mongolia,2010,5,21.0,Source: MICS 4 2010,Lower middle income,
+IMR,MNG,Mongolia,2014,1,32.77,Source: MICS 5 2013-14,Upper middle income,
+IMR,MNG,Mongolia,2014,2,24.51,Source: MICS 5 2013-14,Upper middle income,
+IMR,MNG,Mongolia,2014,3,19.9,Source: MICS 5 2013-14,Upper middle income,
+IMR,MNG,Mongolia,2014,4,12.46,Source: MICS 5 2013-14,Upper middle income,
+IMR,MNG,Mongolia,2014,5,13.16,Source: MICS 5 2013-14,Upper middle income,
+IMR,MNG,Mongolia,2018,1,20.0,"Source: MICS 6, 2018",Lower middle income,
+IMR,MNG,Mongolia,2018,2,16.0,"Source: MICS 6, 2018",Lower middle income,
+IMR,MNG,Mongolia,2018,3,16.0,"Source: MICS 6, 2018",Lower middle income,
+IMR,MNG,Mongolia,2018,4,14.0,"Source: MICS 6, 2018",Lower middle income,
+IMR,MNG,Mongolia,2018,5,13.0,"Source: MICS 6, 2018",Lower middle income,
+IMR,MRT,Mauritania,2011,1,70.0,Source: MICS4 2011,Low income,
+IMR,MRT,Mauritania,2011,2,86.0,Source: MICS4 2011,Low income,
+IMR,MRT,Mauritania,2011,3,83.0,Source: MICS4 2011,Low income,
+IMR,MRT,Mauritania,2011,4,75.0,Source: MICS4 2011,Low income,
+IMR,MRT,Mauritania,2011,5,53.0,Source: MICS4 2011,Low income,
+IMR,MRT,Mauritania,2015,1,49.0,"Source: MICS 5, 2015",Lower middle income,
+IMR,MRT,Mauritania,2015,2,54.0,"Source: MICS 5, 2015",Lower middle income,
+IMR,MRT,Mauritania,2015,3,44.0,"Source: MICS 5, 2015",Lower middle income,
+IMR,MRT,Mauritania,2015,4,34.0,"Source: MICS 5, 2015",Lower middle income,
+IMR,MRT,Mauritania,2015,5,30.0,"Source: MICS 5, 2015",Lower middle income,
+IMR,MWI,Malawi,2014,1,56.0,Source: MICS 5 2013-14,Low income,
+IMR,MWI,Malawi,2014,2,49.0,Source: MICS 5 2013-14,Low income,
+IMR,MWI,Malawi,2014,3,55.0,Source: MICS 5 2013-14,Low income,
+IMR,MWI,Malawi,2014,4,54.0,Source: MICS 5 2013-14,Low income,
+IMR,MWI,Malawi,2014,5,52.0,Source: MICS 5 2013-14,Low income,
+IMR,NGA,Nigeria,2011,1,132.0,Source: MICS4 2011,Lower middle income,
+IMR,NGA,Nigeria,2011,2,121.0,Source: MICS4 2011,Lower middle income,
+IMR,NGA,Nigeria,2011,3,89.0,Source: MICS4 2011,Lower middle income,
+IMR,NGA,Nigeria,2011,4,73.0,Source: MICS4 2011,Lower middle income,
+IMR,NGA,Nigeria,2011,5,51.0,Source: MICS4 2011,Lower middle income,
+IMR,NGA,Nigeria,2017,1,80.0,"Source: MICS 5, 2016-17",Lower middle income,
+IMR,NGA,Nigeria,2017,2,84.0,"Source: MICS 5, 2016-17",Lower middle income,
+IMR,NGA,Nigeria,2017,3,75.0,"Source: MICS 5, 2016-17",Lower middle income,
+IMR,NGA,Nigeria,2017,4,57.0,"Source: MICS 5, 2016-17",Lower middle income,
+IMR,NGA,Nigeria,2017,5,45.0,"Source: MICS 5, 2016-17",Lower middle income,
+IMR,NPL,Nepal,2014,1,48.0,Source: MICS 5 2014,Low income,
+IMR,NPL,Nepal,2014,2,36.0,Source: MICS 5 2014,Low income,
+IMR,NPL,Nepal,2014,3,28.0,Source: MICS 5 2014,Low income,
+IMR,NPL,Nepal,2014,4,29.0,Source: MICS 5 2014,Low income,
+IMR,NPL,Nepal,2014,5,20.0,Source: MICS 5 2014,Low income,
+IMR,NPL,Nepal,2019,1,26.0,"Source: MICS6, 2019",Lower middle income,
+IMR,NPL,Nepal,2019,2,31.0,"Source: MICS6, 2019",Lower middle income,
+IMR,NPL,Nepal,2019,3,35.0,"Source: MICS6, 2019",Lower middle income,
+IMR,NPL,Nepal,2019,4,16.0,"Source: MICS6, 2019",Lower middle income,
+IMR,NPL,Nepal,2019,5,12.0,"Source: MICS6, 2019",Lower middle income,
+IMR,PRY,Paraguay,2016,1,26.0,"Source: MICS 5, 2016",Upper middle income,
+IMR,PRY,Paraguay,2016,2,31.0,"Source: MICS 5, 2016",Upper middle income,
+IMR,PRY,Paraguay,2016,3,15.0,"Source: MICS 5, 2016",Upper middle income,
+IMR,PRY,Paraguay,2016,4,8.0,"Source: MICS 5, 2016",Upper middle income,
+IMR,PRY,Paraguay,2016,5,1.0,"Source: MICS 5, 2016",Upper middle income,
+IMR,SDN,Sudan,2006,1,95.0,"Sudan Household Health Survey (SHHS), Combined MICS3 - PAPFAM Survey",Low income,
+IMR,SDN,Sudan,2006,2,84.0,"Sudan Household Health Survey (SHHS), Combined MICS3 - PAPFAM Survey",Low income,
+IMR,SDN,Sudan,2006,3,81.0,"Sudan Household Health Survey (SHHS), Combined MICS3 - PAPFAM Survey",Low income,
+IMR,SDN,Sudan,2006,4,70.0,"Sudan Household Health Survey (SHHS), Combined MICS3 - PAPFAM Survey",Low income,
+IMR,SDN,Sudan,2006,5,65.0,"Sudan Household Health Survey (SHHS), Combined MICS3 - PAPFAM Survey",Low income,
+IMR,SDN,Sudan,2010,1,59.0,"Source: MICS4, 2010",Lower middle income,
+IMR,SDN,Sudan,2010,2,69.0,"Source: MICS4, 2010",Lower middle income,
+IMR,SDN,Sudan,2010,3,68.0,"Source: MICS4, 2010",Lower middle income,
+IMR,SDN,Sudan,2010,4,60.0,"Source: MICS4, 2010",Lower middle income,
+IMR,SDN,Sudan,2010,5,37.0,"Source: MICS4, 2010",Lower middle income,
+IMR,SDN,Sudan,2014,1,64.9,Source: MICS 5 2014,Lower middle income,
+IMR,SDN,Sudan,2014,2,60.3,Source: MICS 5 2014,Lower middle income,
+IMR,SDN,Sudan,2014,3,50.3,Source: MICS 5 2014,Lower middle income,
+IMR,SDN,Sudan,2014,4,42.7,Source: MICS 5 2014,Lower middle income,
+IMR,SDN,Sudan,2014,5,33.9,Source: MICS 5 2014,Lower middle income,
+IMR,SLE,Sierra Leone,2010,1,131.0,"Source: MICS4, 2010",Low income,
+IMR,SLE,Sierra Leone,2010,2,137.0,"Source: MICS4, 2010",Low income,
+IMR,SLE,Sierra Leone,2010,3,132.0,"Source: MICS4, 2010",Low income,
+IMR,SLE,Sierra Leone,2010,4,117.0,"Source: MICS4, 2010",Low income,
+IMR,SLE,Sierra Leone,2010,5,110.0,"Source: MICS4, 2010",Low income,
+IMR,SLE,Sierra Leone,2017,1,52.0,"Source: MICS 6, 2017",Low income,
+IMR,SLE,Sierra Leone,2017,2,61.0,"Source: MICS 6, 2017",Low income,
+IMR,SLE,Sierra Leone,2017,3,45.0,"Source: MICS 6, 2017",Low income,
+IMR,SLE,Sierra Leone,2017,4,64.0,"Source: MICS 6, 2017",Low income,
+IMR,SLE,Sierra Leone,2017,5,60.0,"Source: MICS 6, 2017",Low income,
+IMR,SLV,El Salvador,2014,1,25.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,SLV,El Salvador,2014,2,21.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,SLV,El Salvador,2014,3,12.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,SLV,El Salvador,2014,4,10.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,SLV,El Salvador,2014,5,15.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,STP,Sao Tome and Principe,2019,1,20.0,"Source: MICS6, 2019",Lower middle income,
+IMR,STP,Sao Tome and Principe,2019,2,13.0,"Source: MICS6, 2019",Lower middle income,
+IMR,STP,Sao Tome and Principe,2019,3,11.0,"Source: MICS6, 2019",Lower middle income,
+IMR,STP,Sao Tome and Principe,2019,4,6.0,"Source: MICS6, 2019",Lower middle income,
+IMR,STP,Sao Tome and Principe,2019,5,18.0,"Source: MICS6, 2019",Lower middle income,
+IMR,SUR,Suriname,2018,1,15.0,"Source: MICS 6, 2018",Upper middle income,
+IMR,SUR,Suriname,2018,2,14.0,"Source: MICS 6, 2018",Upper middle income,
+IMR,SUR,Suriname,2018,3,27.0,"Source: MICS 6, 2018",Upper middle income,
+IMR,SUR,Suriname,2018,4,25.0,"Source: MICS 6, 2018",Upper middle income,
+IMR,SUR,Suriname,2018,5,4.0,"Source: MICS 6, 2018",Upper middle income,
+IMR,SWZ,Eswatini,2010,1,82.0,"Source: MICS4, 2010",Lower middle income,
+IMR,SWZ,Eswatini,2010,2,66.0,"Source: MICS4, 2010",Lower middle income,
+IMR,SWZ,Eswatini,2010,3,81.0,"Source: MICS4, 2010",Lower middle income,
+IMR,SWZ,Eswatini,2010,4,71.0,"Source: MICS4, 2010",Lower middle income,
+IMR,SWZ,Eswatini,2010,5,71.0,"Source: MICS4, 2010",Lower middle income,
+IMR,SWZ,Eswatini,2014,1,71.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,SWZ,Eswatini,2014,2,40.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,SWZ,Eswatini,2014,3,48.0,"Source: MICS 5, 2014",Lower middle income,
+IMR,SWZ,Eswatini,2014,4,51.0,"Based on 25-49 unweighted cases.Source: MICS 5, 2014",Lower middle income,
+IMR,SWZ,Eswatini,2014,5,40.0,"Based on 25-49 unweighted cases.Source: MICS 5, 2014",Lower middle income,
+IMR,TCD,Chad,2010,1,100.0,"Source: MICS4, 2010",Low income,
+IMR,TCD,Chad,2010,2,116.0,"Source: MICS4, 2010",Low income,
+IMR,TCD,Chad,2010,3,106.0,"Source: MICS4, 2010",Low income,
+IMR,TCD,Chad,2010,4,109.0,"Source: MICS4, 2010",Low income,
+IMR,TCD,Chad,2010,5,97.0,"Source: MICS4, 2010",Low income,
+IMR,TCD,Chad,2019,1,62.0,"Source: MICS6, 2018-19",Low income,
+IMR,TCD,Chad,2019,2,80.0,"Source: MICS6, 2018-19",Low income,
+IMR,TCD,Chad,2019,3,95.0,"Source: MICS6, 2018-19",Low income,
+IMR,TCD,Chad,2019,4,90.0,"Source: MICS6, 2018-19",Low income,
+IMR,TCD,Chad,2019,5,66.0,"Source: MICS6, 2018-19",Low income,
+IMR,TGO,Togo,2010,1,92.0,"Source: MICS4, 2010",Low income,
+IMR,TGO,Togo,2010,2,85.0,"Source: MICS4, 2010",Low income,
+IMR,TGO,Togo,2010,3,81.0,"Source: MICS4, 2010",Low income,
+IMR,TGO,Togo,2010,4,65.0,"Source: MICS4, 2010",Low income,
+IMR,TGO,Togo,2010,5,56.0,"Source: MICS4, 2010",Low income,
+IMR,TKM,Turkmenistan,2016,1,33.0,"Source: MICS 5, 2015-16",Upper middle income,
+IMR,TKM,Turkmenistan,2016,2,19.0,"Source: MICS 5, 2015-16",Upper middle income,
+IMR,TKM,Turkmenistan,2016,3,21.0,"Source: MICS 5, 2015-16",Upper middle income,
+IMR,TKM,Turkmenistan,2016,4,14.0,"Source: MICS 5, 2015-16",Upper middle income,
+IMR,TKM,Turkmenistan,2016,5,14.0,"Source: MICS 5, 2015-16",Upper middle income,
+IMR,TKM,Turkmenistan,2019,1,36.0,"Source: MICS6, 2019",Upper middle income,
+IMR,TKM,Turkmenistan,2019,2,46.0,"Source: MICS6, 2019",Upper middle income,
+IMR,TKM,Turkmenistan,2019,3,28.0,"Source: MICS6, 2019",Upper middle income,
+IMR,TKM,Turkmenistan,2019,4,21.0,"Source: MICS6, 2019",Upper middle income,
+IMR,TKM,Turkmenistan,2019,5,25.0,"Source: MICS6, 2019",Upper middle income,
+IMR,TON,Tonga,2019,1,16.0,"Source: MICS6, 2019",Upper middle income,
+IMR,TON,Tonga,2019,2,19.0,"Source: MICS6, 2019",Upper middle income,
+IMR,TON,Tonga,2019,3,7.0,"The data is based on 250-499 unweighted person-years of exposure to the risk of death.  Source: MICS6, 2019",Upper middle income,
+IMR,TON,Tonga,2019,4,3.0,"The data is based on 250-499 unweighted person-years of exposure to the risk of death.  Source: MICS6, 2019",Upper middle income,
+IMR,TON,Tonga,2019,5,1.0,"The data is based on 250-499 unweighted person-years of exposure to the risk of death.  Source: MICS6, 2019",Upper middle income,
+IMR,WSM,Samoa,2020,1,29.0,"Source: MICS6, 2019-20",Lower middle income,
+IMR,WSM,Samoa,2020,2,10.0,"Based on 250-499 unweighted person-years of exposure to the risk of death.  Source: MICS6, 2019-20",Lower middle income,
+IMR,WSM,Samoa,2020,3,9.0,"Source: MICS6, 2019-20",Lower middle income,
+IMR,WSM,Samoa,2020,4,15.0,"Source: MICS6, 2019-20",Lower middle income,
+IMR,WSM,Samoa,2020,5,10.0,"Based on 250-499 unweighted person-years of exposure to the risk of death.  Source: MICS6, 2019-20",Lower middle income,
+IMR,ZWE,Zimbabwe,2009,1,67.0,Source MICS3 2009,Low income,
+IMR,ZWE,Zimbabwe,2009,2,58.0,Source MICS3 2009,Low income,
+IMR,ZWE,Zimbabwe,2009,3,57.0,Source MICS3 2009,Low income,
+IMR,ZWE,Zimbabwe,2009,4,61.0,Source MICS3 2009,Low income,
+IMR,ZWE,Zimbabwe,2009,5,54.0,Source MICS3 2009,Low income,
+IMR,ZWE,Zimbabwe,2014,1,53.0,Source: MICS 5 2014,Low income,
+IMR,ZWE,Zimbabwe,2014,2,56.0,Source: MICS 5 2014,Low income,
+IMR,ZWE,Zimbabwe,2014,3,55.0,Source: MICS 5 2014,Low income,
+IMR,ZWE,Zimbabwe,2014,4,58.0,Source: MICS 5 2014,Low income,
+IMR,ZWE,Zimbabwe,2014,5,49.0,Source: MICS 5 2014,Low income,
+IMR,ZWE,Zimbabwe,2019,1,63.0,"Source: MICS6, 2019",Lower middle income,
+IMR,ZWE,Zimbabwe,2019,2,51.0,"Source: MICS6, 2019",Lower middle income,
+IMR,ZWE,Zimbabwe,2019,3,53.0,"Source: MICS6, 2019",Lower middle income,
+IMR,ZWE,Zimbabwe,2019,4,56.0,"Source: MICS6, 2019",Lower middle income,
+IMR,ZWE,Zimbabwe,2019,5,39.0,"Source: MICS6, 2019",Lower middle income,
+TFR,ARG,Argentina,2012,1,3.7,Source: MICS 4 2011-12,Upper middle income,2.304
+TFR,ARG,Argentina,2012,2,2.4,Source: MICS 4 2011-12,Upper middle income,2.304
+TFR,ARG,Argentina,2012,3,2.0,Source: MICS 4 2011-12,Upper middle income,2.304
+TFR,ARG,Argentina,2012,4,1.9,Source: MICS 4 2011-12,Upper middle income,2.304
+TFR,ARG,Argentina,2012,5,1.9,Source: MICS 4 2011-12,Upper middle income,2.304
+TFR,BEN,Benin,2014,1,6.7,"Source: MICS 5, 2014",Low income,5.374
+TFR,BEN,Benin,2014,2,6.5,"Source: MICS 5, 2014",Low income,5.374
+TFR,BEN,Benin,2014,3,6.0,"Source: MICS 5, 2014",Low income,5.374
+TFR,BEN,Benin,2014,4,5.5,"Source: MICS 5, 2014",Low income,5.374
+TFR,BEN,Benin,2014,5,4.1,"Source: MICS 5, 2014",Low income,5.374
+TFR,BGD,Bangladesh,2013,1,3.0,Source: MICS 5 2012-13,Low income,2.247
+TFR,BGD,Bangladesh,2013,2,2.4,Source: MICS 5 2012-13,Low income,2.247
+TFR,BGD,Bangladesh,2013,3,2.2,Source: MICS 5 2012-13,Low income,2.247
+TFR,BGD,Bangladesh,2013,4,2.0,Source: MICS 5 2012-13,Low income,2.247
+TFR,BGD,Bangladesh,2013,5,1.9,Source: MICS 5 2012-13,Low income,2.247
+TFR,BGD,Bangladesh,2019,1,2.8,"Source: MICS6, 2019",Lower middle income,2.18
+TFR,BGD,Bangladesh,2019,2,2.4,"Source: MICS6, 2019",Lower middle income,2.18
+TFR,BGD,Bangladesh,2019,3,2.1,"Source: MICS6, 2019",Lower middle income,2.18
+TFR,BGD,Bangladesh,2019,4,2.1,"Source: MICS6, 2019",Lower middle income,2.18
+TFR,BGD,Bangladesh,2019,5,2.1,"Source: MICS6, 2019",Lower middle income,2.18
+TFR,BLZ,Belize,2011,1,4.2,"Source: MICS4, 2011",Lower middle income,2.531
+TFR,BLZ,Belize,2011,2,2.8,"Source: MICS4, 2011",Lower middle income,2.531
+TFR,BLZ,Belize,2011,3,2.4,"Source: MICS4, 2011",Lower middle income,2.531
+TFR,BLZ,Belize,2011,4,2.5,"Source: MICS4, 2011",Lower middle income,2.531
+TFR,BLZ,Belize,2011,5,1.7,"Source: MICS4, 2011",Lower middle income,2.531
+TFR,BLZ,Belize,2016,1,3.6,"Source: MICS 5, 2016",Upper middle income,2.396
+TFR,BLZ,Belize,2016,2,3.0,"Source: MICS 5, 2016",Upper middle income,2.396
+TFR,BLZ,Belize,2016,3,2.5,"Source: MICS 5, 2016",Upper middle income,2.396
+TFR,BLZ,Belize,2016,4,2.2,"Source: MICS 5, 2016",Upper middle income,2.396
+TFR,BLZ,Belize,2016,5,1.9,"Source: MICS 5, 2016",Upper middle income,2.396
+TFR,BRB,Barbados,2012,2,2.0,Source: MICS 4 2012.  Less than 250 unweighted cases.,High income,1.731
+TFR,BRB,Barbados,2012,3,1.5,Source: MICS 4 2012.  Less than 250 unweighted cases.,High income,1.731
+TFR,BRB,Barbados,2012,4,1.8,Source: MICS 4 2012.  Less than 250 unweighted cases.,High income,1.731
+TFR,BRB,Barbados,2012,5,0.9,Source: MICS 4 2012.  Less than 250 unweighted cases.,High income,1.731
+TFR,BTN,Bhutan,2010,1,3.1,"Source: MICS4, 2010",Lower middle income,2.252
+TFR,BTN,Bhutan,2010,2,2.8,"Source: MICS4, 2010",Lower middle income,2.252
+TFR,BTN,Bhutan,2010,3,3.0,"Source: MICS4, 2010",Lower middle income,2.252
+TFR,BTN,Bhutan,2010,4,2.4,"Source: MICS4, 2010",Lower middle income,2.252
+TFR,BTN,Bhutan,2010,5,2.0,"Source: MICS4, 2010",Lower middle income,2.252
+TFR,CAF,Central African Republic,2010,1,7.0,"Source: MICS4, 2010",Low income,5.963
+TFR,CAF,Central African Republic,2010,2,7.1,"Source: MICS4, 2010",Low income,5.963
+TFR,CAF,Central African Republic,2010,3,6.9,"Source: MICS4, 2010",Low income,5.963
+TFR,CAF,Central African Republic,2010,4,5.7,"Source: MICS4, 2010",Low income,5.963
+TFR,CAF,Central African Republic,2010,5,4.6,"Source: MICS4, 2010",Low income,5.963
+TFR,CAF,Central African Republic,2019,1,228.0,"Source: MICS6, 2018-19",Low income,6.09
+TFR,CAF,Central African Republic,2019,2,212.0,"Source: MICS6, 2018-19",Low income,6.09
+TFR,CAF,Central African Republic,2019,3,223.0,"Source: MICS6, 2018-19",Low income,6.09
+TFR,CAF,Central African Republic,2019,4,175.0,"Source: MICS6, 2018-19",Low income,6.09
+TFR,CAF,Central African Republic,2019,5,109.0,"Source: MICS6, 2018-19",Low income,6.09
+TFR,CIV,Cote d'Ivoire,2016,1,6.7,"Source: MICS 5, 2016",Lower middle income,4.873
+TFR,CIV,Cote d'Ivoire,2016,2,5.9,"Source: MICS 5, 2016",Lower middle income,4.873
+TFR,CIV,Cote d'Ivoire,2016,3,4.8,"Source: MICS 5, 2016",Lower middle income,4.873
+TFR,CIV,Cote d'Ivoire,2016,4,3.8,"Source: MICS 5, 2016",Lower middle income,4.873
+TFR,CIV,Cote d'Ivoire,2016,5,2.7,"Source: MICS 5, 2016",Lower middle income,4.873
+TFR,CMR,Cameroon,2014,1,6.8,"Source: MICS 5, 2014",Lower middle income,4.844
+TFR,CMR,Cameroon,2014,2,6.4,"Source: MICS 5, 2014",Lower middle income,4.844
+TFR,CMR,Cameroon,2014,3,5.4,"Source: MICS 5, 2014",Lower middle income,4.844
+TFR,CMR,Cameroon,2014,4,3.9,"Source: MICS 5, 2014",Lower middle income,4.844
+TFR,CMR,Cameroon,2014,5,3.0,"Source: MICS 5, 2014",Lower middle income,4.844
+TFR,COG,"Congo, Rep.",2016,1,7.1,"Source: MICS 5, 2015-16",Lower middle income,4.546
+TFR,COG,"Congo, Rep.",2016,2,5.1,"Source: MICS 5, 2015-16",Lower middle income,4.546
+TFR,COG,"Congo, Rep.",2016,3,4.3,"Source: MICS 5, 2015-16",Lower middle income,4.546
+TFR,COG,"Congo, Rep.",2016,4,3.5,"Source: MICS 5, 2015-16",Lower middle income,4.546
+TFR,COG,"Congo, Rep.",2016,5,2.9,"Source: MICS 5, 2015-16",Lower middle income,4.546
+TFR,DOM,Dominican Republic,2014,1,3.7,"Source: MICS 5, 2014",Upper middle income,2.451
+TFR,DOM,Dominican Republic,2014,2,2.8,"Source: MICS 5, 2014",Upper middle income,2.451
+TFR,DOM,Dominican Republic,2014,3,2.5,"Source: MICS 5, 2014",Upper middle income,2.451
+TFR,DOM,Dominican Republic,2014,4,2.0,"Source: MICS 5, 2014",Upper middle income,2.451
+TFR,DOM,Dominican Republic,2014,5,1.9,"Source: MICS 5, 2014",Upper middle income,2.451
+TFR,DZA,Algeria,2013,1,3.1,Source: MICS 4 2012-13,Upper middle income,2.997
+TFR,DZA,Algeria,2013,2,3.0,Source: MICS 4 2012-13,Upper middle income,2.997
+TFR,DZA,Algeria,2013,3,2.5,Source: MICS 4 2012-13,Upper middle income,2.997
+TFR,DZA,Algeria,2013,4,2.6,Source: MICS 4 2012-13,Upper middle income,2.997
+TFR,DZA,Algeria,2013,5,2.3,Source: MICS 4 2012-13,Upper middle income,2.997
+TFR,DZA,Algeria,2019,1,22.0,"Source: MICS6, 2018-19",Lower middle income,2.997
+TFR,DZA,Algeria,2019,2,20.1,"Source: MICS6, 2018-19",Lower middle income,2.997
+TFR,DZA,Algeria,2019,3,7.7,"Source: MICS6, 2018-19",Lower middle income,2.997
+TFR,DZA,Algeria,2019,4,10.2,"Source: MICS6, 2018-19",Lower middle income,2.997
+TFR,DZA,Algeria,2019,5,3.0,"Source: MICS6, 2018-19",Lower middle income,2.997
+TFR,GHA,Ghana,2011,1,6.0,"Source: MICS4, 2011",Lower middle income,4.177
+TFR,GHA,Ghana,2011,2,5.4,"Source: MICS4, 2011",Lower middle income,4.177
+TFR,GHA,Ghana,2011,3,4.4,"Source: MICS4, 2011",Lower middle income,4.177
+TFR,GHA,Ghana,2011,4,3.7,"Source: MICS4, 2011",Lower middle income,4.177
+TFR,GHA,Ghana,2011,5,2.9,"Source: MICS4, 2011",Lower middle income,4.177
+TFR,GHA,Ghana,2018,1,5.5,"Source: MICS6, 2017-18",Lower middle income,3.65
+TFR,GHA,Ghana,2018,2,5.0,"Source: MICS6, 2017-18",Lower middle income,3.65
+TFR,GHA,Ghana,2018,3,4.5,"Source: MICS6, 2017-18",Lower middle income,3.65
+TFR,GHA,Ghana,2018,4,4.0,"Source: MICS6, 2017-18",Lower middle income,3.65
+TFR,GHA,Ghana,2018,5,3.3,"Source: MICS6, 2017-18",Lower middle income,3.65
+TFR,GIN,Guinea,2016,1,5.6,"Source: MICS 5, 2016",Low income,4.915
+TFR,GIN,Guinea,2016,2,5.8,"Source: MICS 5, 2016",Low income,4.915
+TFR,GIN,Guinea,2016,3,5.2,"Source: MICS 5, 2016",Low income,4.915
+TFR,GIN,Guinea,2016,4,4.5,"Source: MICS 5, 2016",Low income,4.915
+TFR,GIN,Guinea,2016,5,3.3,"Source: MICS 5, 2016",Low income,4.915
+TFR,GMB,"Gambia, The",2010,1,7.1,Source: MICS 4 2010,Low income,5.558
+TFR,GMB,"Gambia, The",2010,2,6.9,Source: MICS 4 2010,Low income,5.558
+TFR,GMB,"Gambia, The",2010,3,6.0,Source: MICS 4 2010,Low income,5.558
+TFR,GMB,"Gambia, The",2010,4,6.0,Source: MICS 4 2010,Low income,5.558
+TFR,GMB,"Gambia, The",2010,5,4.0,Source: MICS 4 2010,Low income,5.558
+TFR,GMB,"Gambia, The",2018,1,6.0,"Figures is based on 25-49 unweighted cases. Source: MICS 6, 2018",Low income,4.42
+TFR,GMB,"Gambia, The",2018,2,5.4,"Figures is based on 25-49 unweighted cases. Source: MICS 6, 2018",Low income,4.42
+TFR,GMB,"Gambia, The",2018,5,2.7,"Figures is based on 25-49 unweighted cases. Source: MICS 6, 2018",Low income,4.42
+TFR,GNB,Guinea-Bissau,2010,1,6.4,"Source: MICS4, 2010",Low income,5.111
+TFR,GNB,Guinea-Bissau,2010,2,6.6,"Source: MICS4, 2010",Low income,5.111
+TFR,GNB,Guinea-Bissau,2010,3,5.8,"Source: MICS4, 2010",Low income,5.111
+TFR,GNB,Guinea-Bissau,2010,4,3.7,"Source: MICS4, 2010",Low income,5.111
+TFR,GNB,Guinea-Bissau,2010,5,2.8,"Source: MICS4, 2010",Low income,5.111
+TFR,GNB,Guinea-Bissau,2014,1,6.4,"Source: MICS 5, 2014",Low income,4.79
+TFR,GNB,Guinea-Bissau,2014,2,6.5,"Source: MICS 5, 2014",Low income,4.79
+TFR,GNB,Guinea-Bissau,2014,3,5.8,"Source: MICS 5, 2014",Low income,4.79
+TFR,GNB,Guinea-Bissau,2014,4,4.0,"Source: MICS 5, 2014",Low income,4.79
+TFR,GNB,Guinea-Bissau,2014,5,2.7,"Source: MICS 5, 2014",Low income,4.79
+TFR,GNB,Guinea-Bissau,2019,1,121.0,"Source: MICS6, 2018-19",Low income,4.153
+TFR,GNB,Guinea-Bissau,2019,2,115.0,"Source: MICS6, 2018-19",Low income,4.153
+TFR,GNB,Guinea-Bissau,2019,3,110.0,"Source: MICS6, 2018-19",Low income,4.153
+TFR,GNB,Guinea-Bissau,2019,4,70.0,"Source: MICS6, 2018-19",Low income,4.153
+TFR,GNB,Guinea-Bissau,2019,5,34.0,"Source: MICS6, 2018-19",Low income,4.153
+TFR,GUY,Guyana,2014,1,4.7,Source: MICS 5 2014,Lower middle income,2.695
+TFR,GUY,Guyana,2014,2,3.1,Source: MICS 5 2014,Lower middle income,2.695
+TFR,GUY,Guyana,2014,3,2.5,Source: MICS 5 2014,Lower middle income,2.695
+TFR,GUY,Guyana,2014,4,1.7,Source: MICS 5 2014,Lower middle income,2.695
+TFR,GUY,Guyana,2014,5,1.8,Source: MICS 5 2014,Lower middle income,2.695
+TFR,HND,Honduras,2019,1,145.0,"Source: MICS 6, 2019",Lower middle income,2.611
+TFR,HND,Honduras,2019,2,125.0,"Source: MICS 6, 2019",Lower middle income,2.611
+TFR,HND,Honduras,2019,3,105.0,"Source: MICS 6, 2019",Lower middle income,2.611
+TFR,HND,Honduras,2019,4,82.0,"Source: MICS 6, 2019",Lower middle income,2.611
+TFR,HND,Honduras,2019,5,35.0,"Source: MICS 6, 2019",Lower middle income,2.611
+TFR,IRQ,Iraq,2011,1,5.5,"Source: MICS4, 2011",Lower middle income,4.588
+TFR,IRQ,Iraq,2011,2,4.8,"Source: MICS4, 2011",Lower middle income,4.588
+TFR,IRQ,Iraq,2011,3,4.5,"Source: MICS4, 2011",Lower middle income,4.588
+TFR,IRQ,Iraq,2011,4,4.2,"Source: MICS4, 2011",Lower middle income,4.588
+TFR,IRQ,Iraq,2011,5,3.3,"Source: MICS4, 2011",Lower middle income,4.588
+TFR,IRQ,Iraq,2018,1,4.4,"Source: MICS 6, 2018",Upper middle income,3.547
+TFR,IRQ,Iraq,2018,2,4.1,"Source: MICS 6, 2018",Upper middle income,3.547
+TFR,IRQ,Iraq,2018,3,3.7,"Source: MICS 6, 2018",Upper middle income,3.547
+TFR,IRQ,Iraq,2018,4,3.1,"Source: MICS 6, 2018",Upper middle income,3.547
+TFR,IRQ,Iraq,2018,5,3.0,"Source: MICS 6, 2018",Upper middle income,3.547
+TFR,JAM,Jamaica,2011,1,3.2,Source: MICS4 2011,Upper middle income,1.717
+TFR,JAM,Jamaica,2011,2,2.6,Source: MICS4 2011,Upper middle income,1.717
+TFR,JAM,Jamaica,2011,3,2.5,Source: MICS4 2011,Upper middle income,1.717
+TFR,JAM,Jamaica,2011,4,1.6,Source: MICS4 2011,Upper middle income,1.717
+TFR,JAM,Jamaica,2011,5,1.4,Source: MICS4 2011,Upper middle income,1.717
+TFR,KAZ,Kazakhstan,2011,1,3.6,"Source: MICS4, 2010-2011",Upper middle income,2.605
+TFR,KAZ,Kazakhstan,2011,2,3.0,"Source: MICS4, 2010-2011",Upper middle income,2.605
+TFR,KAZ,Kazakhstan,2011,3,2.9,"Source: MICS4, 2010-2011",Upper middle income,2.605
+TFR,KAZ,Kazakhstan,2011,4,2.3,"Source: MICS4, 2010-2011",Upper middle income,2.605
+TFR,KAZ,Kazakhstan,2011,5,1.8,"Source: MICS4, 2010-2011",Upper middle income,2.605
+TFR,KAZ,Kazakhstan,2015,1,3.5,"Figures that are based on 125–249 unweighted person-years of exposure.Source: MICS 5, 2015",Upper middle income,2.755
+TFR,KAZ,Kazakhstan,2015,2,3.9,"Figures that are based on 125–249 unweighted person-years of exposure.Source: MICS 5, 2015",Upper middle income,2.755
+TFR,KAZ,Kazakhstan,2015,3,3.6,"Source: MICS 5, 2015",Upper middle income,2.755
+TFR,KAZ,Kazakhstan,2015,4,2.5,"Source: MICS 5, 2015",Upper middle income,2.755
+TFR,KAZ,Kazakhstan,2015,5,2.0,"Source: MICS 5, 2015",Upper middle income,2.755
+TFR,KGZ,Kyrgyz Republic,2014,1,4.4,Source: MICS 5 2014,Lower middle income,3.2
+TFR,KGZ,Kyrgyz Republic,2014,2,4.6,Source: MICS 5 2014,Lower middle income,3.2
+TFR,KGZ,Kyrgyz Republic,2014,3,4.2,Source: MICS 5 2014,Lower middle income,3.2
+TFR,KGZ,Kyrgyz Republic,2014,4,3.8,Source: MICS 5 2014,Lower middle income,3.2
+TFR,KGZ,Kyrgyz Republic,2014,5,3.3,Source: MICS 5 2014,Lower middle income,3.2
+TFR,KGZ,Kyrgyz Republic,2018,1,4.5,"Figures that are based on 25-49 unweighted cases. Source: MICS 6, 2018",Lower middle income,3.3
+TFR,KGZ,Kyrgyz Republic,2018,2,4.4,"Figures that are based on 25-49 unweighted cases. Source: MICS 6, 2018",Lower middle income,3.3
+TFR,KGZ,Kyrgyz Republic,2018,3,4.3,"Source: MICS 6, 2018",Lower middle income,3.3
+TFR,KGZ,Kyrgyz Republic,2018,4,4.0,"Source: MICS 6, 2018",Lower middle income,3.3
+TFR,KGZ,Kyrgyz Republic,2018,5,2.7,"Source: MICS 6, 2018",Lower middle income,3.3
+TFR,KIR,Kiribati,2019,1,4.2,"Source: MICS6, 2018-19",Lower middle income,3.29
+TFR,KIR,Kiribati,2019,2,3.8,"Source: MICS6, 2018-19",Lower middle income,3.29
+TFR,KIR,Kiribati,2019,3,3.1,"The data is based on 125-249 unweighted women years of exposure.  Source: MICS6, 2018-19",Lower middle income,3.29
+TFR,KIR,Kiribati,2019,4,3.0,"The data is based on 125-249 unweighted women years of exposure.  Source: MICS6, 2018-19",Lower middle income,3.29
+TFR,KIR,Kiribati,2019,5,2.7,"Source: MICS6, 2018-19",Lower middle income,3.29
+TFR,LAO,Lao PDR,2012,1,5.3,Source: MICS4 2011-12,Lower middle income,2.953
+TFR,LAO,Lao PDR,2012,2,3.8,Source: MICS4 2011-12,Lower middle income,2.953
+TFR,LAO,Lao PDR,2012,3,3.1,Source: MICS4 2011-12,Lower middle income,2.953
+TFR,LAO,Lao PDR,2012,4,2.4,Source: MICS4 2011-12,Lower middle income,2.953
+TFR,LAO,Lao PDR,2012,5,1.9,Source: MICS4 2011-12,Lower middle income,2.953
+TFR,LAO,Lao PDR,2017,1,4.1,"Source: MICS 6, 2017",Lower middle income,2.691
+TFR,LAO,Lao PDR,2017,2,3.2,"Source: MICS 6, 2017",Lower middle income,2.691
+TFR,LAO,Lao PDR,2017,3,2.7,"Source: MICS 6, 2017",Lower middle income,2.691
+TFR,LAO,Lao PDR,2017,4,2.2,"Source: MICS 6, 2017",Lower middle income,2.691
+TFR,LAO,Lao PDR,2017,5,2.0,"Source: MICS 6, 2017",Lower middle income,2.691
+TFR,LSO,Lesotho,2018,1,4.2,"Source: MICS 6, 2018",Lower middle income,3.016
+TFR,LSO,Lesotho,2018,2,3.3,"Source: MICS 6, 2018",Lower middle income,3.016
+TFR,LSO,Lesotho,2018,3,2.8,"Source: MICS 6, 2018",Lower middle income,3.016
+TFR,LSO,Lesotho,2018,4,2.4,"Source: MICS 6, 2018",Lower middle income,3.016
+TFR,LSO,Lesotho,2018,5,1.8,"Source: MICS 6, 2018",Lower middle income,3.016
+TFR,MKD,North Macedonia,2019,1,2.9,"The data is based on 125–249 unweighted person-years of exposure.  Source: MICS6, 2018-19",Upper middle income,1.34
+TFR,MKD,North Macedonia,2019,2,1.9,"The data is based on 125-249 unweighted person-years of exposure.  Source: MICS6, 2018-19",Upper middle income,1.34
+TFR,MKD,North Macedonia,2019,3,1.9,"The data is based on 125-249 unweighted person-years of exposure.  Source: MICS6, 2018-19",Upper middle income,1.34
+TFR,MKD,North Macedonia,2019,4,1.5,"The data is based on 125-249 unweighted person-years of exposure.  Source: MICS6, 2018-19",Upper middle income,1.34
+TFR,MKD,North Macedonia,2019,5,1.7,"The data is based on 125-249 unweighted person-years of exposure.  Source: MICS6, 2018-19",Upper middle income,1.34
+TFR,MNG,Mongolia,2010,1,3.9,Source: MICS 4 2010,Lower middle income,2.4
+TFR,MNG,Mongolia,2010,2,3.4,Source: MICS 4 2010,Lower middle income,2.4
+TFR,MNG,Mongolia,2010,3,3.2,Source: MICS 4 2010,Lower middle income,2.4
+TFR,MNG,Mongolia,2010,4,2.3,Source: MICS 4 2010,Lower middle income,2.4
+TFR,MNG,Mongolia,2010,5,3.0,Source: MICS 4 2010,Lower middle income,2.4
+TFR,MNG,Mongolia,2014,1,3.8,Source: MICS 5 2013-14,Upper middle income,3.1
+TFR,MNG,Mongolia,2014,2,3.2,Source: MICS 5 2013-14,Upper middle income,3.1
+TFR,MNG,Mongolia,2014,3,3.0,Source: MICS 5 2013-14,Upper middle income,3.1
+TFR,MNG,Mongolia,2014,4,2.8,Source: MICS 5 2013-14,Upper middle income,3.1
+TFR,MNG,Mongolia,2014,5,2.9,Source: MICS 5 2013-14,Upper middle income,3.1
+TFR,MNG,Mongolia,2018,1,4.0,"Source: MICS 6, 2018",Lower middle income,2.9
+TFR,MNG,Mongolia,2018,2,3.6,"Source: MICS 6, 2018",Lower middle income,2.9
+TFR,MNG,Mongolia,2018,3,3.7,"Source: MICS 6, 2018",Lower middle income,2.9
+TFR,MNG,Mongolia,2018,4,3.0,"Source: MICS 6, 2018",Lower middle income,2.9
+TFR,MNG,Mongolia,2018,5,3.3,"Source: MICS 6, 2018",Lower middle income,2.9
+TFR,MRT,Mauritania,2011,1,5.7,The reference period is one year (1-12 months) preceding the survey. Source: MICS4 2011,Low income,5.38
+TFR,MRT,Mauritania,2011,2,4.9,The reference period is one year (1-12 months) preceding the survey. Source: MICS4 2011,Low income,5.38
+TFR,MRT,Mauritania,2011,3,4.1,The reference period is one year (1-12 months) preceding the survey. Source: MICS4 2011,Low income,5.38
+TFR,MRT,Mauritania,2011,4,3.9,The reference period is one year (1-12 months) preceding the survey. Source: MICS4 2011,Low income,5.38
+TFR,MRT,Mauritania,2011,5,3.1,The reference period is one year (1-12 months) preceding the survey. Source: MICS4 2011,Low income,5.38
+TFR,MRT,Mauritania,2015,1,7.3,"Source: MICS 5, 2015",Lower middle income,5.211
+TFR,MRT,Mauritania,2015,2,6.1,"Source: MICS 5, 2015",Lower middle income,5.211
+TFR,MRT,Mauritania,2015,3,4.9,"Source: MICS 5, 2015",Lower middle income,5.211
+TFR,MRT,Mauritania,2015,4,4.6,"Source: MICS 5, 2015",Lower middle income,5.211
+TFR,MRT,Mauritania,2015,5,3.7,"Source: MICS 5, 2015",Lower middle income,5.211
+TFR,NGA,Nigeria,2011,1,7.3,The reference period is one year (1-12 months) preceding the survey. Source: MICS4 2011,Lower middle income,5.893
+TFR,NGA,Nigeria,2011,2,6.3,The reference period is one year (1-12 months) preceding the survey. Source: MICS4 2011,Lower middle income,5.893
+TFR,NGA,Nigeria,2011,3,5.6,The reference period is one year (1-12 months) preceding the survey. Source: MICS4 2011,Lower middle income,5.893
+TFR,NGA,Nigeria,2011,4,5.0,The reference period is one year (1-12 months) preceding the survey. Source: MICS4 2011,Lower middle income,5.893
+TFR,NGA,Nigeria,2011,5,4.8,The reference period is one year (1-12 months) preceding the survey. Source: MICS4 2011,Lower middle income,5.893
+TFR,NGA,Nigeria,2017,1,7.4,"Source: MICS 5, 2016-17",Lower middle income,5.182
+TFR,NGA,Nigeria,2017,2,6.8,"Source: MICS 5, 2016-17",Lower middle income,5.182
+TFR,NGA,Nigeria,2017,3,6.0,"Source: MICS 5, 2016-17",Lower middle income,5.182
+TFR,NGA,Nigeria,2017,4,5.3,"Source: MICS 5, 2016-17",Lower middle income,5.182
+TFR,NGA,Nigeria,2017,5,4.3,"Source: MICS 5, 2016-17",Lower middle income,5.182
+TFR,NPL,Nepal,2014,1,3.1,Source: MICS 5 2014,Low income,2.319
+TFR,NPL,Nepal,2014,2,2.6,Source: MICS 5 2014,Low income,2.319
+TFR,NPL,Nepal,2014,3,2.5,Source: MICS 5 2014,Low income,2.319
+TFR,NPL,Nepal,2014,4,2.1,Source: MICS 5 2014,Low income,2.319
+TFR,NPL,Nepal,2014,5,1.5,Source: MICS 5 2014,Low income,2.319
+TFR,NPL,Nepal,2019,1,2.9,"Source: MICS6, 2019",Lower middle income,2.08
+TFR,NPL,Nepal,2019,2,2.3,"Source: MICS6, 2019",Lower middle income,2.08
+TFR,NPL,Nepal,2019,3,2.1,"Source: MICS6, 2019",Lower middle income,2.08
+TFR,NPL,Nepal,2019,4,1.8,"Source: MICS6, 2019",Lower middle income,2.08
+TFR,NPL,Nepal,2019,5,1.4,"Source: MICS6, 2019",Lower middle income,2.08
+TFR,PRY,Paraguay,2016,1,4.1,"Source: MICS 5, 2016",Upper middle income,2.624
+TFR,PRY,Paraguay,2016,2,3.1,"Source: MICS 5, 2016",Upper middle income,2.624
+TFR,PRY,Paraguay,2016,3,2.3,"Source: MICS 5, 2016",Upper middle income,2.624
+TFR,PRY,Paraguay,2016,4,2.1,"Source: MICS 5, 2016",Upper middle income,2.624
+TFR,PRY,Paraguay,2016,5,1.6,"Source: MICS 5, 2016",Upper middle income,2.624
+TFR,SLE,Sierra Leone,2010,1,5.2,"Source: MICS4, 2010",Low income,5.327
+TFR,SLE,Sierra Leone,2010,2,4.9,"Source: MICS4, 2010",Low income,5.327
+TFR,SLE,Sierra Leone,2010,3,4.8,"Source: MICS4, 2010",Low income,5.327
+TFR,SLE,Sierra Leone,2010,4,4.0,"Source: MICS4, 2010",Low income,5.327
+TFR,SLE,Sierra Leone,2010,5,2.7,"Source: MICS4, 2010",Low income,5.327
+TFR,SLE,Sierra Leone,2017,1,5.6,"Source: MICS 6, 2017",Low income,4.389
+TFR,SLE,Sierra Leone,2017,2,5.0,"Source: MICS 6, 2017",Low income,4.389
+TFR,SLE,Sierra Leone,2017,3,4.5,"Source: MICS 6, 2017",Low income,4.389
+TFR,SLE,Sierra Leone,2017,4,3.5,"Source: MICS 6, 2017",Low income,4.389
+TFR,SLE,Sierra Leone,2017,5,2.5,"Source: MICS 6, 2017",Low income,4.389
+TFR,SLV,El Salvador,2014,1,3.1,"Source: MICS 5, 2014",Lower middle income,2.126
+TFR,SLV,El Salvador,2014,2,2.4,"Source: MICS 5, 2014",Lower middle income,2.126
+TFR,SLV,El Salvador,2014,3,2.3,"Source: MICS 5, 2014",Lower middle income,2.126
+TFR,SLV,El Salvador,2014,4,1.9,"Source: MICS 5, 2014",Lower middle income,2.126
+TFR,SLV,El Salvador,2014,5,1.8,"Source: MICS 5, 2014",Lower middle income,2.126
+TFR,SRB,Serbia,2010,1,2.8,"Source: MICS4, 2010",Upper middle income,1.4
+TFR,SRB,Serbia,2010,2,1.6,"Source: MICS4, 2010",Upper middle income,1.4
+TFR,SRB,Serbia,2010,3,1.2,"Source: MICS4, 2010",Upper middle income,1.4
+TFR,SRB,Serbia,2010,4,1.6,"Source: MICS4, 2010",Upper middle income,1.4
+TFR,SRB,Serbia,2010,5,1.5,"Source: MICS4, 2010",Upper middle income,1.4
+TFR,STP,Sao Tome and Principe,2014,1,5.3,Source: MICS 5 2014,Lower middle income,4.485
+TFR,STP,Sao Tome and Principe,2014,2,4.8,Source: MICS 5 2014,Lower middle income,4.485
+TFR,STP,Sao Tome and Principe,2014,3,4.4,Source: MICS 5 2014,Lower middle income,4.485
+TFR,STP,Sao Tome and Principe,2014,4,4.1,Source: MICS 5 2014,Lower middle income,4.485
+TFR,STP,Sao Tome and Principe,2014,5,3.7,Source: MICS 5 2014,Lower middle income,4.485
+TFR,STP,Sao Tome and Principe,2019,1,177.0,"Source: MICS6, 2019",Lower middle income,3.9
+TFR,STP,Sao Tome and Principe,2019,2,94.0,"Source: MICS6, 2019",Lower middle income,3.9
+TFR,STP,Sao Tome and Principe,2019,3,82.0,"Source: MICS6, 2019",Lower middle income,3.9
+TFR,STP,Sao Tome and Principe,2019,4,47.0,"Source: MICS6, 2019",Lower middle income,3.9
+TFR,STP,Sao Tome and Principe,2019,5,33.0,"Source: MICS6, 2019",Lower middle income,3.9
+TFR,SUR,Suriname,2018,1,4.5,"Source: MICS 6, 2018",Upper middle income,2.381
+TFR,SUR,Suriname,2018,2,3.2,"Source: MICS 6, 2018",Upper middle income,2.381
+TFR,SUR,Suriname,2018,3,2.5,"Source: MICS 6, 2018",Upper middle income,2.381
+TFR,SUR,Suriname,2018,4,2.2,"Figures is based on 25-49 unweighted cases. Source: MICS 6, 2018",Upper middle income,2.381
+TFR,SUR,Suriname,2018,5,1.6,"Figures is based on 25-49 unweighted cases. Source: MICS 6, 2018",Upper middle income,2.381
+TFR,SWZ,Eswatini,2010,1,4.8,"Source: MICS4, 2010",Lower middle income,3.375
+TFR,SWZ,Eswatini,2010,2,4.6,"Source: MICS4, 2010",Lower middle income,3.375
+TFR,SWZ,Eswatini,2010,3,3.9,"Source: MICS4, 2010",Lower middle income,3.375
+TFR,SWZ,Eswatini,2010,4,3.1,"Source: MICS4, 2010",Lower middle income,3.375
+TFR,SWZ,Eswatini,2010,5,2.7,"Source: MICS4, 2010",Lower middle income,3.375
+TFR,SWZ,Eswatini,2014,1,4.6,"Source: MICS 5, 2014",Lower middle income,3.181
+TFR,SWZ,Eswatini,2014,2,4.2,"Source: MICS 5, 2014",Lower middle income,3.181
+TFR,SWZ,Eswatini,2014,3,3.3,"Source: MICS 5, 2014",Lower middle income,3.181
+TFR,SWZ,Eswatini,2014,4,2.7,"Source: MICS 5, 2014",Lower middle income,3.181
+TFR,SWZ,Eswatini,2014,5,2.4,"Source: MICS 5, 2014",Lower middle income,3.181
+TFR,TCD,Chad,2010,1,6.8,"Source: MICS4, 2010",Low income,6.99
+TFR,TCD,Chad,2010,2,7.0,"Source: MICS4, 2010",Low income,6.99
+TFR,TCD,Chad,2010,3,7.5,"Source: MICS4, 2010",Low income,6.99
+TFR,TCD,Chad,2010,4,7.4,"Source: MICS4, 2010",Low income,6.99
+TFR,TCD,Chad,2010,5,6.0,"Source: MICS4, 2010",Low income,6.99
+TFR,TCD,Chad,2019,1,160.0,"Source: MICS6, 2018-19",Low income,6.412
+TFR,TCD,Chad,2019,2,164.0,"Source: MICS6, 2018-19",Low income,6.412
+TFR,TCD,Chad,2019,3,161.0,"Source: MICS6, 2018-19",Low income,6.412
+TFR,TCD,Chad,2019,4,137.0,"Source: MICS6, 2018-19",Low income,6.412
+TFR,TCD,Chad,2019,5,84.0,"Source: MICS6, 2018-19",Low income,6.412
+TFR,TGO,Togo,2010,1,7.0,"Source: MICS4, 2010",Low income,5.087324
+TFR,TGO,Togo,2010,2,5.9,"Source: MICS4, 2010",Low income,5.087324
+TFR,TGO,Togo,2010,3,5.1,"Source: MICS4, 2010",Low income,5.087324
+TFR,TGO,Togo,2010,4,3.8,"Source: MICS4, 2010",Low income,5.087324
+TFR,TGO,Togo,2010,5,3.3,"Source: MICS4, 2010",Low income,5.087324
+TFR,THA,Thailand,2012,1,2.2,The reference period is one-year (1-12 months) preceding the survey. Source: MICS4 2012,Upper middle income,1.563
+TFR,THA,Thailand,2012,2,2.2,The reference period is one-year (1-12 months) preceding the survey. Source: MICS4 2012,Upper middle income,1.563
+TFR,THA,Thailand,2012,3,2.1,The reference period is one-year (1-12 months) preceding the survey. Source: MICS4 2012,Upper middle income,1.563
+TFR,THA,Thailand,2012,4,1.7,The reference period is one-year (1-12 months) preceding the survey. Source: MICS4 2012,Upper middle income,1.563
+TFR,THA,Thailand,2012,5,1.3,The reference period is one-year (1-12 months) preceding the survey. Source: MICS4 2012,Upper middle income,1.563
+TFR,THA,Thailand,2016,1,1.5,"Source: MICS 5, 2015-16",Upper middle income,1.4
+TFR,THA,Thailand,2016,2,1.8,"Source: MICS 5, 2015-16",Upper middle income,1.4
+TFR,THA,Thailand,2016,3,1.3,"Source: MICS 5, 2015-16",Upper middle income,1.4
+TFR,THA,Thailand,2016,4,1.8,"Source: MICS 5, 2015-16",Upper middle income,1.4
+TFR,THA,Thailand,2016,5,1.1,"Source: MICS 5, 2015-16",Upper middle income,1.4
+TFR,THA,Thailand,2019,1,2.1,"Source: MICS6, 2019",Upper middle income,1.285
+TFR,THA,Thailand,2019,2,1.5,"Source: MICS6, 2019",Upper middle income,1.285
+TFR,THA,Thailand,2019,3,1.3,"Source: MICS6, 2019",Upper middle income,1.285
+TFR,THA,Thailand,2019,4,1.5,"Source: MICS6, 2019",Upper middle income,1.285
+TFR,THA,Thailand,2019,5,1.1,"Source: MICS6, 2019",Upper middle income,1.285
+TFR,TKM,Turkmenistan,2016,1,3.7,"Based on 125–249 unweighted person-years of exposure.Source: MICS 5, 2015-16",Upper middle income,2.99
+TFR,TKM,Turkmenistan,2016,2,3.3,"Based on 125–249 unweighted person-years of exposure.Source: MICS 5, 2015-16",Upper middle income,2.99
+TFR,TKM,Turkmenistan,2016,3,3.2,"Source: MICS 5, 2015-16",Upper middle income,2.99
+TFR,TKM,Turkmenistan,2016,4,3.2,"Source: MICS 5, 2015-16",Upper middle income,2.99
+TFR,TKM,Turkmenistan,2016,5,2.5,"Source: MICS 5, 2015-16",Upper middle income,2.99
+TFR,TKM,Turkmenistan,2019,1,3.6,"Source: MICS6, 2019",Upper middle income,2.834
+TFR,TKM,Turkmenistan,2019,2,3.1,"Source: MICS6, 2019",Upper middle income,2.834
+TFR,TKM,Turkmenistan,2019,3,2.9,"Source: MICS6, 2019",Upper middle income,2.834
+TFR,TKM,Turkmenistan,2019,4,2.7,"Source: MICS6, 2019",Upper middle income,2.834
+TFR,TKM,Turkmenistan,2019,5,2.7,"Source: MICS6, 2019",Upper middle income,2.834
+TFR,TON,Tonga,2019,1,3.7,"Source: MICS6, 2019",Upper middle income,3.274
+TFR,TON,Tonga,2019,2,3.9,"Source: MICS6, 2019",Upper middle income,3.274
+TFR,TON,Tonga,2019,3,3.5,"Source: MICS6, 2019",Upper middle income,3.274
+TFR,TON,Tonga,2019,4,2.9,"Source: MICS6, 2019",Upper middle income,3.274
+TFR,TON,Tonga,2019,5,2.2,"Source: MICS6, 2019",Upper middle income,3.274
+TFR,TUN,Tunisia,2012,1,2.2,Source: MICS4 2011-12,Upper middle income,2.277
+TFR,TUN,Tunisia,2012,2,2.2,Source: MICS4 2011-12,Upper middle income,2.277
+TFR,TUN,Tunisia,2012,3,2.0,Source: MICS4 2011-12,Upper middle income,2.277
+TFR,TUN,Tunisia,2012,4,2.3,Source: MICS4 2011-12,Upper middle income,2.277
+TFR,TUN,Tunisia,2012,5,1.8,Source: MICS4 2011-12,Upper middle income,2.277
+TFR,TUN,Tunisia,2018,1,7.0,"Source: MICS 6, 2018",Lower middle income,2.133
+TFR,TUN,Tunisia,2018,2,5.0,"Source: MICS 6, 2018",Lower middle income,2.133
+TFR,TUN,Tunisia,2018,3,1.0,"Source: MICS 6, 2018",Lower middle income,2.133
+TFR,TUN,Tunisia,2018,4,5.0,"Source: MICS 6, 2018",Lower middle income,2.133
+TFR,TUN,Tunisia,2018,5,3.0,"Source: MICS 6, 2018",Lower middle income,2.133
+TFR,UKR,Ukraine,2012,1,2.0,Source: MICS4 2012,Lower middle income,1.528
+TFR,UKR,Ukraine,2012,2,1.9,Source: MICS4 2012,Lower middle income,1.528
+TFR,UKR,Ukraine,2012,3,1.2,Source: MICS4 2012,Lower middle income,1.528
+TFR,UKR,Ukraine,2012,4,1.3,Source: MICS4 2012,Lower middle income,1.528
+TFR,UKR,Ukraine,2012,5,1.3,Source: MICS4 2012,Lower middle income,1.528
+TFR,VNM,Vietnam,2011,1,2.5,"Source: MICS4, 2011",Lower middle income,1.927
+TFR,VNM,Vietnam,2011,2,2.3,"Source: MICS4, 2011",Lower middle income,1.927
+TFR,VNM,Vietnam,2011,3,1.8,"Source: MICS4, 2011",Lower middle income,1.927
+TFR,VNM,Vietnam,2011,4,1.7,"Source: MICS4, 2011",Lower middle income,1.927
+TFR,VNM,Vietnam,2011,5,1.8,"Source: MICS4, 2011",Lower middle income,1.927
+TFR,WSM,Samoa,2020,1,6.3,"Source: MICS6, 2019-20",Lower middle income,4.002
+TFR,WSM,Samoa,2020,2,4.9,"Source: MICS6, 2019-20",Lower middle income,4.002
+TFR,WSM,Samoa,2020,3,4.5,"Source: MICS6, 2019-20",Lower middle income,4.002
+TFR,WSM,Samoa,2020,4,4.5,"Source: MICS6, 2019-20",Lower middle income,4.002
+TFR,WSM,Samoa,2020,5,3.3,"Source: MICS6, 2019-20",Lower middle income,4.002
+TFR,ZWE,Zimbabwe,2009,1,5.6,Source MICS3 2009,Low income,3.95
+TFR,ZWE,Zimbabwe,2009,2,4.5,Source MICS3 2009,Low income,3.95
+TFR,ZWE,Zimbabwe,2009,3,3.8,Source MICS3 2009,Low income,3.95
+TFR,ZWE,Zimbabwe,2009,4,3.3,Source MICS3 2009,Low income,3.95
+TFR,ZWE,Zimbabwe,2009,5,2.4,Source MICS3 2009,Low income,3.95
+TFR,ZWE,Zimbabwe,2014,1,5.5,Source: MICS 5 2014,Low income,4.011
+TFR,ZWE,Zimbabwe,2014,2,5.1,Source: MICS 5 2014,Low income,4.011
+TFR,ZWE,Zimbabwe,2014,3,4.4,Source: MICS 5 2014,Low income,4.011
+TFR,ZWE,Zimbabwe,2014,4,4.2,Source: MICS 5 2014,Low income,4.011
+TFR,ZWE,Zimbabwe,2014,5,3.1,Source: MICS 5 2014,Low income,4.011
+TFR,ZWE,Zimbabwe,2019,1,5.3,"Source: MICS6, 2019",Lower middle income,3.748
+TFR,ZWE,Zimbabwe,2019,2,4.7,"Source: MICS6, 2019",Lower middle income,3.748
+TFR,ZWE,Zimbabwe,2019,3,4.1,"Source: MICS6, 2019",Lower middle income,3.748
+TFR,ZWE,Zimbabwe,2019,4,3.4,"Source: MICS6, 2019",Lower middle income,3.748
+TFR,ZWE,Zimbabwe,2019,5,2.6,"Source: MICS6, 2019",Lower middle income,3.748
+U5MR,AFG,Afghanistan,2011,1,104.0,Source: MICS4 2010-11,Low income,
+U5MR,AFG,Afghanistan,2011,2,94.0,Source: MICS4 2010-11,Low income,
+U5MR,AFG,Afghanistan,2011,3,112.0,Source: MICS4 2010-11,Low income,
+U5MR,AFG,Afghanistan,2011,4,113.0,Source: MICS4 2010-11,Low income,
+U5MR,AFG,Afghanistan,2011,5,84.0,Source: MICS4 2010-11,Low income,
+U5MR,BEN,Benin,2014,1,133.0,"Source: MICS 5, 2014",Low income,
+U5MR,BEN,Benin,2014,2,129.0,"Source: MICS 5, 2014",Low income,
+U5MR,BEN,Benin,2014,3,125.0,"Source: MICS 5, 2014",Low income,
+U5MR,BEN,Benin,2014,4,111.0,"Source: MICS 5, 2014",Low income,
+U5MR,BEN,Benin,2014,5,66.0,"Source: MICS 5, 2014",Low income,
+U5MR,BGD,Bangladesh,2013,1,79.0,Source: MICS 5 2012-13,Low income,
+U5MR,BGD,Bangladesh,2013,2,58.0,Source: MICS 5 2012-13,Low income,
+U5MR,BGD,Bangladesh,2013,3,61.0,Source: MICS 5 2012-13,Low income,
+U5MR,BGD,Bangladesh,2013,4,52.0,Source: MICS 5 2012-13,Low income,
+U5MR,BGD,Bangladesh,2013,5,35.0,Source: MICS 5 2012-13,Low income,
+U5MR,BGD,Bangladesh,2019,1,34.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,BGD,Bangladesh,2019,2,44.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,BGD,Bangladesh,2019,3,42.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,BGD,Bangladesh,2019,4,35.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,BGD,Bangladesh,2019,5,28.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,BLZ,Belize,2016,1,20.0,"Source: MICS 5, 2016",Upper middle income,
+U5MR,BLZ,Belize,2016,2,9.0,"Source: MICS 5, 2016",Upper middle income,
+U5MR,BLZ,Belize,2016,3,20.0,"Source: MICS 5, 2016",Upper middle income,
+U5MR,BLZ,Belize,2016,4,3.0,"Source: MICS 5, 2016",Upper middle income,
+U5MR,BLZ,Belize,2016,5,4.0,"Source: MICS 5, 2016",Upper middle income,
+U5MR,BTN,Bhutan,2010,1,106.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,BTN,Bhutan,2010,2,88.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,BTN,Bhutan,2010,3,74.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,CAF,Central African Republic,2010,1,201.0,"Source: MICS4, 2010",Low income,
+U5MR,CAF,Central African Republic,2010,2,217.0,"Source: MICS4, 2010",Low income,
+U5MR,CAF,Central African Republic,2010,3,188.0,"Source: MICS4, 2010",Low income,
+U5MR,CAF,Central African Republic,2010,4,162.0,"Source: MICS4, 2010",Low income,
+U5MR,CAF,Central African Republic,2010,5,116.0,"Source: MICS4, 2010",Low income,
+U5MR,CAF,Central African Republic,2019,1,109.0,"Source: MICS6, 2018-19",Low income,
+U5MR,CAF,Central African Republic,2019,2,104.0,"Source: MICS6, 2018-19",Low income,
+U5MR,CAF,Central African Republic,2019,3,108.0,"Source: MICS6, 2018-19",Low income,
+U5MR,CAF,Central African Republic,2019,4,91.0,"Source: MICS6, 2018-19",Low income,
+U5MR,CAF,Central African Republic,2019,5,91.0,"Source: MICS6, 2018-19",Low income,
+U5MR,CIV,Cote d'Ivoire,2016,1,120.0,"Source: MICS 5, 2016",Lower middle income,
+U5MR,CIV,Cote d'Ivoire,2016,2,93.0,"Source: MICS 5, 2016",Lower middle income,
+U5MR,CIV,Cote d'Ivoire,2016,3,106.0,"Source: MICS 5, 2016",Lower middle income,
+U5MR,CIV,Cote d'Ivoire,2016,4,83.0,"Source: MICS 5, 2016",Lower middle income,
+U5MR,CIV,Cote d'Ivoire,2016,5,61.0,"Source: MICS 5, 2016",Lower middle income,
+U5MR,CMR,Cameroon,2014,1,173.0,"Source: MICS 5, 2014",Lower middle income,
+U5MR,CMR,Cameroon,2014,2,126.0,"Source: MICS 5, 2014",Lower middle income,
+U5MR,CMR,Cameroon,2014,3,101.0,"Source: MICS 5, 2014",Lower middle income,
+U5MR,CMR,Cameroon,2014,4,75.0,"Source: MICS 5, 2014",Lower middle income,
+U5MR,CMR,Cameroon,2014,5,57.0,"Source: MICS 5, 2014",Lower middle income,
+U5MR,COG,"Congo, Rep.",2016,1,77.1,"Source: MICS 5, 2015-16",Lower middle income,
+U5MR,COG,"Congo, Rep.",2016,2,58.4,"Source: MICS 5, 2015-16",Lower middle income,
+U5MR,COG,"Congo, Rep.",2016,3,46.0,"Source: MICS 5, 2015-16",Lower middle income,
+U5MR,COG,"Congo, Rep.",2016,4,31.5,"Source: MICS 5, 2015-16",Lower middle income,
+U5MR,COG,"Congo, Rep.",2016,5,34.2,"Source: MICS 5, 2015-16",Lower middle income,
+U5MR,DOM,Dominican Republic,2014,1,39.0,"Source: MICS 5, 2014",Upper middle income,
+U5MR,DOM,Dominican Republic,2014,2,39.0,"Source: MICS 5, 2014",Upper middle income,
+U5MR,DOM,Dominican Republic,2014,3,36.0,"Source: MICS 5, 2014",Upper middle income,
+U5MR,DOM,Dominican Republic,2014,4,36.0,"Source: MICS 5, 2014",Upper middle income,
+U5MR,DOM,Dominican Republic,2014,5,21.0,"Source: MICS 5, 2014",Upper middle income,
+U5MR,DZA,Algeria,2013,1,34.9,Source: MICS 4 2012-13,Upper middle income,
+U5MR,DZA,Algeria,2013,2,21.4,Source: MICS 4 2012-13,Upper middle income,
+U5MR,DZA,Algeria,2013,3,20.7,Source: MICS 4 2012-13,Upper middle income,
+U5MR,DZA,Algeria,2013,4,20.8,Source: MICS 4 2012-13,Upper middle income,
+U5MR,DZA,Algeria,2013,5,20.5,Source: MICS 4 2012-13,Upper middle income,
+U5MR,DZA,Algeria,2019,1,26.0,"Source: MICS6, 2018-19",Lower middle income,
+U5MR,DZA,Algeria,2019,2,16.0,"Source: MICS6, 2018-19",Lower middle income,
+U5MR,DZA,Algeria,2019,3,18.0,"Source: MICS6, 2018-19",Lower middle income,
+U5MR,DZA,Algeria,2019,4,20.0,"Source: MICS6, 2018-19",Lower middle income,
+U5MR,DZA,Algeria,2019,5,14.0,"Source: MICS6, 2018-19",Lower middle income,
+U5MR,GHA,Ghana,2011,1,106.0,"Source: MICS4, 2011",Lower middle income,
+U5MR,GHA,Ghana,2011,2,85.0,"Source: MICS4, 2011",Lower middle income,
+U5MR,GHA,Ghana,2011,3,83.0,"Source: MICS4, 2011",Lower middle income,
+U5MR,GHA,Ghana,2011,4,86.0,"Source: MICS4, 2011",Lower middle income,
+U5MR,GHA,Ghana,2011,5,52.0,"Source: MICS4, 2011",Lower middle income,
+U5MR,GHA,Ghana,2018,1,53.0,"Source: MICS6, 2017-18",Lower middle income,
+U5MR,GHA,Ghana,2018,2,49.0,"Source: MICS6, 2017-18",Lower middle income,
+U5MR,GHA,Ghana,2018,3,86.0,"Source: MICS6, 2017-18",Lower middle income,
+U5MR,GHA,Ghana,2018,4,43.0,"Source: MICS6, 2017-18",Lower middle income,
+U5MR,GHA,Ghana,2018,5,46.0,"Source: MICS6, 2017-18",Lower middle income,
+U5MR,GIN,Guinea,2016,1,128.0,"Source: MICS 5, 2016",Low income,
+U5MR,GIN,Guinea,2016,2,104.0,"Source: MICS 5, 2016",Low income,
+U5MR,GIN,Guinea,2016,3,87.0,"Source: MICS 5, 2016",Low income,
+U5MR,GIN,Guinea,2016,4,60.0,"Source: MICS 5, 2016",Low income,
+U5MR,GIN,Guinea,2016,5,38.0,"Source: MICS 5, 2016",Low income,
+U5MR,GMB,"Gambia, The",2010,1,122.0,Source: MICS 4 2010,Low income,
+U5MR,GMB,"Gambia, The",2010,2,112.0,Source: MICS 4 2010,Low income,
+U5MR,GMB,"Gambia, The",2010,3,113.0,Source: MICS 4 2010,Low income,
+U5MR,GMB,"Gambia, The",2010,4,111.0,Source: MICS 4 2010,Low income,
+U5MR,GMB,"Gambia, The",2010,5,81.0,Source: MICS 4 2010,Low income,
+U5MR,GMB,"Gambia, The",2018,1,79.0,"Source: MICS 6, 2018",Low income,
+U5MR,GMB,"Gambia, The",2018,2,62.0,"Source: MICS 6, 2018",Low income,
+U5MR,GMB,"Gambia, The",2018,3,56.0,"Source: MICS 6, 2018",Low income,
+U5MR,GMB,"Gambia, The",2018,4,44.0,"Source: MICS 6, 2018",Low income,
+U5MR,GMB,"Gambia, The",2018,5,35.0,"Source: MICS 6, 2018",Low income,
+U5MR,GNB,Guinea-Bissau,2010,1,127.0,"Source: MICS4, 2010",Low income,
+U5MR,GNB,Guinea-Bissau,2010,2,116.0,"Source: MICS4, 2010",Low income,
+U5MR,GNB,Guinea-Bissau,2010,3,116.0,"Source: MICS4, 2010",Low income,
+U5MR,GNB,Guinea-Bissau,2010,4,137.0,"Source: MICS4, 2010",Low income,
+U5MR,GNB,Guinea-Bissau,2010,5,65.0,"Source: MICS4, 2010",Low income,
+U5MR,GNB,Guinea-Bissau,2014,1,75.8,"Source: MICS 5, 2014",Low income,
+U5MR,GNB,Guinea-Bissau,2014,2,97.8,"Source: MICS 5, 2014",Low income,
+U5MR,GNB,Guinea-Bissau,2014,3,108.9,"Source: MICS 5, 2014",Low income,
+U5MR,GNB,Guinea-Bissau,2014,4,79.2,"Source: MICS 5, 2014",Low income,
+U5MR,GNB,Guinea-Bissau,2014,5,76.6,"Source: MICS 5, 2014",Low income,
+U5MR,GNB,Guinea-Bissau,2019,1,60.0,"Source: MICS6, 2018-19",Low income,
+U5MR,GNB,Guinea-Bissau,2019,2,58.0,"Source: MICS6, 2018-19",Low income,
+U5MR,GNB,Guinea-Bissau,2019,3,51.0,"Source: MICS6, 2018-19",Low income,
+U5MR,GNB,Guinea-Bissau,2019,4,56.0,"Source: MICS6, 2018-19",Low income,
+U5MR,GNB,Guinea-Bissau,2019,5,59.0,"Source: MICS6, 2018-19",Low income,
+U5MR,HND,Honduras,2019,1,31.0,"Source: MICS 6, 2019",Lower middle income,
+U5MR,HND,Honduras,2019,2,28.0,"Source: MICS 6, 2019",Lower middle income,
+U5MR,HND,Honduras,2019,3,18.0,"Source: MICS 6, 2019",Lower middle income,
+U5MR,HND,Honduras,2019,4,16.0,"Source: MICS 6, 2019",Lower middle income,
+U5MR,HND,Honduras,2019,5,18.0,"Source: MICS 6, 2019",Lower middle income,
+U5MR,IRQ,Iraq,2011,1,40.0,"Source: MICS4, 2011",Lower middle income,
+U5MR,IRQ,Iraq,2011,2,37.0,"Source: MICS4, 2011",Lower middle income,
+U5MR,IRQ,Iraq,2011,3,37.0,"Source: MICS4, 2011",Lower middle income,
+U5MR,IRQ,Iraq,2011,4,37.0,"Source: MICS4, 2011",Lower middle income,
+U5MR,IRQ,Iraq,2011,5,34.0,"Source: MICS4, 2011",Lower middle income,
+U5MR,IRQ,Iraq,2018,1,32.0,"Source: MICS 6, 2018",Upper middle income,
+U5MR,IRQ,Iraq,2018,2,26.0,"Source: MICS 6, 2018",Upper middle income,
+U5MR,IRQ,Iraq,2018,3,25.0,"Source: MICS 6, 2018",Upper middle income,
+U5MR,IRQ,Iraq,2018,4,28.0,"Source: MICS 6, 2018",Upper middle income,
+U5MR,IRQ,Iraq,2018,5,16.0,"Source: MICS 6, 2018",Upper middle income,
+U5MR,KAZ,Kazakhstan,2011,1,40.0,"Source: MICS4, 2010-2011",Upper middle income,
+U5MR,KAZ,Kazakhstan,2011,2,31.0,"Source: MICS4, 2010-2011",Upper middle income,
+U5MR,KAZ,Kazakhstan,2011,3,33.0,"Source: MICS4, 2010-2011",Upper middle income,
+U5MR,KAZ,Kazakhstan,2011,4,20.0,"Source: MICS4, 2010-2011",Upper middle income,
+U5MR,KAZ,Kazakhstan,2011,5,27.0,"Source: MICS4, 2010-2011",Upper middle income,
+U5MR,KGZ,Kyrgyz Republic,2014,1,37.0,Source: MICS 5 2014,Lower middle income,
+U5MR,KGZ,Kyrgyz Republic,2014,2,36.0,Source: MICS 5 2014,Lower middle income,
+U5MR,KGZ,Kyrgyz Republic,2014,3,28.0,Source: MICS 5 2014,Lower middle income,
+U5MR,KGZ,Kyrgyz Republic,2014,4,26.0,Source: MICS 5 2014,Lower middle income,
+U5MR,KGZ,Kyrgyz Republic,2014,5,18.0,Source: MICS 5 2014,Lower middle income,
+U5MR,KGZ,Kyrgyz Republic,2018,1,13.0,"Source: MICS 6, 2018",Lower middle income,
+U5MR,KGZ,Kyrgyz Republic,2018,2,22.0,"Source: MICS 6, 2018",Lower middle income,
+U5MR,KGZ,Kyrgyz Republic,2018,3,20.0,"Source: MICS 6, 2018",Lower middle income,
+U5MR,KGZ,Kyrgyz Republic,2018,4,34.0,"Source: MICS 6, 2018",Lower middle income,
+U5MR,KGZ,Kyrgyz Republic,2018,5,8.0,"Source: MICS 6, 2018",Lower middle income,
+U5MR,KIR,Kiribati,2019,1,83.0,"Source: MICS6, 2018-19",Lower middle income,
+U5MR,KIR,Kiribati,2019,2,54.0,"Source: MICS6, 2018-19",Lower middle income,
+U5MR,KIR,Kiribati,2019,3,52.0,"The data is based on 250-499 unweighted person-years of exposure to the risk of death. Source: MICS6, 2018-19",Lower middle income,
+U5MR,KIR,Kiribati,2019,4,69.0,"The data is based on 250-499 unweighted person-years of exposure to the risk of death. Source: MICS6, 2018-19",Lower middle income,
+U5MR,KIR,Kiribati,2019,5,40.0,"The data is based on 250-499 unweighted person-years of exposure to the risk of death. Source: MICS6, 2018-19",Lower middle income,
+U5MR,LAO,Lao PDR,2012,1,120.0,Source: MICS4 2011-12,Lower middle income,
+U5MR,LAO,Lao PDR,2012,2,109.0,Source: MICS4 2011-12,Lower middle income,
+U5MR,LAO,Lao PDR,2012,3,85.0,Source: MICS4 2011-12,Lower middle income,
+U5MR,LAO,Lao PDR,2012,4,53.0,Source: MICS4 2011-12,Lower middle income,
+U5MR,LAO,Lao PDR,2012,5,33.0,Source: MICS4 2011-12,Lower middle income,
+U5MR,LAO,Lao PDR,2017,1,63.0,"Source: MICS 6, 2017",Lower middle income,
+U5MR,LAO,Lao PDR,2017,2,62.0,"Source: MICS 6, 2017",Lower middle income,
+U5MR,LAO,Lao PDR,2017,3,35.0,"Source: MICS 6, 2017",Lower middle income,
+U5MR,LAO,Lao PDR,2017,4,27.0,"Source: MICS 6, 2017",Lower middle income,
+U5MR,LAO,Lao PDR,2017,5,23.0,"Source: MICS 6, 2017",Lower middle income,
+U5MR,LSO,Lesotho,2018,1,83.3,"Source: MICS 6, 2018",Lower middle income,
+U5MR,LSO,Lesotho,2018,2,84.4,"Source: MICS 6, 2018",Lower middle income,
+U5MR,LSO,Lesotho,2018,3,91.2,"Source: MICS 6, 2018",Lower middle income,
+U5MR,LSO,Lesotho,2018,4,93.0,"Source: MICS 6, 2018",Lower middle income,
+U5MR,LSO,Lesotho,2018,5,80.3,"Source: MICS 6, 2018",Lower middle income,
+U5MR,MLI,Mali,2015,1,118.0,"Source: MICS 5, 2015",Low income,
+U5MR,MLI,Mali,2015,2,120.0,"Source: MICS 5, 2015",Low income,
+U5MR,MLI,Mali,2015,3,129.0,"Source: MICS 5, 2015",Low income,
+U5MR,MLI,Mali,2015,4,105.0,"Source: MICS 5, 2015",Low income,
+U5MR,MLI,Mali,2015,5,51.0,"Source: MICS 5, 2015",Low income,
+U5MR,MMR,Myanmar,2010,1,62.4,Source: MICS 3 2009-10,Low income,
+U5MR,MMR,Myanmar,2010,2,62.4,Source: MICS 3 2009-10,Low income,
+U5MR,MMR,Myanmar,2010,3,48.9,Source: MICS 3 2009-10,Low income,
+U5MR,MMR,Myanmar,2010,4,27.2,Source: MICS 3 2009-10,Low income,
+U5MR,MMR,Myanmar,2010,5,17.2,Source: MICS 3 2009-10,Low income,
+U5MR,MNG,Mongolia,2010,1,67.0,Source: MICS 4 2010,Lower middle income,
+U5MR,MNG,Mongolia,2010,2,48.0,Source: MICS 4 2010,Lower middle income,
+U5MR,MNG,Mongolia,2010,3,32.0,Source: MICS 4 2010,Lower middle income,
+U5MR,MNG,Mongolia,2010,4,30.0,Source: MICS 4 2010,Lower middle income,
+U5MR,MNG,Mongolia,2010,5,25.0,Source: MICS 4 2010,Lower middle income,
+U5MR,MNG,Mongolia,2014,1,39.8,Source: MICS 5 2013-14,Upper middle income,
+U5MR,MNG,Mongolia,2014,2,27.99,Source: MICS 5 2013-14,Upper middle income,
+U5MR,MNG,Mongolia,2014,3,25.91,Source: MICS 5 2013-14,Upper middle income,
+U5MR,MNG,Mongolia,2014,4,12.46,Source: MICS 5 2013-14,Upper middle income,
+U5MR,MNG,Mongolia,2014,5,13.16,Source: MICS 5 2013-14,Upper middle income,
+U5MR,MNG,Mongolia,2018,1,26.0,"Source: MICS 6, 2018",Lower middle income,
+U5MR,MNG,Mongolia,2018,2,18.0,"Source: MICS 6, 2018",Lower middle income,
+U5MR,MNG,Mongolia,2018,3,21.0,"Source: MICS 6, 2018",Lower middle income,
+U5MR,MNG,Mongolia,2018,4,14.0,"Source: MICS 6, 2018",Lower middle income,
+U5MR,MNG,Mongolia,2018,5,17.0,"Source: MICS 6, 2018",Lower middle income,
+U5MR,MRT,Mauritania,2011,1,109.0,Source: MICS4 2011,Low income,
+U5MR,MRT,Mauritania,2011,2,138.0,Source: MICS4 2011,Low income,
+U5MR,MRT,Mauritania,2011,3,133.0,Source: MICS4 2011,Low income,
+U5MR,MRT,Mauritania,2011,4,121.0,Source: MICS4 2011,Low income,
+U5MR,MRT,Mauritania,2011,5,80.0,Source: MICS4 2011,Low income,
+U5MR,MRT,Mauritania,2015,1,72.0,"Source: MICS 5, 2015",Lower middle income,
+U5MR,MRT,Mauritania,2015,2,65.0,"Source: MICS 5, 2015",Lower middle income,
+U5MR,MRT,Mauritania,2015,3,48.0,"Source: MICS 5, 2015",Lower middle income,
+U5MR,MRT,Mauritania,2015,4,40.0,"Source: MICS 5, 2015",Lower middle income,
+U5MR,MRT,Mauritania,2015,5,38.0,"Source: MICS 5, 2015",Lower middle income,
+U5MR,MWI,Malawi,2014,1,98.0,Source: MICS 5 2013-14,Low income,
+U5MR,MWI,Malawi,2014,2,82.0,Source: MICS 5 2013-14,Low income,
+U5MR,MWI,Malawi,2014,3,88.0,Source: MICS 5 2013-14,Low income,
+U5MR,MWI,Malawi,2014,4,83.0,Source: MICS 5 2013-14,Low income,
+U5MR,MWI,Malawi,2014,5,70.0,Source: MICS 5 2013-14,Low income,
+U5MR,NGA,Nigeria,2011,1,223.0,Source: MICS4 2011,Lower middle income,
+U5MR,NGA,Nigeria,2011,2,204.0,Source: MICS4 2011,Lower middle income,
+U5MR,NGA,Nigeria,2011,3,143.0,Source: MICS4 2011,Lower middle income,
+U5MR,NGA,Nigeria,2011,4,115.0,Source: MICS4 2011,Lower middle income,
+U5MR,NGA,Nigeria,2011,5,76.0,Source: MICS4 2011,Lower middle income,
+U5MR,NGA,Nigeria,2017,1,158.0,"Source: MICS 5, 2016-17",Lower middle income,
+U5MR,NGA,Nigeria,2017,2,156.0,"Source: MICS 5, 2016-17",Lower middle income,
+U5MR,NGA,Nigeria,2017,3,125.0,"Source: MICS 5, 2016-17",Lower middle income,
+U5MR,NGA,Nigeria,2017,4,80.0,"Source: MICS 5, 2016-17",Lower middle income,
+U5MR,NGA,Nigeria,2017,5,56.0,"Source: MICS 5, 2016-17",Lower middle income,
+U5MR,NPL,Nepal,2014,1,57.0,Source: MICS 5 2014,Low income,
+U5MR,NPL,Nepal,2014,2,42.0,Source: MICS 5 2014,Low income,
+U5MR,NPL,Nepal,2014,3,31.0,Source: MICS 5 2014,Low income,
+U5MR,NPL,Nepal,2014,4,31.0,Source: MICS 5 2014,Low income,
+U5MR,NPL,Nepal,2014,5,22.0,Source: MICS 5 2014,Low income,
+U5MR,NPL,Nepal,2019,1,33.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,NPL,Nepal,2019,2,37.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,NPL,Nepal,2019,3,38.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,NPL,Nepal,2019,4,38.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,NPL,Nepal,2019,5,13.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,PRY,Paraguay,2016,1,28.0,"Source: MICS 5, 2016",Upper middle income,
+U5MR,PRY,Paraguay,2016,2,31.0,"Source: MICS 5, 2016",Upper middle income,
+U5MR,PRY,Paraguay,2016,3,16.0,"Source: MICS 5, 2016",Upper middle income,
+U5MR,PRY,Paraguay,2016,4,8.0,"Source: MICS 5, 2016",Upper middle income,
+U5MR,PRY,Paraguay,2016,5,1.0,"Based on 250 to 499 unweighted cases of exposed people.Source: MICS 5, 2016",Upper middle income,
+U5MR,SDN,Sudan,2006,1,129.0,"Sudan Household Health Survey (SHHS), Combined MICS3 - PAPFAM Survey",Low income,
+U5MR,SDN,Sudan,2006,2,121.0,"Sudan Household Health Survey (SHHS), Combined MICS3 - PAPFAM Survey",Low income,
+U5MR,SDN,Sudan,2006,3,116.0,"Sudan Household Health Survey (SHHS), Combined MICS3 - PAPFAM Survey",Low income,
+U5MR,SDN,Sudan,2006,4,94.0,"Sudan Household Health Survey (SHHS), Combined MICS3 - PAPFAM Survey",Low income,
+U5MR,SDN,Sudan,2006,5,84.0,"Sudan Household Health Survey (SHHS), Combined MICS3 - PAPFAM Survey",Low income,
+U5MR,SDN,Sudan,2010,1,86.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,SDN,Sudan,2010,2,97.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,SDN,Sudan,2010,3,95.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,SDN,Sudan,2010,4,77.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,SDN,Sudan,2010,5,42.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,SDN,Sudan,2014,1,84.2,Source: MICS 5 2014,Lower middle income,
+U5MR,SDN,Sudan,2014,2,79.9,Source: MICS 5 2014,Lower middle income,
+U5MR,SDN,Sudan,2014,3,67.7,Source: MICS 5 2014,Lower middle income,
+U5MR,SDN,Sudan,2014,4,59.6,Source: MICS 5 2014,Lower middle income,
+U5MR,SDN,Sudan,2014,5,39.4,Source: MICS 5 2014,Lower middle income,
+U5MR,SLE,Sierra Leone,2010,1,221.0,"Source: MICS4, 2010",Low income,
+U5MR,SLE,Sierra Leone,2010,2,232.0,"Source: MICS4, 2010",Low income,
+U5MR,SLE,Sierra Leone,2010,3,222.0,"Source: MICS4, 2010",Low income,
+U5MR,SLE,Sierra Leone,2010,4,196.0,"Source: MICS4, 2010",Low income,
+U5MR,SLE,Sierra Leone,2010,5,182.0,"Source: MICS4, 2010",Low income,
+U5MR,SLE,Sierra Leone,2017,1,90.0,"Source: MICS 6, 2017",Low income,
+U5MR,SLE,Sierra Leone,2017,2,103.0,"Source: MICS 6, 2017",Low income,
+U5MR,SLE,Sierra Leone,2017,3,84.0,"Source: MICS 6, 2017",Low income,
+U5MR,SLE,Sierra Leone,2017,4,106.0,"Source: MICS 6, 2017",Low income,
+U5MR,SLE,Sierra Leone,2017,5,86.0,"Source: MICS 6, 2017",Low income,
+U5MR,SLV,El Salvador,2014,1,29.0,"Source: MICS 5, 2014",Lower middle income,
+U5MR,SLV,El Salvador,2014,2,23.0,"Source: MICS 5, 2014",Lower middle income,
+U5MR,SLV,El Salvador,2014,3,12.0,"Source: MICS 5, 2014",Lower middle income,
+U5MR,SLV,El Salvador,2014,4,11.0,"Source: MICS 5, 2014",Lower middle income,
+U5MR,SLV,El Salvador,2014,5,20.0,"Source: MICS 5, 2014",Lower middle income,
+U5MR,STP,Sao Tome and Principe,2019,1,28.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,STP,Sao Tome and Principe,2019,2,17.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,STP,Sao Tome and Principe,2019,3,13.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,STP,Sao Tome and Principe,2019,4,9.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,STP,Sao Tome and Principe,2019,5,19.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,SUR,Suriname,2018,1,16.0,"Source: MICS 6, 2018",Upper middle income,
+U5MR,SUR,Suriname,2018,2,20.0,"Source: MICS 6, 2018",Upper middle income,
+U5MR,SUR,Suriname,2018,3,28.0,"Source: MICS 6, 2018",Upper middle income,
+U5MR,SUR,Suriname,2018,4,25.0,"Source: MICS 6, 2018",Upper middle income,
+U5MR,SUR,Suriname,2018,5,5.0,"Source: MICS 6, 2018",Upper middle income,
+U5MR,SWZ,Eswatini,2010,1,115.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,SWZ,Eswatini,2010,2,93.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,SWZ,Eswatini,2010,3,108.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,SWZ,Eswatini,2010,4,87.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,SWZ,Eswatini,2010,5,92.0,"Source: MICS4, 2010",Lower middle income,
+U5MR,SWZ,Eswatini,2014,1,94.0,"Based on 25-49 unweighted cases.Source: MICS 5, 2014",Lower middle income,
+U5MR,SWZ,Eswatini,2014,2,62.0,"Based on 25-49 unweighted cases.Source: MICS 5, 2014",Lower middle income,
+U5MR,SWZ,Eswatini,2014,3,52.0,"Based on 25-49 unweighted cases.Source: MICS 5, 2014",Lower middle income,
+U5MR,SWZ,Eswatini,2014,4,77.0,"Based on 25-49 unweighted cases.Source: MICS 5, 2014",Lower middle income,
+U5MR,SWZ,Eswatini,2014,5,52.0,"Based on 25-49 unweighted cases.Source: MICS 5, 2014",Lower middle income,
+U5MR,TCD,Chad,2010,1,163.0,"Source: MICS4, 2010",Low income,
+U5MR,TCD,Chad,2010,2,195.0,"Source: MICS4, 2010",Low income,
+U5MR,TCD,Chad,2010,3,175.0,"Source: MICS4, 2010",Low income,
+U5MR,TCD,Chad,2010,4,181.0,"Source: MICS4, 2010",Low income,
+U5MR,TCD,Chad,2010,5,158.0,"Source: MICS4, 2010",Low income,
+U5MR,TCD,Chad,2019,1,102.0,"Source: MICS6, 2018-19",Low income,
+U5MR,TCD,Chad,2019,2,122.0,"Source: MICS6, 2018-19",Low income,
+U5MR,TCD,Chad,2019,3,149.0,"Source: MICS6, 2018-19",Low income,
+U5MR,TCD,Chad,2019,4,139.0,"Source: MICS6, 2018-19",Low income,
+U5MR,TCD,Chad,2019,5,93.0,"Source: MICS6, 2018-19",Low income,
+U5MR,TGO,Togo,2010,1,149.0,"Source: MICS4, 2010",Low income,
+U5MR,TGO,Togo,2010,2,135.0,"Source: MICS4, 2010",Low income,
+U5MR,TGO,Togo,2010,3,129.0,"Source: MICS4, 2010",Low income,
+U5MR,TGO,Togo,2010,4,101.0,"Source: MICS4, 2010",Low income,
+U5MR,TGO,Togo,2010,5,85.0,"Source: MICS4, 2010",Low income,
+U5MR,TKM,Turkmenistan,2016,1,42.0,"Based on 250-499 unweighted cases of children exposed. Source: MICS 5, 2015-16",Upper middle income,
+U5MR,TKM,Turkmenistan,2016,2,24.0,"Source: MICS 5, 2015-16",Upper middle income,
+U5MR,TKM,Turkmenistan,2016,3,28.0,"Source: MICS 5, 2015-16",Upper middle income,
+U5MR,TKM,Turkmenistan,2016,4,19.0,"Source: MICS 5, 2015-16",Upper middle income,
+U5MR,TKM,Turkmenistan,2016,5,18.0,"Source: MICS 5, 2015-16",Upper middle income,
+U5MR,TKM,Turkmenistan,2019,1,42.0,"Source: MICS6, 2019",Upper middle income,
+U5MR,TKM,Turkmenistan,2019,2,55.0,"Source: MICS6, 2019",Upper middle income,
+U5MR,TKM,Turkmenistan,2019,3,34.0,"Source: MICS6, 2019",Upper middle income,
+U5MR,TKM,Turkmenistan,2019,4,26.0,"Source: MICS6, 2019",Upper middle income,
+U5MR,TKM,Turkmenistan,2019,5,28.0,"Source: MICS6, 2019",Upper middle income,
+U5MR,TON,Tonga,2019,1,16.0,"Source: MICS6, 2019",Upper middle income,
+U5MR,TON,Tonga,2019,2,22.0,"Source: MICS6, 2019",Upper middle income,
+U5MR,TON,Tonga,2019,3,9.0,"The data is based on 250-499 unweighted person-years of exposure to the risk of death.  Source: MICS6, 2019",Upper middle income,
+U5MR,TON,Tonga,2019,4,3.0,"The data is based on 250-499 unweighted person-years of exposure to the risk of death.  Source: MICS6, 2019",Upper middle income,
+U5MR,TON,Tonga,2019,5,1.0,"The data is based on 250-499 unweighted person-years of exposure to the risk of death.  Source: MICS6, 2019",Upper middle income,
+U5MR,WSM,Samoa,2020,1,37.0,"Source: MICS6, 2019-20",Lower middle income,
+U5MR,WSM,Samoa,2020,2,17.0,"Based on 250-499 unweighted person-years of exposure to the risk of death.  Source: MICS6, 2019-20",Lower middle income,
+U5MR,WSM,Samoa,2020,3,9.0,"Based on 250-499 unweighted person-years of exposure to the risk of death.  Source: MICS6, 2019-20",Lower middle income,
+U5MR,WSM,Samoa,2020,4,18.0,"Based on 250-499 unweighted person-years of exposure to the risk of death.  Source: MICS6, 2019-20",Lower middle income,
+U5MR,WSM,Samoa,2020,5,11.0,"Based on 250-499 unweighted person-years of exposure to the risk of death.  Source: MICS6, 2019-20",Lower middle income,
+U5MR,ZWE,Zimbabwe,2009,1,99.0,Source MICS3 2009,Low income,
+U5MR,ZWE,Zimbabwe,2009,2,86.0,Source MICS3 2009,Low income,
+U5MR,ZWE,Zimbabwe,2009,3,88.0,Source MICS3 2009,Low income,
+U5MR,ZWE,Zimbabwe,2009,4,82.0,Source MICS3 2009,Low income,
+U5MR,ZWE,Zimbabwe,2009,5,70.0,Source MICS3 2009,Low income,
+U5MR,ZWE,Zimbabwe,2014,1,78.0,Source: MICS 5 2014,Low income,
+U5MR,ZWE,Zimbabwe,2014,2,87.0,Source: MICS 5 2014,Low income,
+U5MR,ZWE,Zimbabwe,2014,3,70.0,Source: MICS 5 2014,Low income,
+U5MR,ZWE,Zimbabwe,2014,4,75.0,Source: MICS 5 2014,Low income,
+U5MR,ZWE,Zimbabwe,2014,5,59.0,Source: MICS 5 2014,Low income,
+U5MR,ZWE,Zimbabwe,2019,1,91.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,ZWE,Zimbabwe,2019,2,74.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,ZWE,Zimbabwe,2019,3,71.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,ZWE,Zimbabwe,2019,4,71.0,"Source: MICS6, 2019",Lower middle income,
+U5MR,ZWE,Zimbabwe,2019,5,51.0,"Source: MICS6, 2019",Lower middle income,

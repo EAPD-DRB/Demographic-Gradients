@@ -5,24 +5,25 @@ Wealth differentials in fertility and mortality, summarized from the library's
 data. Differentials are reported as the **low/high ratio**, the rate in the
 lowest wealth quintile divided by the rate in the highest, and as the
 **wealth gradient**, the slope of the log rate on wealth rank (see the
-[glossary](docs/glossary.md)). The data cover 332 DHS surveys with a
-complete wealth-quintile breakdown in 78 countries, and, for adult
+[glossary](docs/glossary.md)). The data cover 332 Demographic and Health
+Surveys (DHS) and 74 Multiple Indicator Cluster Surveys (MICS) with a
+complete wealth-quintile breakdown in 96 countries, and, for adult
 mortality, household-death records from censuses and DHS surveys. All figures and numbers are
 computed from the files in [`data/`](data/).
 
 ## Fertility and infant mortality by wealth quintile
 
 In the latest survey for each country, the total fertility rate is higher in
-the lowest quintile than in the highest in 77 of 77 countries,
-and the infant mortality rate in 71 of 78. The median low/high
-ratio is 1.90 for the total fertility rate and 1.67 for
+the lowest quintile than in the highest in 95 of 95 countries,
+and the infant mortality rate in 80 of 87. The median low/high
+ratio is 1.89 for the total fertility rate and 1.66 for
 the infant mortality rate.
 
 ![Total fertility rate and infant mortality rate by wealth quintile](figures/by_wealth.png)
 
 ## Regional medians
 
-Among regions with at least three countries, the median low/high ratio is highest in Latin America & Caribbean for both indicators, and lowest in South & Southeast Asia for fertility and in Sub-Saharan Africa for infant mortality. For a
+Among regions with at least three countries, the median low/high ratio is highest in Latin America & Caribbean for fertility and in South & Southeast Asia for infant mortality, and lowest in North Africa/West Asia/Europe for fertility and in Central Asia for infant mortality. For a
 country without a survey, the regional median gradient can be used, with the
 interquartile range as a sensitivity range.
 
@@ -32,42 +33,42 @@ interquartile range as a sensitivity range.
 
 | Region | Countries | Median gradient | Interquartile range | Median low/high ratio |
 |---|---|---|---|---|
-| Latin America & Caribbean | 11 | −1.17 | −1.27 to −1.03 | 2.58 |
-| Sub-Saharan Africa | 39 | −0.81 | −0.94 to −0.60 | 1.96 |
-| North Africa/West Asia/Europe | 10 | −0.62 | −0.86 to −0.39 | 1.60 |
-| South & Southeast Asia | 11 | −0.54 | −0.69 to −0.45 | 1.59 |
-| Central Asia | 5 | −0.53 | −0.77 to −0.41 | 1.62 |
-| Oceania | 1 | −0.47 | (one country) | 1.56 |
+| Latin America & Caribbean | 16 | −1.11 | −1.22 to −0.94 | 2.46 |
+| Sub-Saharan Africa | 40 | −0.83 | −0.94 to −0.60 | 1.96 |
+| Oceania | 4 | −0.61 | −0.67 to −0.54 | 1.62 |
+| South & Southeast Asia | 15 | −0.54 | −0.69 to −0.50 | 1.59 |
+| North Africa/West Asia/Europe | 14 | −0.53 | −0.77 to −0.35 | 1.48 |
+| Central Asia | 6 | −0.46 | −0.71 to −0.30 | 1.50 |
 
 **Infant mortality rate**
 
 | Region | Countries | Median gradient | Interquartile range | Median low/high ratio |
 |---|---|---|---|---|
-| Latin America & Caribbean | 11 | −1.03 | −1.37 to −0.72 | 2.69 |
-| South & Southeast Asia | 12 | −0.99 | −1.35 to −0.72 | 2.26 |
-| North Africa/West Asia/Europe | 10 | −0.75 | −1.06 to −0.55 | 2.06 |
-| Oceania | 1 | −0.72 | (one country) | 1.74 |
-| Central Asia | 5 | −0.55 | −0.90 to −0.17 | 1.53 |
-| Sub-Saharan Africa | 39 | −0.49 | −0.65 to −0.22 | 1.52 |
+| South & Southeast Asia | 13 | −1.14 | −1.39 to −0.73 | 2.53 |
+| Latin America & Caribbean | 12 | −0.98 | −1.37 to −0.57 | 2.17 |
+| Oceania | 3 | −0.72 | −0.79 to −0.63 | 1.91 |
+| North Africa/West Asia/Europe | 12 | −0.63 | −0.92 to −0.53 | 1.90 |
+| Central Asia | 6 | −0.51 | −0.70 to −0.25 | 1.49 |
+| Sub-Saharan Africa | 41 | −0.46 | −0.65 to −0.23 | 1.52 |
 
 <details><summary>Under-five mortality rate (for comparison)</summary>
 
 | Region | Countries | Median gradient | Interquartile range | Median low/high ratio |
 |---|---|---|---|---|
-| Latin America & Caribbean | 11 | −1.26 | −1.46 to −0.91 | 2.80 |
-| South & Southeast Asia | 12 | −1.06 | −1.48 to −0.82 | 2.42 |
-| North Africa/West Asia/Europe | 10 | −0.85 | −1.25 to −0.76 | 2.38 |
-| Oceania | 1 | −0.84 | (one country) | 1.92 |
-| Sub-Saharan Africa | 39 | −0.70 | −0.93 to −0.37 | 1.80 |
-| Central Asia | 5 | −0.37 | −0.52 to −0.25 | 1.40 |
+| Latin America & Caribbean | 12 | −1.21 | −1.46 to −0.72 | 2.69 |
+| South & Southeast Asia | 13 | −1.18 | −1.47 to −0.82 | 2.64 |
+| Oceania | 3 | −0.84 | −1.01 to −0.72 | 2.08 |
+| North Africa/West Asia/Europe | 12 | −0.81 | −1.03 to −0.66 | 2.11 |
+| Sub-Saharan Africa | 41 | −0.69 | −0.91 to −0.31 | 1.78 |
+| Central Asia | 6 | −0.41 | −0.72 to −0.26 | 1.51 |
 
 </details>
 
 ## Changes over time
 
 Across all surveys, the median low/high ratio of the total fertility rate was
-2.21 in surveys before 2000 and 1.94 in surveys from 2015; for the
-infant mortality rate it was 1.80 and 1.70. The change in the pooled
+2.21 in surveys before 2000 and 1.91 in surveys from 2015; for the
+infant mortality rate it was 1.80 and 1.69. The change in the pooled
 differential is small relative to the variation between countries. Individual
 countries can change considerably, as the Brazilian census series below
 shows.
@@ -103,7 +104,7 @@ preference to the 1996 survey.
 
 The differential varies with age. The median low/high ratio of the
 age-specific fertility rate is 3.72 at ages 15–19, 1.39 at
-30–34 and 5.00 at 45–49, against 1.90 for the total
+30–34 and 5.00 at 45–49, against 1.89 for the total
 fertility rate: fertility in poorer households is higher mainly at younger and
 older ages. A single gradient applied at all ages reproduces the differential
 in completed fertility but not in the timing of births. The library publishes
@@ -116,7 +117,7 @@ and cannot be estimated at older ages in many surveys
 
 ## Infant and under-five mortality
 
-In the 291 surveys that report both by wealth quintile, the gradient in
+In the 335 surveys that report both by wealth quintile, the gradient in
 under-five mortality is steeper than the gradient in infant mortality in
 84% of cases, by a median of 0.14; the
 largest difference is 0.67 (Nigeria 2018).
