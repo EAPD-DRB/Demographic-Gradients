@@ -51,6 +51,13 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 
 ## B. Rules a calibration needs (method documentation)
 
+- [~] **B0. `mort_gradient` by age** (review 2026-11-16, item A2; partly ruled
+  2026-11-16).
+  - Ruled: ages 15–59 take the country's 45q15 gradient plus the pooled band
+    offsets (own band gradients not substituted); 5–14 take the 15–29 value;
+    75+ and OG-Core's final age take 0 (the conversion is undefined at p = 1).
+  - Shown on every country page, the general-gradient page and AGENTS.md.
+  - Open: ages 1–4 (A3) and 60–74 (B1).
 - [R] **B1. Adult tilt at ages 45+.** OG-ETH applies none (the measured bands
   reverse); OG-PHL applies the general-gradient offsets (then +0.13, +0.40;
   +0.13, +0.49 since G1), which

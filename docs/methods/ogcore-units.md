@@ -69,3 +69,7 @@ Signs agree: a negative value means higher rates in poorer groups in both the
 library and OG-Core. The library provides no grouping: OG-Core derives each
 group's midpoint from the `lambdas` passed to it, so the same converted value
 applies to any number and size of income groups.
+
+The conversion requires p < 1. At OG-Core's final age the death probability is
+1 and every group dies, so the mortality gradient is set to 0 there before
+converting ([mortality by age](general-gradient.md#age-pattern)).

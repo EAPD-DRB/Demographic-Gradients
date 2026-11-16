@@ -20,6 +20,14 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 |---|---|---|---|---|---|---|
 | −1.74 | −1.06 | −0.75 | −0.64 | −0.87 | −1.35 | −1.94 |
 
+**Adult and child mortality gradient by age** (`mort_gradient`; ages 15–59: the 45q15 gradient above plus the pooled offset for each band ([age pattern](../methods/general-gradient.md#age-pattern)); ages 5–14 use the 15–29 value; ages 75 and above, and OG-Core's final age, use 0):
+
+| 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |
+|---|---|---|---|---|---|---|
+| pending | −0.56 | −0.56 | −0.33 | 0.00 | pending | 0 |
+
+Ages 1–4 and 60–74 await a decision on the method (the child-mortality gradient at ages 1–4, and how far the gradient at older ages can be trusted); see [ROADMAP](../../ROADMAP.md) items A3 and B1. Infant mortality (age 0) is `infmort_gradient`, above.
+
 ## Estimates
 
 ### Household surveys

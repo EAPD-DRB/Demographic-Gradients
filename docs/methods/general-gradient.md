@@ -95,6 +95,22 @@ they are positive because, in several low-income censuses, recorded mortality
 at older ages rises with household wealth (see below). Where working-age
 mortality is what matters, the 15–29 and 30–44 offsets are the more reliable.
 
+**Gradient by age for OG-Core** (ruled 2026-11-16):
+
+| Ages | `mort_gradient` |
+|---|---|
+| 0 | none: infant mortality is `infmort_gradient` |
+| 1–4 | awaiting a ruling (child-mortality gradient; ROADMAP A3) |
+| 5–14 | the 15–29 value |
+| 15–29, 30–44, 45–59 | the country's 45q15 gradient (its own, else the general gradient) plus the band's offset |
+| 60–74 | awaiting a ruling (ROADMAP B1) |
+| 75 and above | 0 |
+| OG-Core's final age | 0 (the death probability is 1 there, so the [conversion to OG-Core units](ogcore-units.md) is undefined) |
+
+The country's own band gradients, where published, are not used in place of
+the offsets, as for fertility by age: they rest on fewer deaths than 45q15, and
+several bands are not published for lack of deaths.
+
 ## Use over long horizons
 
 Across countries the gradient is steeper at higher income. Whether a

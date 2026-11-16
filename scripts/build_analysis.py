@@ -629,6 +629,22 @@ they are positive because, in several low-income censuses, recorded mortality
 at older ages rises with household wealth (see below). Where working-age
 mortality is what matters, the 15–29 and 30–44 offsets are the more reliable.
 
+**Gradient by age for OG-Core** (ruled 2026-11-16):
+
+| Ages | `mort_gradient` |
+|---|---|
+| 0 | none: infant mortality is `infmort_gradient` |
+| 1–4 | awaiting a ruling (child-mortality gradient; ROADMAP A3) |
+| 5–14 | the 15–29 value |
+| 15–29, 30–44, 45–59 | the country's 45q15 gradient (its own, else the general gradient) plus the band's offset |
+| 60–74 | awaiting a ruling (ROADMAP B1) |
+| 75 and above | 0 |
+| OG-Core's final age | 0 (the death probability is 1 there, so the [conversion to OG-Core units](ogcore-units.md) is undefined) |
+
+The country's own band gradients, where published, are not used in place of
+the offsets, as for fertility by age: they rest on fewer deaths than 45q15, and
+several bands are not published for lack of deaths.
+
 ## Use over long horizons
 
 Across countries the gradient is steeper at higher income. Whether a
@@ -756,6 +772,10 @@ Signs agree: a negative value means higher rates in poorer groups in both the
 library and OG-Core. The library provides no grouping: OG-Core derives each
 group's midpoint from the `lambdas` passed to it, so the same converted value
 applies to any number and size of income groups.
+
+The conversion requires p < 1. At OG-Core's final age the death probability is
+1 and every group dies, so the mortality gradient is set to 0 there before
+converting ([mortality by age](general-gradient.md#age-pattern)).
 """
     (DOCS / "methods" / "ogcore-units.md").write_text(doc)
 
@@ -1065,9 +1085,44 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
                     "| " + " | ".join(f"{x}–{y}" for x, y in zip(off.age_lo, off.age_hi))
                     + " |\n|" + "---|" * len(off) + "\n"
                     "| " + " | ".join(fmt(base + o) for o in off.offset) + " |\n")
+    out += mortality_by_age(own, gg, c)
     if notes:
         out += "\n" + "\n".join(f"*Note:* {n}" for n in notes) + "\n"
     return out
+
+
+def mortality_by_age(own, gg, c):
+    """`mort_gradient` by age (ruled 2026-11-16, review item A2).
+
+    15-59: the country's 45q15 gradient (its own, else the general gradient)
+    plus the pooled offset of each band; 5-14: the 15-29 value; 75 and over,
+    and OG-Core's final age: 0. Ages 1-4 and 60-74 await rulings (ROADMAP A3
+    and B1) and are shown as such.
+    """
+    offs = dict(gg.get("_ages", []))
+    if not all(k in offs for k in ("15-29", "30-44", "45-59")):
+        return ""
+    base = own["tilt"] if own else (rule_predict(gg, WORKED_INCOME[c])[0]
+                                    if c in WORKED_INCOME else None)
+    if base is not None:
+        cell = {k: fmt(base + offs[k]) for k in ("15-29", "30-44", "45-59")}
+        lead = ("the 45q15 gradient above plus the pooled offset for each band "
+                "([age pattern](../methods/general-gradient.md#age-pattern))")
+    else:
+        cell = {k: f"value {NEG} {abs(offs[k]):.2f}" if offs[k] < 0 else f"value + {offs[k]:.2f}"
+                for k in ("15-29", "30-44", "45-59")}
+        lead = ("the general-gradient value for this country plus the pooled offset for "
+                "each band ([age pattern](../methods/general-gradient.md#age-pattern))")
+    return ("\n**Adult and child mortality gradient by age** (`mort_gradient`; ages 15–59: "
+            f"{lead}; ages 5–14 use the 15–29 value; ages 75 and above, and OG-Core's final "
+            "age, use 0):\n\n"
+            "| 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |\n|---|---|---|---|---|---|---|\n"
+            f"| pending | {cell['15-29']} | {cell['15-29']} | {cell['30-44']} | {cell['45-59']} "
+            "| pending | 0 |\n\n"
+            "Ages 1–4 and 60–74 await a decision on the method (the child-mortality gradient "
+            "at ages 1–4, and how far the gradient at older ages can be trusted); see "
+            "[ROADMAP](../../ROADMAP.md) items A3 and B1. Infant mortality (age 0) is "
+            "`infmort_gradient`, above.\n")
 
 
 def deaths_15_60(g):

@@ -62,6 +62,22 @@ survey about as well overall (better below 30, worse from 35), and it cannot be
 estimated at older ages in many surveys. Details:
 [docs/methods/fertility-by-age.md](docs/methods/fertility-by-age.md).
 
+**Mortality by age.** Pass `mort_gradient` as a vector by age, built from the
+country's 45q15 gradient (its own, else the general gradient) and the pooled
+band offsets in `data/general_gradient.csv` (`component == "age_offset"`):
+
+- ages 15–29, 30–44 and 45–59: the 45q15 gradient plus that band's offset;
+- ages 5–14: the 15–29 value;
+- ages 75 and above, and OG-Core's final age: 0. At the final age the model's
+  death probability is 1, so the conversion is undefined there; set it to 0
+  before converting.
+- Ages 1–4 and 60–74: not yet ruled (ROADMAP A3 and B1); say so, and state
+  what is used.
+
+Age 0 is `infmort_gradient`. Do not substitute a country's own band gradients
+for the offsets. The country pages show the resulting vector. Details:
+[docs/methods/general-gradient.md](docs/methods/general-gradient.md#age-pattern).
+
 **2. Own estimate first, general gradient as fallback.** If the country has a
 row in the relevant file, use it. If not, use the general gradient for adult
 mortality (below) or the regional median for fertility and infant mortality.
