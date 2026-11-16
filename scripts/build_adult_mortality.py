@@ -74,7 +74,7 @@ API = "https://api.ipums.org"
 BANDS = [(15, 29), (30, 44), (45, 59), (60, 74)]
 MIN_BAND_DEATHS = 900  # publish a band or 45q15 gradient only from at least this many records
 # column order of the published file, shared with build_adult_mortality_brazil.py
-COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "ratio",
+COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "se", "ratio",
            "q1", "q2", "q3", "q4", "q5", "n_deaths", "ranking", "source", "groups", "linked_share"]
 MIN_GROUPS = 3  # a gradient needs at least three wealth groups (ruled 2026-11-11)
 
@@ -491,23 +491,28 @@ def estimate_sample(sample, cfg, extracts_dir, deaths_dir):
         mm = m if sex is None else m[m["sexd"] == sex]
         rates = np.full((len(BANDS), G), np.nan)
         nb = np.zeros(len(BANDS))
+        cnt = np.zeros((len(BANDS), G))
         for bi, (a0, a1) in enumerate(BANDS):
             e = pp[pp["AGE"].between(a0, a1)].groupby("q")["PERWT"].sum().reindex(range(G), fill_value=0).values
             dd = mm[mm["aged"].between(a0, a1)].groupby("q")["dw"].sum().reindex(range(G), fill_value=0).values
             rates[bi] = np.where(e > 0, dd / np.maximum(e, 1e-12), np.nan)
             nb[bi] = int(len(mm[mm["aged"].between(a0, a1)]))
+            cnt[bi] = mm[mm["aged"].between(a0, a1)].groupby("q").size().reindex(range(G), fill_value=0).values
             if nb[bi] >= MIN_BAND_DEATHS and np.all(rates[bi] > 0):
-                rows.append(_row(cfg, lab, "mx", a0, a1, rates[bi], mids, gshare, int(nb[bi]), G, linked_share, src))
+                rows.append(_row(cfg, lab, "mx", a0, a1, rates[bi], mids, gshare, int(nb[bi]), G, linked_share, src,
+                                 ai.gradient_se(mids, gshare, rates[bi], cnt[bi])))
         q45 = 1 - np.prod((1 - rates[:3]) ** 15, axis=0)
         if nb[:3].sum() >= MIN_BAND_DEATHS and np.all(q45 > 0):
-            rows.append(_row(cfg, lab, "45q15", 15, 59, q45, mids, gshare, int(nb[:3].sum()), G, linked_share, src))
+            rows.append(_row(cfg, lab, "45q15", 15, 59, q45, mids, gshare, int(nb[:3].sum()), G, linked_share, src,
+                             ai.gradient_se(mids, gshare, rates[:3], cnt[:3])))
     return rows
 
 
-def _row(cfg, sex, measure, a0, a1, vals, mids, shares, n, G, linked_share, src):
+def _row(cfg, sex, measure, a0, a1, vals, mids, shares, n, G, linked_share, src, se):
     r = dict(indicator="AMR", country=cfg["country"], year=cfg["year"], sex=sex,
              measure=measure, age_lo=a0, age_hi=a1,
              slope=round((ai.q45_gradient if measure == "45q15" else ai.gradient)(mids, vals, shares), 4),
+             se=round(se, 4),
              ratio=round(float(vals[0] / vals[-1]), 3))
     scale = 1000
     for i in range(5):

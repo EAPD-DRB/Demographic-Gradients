@@ -68,7 +68,7 @@ K = ["COD_ENCUESTAS", "U_VIVIENDA"]
 HK = K + ["H_NROHOG"]
 OUT = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "data",
                    "adult_mortality_gradients.csv")
-COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "ratio",
+COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "se", "ratio",
            "q1", "q2", "q3", "q4", "q5", "n_deaths", "ranking", "source", "groups", "linked_share"]
 SRC = ("DANE, Censo Nacional de Población y Vivienda 2018, microdata "
        "(household deaths in 2017)")
@@ -161,14 +161,16 @@ def groups_of(t, extended):
 
 
 def rates(T, sexes, G):
-    R, N = np.zeros((len(BANDS), G)), np.zeros(len(BANDS))
+    """Band rates, record totals and record counts by wealth group."""
+    R, N, C = np.zeros((len(BANDS), G)), np.zeros(len(BANDS)), np.zeros((len(BANDS), G))
     for b in range(len(BANDS)):
         e = sum(T.get(f"p_{s}_{b}", 0) for s in sexes)
         d = sum(T.get(f"d_{s}_{b}", 0) for s in sexes)
         if len(sexes) == 2:  # deaths of unrecorded sex count in the both-sexes rates
             d = d + T.get(f"d_9_{b}", 0)
         R[b], N[b] = np.asarray(d / e, dtype=float), float(np.sum(d))
-    return R, N
+        C[b] = np.asarray(d, dtype=float)  # full count: every record has weight 1
+    return R, N, C
 
 
 def main():
@@ -212,19 +214,21 @@ def main():
 
     rows = []
     for lab, sexes in [("all", [1, 2]), ("male", [1]), ("female", [2])]:
-        R, N = rates(T, sexes, G)
+        R, N, C = rates(T, sexes, G)
         for b, (a0, a1) in enumerate(BANDS):
             if N[b] >= MIN_BAND_DEATHS and np.all(R[b] > 0):
-                rows.append(row(lab, "mx", a0, a1, R[b], mids, shares, N[b], G, linked_share))
+                rows.append(row(lab, "mx", a0, a1, R[b], mids, shares, N[b], G, linked_share,
+                                ai.gradient_se(mids, shares, R[b], C[b])))
         q45 = 1 - np.prod((1 - R[:3]) ** 15, axis=0)
         if N[:3].sum() >= MIN_BAND_DEATHS and np.all(q45 > 0):
-            rows.append(row(lab, "45q15", 15, 59, q45, mids, shares, N[:3].sum(), G, linked_share))
+            rows.append(row(lab, "45q15", 15, 59, q45, mids, shares, N[:3].sum(), G, linked_share,
+                            ai.gradient_se(mids, shares, R[:3], C[:3])))
             print(f"45q15 {lab}: gradient {rows[-1]['slope']:+.3f}, per 1000 {np.round(1000 * q45, 1)}")
 
     # comparison only: an index adding housing materials and services
     qx, mx_, shx, lx, pcx = groups_of(t, extended=True)
     Tx = t.groupby(qx).sum(numeric_only=True)
-    Rx, _ = rates(Tx, [1, 2], len(mx_))
+    Rx, _, _ = rates(Tx, [1, 2], len(mx_))
     q45x = 1 - np.prod((1 - Rx[:3]) ** 15, axis=0)
     print(f"comparison (not published): index with housing items, {len(lx)} indicators, "
           f"{len(mx_)} groups; 45q15 gradient {ai.q45_gradient(mx_, q45x, shx):+.3f}, "
@@ -242,10 +246,11 @@ def main():
     print(f"wrote {os.path.normpath(OUT)} ({len(new)} Colombia rows)")
 
 
-def row(sex, measure, a0, a1, vals, mids, shares, n, G, linked_share):
+def row(sex, measure, a0, a1, vals, mids, shares, n, G, linked_share, se):
     r = dict(indicator="AMR", country="Colombia", year=2018, sex=sex, measure=measure,
              age_lo=a0, age_hi=a1,
              slope=round((ai.q45_gradient if measure == "45q15" else ai.gradient)(mids, vals, shares), 4),
+             se=round(se, 4),
              ratio=round(float(vals[0] / vals[-1]), 3))
     for i in range(5):
         r[f"q{i + 1}"] = round(float(1000 * vals[i]), 3) if i < G else ""

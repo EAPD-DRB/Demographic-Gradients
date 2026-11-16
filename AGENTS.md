@@ -349,6 +349,14 @@ scripts, and the documentation is generated — respect that architecture.
   urban, sex, age) before trusting the gradient.
 - `MIN_BAND_DEATHS = 900` gates publication of an age-band gradient and of
   45q15 (records at 15–59). Ruled 2026-11-11.
+- **Every adult-mortality row carries `se`** (ruled 2026-11-16, review A5).
+  - Surveys: cluster bootstrap (PSUs within strata, 200 replicates, seed 1;
+    `bootstrap_se` in the survey script).
+  - Censuses: Poisson approximation from unweighted death records per wealth
+    group (`asset_index.gradient_se`; delta method for 45q15).
+  - It measures sampling only, not index or recording error. 45q15 SEs run
+    0.015 (Colombia) to 0.11 (Cambodia, Benin), all far below the rule's
+    residual SE (0.32), so equal weighting in the rule stays.
 - **The 45q15 gradient is fitted on the death-rate scale**:
   slope of ln(−ln(1 − 45q15)) on wealth rank (`asset_index.q45_gradient`,
   used by all four adult-mortality scripts), ruled 2026-11-16.
@@ -422,7 +430,7 @@ scripts, and the documentation is generated — respect that architecture.
   (anything but "asset_index"), not by source text. Its member file
   (BMMS16_HM) is truncated at 1,048,575 rows in both Dataverse formats —
   persons come from the household file's roster, which matches `dejure`
-  exactly. 45q15 gradient −0.07 (bootstrap SE 0.08); own census-style index
+  exactly. 45q15 gradient −0.07 (bootstrap SE 0.07); own census-style index
   −0.12; rural and urban both near zero; the gradient flattens with time since
   death (−0.16/+0.02/+0.14 by year back), within sampling error.
 - The gradient fades with age in every census and survey measured at 15-29

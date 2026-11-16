@@ -459,7 +459,7 @@ def amr_table_rows(amr):
     for _, r in amr.iterrows():
         out += (
             f"| {r['country']} | {r['year']} | {basis(r['source'])} | {r['sex']} | {r['age_lo']}–{r['age_hi']} "
-            f"| {r['measure']} | {fmt(r['slope'])} | {r['ratio']:.2f} | {r['n_deaths']:,} "
+            f"| {r['measure']} | {fmt(r['slope'])} | {r['se']:.2f} | {r['ratio']:.2f} | {r['n_deaths']:,} "
             f"| {r.get('linked_share', 1.0):.0%} |\n"
         )
     return out
@@ -963,7 +963,12 @@ deaths are those of the two years before the interview
 (`scripts/build_adult_mortality_survey.py`). `45q15` is the probability
 of dying between ages 15 and 60; `mx` is the age-specific death rate for the
 band shown. The low/high ratio is the rate in the lowest wealth group divided
-by the rate in the highest. "Linked" is the share of the census's death
+by the rate in the highest. The standard error measures sampling variability
+only: for surveys it is a cluster bootstrap (sampling clusters resampled within
+strata); for censuses it treats each wealth group's death count as Poisson. It
+leaves out errors in the wealth ranking and in the recording of deaths, which
+are usually larger; the scatter of countries around the
+[general gradient](../methods/general-gradient.md) is several times larger. "Linked" is the share of the census's death
 records matched to household assets; survey death records are part of the
 household interview and are all linked.
 
@@ -996,8 +1001,8 @@ Age-band rates (`mx`) and 45q15 are published only where they rest on at least
 900 death records; `Deaths` gives the number of records behind each estimate.
 Rates are per 1,000.
 
-| Country | Year | Source | Sex | Ages | Measure | Gradient | Low/high ratio | Deaths | Linked |
-|---|---|---|---|---|---|---|---|---|---|
+| Country | Year | Source | Sex | Ages | Measure | Gradient | Standard error | Low/high ratio | Deaths | Linked |
+|---|---|---|---|---|---|---|---|---|---|---|
 {amr_table_rows(amr)}"""
     (DOCS / "tables" / "adult_mortality.md").write_text(doc)
 
@@ -1020,6 +1025,7 @@ def own_adult(amr, country):
     a = g[g["sex"] == "all"]
     src = a if len(a) else g[g["sex"].isin(["male", "female"])]
     return {"year": int(y), "tilt": float(src["slope"].mean()),
+            "se": float(src["se"].mean()) if "se" in src else float("nan"),
             "both": bool(len(a)), "linked": float(g["linked_share"].min()),
             "basis": basis(g["source"].iloc[0])}
 
@@ -1076,7 +1082,8 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
     a = gg.get("income_rule.intercept", float("nan"))
     b = gg.get("income_rule.slope_ln_income", float("nan"))
     if own:
-        rows.append(f"| `mort_gradient` | {fmt(own['tilt'])} | {own['basis']} {own['year']}, 45q15 |")
+        rows.append(f"| `mort_gradient` | {fmt(own['tilt'])} (standard error {own['se']:.2f}) "
+                    f"| {own['basis']} {own['year']}, 45q15 |")
         if own["linked"] < 0.95:
             notes.append(f"The {own['year']} census links {own['linked']:.0%} of death records "
                          "to household assets. The gradient is retained; rate levels for that "

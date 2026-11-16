@@ -164,3 +164,32 @@ def q45_gradient(mids, q45, shares):
     itself is still what the q1..q5 columns report.
     """
     return gradient(mids, -np.log1p(-np.asarray(q45, dtype=float)), shares)
+
+
+def gradient_se(mids, shares, band_rates, band_counts):
+    """Standard error of a census gradient, treating death counts as Poisson.
+
+    band_rates and band_counts are the death rates and the unweighted numbers
+    of death records by wealth group: one band (shape G) for an age-band
+    gradient, or the three bands 15-29, 30-44, 45-59 (shape 3 x G) for the
+    45q15 gradient. A rate m from n records has relative variance 1/n. For
+    45q15 the variance of the cumulative rate H = -15 sum ln(1 - m) follows by
+    the delta method. The gradient is a weighted least-squares slope, a linear
+    combination sum c_g y_g of the log values, so its variance is
+    sum c_g^2 var(y_g). The figure measures the sampling variability of the
+    deaths only: it leaves out clustering of deaths within households and
+    every non-sampling error (the wealth index, under-recording), which are
+    usually larger.
+    """
+    x, w = np.asarray(mids, dtype=float), np.asarray(shares, dtype=float)
+    w = w / w.sum()
+    xb = (w * x).sum()
+    c = w * (x - xb) / (w * (x - xb) ** 2).sum()
+    m, n = np.atleast_2d(np.asarray(band_rates, float)), np.atleast_2d(np.asarray(band_counts, float))
+    if m.shape[0] == 1:
+        var_y = 1.0 / n[0]
+    else:
+        H = -15 * np.log1p(-m).sum(axis=0)
+        var_H = ((15 * m / (1 - m)) ** 2 / n).sum(axis=0)
+        var_y = var_H / H ** 2
+    return float(np.sqrt((c ** 2 * var_y).sum()))

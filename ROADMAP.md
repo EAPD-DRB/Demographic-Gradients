@@ -96,6 +96,9 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
     −1.03, Indonesia −1.17.
   - Within-country evidence is now South Africa 2001→2007 (steeper) and
     India 1999–2020 (flat).
+- [x] **Review A5. Standard errors** (2026-11-16): `se` column in
+  `adult_mortality_gradients.csv`; cluster bootstrap for surveys, Poisson for
+  censuses. Shown on country pages and in the full table.
 - [R] **B2. Updating a stale measurement.** OG-ETH's method: measured tilt plus
   the income rule's change since the census year, then along the model's
   growth path, capped at $10,000 GNI. OG-PHL uses the rule's level directly.

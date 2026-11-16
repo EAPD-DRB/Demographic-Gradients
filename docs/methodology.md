@@ -41,8 +41,12 @@ ratio published in DHS reports, but it uses only the two extreme groups and is
 more affected by sampling variation. For census estimates with fewer than five
 groups it is not comparable with a quintile ratio.
 
-No standard errors are published; each gradient is a fit to five or fewer
-group rates.
+Adult-mortality gradients are published with a standard error of sampling
+variability (`se`): a cluster bootstrap for surveys, and for censuses a
+Poisson approximation from the number of deaths in each wealth group. It leaves
+out errors in the wealth ranking and in the recording of deaths, which are
+usually larger. Fertility and child-mortality gradients from DHS and MICS are
+published without standard errors; each is a fit to five quintile rates.
 
 ## 3. Wealth ranking
 

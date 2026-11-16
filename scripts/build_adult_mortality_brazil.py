@@ -55,7 +55,7 @@ MIN_BAND_DEATHS = 900
 OUT = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "data",
                    "adult_mortality_gradients.csv")
 # column order of the published file, as in build_adult_mortality.py
-COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "ratio",
+COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "se", "ratio",
            "q1", "q2", "q3", "q4", "q5", "n_deaths", "ranking", "source", "groups", "linked_share"]
 SRC = "IBGE Census 2010 sample microdata, household deaths module"
 
@@ -191,10 +191,12 @@ def main():
         rates = dd / e
         for bi, (a0, a1) in enumerate(BANDS):
             if n[bi].sum() >= MIN_BAND_DEATHS and np.all(rates[bi] > 0):
-                rows.append(row(lab, "mx", a0, a1, rates[bi], mids, shares, n[bi].sum(), G))
+                rows.append(row(lab, "mx", a0, a1, rates[bi], mids, shares, n[bi].sum(), G,
+                                ai.gradient_se(mids, shares, rates[bi], n[bi])))
         q45 = 1 - np.prod((1 - rates[:3]) ** 15, axis=0)
         if n[:3].sum() >= MIN_BAND_DEATHS and np.all(q45 > 0):
-            rows.append(row(lab, "45q15", 15, 59, q45, mids, shares, n[:3].sum(), G))
+            rows.append(row(lab, "45q15", 15, 59, q45, mids, shares, n[:3].sum(), G,
+                            ai.gradient_se(mids, shares, rates[:3], n[:3])))
 
     new = pd.DataFrame(rows)
     old = pd.read_csv(OUT) if os.path.exists(OUT) else pd.DataFrame()
@@ -209,10 +211,11 @@ def main():
     print(f"wrote {os.path.normpath(OUT)} ({len(new)} Brazil rows)")
 
 
-def row(sex, measure, a0, a1, vals, mids, shares, n, G):
+def row(sex, measure, a0, a1, vals, mids, shares, n, G, se):
     r = dict(indicator="AMR", country="Brazil", year=2010, sex=sex, measure=measure,
              age_lo=a0, age_hi=a1,
              slope=round((ai.q45_gradient if measure == "45q15" else ai.gradient)(mids, vals, shares), 4),
+             se=round(se, 4),
              ratio=round(float(vals[0] / vals[-1]), 3))
     for i in range(5):
         r[f"q{i + 1}"] = round(float(1000 * vals[i]), 3) if i < G else ""

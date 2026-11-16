@@ -38,7 +38,7 @@ Checks printed for every survey (none is a published quantity):
   the 45q15 gradient with persons and deaths at exactly 15, 30, 45 and 60 split
   half and half across the band boundary;
 - the national 45q15 by sex, to compare with UN / World Bank estimates;
-- a cluster bootstrap standard error of the 45q15 gradient (PSUs resampled
+- a cluster bootstrap standard error of every published gradient (`se`; PSUs resampled
   within strata).
 
 Microdata: the household recode (HR) .DTA of each survey, downloaded once
@@ -78,7 +78,7 @@ SHARES = np.full(5, 0.2)
 ROSTER_MAX = 99  # roster slots probed: hv102_01 ... (only those present are read)
 BOOT_REPS, BOOT_SEED = 200, 1
 # column order of the published file, as in build_adult_mortality.py
-COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "ratio",
+COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "se", "ratio",
            "q1", "q2", "q3", "q4", "q5", "n_deaths", "ranking", "source", "groups", "linked_share"]
 SRC_PREFIX = "The DHS Program"
 
@@ -310,25 +310,7 @@ def checks(h, p, d, cfg, win):
         R, N = band_rates(p, win[(win["cmc_int"] - win["mago"]) >= c], WINDOW_MONTHS / 12 - yrs)
         print(f"  45q15 gradient from deaths and exposure from CMC {c} on: "
               f"{ai.q45_gradient(MID, q45(R), SHARES):+.3f} ({N[:3].sum()} records)")
-    # cluster bootstrap of the all-sex 45q15 gradient
-    bands = [14.5, 29.5, 44.5, 59.5]
-    pe = p.assign(b=pd.cut(p["age"], bands, labels=False)).dropna(subset=["b"])
-    de = win[(win["age"] >= 15) & (win["age"] < 60)].assign(b=lambda x: np.floor((x["age"] - 15) / 15))
-    E = pe.groupby(["psu", "q", "b"])["w"].sum().unstack(["q", "b"], fill_value=0).sort_index(axis=1)
-    D = (de.groupby(["psu", "q", "b"])["w"].sum().unstack(["q", "b"], fill_value=0)
-         .reindex(index=E.index, columns=E.columns, fill_value=0))
-    strat = h.groupby("psu_id")["strat_id"].first().reindex(E.index).values
-    Ev, Dv = E.values, D.values
 
-    def g(ix):
-        R = (Dv[ix].sum(0) / (Ev[ix].sum(0) * years)).reshape(5, 3).T
-        return ai.q45_gradient(MID, q45(R), SHARES)
-    rng = np.random.default_rng(BOOT_SEED)
-    groups = [np.flatnonzero(strat == s) for s in np.unique(strat)]
-    bs = [g(np.concatenate([gr[rng.integers(0, len(gr), len(gr))] for gr in groups]))
-          for _ in range(BOOT_REPS)]
-    print(f"  45q15 gradient {g(np.arange(len(E))):+.3f}, cluster bootstrap SE {np.std(bs):.3f} "
-          f"({BOOT_REPS} replicates, PSUs resampled within strata)")
 
 
 BMMS_Q = {"Lowest": 1, "Second": 2, "Middle": 3, "Fourth": 4, "Highest": 5}
@@ -379,6 +361,45 @@ def load_bmms(cfg, path):
     return h, p, d.drop(columns=["unit", "num", "cmc_d"])
 
 
+def bootstrap_se(h, p, win):
+    """Cluster-bootstrap standard error of every gradient the survey publishes.
+
+    PSUs are resampled with replacement within strata (BOOT_REPS replicates,
+    seed BOOT_SEED); each replicate recomputes the band rates by sex and
+    quintile, and from them each band gradient and the 45q15 gradient.
+    Returns {(sex label, measure, age_lo): standard error}.
+    """
+    years = WINDOW_MONTHS / 12
+    cols = pd.MultiIndex.from_product([range(1, 6), range(len(BANDS))], names=["q", "b"])
+    pe = p[(p["age"] >= 15) & (p["age"] < 75)].assign(b=lambda x: ((x["age"] - 15) // 15).astype(int))
+    de = win[(win["age"] >= 15) & (win["age"] < 75)].assign(
+        b=lambda x: np.floor((x["age"] - 15) / 15).astype(int))
+    psus = np.sort(h["psu_id"].unique())
+
+    def arr(df):
+        return (df.groupby(["psu", "q", "b"])["w"].sum().unstack(["q", "b"], fill_value=0)
+                .reindex(index=psus, columns=cols, fill_value=0).values)
+    sets = {"all": (arr(pe), arr(de)),
+            "male": (arr(pe[pe["sex"] == 1]), arr(de[de["sex"] == 1])),
+            "female": (arr(pe[pe["sex"] == 2]), arr(de[de["sex"] == 2]))}
+    strat = h.groupby("psu_id")["strat_id"].first().reindex(psus).values
+    groups = [np.flatnonzero(strat == s) for s in np.unique(strat)]
+    rng = np.random.default_rng(BOOT_SEED)
+    draws = {k: [] for k in sets}
+    for _ in range(BOOT_REPS):
+        ix = np.concatenate([gr[rng.integers(0, len(gr), len(gr))] for gr in groups])
+        for k, (E, D) in sets.items():
+            with np.errstate(divide="ignore", invalid="ignore"):
+                R = (D[ix].sum(0) / (E[ix].sum(0) * years)).reshape(5, len(BANDS)).T
+            out = {("mx", a0): (ai.gradient(MID, R[b], SHARES) if np.all(R[b] > 0) else np.nan)
+                   for b, (a0, _) in enumerate(BANDS)}
+            out[("45q15", 15)] = (ai.q45_gradient(MID, q45(R), SHARES)
+                                  if np.all(q45(R) > 0) else np.nan)
+            draws[k].append(out)
+    return {(k, m, a): float(np.nanstd([d[(m, a)] for d in v]))
+            for k, v in draws.items() for (m, a) in v[0]}
+
+
 def estimate(code, cfg, dhs_dir, bmms_dir=None):
     if not cfg.get("publish", True):
         print(f"skipping {code} ({cfg['country']} {cfg['survey']}): publish=False (see config note)")
@@ -400,6 +421,9 @@ def estimate(code, cfg, dhs_dir, bmms_dir=None):
           f"{len(win):,} in the {WINDOW_MONTHS} months before interview")
     print(f"  person share by quintile: {np.round(p.groupby('q')['w'].sum().values / p['w'].sum(), 3)}")
     checks(h, p, d, cfg, win)
+    se = bootstrap_se(h, p, win)
+    print(f"  cluster bootstrap SE of the 45q15 gradient: {se[('all', '45q15', 15)]:.3f} "
+          f"({BOOT_REPS} replicates, PSUs resampled within strata)")
     src = cfg.get("source") or (f"{SRC_PREFIX}, {cfg['country']} {cfg['survey']}, household "
                                 f"deaths module; original data: {cfg['org']}")
     rows = []
@@ -409,16 +433,17 @@ def estimate(code, cfg, dhs_dir, bmms_dir=None):
         R, N = band_rates(pp, dd, WINDOW_MONTHS / 12)
         for b, (a0, a1) in enumerate(BANDS):
             if N[b] >= MIN_BAND_DEATHS and np.all(R[b] > 0):
-                rows.append(row(cfg, lab, "mx", a0, a1, R[b], N[b], src))
+                rows.append(row(cfg, lab, "mx", a0, a1, R[b], N[b], src, se[(lab, "mx", a0)]))
         if N[:3].sum() >= MIN_BAND_DEATHS and np.all(q45(R) > 0):
-            rows.append(row(cfg, lab, "45q15", 15, 59, q45(R), N[:3].sum(), src))
+            rows.append(row(cfg, lab, "45q15", 15, 59, q45(R), N[:3].sum(), src, se[(lab, "45q15", 15)]))
     return rows
 
 
-def row(cfg, sex, measure, a0, a1, vals, n, src):
+def row(cfg, sex, measure, a0, a1, vals, n, src, se):
     r = dict(indicator="AMR", country=cfg["country"], year=cfg["year"], sex=sex,
              measure=measure, age_lo=a0, age_hi=a1,
              slope=round((ai.q45_gradient if measure == "45q15" else ai.gradient)(MID, vals, SHARES), 4),
+             se=round(se, 4),
              ratio=round(float(vals[0] / vals[-1]), 3))
     for i in range(5):
         r[f"q{i+1}"] = round(float(1000 * vals[i]), 3)

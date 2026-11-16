@@ -20,7 +20,12 @@ deaths are those of the two years before the interview
 (`scripts/build_adult_mortality_survey.py`). `45q15` is the probability
 of dying between ages 15 and 60; `mx` is the age-specific death rate for the
 band shown. The low/high ratio is the rate in the lowest wealth group divided
-by the rate in the highest. "Linked" is the share of the census's death
+by the rate in the highest. The standard error measures sampling variability
+only: for surveys it is a cluster bootstrap (sampling clusters resampled within
+strata); for censuses it treats each wealth group's death count as Poisson. It
+leaves out errors in the wealth ranking and in the recording of deaths, which
+are usually larger; the scatter of countries around the
+[general gradient](../methods/general-gradient.md) is several times larger. "Linked" is the share of the census's death
 records matched to household assets; survey death records are part of the
 household interview and are all linked.
 
@@ -53,201 +58,201 @@ Age-band rates (`mx`) and 45q15 are published only where they rest on at least
 900 death records; `Deaths` gives the number of records behind each estimate.
 Rates are per 1,000.
 
-| Country | Year | Source | Sex | Ages | Measure | Gradient | Low/high ratio | Deaths | Linked |
-|---|---|---|---|---|---|---|---|---|---|
-| South Africa | 2001 | census | all | 15–29 | mx | −1.04 | 2.32 | 5,939 | 100% |
-| South Africa | 2001 | census | all | 30–44 | mx | −1.45 | 3.35 | 8,504 | 100% |
-| South Africa | 2001 | census | all | 45–59 | mx | −0.98 | 2.29 | 5,750 | 100% |
-| South Africa | 2001 | census | all | 60–74 | mx | −0.34 | 1.40 | 5,489 | 100% |
-| South Africa | 2001 | census | all | 15–59 | 45q15 | −1.16 | 2.20 | 20,193 | 100% |
-| South Africa | 2001 | census | male | 15–29 | mx | −0.88 | 2.03 | 2,835 | 100% |
-| South Africa | 2001 | census | male | 30–44 | mx | −1.42 | 3.36 | 4,564 | 100% |
-| South Africa | 2001 | census | male | 45–59 | mx | −0.95 | 2.28 | 3,558 | 100% |
-| South Africa | 2001 | census | male | 60–74 | mx | −0.52 | 1.61 | 2,983 | 100% |
-| South Africa | 2001 | census | male | 15–59 | 45q15 | −1.11 | 2.06 | 10,957 | 100% |
-| South Africa | 2001 | census | female | 15–29 | mx | −1.21 | 2.69 | 3,104 | 100% |
-| South Africa | 2001 | census | female | 30–44 | mx | −1.49 | 3.40 | 3,940 | 100% |
-| South Africa | 2001 | census | female | 45–59 | mx | −1.05 | 2.40 | 2,192 | 100% |
-| South Africa | 2001 | census | female | 60–74 | mx | −0.26 | 1.31 | 2,506 | 100% |
-| South Africa | 2001 | census | female | 15–59 | 45q15 | −1.25 | 2.41 | 9,236 | 100% |
-| South Africa | 2007 | census | all | 15–29 | mx | −1.63 | 3.89 | 2,421 | 100% |
-| South Africa | 2007 | census | all | 30–44 | mx | −2.00 | 5.17 | 4,353 | 100% |
-| South Africa | 2007 | census | all | 45–59 | mx | −1.58 | 3.76 | 2,693 | 100% |
-| South Africa | 2007 | census | all | 60–74 | mx | −0.69 | 1.95 | 1,963 | 100% |
-| South Africa | 2007 | census | all | 15–59 | 45q15 | −1.77 | 2.82 | 9,467 | 100% |
-| South Africa | 2007 | census | male | 15–29 | mx | −1.36 | 3.05 | 1,071 | 100% |
-| South Africa | 2007 | census | male | 30–44 | mx | −1.94 | 4.87 | 2,207 | 100% |
-| South Africa | 2007 | census | male | 45–59 | mx | −1.52 | 3.50 | 1,603 | 100% |
-| South Africa | 2007 | census | male | 60–74 | mx | −0.81 | 2.08 | 1,061 | 100% |
-| South Africa | 2007 | census | male | 15–59 | 45q15 | −1.67 | 2.45 | 4,881 | 100% |
-| South Africa | 2007 | census | female | 15–29 | mx | −1.92 | 5.03 | 1,350 | 100% |
-| South Africa | 2007 | census | female | 30–44 | mx | −2.06 | 5.52 | 2,146 | 100% |
-| South Africa | 2007 | census | female | 45–59 | mx | −1.71 | 4.38 | 1,090 | 100% |
-| South Africa | 2007 | census | female | 60–74 | mx | −0.66 | 1.98 | 902 | 100% |
-| South Africa | 2007 | census | female | 15–59 | 45q15 | −1.92 | 3.37 | 4,586 | 100% |
-| Ethiopia | 2007 | census | all | 15–29 | mx | −0.83 | 1.77 | 1,957 | 100% |
-| Ethiopia | 2007 | census | all | 30–44 | mx | 0.00 | 0.93 | 1,472 | 100% |
-| Ethiopia | 2007 | census | all | 45–59 | mx | 0.42 | 0.66 | 900 | 100% |
-| Ethiopia | 2007 | census | all | 60–74 | mx | 0.44 | 0.75 | 957 | 100% |
-| Ethiopia | 2007 | census | all | 15–59 | 45q15 | 0.01 | 0.92 | 4,329 | 100% |
-| Ethiopia | 2007 | census | male | 15–29 | mx | −0.91 | 1.88 | 974 | 100% |
-| Ethiopia | 2007 | census | male | 15–59 | 45q15 | −0.26 | 1.07 | 2,247 | 100% |
-| Ethiopia | 2007 | census | female | 15–29 | mx | −0.77 | 1.68 | 983 | 100% |
-| Ethiopia | 2007 | census | female | 15–59 | 45q15 | 0.31 | 0.78 | 2,082 | 100% |
-| Zambia | 2010 | census | all | 15–29 | mx | −0.51 | 1.53 | 2,354 | 100% |
-| Zambia | 2010 | census | all | 30–44 | mx | −0.26 | 1.20 | 2,899 | 100% |
-| Zambia | 2010 | census | all | 45–59 | mx | −0.00 | 0.97 | 1,433 | 100% |
-| Zambia | 2010 | census | all | 60–74 | mx | 0.59 | 0.67 | 1,147 | 100% |
-| Zambia | 2010 | census | all | 15–59 | 45q15 | −0.19 | 1.10 | 6,686 | 100% |
-| Zambia | 2010 | census | male | 15–29 | mx | −0.53 | 1.50 | 1,147 | 100% |
-| Zambia | 2010 | census | male | 30–44 | mx | −0.32 | 1.22 | 1,652 | 100% |
-| Zambia | 2010 | census | male | 15–59 | 45q15 | −0.36 | 1.16 | 3,630 | 100% |
-| Zambia | 2010 | census | female | 15–29 | mx | −0.50 | 1.55 | 1,207 | 100% |
-| Zambia | 2010 | census | female | 30–44 | mx | −0.20 | 1.18 | 1,247 | 100% |
-| Zambia | 2010 | census | female | 15–59 | 45q15 | −0.02 | 1.04 | 3,056 | 100% |
-| Malawi | 2008 | census | all | 15–29 | mx | −0.96 | 1.98 | 1,941 | 99% |
-| Malawi | 2008 | census | all | 30–44 | mx | −0.83 | 1.72 | 2,243 | 99% |
-| Malawi | 2008 | census | all | 45–59 | mx | −0.26 | 1.08 | 1,059 | 99% |
-| Malawi | 2008 | census | all | 15–59 | 45q15 | −0.60 | 1.32 | 5,243 | 99% |
-| Malawi | 2008 | census | male | 30–44 | mx | −1.21 | 2.20 | 1,198 | 99% |
-| Malawi | 2008 | census | male | 15–59 | 45q15 | −1.03 | 1.61 | 2,724 | 99% |
-| Malawi | 2008 | census | female | 15–29 | mx | −0.83 | 1.80 | 1,054 | 99% |
-| Malawi | 2008 | census | female | 30–44 | mx | −0.44 | 1.32 | 1,045 | 99% |
-| Malawi | 2008 | census | female | 15–59 | 45q15 | −0.21 | 1.08 | 2,519 | 99% |
-| Uganda | 2002 | census | all | 15–29 | mx | −0.20 | 1.13 | 3,905 | 100% |
-| Uganda | 2002 | census | all | 30–44 | mx | 0.30 | 0.72 | 4,511 | 100% |
-| Uganda | 2002 | census | all | 45–59 | mx | 0.25 | 0.75 | 2,054 | 100% |
-| Uganda | 2002 | census | all | 60–74 | mx | 0.39 | 0.73 | 1,905 | 100% |
-| Uganda | 2002 | census | all | 15–59 | 45q15 | 0.18 | 0.84 | 10,470 | 100% |
-| Uganda | 2002 | census | male | 15–29 | mx | −0.46 | 1.46 | 1,827 | 100% |
-| Uganda | 2002 | census | male | 30–44 | mx | 0.10 | 0.85 | 2,461 | 100% |
-| Uganda | 2002 | census | male | 45–59 | mx | 0.10 | 0.83 | 1,227 | 100% |
-| Uganda | 2002 | census | male | 60–74 | mx | −0.04 | 0.96 | 1,105 | 100% |
-| Uganda | 2002 | census | male | 15–59 | 45q15 | −0.00 | 0.94 | 5,515 | 100% |
-| Uganda | 2002 | census | female | 15–29 | mx | 0.04 | 0.89 | 2,078 | 100% |
-| Uganda | 2002 | census | female | 30–44 | mx | 0.54 | 0.59 | 2,050 | 100% |
-| Uganda | 2002 | census | female | 15–59 | 45q15 | 0.39 | 0.73 | 4,955 | 100% |
-| Senegal | 2002 | census | all | 15–29 | mx | −0.81 | 1.82 | 1,086 | 100% |
-| Senegal | 2002 | census | all | 30–44 | mx | −0.51 | 1.57 | 1,086 | 100% |
-| Senegal | 2002 | census | all | 60–74 | mx | −0.27 | 1.18 | 1,311 | 100% |
-| Senegal | 2002 | census | all | 15–59 | 45q15 | −0.40 | 1.29 | 3,039 | 100% |
-| Senegal | 2002 | census | male | 15–59 | 45q15 | −0.41 | 1.33 | 1,311 | 100% |
-| Senegal | 2002 | census | female | 15–59 | 45q15 | −0.38 | 1.25 | 1,725 | 100% |
-| Sierra Leone | 2004 | census | all | 15–29 | mx | −0.74 | 1.66 | 1,182 | 100% |
-| Sierra Leone | 2004 | census | all | 30–44 | mx | −0.19 | 1.14 | 1,057 | 100% |
-| Sierra Leone | 2004 | census | all | 60–74 | mx | −0.13 | 1.06 | 918 | 100% |
-| Sierra Leone | 2004 | census | all | 15–59 | 45q15 | −0.35 | 1.19 | 3,056 | 100% |
-| Sierra Leone | 2004 | census | male | 15–59 | 45q15 | −0.51 | 1.30 | 1,487 | 100% |
-| Sierra Leone | 2004 | census | female | 15–59 | 45q15 | −0.16 | 1.08 | 1,569 | 100% |
-| Lesotho | 2006 | census | all | 30–44 | mx | −0.86 | 2.01 | 1,186 | 100% |
-| Lesotho | 2006 | census | all | 15–59 | 45q15 | −0.73 | 1.34 | 2,572 | 100% |
-| Lesotho | 2006 | census | male | 15–59 | 45q15 | −0.62 | 1.28 | 1,270 | 100% |
-| Lesotho | 2006 | census | female | 15–59 | 45q15 | −0.86 | 1.41 | 1,302 | 100% |
-| Benin | 2013 | census | all | 15–59 | 45q15 | −0.63 | 1.75 | 1,555 | 100% |
-| Cambodia | 2008 | census | all | 15–59 | 45q15 | −0.76 | 1.78 | 1,250 | 100% |
-| Cote d'Ivoire | 1998 | census | all | 15–29 | mx | −0.90 | 2.31 | 2,128 | 100% |
-| Cote d'Ivoire | 1998 | census | all | 30–44 | mx | −0.73 | 1.94 | 2,240 | 100% |
-| Cote d'Ivoire | 1998 | census | all | 45–59 | mx | −0.35 | 1.34 | 1,561 | 100% |
-| Cote d'Ivoire | 1998 | census | all | 60–74 | mx | −0.02 | 1.00 | 1,621 | 100% |
-| Cote d'Ivoire | 1998 | census | all | 15–59 | 45q15 | −0.57 | 1.51 | 5,929 | 100% |
-| Cote d'Ivoire | 1998 | census | male | 15–29 | mx | −0.88 | 2.26 | 909 | 100% |
-| Cote d'Ivoire | 1998 | census | male | 30–44 | mx | −0.79 | 2.17 | 1,185 | 100% |
-| Cote d'Ivoire | 1998 | census | male | 15–59 | 45q15 | −0.62 | 1.63 | 2,990 | 100% |
-| Cote d'Ivoire | 1998 | census | female | 15–29 | mx | −0.93 | 2.35 | 1,219 | 100% |
-| Cote d'Ivoire | 1998 | census | female | 30–44 | mx | −0.69 | 1.75 | 1,055 | 100% |
-| Cote d'Ivoire | 1998 | census | female | 15–59 | 45q15 | −0.55 | 1.41 | 2,939 | 100% |
-| Sudan | 2008 | census | all | 15–29 | mx | −1.09 | 2.19 | 7,995 | 100% |
-| Sudan | 2008 | census | all | 30–44 | mx | −0.75 | 1.72 | 5,739 | 100% |
-| Sudan | 2008 | census | all | 45–59 | mx | −0.10 | 1.09 | 3,980 | 100% |
-| Sudan | 2008 | census | all | 60–74 | mx | 0.41 | 0.77 | 4,544 | 100% |
-| Sudan | 2008 | census | all | 15–59 | 45q15 | −0.49 | 1.36 | 17,714 | 100% |
-| Sudan | 2008 | census | male | 15–29 | mx | −1.02 | 2.08 | 4,262 | 100% |
-| Sudan | 2008 | census | male | 30–44 | mx | −0.94 | 2.00 | 3,259 | 100% |
-| Sudan | 2008 | census | male | 45–59 | mx | −0.07 | 1.04 | 2,205 | 100% |
-| Sudan | 2008 | census | male | 60–74 | mx | 0.39 | 0.80 | 2,709 | 100% |
-| Sudan | 2008 | census | male | 15–59 | 45q15 | −0.52 | 1.37 | 9,726 | 100% |
-| Sudan | 2008 | census | female | 15–29 | mx | −1.18 | 2.33 | 3,733 | 100% |
-| Sudan | 2008 | census | female | 30–44 | mx | −0.56 | 1.44 | 2,480 | 100% |
-| Sudan | 2008 | census | female | 45–59 | mx | −0.15 | 1.14 | 1,775 | 100% |
-| Sudan | 2008 | census | female | 60–74 | mx | 0.42 | 0.73 | 1,835 | 100% |
-| Sudan | 2008 | census | female | 15–59 | 45q15 | −0.47 | 1.35 | 7,988 | 100% |
-| South Sudan | 2008 | census | all | 15–29 | mx | −0.97 | 1.77 | 1,857 | 100% |
-| South Sudan | 2008 | census | all | 15–59 | 45q15 | 0.10 | 0.95 | 2,859 | 100% |
-| South Sudan | 2008 | census | male | 15–29 | mx | −1.36 | 2.23 | 1,092 | 100% |
-| South Sudan | 2008 | census | male | 15–59 | 45q15 | −0.40 | 1.19 | 1,724 | 100% |
-| South Sudan | 2008 | census | female | 15–59 | 45q15 | 0.73 | 0.70 | 1,135 | 100% |
-| Brazil | 2010 | census | all | 15–29 | mx | −1.36 | 3.02 | 8,735 | 100% |
-| Brazil | 2010 | census | all | 30–44 | mx | −1.43 | 3.32 | 10,613 | 100% |
-| Brazil | 2010 | census | all | 45–59 | mx | −0.85 | 2.07 | 18,119 | 100% |
-| Brazil | 2010 | census | all | 60–74 | mx | −0.21 | 1.17 | 28,588 | 100% |
-| Brazil | 2010 | census | all | 15–59 | 45q15 | −1.07 | 2.33 | 37,467 | 100% |
-| Brazil | 2010 | census | male | 15–29 | mx | −1.45 | 3.23 | 6,859 | 100% |
-| Brazil | 2010 | census | male | 30–44 | mx | −1.47 | 3.44 | 7,310 | 100% |
-| Brazil | 2010 | census | male | 45–59 | mx | −0.71 | 1.85 | 11,238 | 100% |
-| Brazil | 2010 | census | male | 60–74 | mx | −0.12 | 1.09 | 16,440 | 100% |
-| Brazil | 2010 | census | male | 15–59 | 45q15 | −1.03 | 2.23 | 25,407 | 100% |
-| Brazil | 2010 | census | female | 15–29 | mx | −0.99 | 2.20 | 1,876 | 100% |
-| Brazil | 2010 | census | female | 30–44 | mx | −1.20 | 2.73 | 3,303 | 100% |
-| Brazil | 2010 | census | female | 45–59 | mx | −1.02 | 2.36 | 6,881 | 100% |
-| Brazil | 2010 | census | female | 60–74 | mx | −0.33 | 1.30 | 12,148 | 100% |
-| Brazil | 2010 | census | female | 15–59 | 45q15 | −1.06 | 2.34 | 12,060 | 100% |
-| Colombia | 2018 | census | all | 15–29 | mx | −1.48 | 2.48 | 20,618 | 100% |
-| Colombia | 2018 | census | all | 30–44 | mx | −1.48 | 2.48 | 19,529 | 100% |
-| Colombia | 2018 | census | all | 45–59 | mx | −1.05 | 1.89 | 30,967 | 100% |
-| Colombia | 2018 | census | all | 60–74 | mx | −0.65 | 1.49 | 53,773 | 100% |
-| Colombia | 2018 | census | all | 15–59 | 45q15 | −1.25 | 2.06 | 71,114 | 100% |
-| Colombia | 2018 | census | male | 15–29 | mx | −1.39 | 2.31 | 15,917 | 100% |
-| Colombia | 2018 | census | male | 30–44 | mx | −1.37 | 2.28 | 13,252 | 100% |
-| Colombia | 2018 | census | male | 45–59 | mx | −0.76 | 1.55 | 18,111 | 100% |
-| Colombia | 2018 | census | male | 60–74 | mx | −0.37 | 1.23 | 30,415 | 100% |
-| Colombia | 2018 | census | male | 15–59 | 45q15 | −1.08 | 1.81 | 47,280 | 100% |
-| Colombia | 2018 | census | female | 15–29 | mx | −1.63 | 2.84 | 4,701 | 100% |
-| Colombia | 2018 | census | female | 30–44 | mx | −1.58 | 2.70 | 6,277 | 100% |
-| Colombia | 2018 | census | female | 45–59 | mx | −1.33 | 2.29 | 12,856 | 100% |
-| Colombia | 2018 | census | female | 60–74 | mx | −0.89 | 1.77 | 23,358 | 100% |
-| Colombia | 2018 | census | female | 15–59 | 45q15 | −1.44 | 2.38 | 23,834 | 100% |
-| India | 1999 | DHS survey | all | 45–59 | mx | −0.69 | 1.79 | 1,020 | 100% |
-| India | 1999 | DHS survey | all | 60–74 | mx | −0.49 | 1.51 | 2,118 | 100% |
-| India | 1999 | DHS survey | all | 15–59 | 45q15 | −0.83 | 1.84 | 2,422 | 100% |
-| India | 1999 | DHS survey | male | 60–74 | mx | −0.57 | 1.67 | 1,201 | 100% |
-| India | 1999 | DHS survey | male | 15–59 | 45q15 | −0.83 | 1.75 | 1,363 | 100% |
-| India | 1999 | DHS survey | female | 60–74 | mx | −0.40 | 1.35 | 917 | 100% |
-| India | 1999 | DHS survey | female | 15–59 | 45q15 | −0.84 | 1.99 | 1,059 | 100% |
-| India | 2015 | DHS survey | all | 15–29 | mx | −1.37 | 3.03 | 2,659 | 100% |
-| India | 2015 | DHS survey | all | 30–44 | mx | −0.94 | 2.17 | 3,166 | 100% |
-| India | 2015 | DHS survey | all | 45–59 | mx | −0.62 | 1.77 | 5,505 | 100% |
-| India | 2015 | DHS survey | all | 60–74 | mx | −0.40 | 1.43 | 11,125 | 100% |
-| India | 2015 | DHS survey | all | 15–59 | 45q15 | −0.81 | 1.90 | 11,330 | 100% |
-| India | 2015 | DHS survey | male | 15–29 | mx | −1.40 | 3.28 | 1,484 | 100% |
-| India | 2015 | DHS survey | male | 30–44 | mx | −0.97 | 2.44 | 2,034 | 100% |
-| India | 2015 | DHS survey | male | 45–59 | mx | −0.49 | 1.59 | 3,532 | 100% |
-| India | 2015 | DHS survey | male | 60–74 | mx | −0.55 | 1.68 | 6,476 | 100% |
-| India | 2015 | DHS survey | male | 15–59 | 45q15 | −0.72 | 1.80 | 7,050 | 100% |
-| India | 2015 | DHS survey | female | 15–29 | mx | −1.36 | 2.79 | 1,175 | 100% |
-| India | 2015 | DHS survey | female | 30–44 | mx | −0.98 | 1.84 | 1,132 | 100% |
-| India | 2015 | DHS survey | female | 45–59 | mx | −0.91 | 2.24 | 1,973 | 100% |
-| India | 2015 | DHS survey | female | 60–74 | mx | −0.21 | 1.17 | 4,649 | 100% |
-| India | 2015 | DHS survey | female | 15–59 | 45q15 | −1.00 | 2.12 | 4,280 | 100% |
-| India | 2020 | DHS survey | all | 15–29 | mx | −1.52 | 3.50 | 2,453 | 100% |
-| India | 2020 | DHS survey | all | 30–44 | mx | −1.08 | 2.48 | 3,234 | 100% |
-| India | 2020 | DHS survey | all | 45–59 | mx | −0.54 | 1.56 | 6,307 | 100% |
-| India | 2020 | DHS survey | all | 60–74 | mx | −0.41 | 1.37 | 11,746 | 100% |
-| India | 2020 | DHS survey | all | 15–59 | 45q15 | −0.79 | 1.82 | 11,994 | 100% |
-| India | 2020 | DHS survey | male | 15–29 | mx | −1.73 | 4.01 | 1,405 | 100% |
-| India | 2020 | DHS survey | male | 30–44 | mx | −1.10 | 2.40 | 2,235 | 100% |
-| India | 2020 | DHS survey | male | 45–59 | mx | −0.56 | 1.59 | 3,945 | 100% |
-| India | 2020 | DHS survey | male | 60–74 | mx | −0.59 | 1.61 | 6,903 | 100% |
-| India | 2020 | DHS survey | male | 15–59 | 45q15 | −0.82 | 1.81 | 7,585 | 100% |
-| India | 2020 | DHS survey | female | 15–29 | mx | −1.27 | 3.02 | 1,048 | 100% |
-| India | 2020 | DHS survey | female | 30–44 | mx | −1.13 | 2.82 | 999 | 100% |
-| India | 2020 | DHS survey | female | 45–59 | mx | −0.56 | 1.56 | 2,362 | 100% |
-| India | 2020 | DHS survey | female | 60–74 | mx | −0.19 | 1.13 | 4,843 | 100% |
-| India | 2020 | DHS survey | female | 15–59 | 45q15 | −0.78 | 1.87 | 4,409 | 100% |
-| Bangladesh | 2016 | BMMS survey | all | 45–59 | mx | 0.07 | 0.92 | 1,927 | 100% |
-| Bangladesh | 2016 | BMMS survey | all | 60–74 | mx | 0.27 | 0.79 | 5,297 | 100% |
-| Bangladesh | 2016 | BMMS survey | all | 15–59 | 45q15 | −0.07 | 1.05 | 3,469 | 100% |
-| Bangladesh | 2016 | BMMS survey | male | 45–59 | mx | 0.03 | 0.93 | 1,102 | 100% |
-| Bangladesh | 2016 | BMMS survey | male | 60–74 | mx | 0.22 | 0.85 | 2,945 | 100% |
-| Bangladesh | 2016 | BMMS survey | male | 15–59 | 45q15 | −0.05 | 1.01 | 2,006 | 100% |
-| Bangladesh | 2016 | BMMS survey | female | 60–74 | mx | 0.33 | 0.72 | 2,352 | 100% |
-| Bangladesh | 2016 | BMMS survey | female | 15–59 | 45q15 | −0.09 | 1.10 | 1,463 | 100% |
+| Country | Year | Source | Sex | Ages | Measure | Gradient | Standard error | Low/high ratio | Deaths | Linked |
+|---|---|---|---|---|---|---|---|---|---|---|
+| South Africa | 2001 | census | all | 15–29 | mx | −1.04 | 0.05 | 2.32 | 5,939 | 100% |
+| South Africa | 2001 | census | all | 30–44 | mx | −1.45 | 0.04 | 3.35 | 8,504 | 100% |
+| South Africa | 2001 | census | all | 45–59 | mx | −0.98 | 0.05 | 2.29 | 5,750 | 100% |
+| South Africa | 2001 | census | all | 60–74 | mx | −0.34 | 0.05 | 1.40 | 5,489 | 100% |
+| South Africa | 2001 | census | all | 15–59 | 45q15 | −1.16 | 0.03 | 2.20 | 20,193 | 100% |
+| South Africa | 2001 | census | male | 15–29 | mx | −0.88 | 0.07 | 2.03 | 2,835 | 100% |
+| South Africa | 2001 | census | male | 30–44 | mx | −1.42 | 0.06 | 3.36 | 4,564 | 100% |
+| South Africa | 2001 | census | male | 45–59 | mx | −0.95 | 0.06 | 2.28 | 3,558 | 100% |
+| South Africa | 2001 | census | male | 60–74 | mx | −0.52 | 0.06 | 1.61 | 2,983 | 100% |
+| South Africa | 2001 | census | male | 15–59 | 45q15 | −1.11 | 0.04 | 2.06 | 10,957 | 100% |
+| South Africa | 2001 | census | female | 15–29 | mx | −1.21 | 0.08 | 2.69 | 3,104 | 100% |
+| South Africa | 2001 | census | female | 30–44 | mx | −1.49 | 0.07 | 3.40 | 3,940 | 100% |
+| South Africa | 2001 | census | female | 45–59 | mx | −1.05 | 0.08 | 2.40 | 2,192 | 100% |
+| South Africa | 2001 | census | female | 60–74 | mx | −0.26 | 0.07 | 1.31 | 2,506 | 100% |
+| South Africa | 2001 | census | female | 15–59 | 45q15 | −1.25 | 0.04 | 2.41 | 9,236 | 100% |
+| South Africa | 2007 | census | all | 15–29 | mx | −1.63 | 0.10 | 3.89 | 2,421 | 100% |
+| South Africa | 2007 | census | all | 30–44 | mx | −2.00 | 0.07 | 5.17 | 4,353 | 100% |
+| South Africa | 2007 | census | all | 45–59 | mx | −1.58 | 0.07 | 3.76 | 2,693 | 100% |
+| South Africa | 2007 | census | all | 60–74 | mx | −0.69 | 0.08 | 1.95 | 1,963 | 100% |
+| South Africa | 2007 | census | all | 15–59 | 45q15 | −1.77 | 0.05 | 2.82 | 9,467 | 100% |
+| South Africa | 2007 | census | male | 15–29 | mx | −1.36 | 0.13 | 3.05 | 1,071 | 100% |
+| South Africa | 2007 | census | male | 30–44 | mx | −1.94 | 0.10 | 4.87 | 2,207 | 100% |
+| South Africa | 2007 | census | male | 45–59 | mx | −1.52 | 0.09 | 3.50 | 1,603 | 100% |
+| South Africa | 2007 | census | male | 60–74 | mx | −0.81 | 0.11 | 2.08 | 1,061 | 100% |
+| South Africa | 2007 | census | male | 15–59 | 45q15 | −1.67 | 0.06 | 2.45 | 4,881 | 100% |
+| South Africa | 2007 | census | female | 15–29 | mx | −1.92 | 0.14 | 5.03 | 1,350 | 100% |
+| South Africa | 2007 | census | female | 30–44 | mx | −2.06 | 0.10 | 5.52 | 2,146 | 100% |
+| South Africa | 2007 | census | female | 45–59 | mx | −1.71 | 0.12 | 4.38 | 1,090 | 100% |
+| South Africa | 2007 | census | female | 60–74 | mx | −0.66 | 0.12 | 1.98 | 902 | 100% |
+| South Africa | 2007 | census | female | 15–59 | 45q15 | −1.92 | 0.07 | 3.37 | 4,586 | 100% |
+| Ethiopia | 2007 | census | all | 15–29 | mx | −0.83 | 0.09 | 1.77 | 1,957 | 100% |
+| Ethiopia | 2007 | census | all | 30–44 | mx | 0.00 | 0.09 | 0.93 | 1,472 | 100% |
+| Ethiopia | 2007 | census | all | 45–59 | mx | 0.42 | 0.12 | 0.66 | 900 | 100% |
+| Ethiopia | 2007 | census | all | 60–74 | mx | 0.44 | 0.12 | 0.75 | 957 | 100% |
+| Ethiopia | 2007 | census | all | 15–59 | 45q15 | 0.01 | 0.06 | 0.92 | 4,329 | 100% |
+| Ethiopia | 2007 | census | male | 15–29 | mx | −0.91 | 0.12 | 1.88 | 974 | 100% |
+| Ethiopia | 2007 | census | male | 15–59 | 45q15 | −0.26 | 0.09 | 1.07 | 2,247 | 100% |
+| Ethiopia | 2007 | census | female | 15–29 | mx | −0.77 | 0.12 | 1.68 | 983 | 100% |
+| Ethiopia | 2007 | census | female | 15–59 | 45q15 | 0.31 | 0.09 | 0.78 | 2,082 | 100% |
+| Zambia | 2010 | census | all | 15–29 | mx | −0.51 | 0.08 | 1.53 | 2,354 | 100% |
+| Zambia | 2010 | census | all | 30–44 | mx | −0.26 | 0.07 | 1.20 | 2,899 | 100% |
+| Zambia | 2010 | census | all | 45–59 | mx | −0.00 | 0.10 | 0.97 | 1,433 | 100% |
+| Zambia | 2010 | census | all | 60–74 | mx | 0.59 | 0.11 | 0.67 | 1,147 | 100% |
+| Zambia | 2010 | census | all | 15–59 | 45q15 | −0.19 | 0.05 | 1.10 | 6,686 | 100% |
+| Zambia | 2010 | census | male | 15–29 | mx | −0.53 | 0.11 | 1.50 | 1,147 | 100% |
+| Zambia | 2010 | census | male | 30–44 | mx | −0.32 | 0.09 | 1.22 | 1,652 | 100% |
+| Zambia | 2010 | census | male | 15–59 | 45q15 | −0.36 | 0.07 | 1.16 | 3,630 | 100% |
+| Zambia | 2010 | census | female | 15–29 | mx | −0.50 | 0.11 | 1.55 | 1,207 | 100% |
+| Zambia | 2010 | census | female | 30–44 | mx | −0.20 | 0.10 | 1.18 | 1,247 | 100% |
+| Zambia | 2010 | census | female | 15–59 | 45q15 | −0.02 | 0.08 | 1.04 | 3,056 | 100% |
+| Malawi | 2008 | census | all | 15–29 | mx | −0.96 | 0.08 | 1.98 | 1,941 | 99% |
+| Malawi | 2008 | census | all | 30–44 | mx | −0.83 | 0.08 | 1.72 | 2,243 | 99% |
+| Malawi | 2008 | census | all | 45–59 | mx | −0.26 | 0.11 | 1.08 | 1,059 | 99% |
+| Malawi | 2008 | census | all | 15–59 | 45q15 | −0.60 | 0.06 | 1.32 | 5,243 | 99% |
+| Malawi | 2008 | census | male | 30–44 | mx | −1.21 | 0.10 | 2.20 | 1,198 | 99% |
+| Malawi | 2008 | census | male | 15–59 | 45q15 | −1.03 | 0.08 | 1.61 | 2,724 | 99% |
+| Malawi | 2008 | census | female | 15–29 | mx | −0.83 | 0.11 | 1.80 | 1,054 | 99% |
+| Malawi | 2008 | census | female | 30–44 | mx | −0.44 | 0.11 | 1.32 | 1,045 | 99% |
+| Malawi | 2008 | census | female | 15–59 | 45q15 | −0.21 | 0.09 | 1.08 | 2,519 | 99% |
+| Uganda | 2002 | census | all | 15–29 | mx | −0.20 | 0.06 | 1.13 | 3,905 | 100% |
+| Uganda | 2002 | census | all | 30–44 | mx | 0.30 | 0.06 | 0.72 | 4,511 | 100% |
+| Uganda | 2002 | census | all | 45–59 | mx | 0.25 | 0.08 | 0.75 | 2,054 | 100% |
+| Uganda | 2002 | census | all | 60–74 | mx | 0.39 | 0.09 | 0.73 | 1,905 | 100% |
+| Uganda | 2002 | census | all | 15–59 | 45q15 | 0.18 | 0.04 | 0.84 | 10,470 | 100% |
+| Uganda | 2002 | census | male | 15–29 | mx | −0.46 | 0.09 | 1.46 | 1,827 | 100% |
+| Uganda | 2002 | census | male | 30–44 | mx | 0.10 | 0.08 | 0.85 | 2,461 | 100% |
+| Uganda | 2002 | census | male | 45–59 | mx | 0.10 | 0.11 | 0.83 | 1,227 | 100% |
+| Uganda | 2002 | census | male | 60–74 | mx | −0.04 | 0.11 | 0.96 | 1,105 | 100% |
+| Uganda | 2002 | census | male | 15–59 | 45q15 | −0.00 | 0.06 | 0.94 | 5,515 | 100% |
+| Uganda | 2002 | census | female | 15–29 | mx | 0.04 | 0.08 | 0.89 | 2,078 | 100% |
+| Uganda | 2002 | census | female | 30–44 | mx | 0.54 | 0.09 | 0.59 | 2,050 | 100% |
+| Uganda | 2002 | census | female | 15–59 | 45q15 | 0.39 | 0.06 | 0.73 | 4,955 | 100% |
+| Senegal | 2002 | census | all | 15–29 | mx | −0.81 | 0.11 | 1.82 | 1,086 | 100% |
+| Senegal | 2002 | census | all | 30–44 | mx | −0.51 | 0.11 | 1.57 | 1,086 | 100% |
+| Senegal | 2002 | census | all | 60–74 | mx | −0.27 | 0.10 | 1.18 | 1,311 | 100% |
+| Senegal | 2002 | census | all | 15–59 | 45q15 | −0.40 | 0.07 | 1.29 | 3,039 | 100% |
+| Senegal | 2002 | census | male | 15–59 | 45q15 | −0.41 | 0.11 | 1.33 | 1,311 | 100% |
+| Senegal | 2002 | census | female | 15–59 | 45q15 | −0.38 | 0.10 | 1.25 | 1,725 | 100% |
+| Sierra Leone | 2004 | census | all | 15–29 | mx | −0.74 | 0.11 | 1.66 | 1,182 | 100% |
+| Sierra Leone | 2004 | census | all | 30–44 | mx | −0.19 | 0.11 | 1.14 | 1,057 | 100% |
+| Sierra Leone | 2004 | census | all | 60–74 | mx | −0.13 | 0.12 | 1.06 | 918 | 100% |
+| Sierra Leone | 2004 | census | all | 15–59 | 45q15 | −0.35 | 0.08 | 1.19 | 3,056 | 100% |
+| Sierra Leone | 2004 | census | male | 15–59 | 45q15 | −0.51 | 0.11 | 1.30 | 1,487 | 100% |
+| Sierra Leone | 2004 | census | female | 15–59 | 45q15 | −0.16 | 0.11 | 1.08 | 1,569 | 100% |
+| Lesotho | 2006 | census | all | 30–44 | mx | −0.86 | 0.11 | 2.01 | 1,186 | 100% |
+| Lesotho | 2006 | census | all | 15–59 | 45q15 | −0.73 | 0.08 | 1.34 | 2,572 | 100% |
+| Lesotho | 2006 | census | male | 15–59 | 45q15 | −0.62 | 0.11 | 1.28 | 1,270 | 100% |
+| Lesotho | 2006 | census | female | 15–59 | 45q15 | −0.86 | 0.12 | 1.41 | 1,302 | 100% |
+| Benin | 2013 | census | all | 15–59 | 45q15 | −0.63 | 0.11 | 1.75 | 1,555 | 100% |
+| Cambodia | 2008 | census | all | 15–59 | 45q15 | −0.76 | 0.11 | 1.78 | 1,250 | 100% |
+| Cote d'Ivoire | 1998 | census | all | 15–29 | mx | −0.90 | 0.08 | 2.31 | 2,128 | 100% |
+| Cote d'Ivoire | 1998 | census | all | 30–44 | mx | −0.73 | 0.08 | 1.94 | 2,240 | 100% |
+| Cote d'Ivoire | 1998 | census | all | 45–59 | mx | −0.35 | 0.09 | 1.34 | 1,561 | 100% |
+| Cote d'Ivoire | 1998 | census | all | 60–74 | mx | −0.02 | 0.09 | 1.00 | 1,621 | 100% |
+| Cote d'Ivoire | 1998 | census | all | 15–59 | 45q15 | −0.57 | 0.05 | 1.51 | 5,929 | 100% |
+| Cote d'Ivoire | 1998 | census | male | 15–29 | mx | −0.88 | 0.12 | 2.26 | 909 | 100% |
+| Cote d'Ivoire | 1998 | census | male | 30–44 | mx | −0.79 | 0.10 | 2.17 | 1,185 | 100% |
+| Cote d'Ivoire | 1998 | census | male | 15–59 | 45q15 | −0.62 | 0.07 | 1.63 | 2,990 | 100% |
+| Cote d'Ivoire | 1998 | census | female | 15–29 | mx | −0.93 | 0.10 | 2.35 | 1,219 | 100% |
+| Cote d'Ivoire | 1998 | census | female | 30–44 | mx | −0.69 | 0.11 | 1.75 | 1,055 | 100% |
+| Cote d'Ivoire | 1998 | census | female | 15–59 | 45q15 | −0.55 | 0.08 | 1.41 | 2,939 | 100% |
+| Sudan | 2008 | census | all | 15–29 | mx | −1.09 | 0.06 | 2.19 | 7,995 | 100% |
+| Sudan | 2008 | census | all | 30–44 | mx | −0.75 | 0.06 | 1.72 | 5,739 | 100% |
+| Sudan | 2008 | census | all | 45–59 | mx | −0.10 | 0.06 | 1.09 | 3,980 | 100% |
+| Sudan | 2008 | census | all | 60–74 | mx | 0.41 | 0.05 | 0.77 | 4,544 | 100% |
+| Sudan | 2008 | census | all | 15–59 | 45q15 | −0.49 | 0.04 | 1.36 | 17,714 | 100% |
+| Sudan | 2008 | census | male | 15–29 | mx | −1.02 | 0.08 | 2.08 | 4,262 | 100% |
+| Sudan | 2008 | census | male | 30–44 | mx | −0.94 | 0.09 | 2.00 | 3,259 | 100% |
+| Sudan | 2008 | census | male | 45–59 | mx | −0.07 | 0.08 | 1.04 | 2,205 | 100% |
+| Sudan | 2008 | census | male | 60–74 | mx | 0.39 | 0.07 | 0.80 | 2,709 | 100% |
+| Sudan | 2008 | census | male | 15–59 | 45q15 | −0.52 | 0.05 | 1.37 | 9,726 | 100% |
+| Sudan | 2008 | census | female | 15–29 | mx | −1.18 | 0.09 | 2.33 | 3,733 | 100% |
+| Sudan | 2008 | census | female | 30–44 | mx | −0.56 | 0.09 | 1.44 | 2,480 | 100% |
+| Sudan | 2008 | census | female | 45–59 | mx | −0.15 | 0.09 | 1.14 | 1,775 | 100% |
+| Sudan | 2008 | census | female | 60–74 | mx | 0.42 | 0.08 | 0.73 | 1,835 | 100% |
+| Sudan | 2008 | census | female | 15–59 | 45q15 | −0.47 | 0.06 | 1.35 | 7,988 | 100% |
+| South Sudan | 2008 | census | all | 15–29 | mx | −0.97 | 0.10 | 1.77 | 1,857 | 100% |
+| South Sudan | 2008 | census | all | 15–59 | 45q15 | 0.10 | 0.09 | 0.95 | 2,859 | 100% |
+| South Sudan | 2008 | census | male | 15–29 | mx | −1.36 | 0.13 | 2.23 | 1,092 | 100% |
+| South Sudan | 2008 | census | male | 15–59 | 45q15 | −0.40 | 0.11 | 1.19 | 1,724 | 100% |
+| South Sudan | 2008 | census | female | 15–59 | 45q15 | 0.73 | 0.14 | 0.70 | 1,135 | 100% |
+| Brazil | 2010 | census | all | 15–29 | mx | −1.36 | 0.05 | 3.02 | 8,735 | 100% |
+| Brazil | 2010 | census | all | 30–44 | mx | −1.43 | 0.04 | 3.32 | 10,613 | 100% |
+| Brazil | 2010 | census | all | 45–59 | mx | −0.85 | 0.03 | 2.07 | 18,119 | 100% |
+| Brazil | 2010 | census | all | 60–74 | mx | −0.21 | 0.02 | 1.17 | 28,588 | 100% |
+| Brazil | 2010 | census | all | 15–59 | 45q15 | −1.07 | 0.02 | 2.33 | 37,467 | 100% |
+| Brazil | 2010 | census | male | 15–29 | mx | −1.45 | 0.06 | 3.23 | 6,859 | 100% |
+| Brazil | 2010 | census | male | 30–44 | mx | −1.47 | 0.05 | 3.44 | 7,310 | 100% |
+| Brazil | 2010 | census | male | 45–59 | mx | −0.71 | 0.04 | 1.85 | 11,238 | 100% |
+| Brazil | 2010 | census | male | 60–74 | mx | −0.12 | 0.03 | 1.09 | 16,440 | 100% |
+| Brazil | 2010 | census | male | 15–59 | 45q15 | −1.03 | 0.03 | 2.23 | 25,407 | 100% |
+| Brazil | 2010 | census | female | 15–29 | mx | −0.99 | 0.10 | 2.20 | 1,876 | 100% |
+| Brazil | 2010 | census | female | 30–44 | mx | −1.20 | 0.07 | 2.73 | 3,303 | 100% |
+| Brazil | 2010 | census | female | 45–59 | mx | −1.02 | 0.05 | 2.36 | 6,881 | 100% |
+| Brazil | 2010 | census | female | 60–74 | mx | −0.33 | 0.03 | 1.30 | 12,148 | 100% |
+| Brazil | 2010 | census | female | 15–59 | 45q15 | −1.06 | 0.04 | 2.34 | 12,060 | 100% |
+| Colombia | 2018 | census | all | 15–29 | mx | −1.48 | 0.03 | 2.48 | 20,618 | 100% |
+| Colombia | 2018 | census | all | 30–44 | mx | −1.48 | 0.03 | 2.48 | 19,529 | 100% |
+| Colombia | 2018 | census | all | 45–59 | mx | −1.05 | 0.02 | 1.89 | 30,967 | 100% |
+| Colombia | 2018 | census | all | 60–74 | mx | −0.65 | 0.02 | 1.49 | 53,773 | 100% |
+| Colombia | 2018 | census | all | 15–59 | 45q15 | −1.25 | 0.01 | 2.06 | 71,114 | 100% |
+| Colombia | 2018 | census | male | 15–29 | mx | −1.39 | 0.03 | 2.31 | 15,917 | 100% |
+| Colombia | 2018 | census | male | 30–44 | mx | −1.37 | 0.04 | 2.28 | 13,252 | 100% |
+| Colombia | 2018 | census | male | 45–59 | mx | −0.76 | 0.03 | 1.55 | 18,111 | 100% |
+| Colombia | 2018 | census | male | 60–74 | mx | −0.37 | 0.02 | 1.23 | 30,415 | 100% |
+| Colombia | 2018 | census | male | 15–59 | 45q15 | −1.08 | 0.02 | 1.81 | 47,280 | 100% |
+| Colombia | 2018 | census | female | 15–29 | mx | −1.63 | 0.06 | 2.84 | 4,701 | 100% |
+| Colombia | 2018 | census | female | 30–44 | mx | −1.58 | 0.05 | 2.70 | 6,277 | 100% |
+| Colombia | 2018 | census | female | 45–59 | mx | −1.33 | 0.03 | 2.29 | 12,856 | 100% |
+| Colombia | 2018 | census | female | 60–74 | mx | −0.89 | 0.03 | 1.77 | 23,358 | 100% |
+| Colombia | 2018 | census | female | 15–59 | 45q15 | −1.44 | 0.03 | 2.38 | 23,834 | 100% |
+| India | 1999 | DHS survey | all | 45–59 | mx | −0.69 | 0.09 | 1.79 | 1,020 | 100% |
+| India | 1999 | DHS survey | all | 60–74 | mx | −0.49 | 0.07 | 1.51 | 2,118 | 100% |
+| India | 1999 | DHS survey | all | 15–59 | 45q15 | −0.83 | 0.07 | 1.84 | 2,422 | 100% |
+| India | 1999 | DHS survey | male | 60–74 | mx | −0.57 | 0.09 | 1.67 | 1,201 | 100% |
+| India | 1999 | DHS survey | male | 15–59 | 45q15 | −0.83 | 0.08 | 1.75 | 1,363 | 100% |
+| India | 1999 | DHS survey | female | 60–74 | mx | −0.40 | 0.10 | 1.35 | 917 | 100% |
+| India | 1999 | DHS survey | female | 15–59 | 45q15 | −0.84 | 0.10 | 1.99 | 1,059 | 100% |
+| India | 2015 | DHS survey | all | 15–29 | mx | −1.37 | 0.10 | 3.03 | 2,659 | 100% |
+| India | 2015 | DHS survey | all | 30–44 | mx | −0.94 | 0.11 | 2.17 | 3,166 | 100% |
+| India | 2015 | DHS survey | all | 45–59 | mx | −0.62 | 0.06 | 1.77 | 5,505 | 100% |
+| India | 2015 | DHS survey | all | 60–74 | mx | −0.40 | 0.04 | 1.43 | 11,125 | 100% |
+| India | 2015 | DHS survey | all | 15–59 | 45q15 | −0.81 | 0.05 | 1.90 | 11,330 | 100% |
+| India | 2015 | DHS survey | male | 15–29 | mx | −1.40 | 0.14 | 3.28 | 1,484 | 100% |
+| India | 2015 | DHS survey | male | 30–44 | mx | −0.97 | 0.13 | 2.44 | 2,034 | 100% |
+| India | 2015 | DHS survey | male | 45–59 | mx | −0.49 | 0.08 | 1.59 | 3,532 | 100% |
+| India | 2015 | DHS survey | male | 60–74 | mx | −0.55 | 0.06 | 1.68 | 6,476 | 100% |
+| India | 2015 | DHS survey | male | 15–59 | 45q15 | −0.72 | 0.06 | 1.80 | 7,050 | 100% |
+| India | 2015 | DHS survey | female | 15–29 | mx | −1.36 | 0.16 | 2.79 | 1,175 | 100% |
+| India | 2015 | DHS survey | female | 30–44 | mx | −0.98 | 0.20 | 1.84 | 1,132 | 100% |
+| India | 2015 | DHS survey | female | 45–59 | mx | −0.91 | 0.10 | 2.24 | 1,973 | 100% |
+| India | 2015 | DHS survey | female | 60–74 | mx | −0.21 | 0.07 | 1.17 | 4,649 | 100% |
+| India | 2015 | DHS survey | female | 15–59 | 45q15 | −1.00 | 0.08 | 2.12 | 4,280 | 100% |
+| India | 2020 | DHS survey | all | 15–29 | mx | −1.52 | 0.11 | 3.50 | 2,453 | 100% |
+| India | 2020 | DHS survey | all | 30–44 | mx | −1.08 | 0.09 | 2.48 | 3,234 | 100% |
+| India | 2020 | DHS survey | all | 45–59 | mx | −0.54 | 0.06 | 1.56 | 6,307 | 100% |
+| India | 2020 | DHS survey | all | 60–74 | mx | −0.41 | 0.04 | 1.37 | 11,746 | 100% |
+| India | 2020 | DHS survey | all | 15–59 | 45q15 | −0.79 | 0.04 | 1.82 | 11,994 | 100% |
+| India | 2020 | DHS survey | male | 15–29 | mx | −1.73 | 0.14 | 4.01 | 1,405 | 100% |
+| India | 2020 | DHS survey | male | 30–44 | mx | −1.10 | 0.11 | 2.40 | 2,235 | 100% |
+| India | 2020 | DHS survey | male | 45–59 | mx | −0.56 | 0.08 | 1.59 | 3,945 | 100% |
+| India | 2020 | DHS survey | male | 60–74 | mx | −0.59 | 0.05 | 1.61 | 6,903 | 100% |
+| India | 2020 | DHS survey | male | 15–59 | 45q15 | −0.82 | 0.06 | 1.81 | 7,585 | 100% |
+| India | 2020 | DHS survey | female | 15–29 | mx | −1.27 | 0.17 | 3.02 | 1,048 | 100% |
+| India | 2020 | DHS survey | female | 30–44 | mx | −1.13 | 0.16 | 2.82 | 999 | 100% |
+| India | 2020 | DHS survey | female | 45–59 | mx | −0.56 | 0.09 | 1.56 | 2,362 | 100% |
+| India | 2020 | DHS survey | female | 60–74 | mx | −0.19 | 0.07 | 1.13 | 4,843 | 100% |
+| India | 2020 | DHS survey | female | 15–59 | 45q15 | −0.78 | 0.07 | 1.87 | 4,409 | 100% |
+| Bangladesh | 2016 | BMMS survey | all | 45–59 | mx | 0.07 | 0.10 | 0.92 | 1,927 | 100% |
+| Bangladesh | 2016 | BMMS survey | all | 60–74 | mx | 0.27 | 0.06 | 0.79 | 5,297 | 100% |
+| Bangladesh | 2016 | BMMS survey | all | 15–59 | 45q15 | −0.07 | 0.07 | 1.05 | 3,469 | 100% |
+| Bangladesh | 2016 | BMMS survey | male | 45–59 | mx | 0.03 | 0.14 | 0.93 | 1,102 | 100% |
+| Bangladesh | 2016 | BMMS survey | male | 60–74 | mx | 0.22 | 0.08 | 0.85 | 2,945 | 100% |
+| Bangladesh | 2016 | BMMS survey | male | 15–59 | 45q15 | −0.05 | 0.10 | 1.01 | 2,006 | 100% |
+| Bangladesh | 2016 | BMMS survey | female | 60–74 | mx | 0.33 | 0.09 | 0.72 | 2,352 | 100% |
+| Bangladesh | 2016 | BMMS survey | female | 15–59 | 45q15 | −0.09 | 0.12 | 1.10 | 1,463 | 100% |

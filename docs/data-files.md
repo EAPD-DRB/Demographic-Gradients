@@ -26,7 +26,7 @@ All files in [`data/`](../data/) are CSV and are rebuilt by the scripts in
 
 `gradient_library*.csv` also contain `source` (`DHS` or `MICS`).
 
-`adult_mortality_gradients.csv` also contains `sex`; `measure` (`45q15` or `mx`);
+`adult_mortality_gradients.csv` also contains `se` (standard error of the gradient: cluster bootstrap for surveys, Poisson approximation for censuses; sampling variability only); `sex`; `measure` (`45q15` or `mx`);
 `age_lo` and `age_hi`; `n_deaths`; `ranking` (`asset_index` for censuses,
 `dhs_wealth_index` for DHS surveys, `survey_wealth_index` for Bangladesh's
 BMMS, ranked by the survey's own wealth quintiles); `source` (the census or

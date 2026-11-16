@@ -98,8 +98,11 @@ Cite this repository together with the underlying sources:
   the death, which is why only the two years before the interview are used
   ([methods](methods/adult-mortality.md)). Deaths that dissolve a household and
   deaths in institutions are not recorded.
-- **Sampling uncertainty.** No standard errors are published; each gradient is
-  fitted to five or fewer group rates.
+- **Sampling uncertainty.** Adult-mortality gradients carry a standard error of
+  sampling variability (`se`), which leaves out errors in the wealth ranking and
+  in death recording; the scatter of countries around the general gradient is
+  several times larger than these standard errors. DHS and MICS gradients are
+  published without standard errors.
 - **National income.** Purchasing-power parities are revised with each round
   of the International Comparison Program; the income figures behind the
   general gradient are pinned with their retrieval date, and a country's
