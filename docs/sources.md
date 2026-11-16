@@ -26,7 +26,9 @@ for Brazil, IBGE's 2010 census sample; for Colombia, DANE's 2018 census
 free of charge; redistribution of the microdata is not permitted); for India,
 the household recode files of
 the National Family Health Survey from the [DHS Program](https://dhsprogram.com)
-(free registration and project approval). Only aggregate estimates are
+(free registration and project approval); for Bangladesh, the Maternal
+Mortality and Health Care Survey 2016 from
+[UNC Dataverse](https://doi.org/10.15139/S3/X33NIZ) (open, CC0). Only aggregate estimates are
 published here, as the IPUMS license and the DHS terms of use require; no
 microdata are included in the repository.
 
@@ -53,7 +55,7 @@ about 1.5 GB), Colombia's with `scripts/build_adult_mortality_colombia.py`
 (reads DANE's department files, about 2.5 GB, downloaded by hand because each
 download is behind a CAPTCHA), India's adult mortality with
 `scripts/build_adult_mortality_survey.py` (requires the DHS household recode
-files), and the general gradient with `scripts/build_general_gradient.py`.
+files, and for Bangladesh the BMMS household file), and the general gradient with `scripts/build_general_gradient.py`.
 The census scripts share the asset index in `scripts/asset_index.py`.
 
 ## Citation
@@ -70,6 +72,9 @@ Cite this repository together with the underlying sources:
 - Brazil, adult mortality: IBGE, 2010 Census sample microdata.
 - Colombia, adult mortality: Departamento Administrativo Nacional de
   Estadística (DANE), Censo Nacional de Población y Vivienda 2018, microdata.
+- Bangladesh, adult mortality: National Institute of Population Research and
+  Training (NIPORT), icddr,b and MEASURE Evaluation, Bangladesh Maternal
+  Mortality and Health Care Survey 2016, doi:10.15139/S3/X33NIZ.
 - India, adult mortality: International Institute for Population Sciences
   (IIPS) and ICF, National Family Health Survey (NFHS-2, NFHS-4, NFHS-5),
   through The DHS Program.
@@ -99,7 +104,8 @@ Cite this repository together with the underlying sources:
   general gradient are pinned with their retrieval date, and a country's
   income should be taken from the same series and vintage where possible.
 - **Regional coverage of adult mortality.** The general gradient is estimated
-  mainly from African censuses, with one Brazilian census and India's surveys;
+  mainly from African censuses, with two Latin American censuses and the
+  surveys of India and Bangladesh;
   there is no estimate for East or Southeast Asia, so values for those
   countries rest on a relationship estimated largely outside the region.
 - **Older ages.** Adult-mortality gradients weaken with age and in several

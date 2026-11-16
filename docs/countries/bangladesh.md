@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.38, by age as below | DHS 2022, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.85 | DHS 2022, infant mortality rate |
-| `mort_gradient` | 2.72 − 0.391 × ln(GDP per capita, PPP) | [general gradient](../methods/general-gradient.md), GDP per capita in constant 2021 international $; for example −0.26 at $2,000 and −0.89 at $10,000, each with a 95% prediction interval of about ±0.4 |
+| `mort_gradient` | −0.07 | BMMS survey 2016, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -31,3 +31,20 @@ Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey 
 | Total fertility rate (births per woman) | DHS 2022 | 2.8 | 2.4 | 2.3 | 2.2 | 2 | 1.40 | −0.38 |
 | Infant mortality rate (per 1,000 live births) | DHS 2022 | 45 | 37 | 31 | 24 | 24 | 1.88 | −0.85 |
 | Under-five mortality rate (per 1,000 live births) | DHS 2022 | 54 | 43 | 38 | 27 | 28 | 1.93 | −0.89 |
+
+### Adult mortality from household-death records
+
+Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv); [methods](../methods/adult-mortality.md); estimates by sex in the [full table](../tables/adult_mortality.md)). Blank cells: too few deaths to publish.
+
+| Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
+|---|---|---|---|---|---|---|---|
+| BMMS survey 2016 | −0.07 |  |  | 0.07 | 0.27 | 5 | 3,469 |
+
+Source: NIPORT, icddr,b and MEASURE Evaluation, Bangladesh Maternal Mortality and Health Care Survey 2016 (UNC Dataverse, doi:10.15139/S3/X33NIZ), household deaths module.
+
+## Notes
+
+- Adult-mortality estimates use the Bangladesh Maternal Mortality and Health Care Survey 2016 (BMMS; NIPORT, icddr,b and MEASURE Evaluation), which recorded every death of a usual household member since April 2013 in about 298,000 households. As for India's NFHS, deaths in the 24 months before the interview are used, with the survey's own wealth quintiles (`scripts/build_adult_mortality_survey.py`; data open on UNC Dataverse).
+- The 45q15 gradient is close to zero (−0.07, cluster bootstrap standard error 0.07), far less steep than the general gradient at Bangladesh's income and outside its 95% prediction interval. The survey passes the checks applied to every survey: death records match each household's count, dates and ages are complete, and national 45q15 is 141 per 1,000 for men and 107 for women. An asset index built as for the censuses gives −0.11, and the gradient is close to zero in both rural and urban households.
+- The gradient weakens with time since death: −0.15, +0.02 and +0.13 for deaths 0–11, 12–23 and 24–35 months before the interview. This is consistent with recall of deaths fading faster in poorer households, but the differences are within sampling error.
+- The survey's household-member file is cut off at 1,048,575 records (a spreadsheet limit) and lacks about 70,000 households; persons are taken from the roster in the household file, which agrees with the survey's own de jure count.

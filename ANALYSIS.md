@@ -8,7 +8,7 @@ lowest wealth quintile divided by the rate in the highest, and as the
 [glossary](docs/glossary.md)). The data cover 332 Demographic and Health
 Surveys (DHS) and 77 Multiple Indicator Cluster Surveys (MICS) with a
 complete wealth-quintile breakdown in 97 countries, and, for adult
-mortality, household-death records from censuses and DHS surveys. All figures and numbers are
+mortality, household-death records from censuses and household surveys. All figures and numbers are
 computed from the files in [`data/`](data/).
 
 ## Fertility and infant mortality by wealth quintile
@@ -131,14 +131,14 @@ comparison.
 
 Adult mortality by wealth requires deaths recorded against the deceased's own
 household. The library uses censuses that record deaths of household members
-during a recent period, usually the previous year, and, for India, DHS surveys
-that record them for the previous two years
+during a recent period, usually the previous year, and, for India and
+Bangladesh, household surveys that record them for the previous two years
 ([methods](docs/methods/adult-mortality.md); [all estimates](docs/tables/adult_mortality.md)).
-Across the 18 censuses and surveys with an income estimate, the gradient in
-45q15 is steeper in richer countries (r = −0.88): the fitted
-gradient is −0.26 at a GDP per capita (PPP, constant 2021
+Across the 19 censuses and surveys with an income estimate, the gradient in
+45q15 is steeper in richer countries (r = −0.82): the fitted
+gradient is −0.24 at a GDP per capita (PPP, constant 2021
 international $) of $2,000 and
-−0.89 at $10,000. This relationship, the general gradient,
+−0.84 at $10,000. This relationship, the general gradient,
 provides values for countries without their own estimate
 ([details](docs/methods/general-gradient.md)). Within countries the evidence
 is limited and mixed: Malawi's gradient steepened between its 1998 and 2008

@@ -46,7 +46,17 @@ Microdata: the household recode (HR) .DTA of each survey, downloaded once
 file name anywhere below. Microdata stay local under the DHS terms of use;
 only the aggregated gradients in data/ are published.
 
-    uv run scripts/build_adult_mortality_survey.py --dhs-dir ~/Projects/data/dhs
+Bangladesh's Maternal Mortality and Health Care Survey 2016 (BMMS) has the
+same module in a different file layout (loader "bmms"): the household file
+BMMS16_HH.csv from UNC Dataverse (doi:10.15139/S3/X33NIZ, CC0, no
+registration; the "original format" download), in --bmms-dir. Its wealth
+quintile is the survey's own (`wealth`, quintiles of the de jure population)
+and its weight `qhweightoverall`. Persons come from the household file's own
+roster: the separate member file (BMMS16_HM) is cut off at 1,048,575 rows, a
+spreadsheet limit, and lacks about 70,000 households in both of its formats.
+
+    uv run scripts/build_adult_mortality_survey.py --dhs-dir ~/Projects/data/dhs \
+        --bmms-dir ~/Projects/data/bmms2016
 """
 
 import argparse
@@ -139,6 +149,24 @@ SURVEYS = {
         # MIN_BAND_DEATHS, and 698 of them are women's (maternal-mortality
         # focus), so the records are not a sample of all adult deaths.
         publish=False,
+    ),
+    "BMMS16": dict(
+        country="Bangladesh", year=2016, survey="BMMS 2016", loader="bmms",
+        file="BMMS16_HH.csv", reported="qh25", ranking="survey_wealth_index",
+        source=("NIPORT, icddr,b and MEASURE Evaluation, Bangladesh Maternal Mortality "
+                "and Health Care Survey 2016 (UNC Dataverse, doi:10.15139/S3/X33NIZ), "
+                "household deaths module"),
+        # deaths of usual residents since April 2013 (Baishakh 1420), up to 20
+        # per household: sex qh27, age unit qh28u (Days/Months/Years) and
+        # number qh28n ("95+" = 95 and over, "DK" unknown), date as a
+        # century-month code qh29c; interview CMC qhintc. Fieldwork
+        # August 2016 - January 2017. Every household answered the module
+        # (short and long questionnaires alike). Published by ruling
+        # 2026-11-16, although its 45q15 gradient (-0.07) lies far from the
+        # income rule's prediction: it passes every check. The gradient
+        # flattens with time since death (12-month windows: -0.15, +0.02,
+        # +0.13 for 0-11, 12-23, 24-35 months back), consistent with, but not
+        # proof of, recall that fades faster in poorer households.
     ),
 }
 FIELDS = ("sex", "age_unit", "age_num", "age_code", "month", "year_d", "resident")
@@ -303,26 +331,77 @@ def checks(h, p, d, cfg, win):
           f"({BOOT_REPS} replicates, PSUs resampled within strata)")
 
 
-def estimate(code, cfg, dhs_dir):
+BMMS_Q = {"Lowest": 1, "Second": 2, "Middle": 3, "Fourth": 4, "Highest": 5}
+
+
+def load_bmms(cfg, path):
+    """Households, de jure persons and death records of the BMMS household file."""
+    hdr = pd.read_csv(path, nrows=0).columns
+    roster = [c for c in hdr if c.split("_")[0] in ("qh04", "qh05", "qh07") and "_" in c]
+    slots = sorted({int(c.split("_")[1]) for c in hdr if c.startswith("qh27_")})
+    dcols = [f"{v}_{i:02d}" for i in slots for v in ("qh27", "qh28u", "qh28n", "qh29c")]
+    h = pd.read_csv(path, dtype=str, usecols=["qhclust", "qhregion", "qhtype", "qhintc",
+                                              "qhweightoverall", "wealth", "qh25", "dejure"]
+                    + roster + dcols)
+    h["q"] = h["wealth"].map(BMMS_Q)
+    assert h["q"].notna().all(), "household without a wealth quintile"
+    h["w"] = h["qhweightoverall"].astype(float)
+    h["hh"] = np.arange(len(h))
+    h["psu_id"] = h["qhclust"].astype(int)
+    h["strat_id"] = h.groupby(["qhregion", "qhtype"]).ngroup()  # division x urban/rural
+    h["hv008"] = h["qhintc"].astype(int)
+    h["qh25"] = pd.to_numeric(h["qh25"], errors="coerce")
+    sexes = {"Male": 1, "Female": 2}
+    out = []
+    for j in sorted({int(c.split("_")[1]) for c in roster}):
+        x = pd.DataFrame({"hh": h["hh"], "psu": h["psu_id"], "strat": h["strat_id"],
+                          "cmc_int": h["hv008"], "w": h["w"], "q": h["q"],
+                          "res": (h[f"qh05_{j:02d}"] == "Yes").astype(int),
+                          "sex": h[f"qh04_{j:02d}"].map(sexes),
+                          "age": pd.to_numeric(h[f"qh07_{j:02d}"].replace("95+", "95"),
+                                               errors="coerce")})
+        out.append(x[x["res"] == 1])
+    p = pd.concat(out, ignore_index=True)
+    assert len(p) == pd.to_numeric(h["dejure"]).sum(), "roster disagrees with the de jure count"
+    p = p[p["age"] < 95]  # as for the DHS surveys: the top code is open-ended
+    out = []
+    for i in slots:
+        x = pd.DataFrame({"hh": h["hh"], "psu": h["psu_id"], "strat": h["strat_id"], "w": h["w"],
+                          "q": h["q"], "cmc_int": h["hv008"],
+                          "sex": h[f"qh27_{i:02d}"].map(sexes),
+                          "unit": h[f"qh28u_{i:02d}"], "num": h[f"qh28n_{i:02d}"],
+                          "cmc_d": pd.to_numeric(h[f"qh29c_{i:02d}"], errors="coerce")})
+        out.append(x[h[f"qh27_{i:02d}"].notna()])
+    d = pd.concat(out, ignore_index=True)
+    num = pd.to_numeric(d["num"].replace("95+", "95"), errors="coerce")  # "DK" -> unknown
+    d["age"] = num / d["unit"].map({"Days": 365, "Months": 12, "Years": 1})
+    d["mago"] = d["cmc_int"] - d["cmc_d"]
+    return h, p, d.drop(columns=["unit", "num", "cmc_d"])
+
+
+def estimate(code, cfg, dhs_dir, bmms_dir=None):
     if not cfg.get("publish", True):
         print(f"skipping {code} ({cfg['country']} {cfg['survey']}): publish=False (see config note)")
         return []
-    path = find(dhs_dir, cfg["file"])
+    path = find(bmms_dir if cfg.get("loader") == "bmms" else dhs_dir, cfg["file"])
     if path is None:
         # fail rather than skip: main() replaces every survey row, so a
         # missing file would silently delete that survey's published rows
-        raise SystemExit(f"{code}: {cfg['file']} not found under {dhs_dir}; "
+        raise SystemExit(f"{code}: {cfg['file']} not found; "
                          "nothing written (the published survey rows are unchanged)")
     print(f"estimating {code} ({cfg['country']} {cfg['survey']}) from {path}")
-    h = load(cfg, path, dhs_dir)
-    p, d = persons(h), deaths(h, cfg)
+    if cfg.get("loader") == "bmms":
+        h, p, d = load_bmms(cfg, path)
+    else:
+        h = load(cfg, path, dhs_dir)
+        p, d = persons(h), deaths(h, cfg)
     win = d[d["mago"].between(0, WINDOW_MONTHS - 1)]
     print(f"  {len(h):,} households, {len(p):,} de jure persons; {len(d):,} death records, "
           f"{len(win):,} in the {WINDOW_MONTHS} months before interview")
     print(f"  person share by quintile: {np.round(p.groupby('q')['w'].sum().values / p['w'].sum(), 3)}")
     checks(h, p, d, cfg, win)
-    src = (f"{SRC_PREFIX}, {cfg['country']} {cfg['survey']}, household deaths module; "
-           f"original data: {cfg['org']}")
+    src = cfg.get("source") or (f"{SRC_PREFIX}, {cfg['country']} {cfg['survey']}, household "
+                                f"deaths module; original data: {cfg['org']}")
     rows = []
     for sx, lab in [(None, "all"), (1, "male"), (2, "female")]:
         pp = p if sx is None else p[p["sex"] == sx]
@@ -343,20 +422,24 @@ def row(cfg, sex, measure, a0, a1, vals, n, src):
              ratio=round(float(vals[0] / vals[-1]), 3))
     for i in range(5):
         r[f"q{i+1}"] = round(float(1000 * vals[i]), 3)
-    r.update(n_deaths=int(n), ranking="dhs_wealth_index", source=src, groups=5, linked_share=1.0)
+    r.update(n_deaths=int(n), ranking=cfg.get("ranking", "dhs_wealth_index"), source=src,
+             groups=5, linked_share=1.0)
     return r
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--dhs-dir", default="~/Projects/data/dhs")
+    ap.add_argument("--bmms-dir", default="~/Projects/data/bmms2016")
     args = ap.parse_args()
     rows = []
     for code, cfg in SURVEYS.items():
-        rows += estimate(code, cfg, args.dhs_dir)
+        rows += estimate(code, cfg, args.dhs_dir, args.bmms_dir)
     new = pd.DataFrame(rows, columns=COLUMNS)
     old = pd.read_csv(OUT)
-    keep = old[~old["source"].astype(str).str.startswith(SRC_PREFIX)]
+    # census rows rank households by the census asset index; every other row
+    # is a survey row, rebuilt here
+    keep = old[old["ranking"] == "asset_index"]
     # survey rows last, after the census rows, as the census scripts preserve them
     pd.concat([keep, new], ignore_index=True)[COLUMNS].to_csv(OUT, index=False)
     print(f"wrote {OUT} ({len(new)} survey rows)")

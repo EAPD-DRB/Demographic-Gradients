@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.34, by age as below | DHS 2017, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.54 | DHS 2008, infant mortality rate |
-| `mort_gradient` | 2.72 − 0.391 × ln(GDP per capita, PPP) | [general gradient](../methods/general-gradient.md), GDP per capita in constant 2021 international $; for example −0.26 at $2,000 and −0.89 at $10,000, each with a 95% prediction interval of about ±0.4 |
+| `mort_gradient` | 2.63 − 0.377 × ln(GDP per capita, PPP) | [general gradient](../methods/general-gradient.md), GDP per capita in constant 2021 international $; for example −0.24 at $2,000 and −0.84 at $10,000, each with a 95% prediction interval of about ±0.5 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).

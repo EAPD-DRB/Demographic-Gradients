@@ -79,7 +79,8 @@ ISO3 = {"South Africa": "ZAF", "Ethiopia": "ETH", "Brazil": "BRA", "Zambia": "ZM
         "Malawi": "MWI", "Mozambique": "MOZ", "Uganda": "UGA", "Rwanda": "RWA",
         "Senegal": "SEN", "Sierra Leone": "SLE", "Lesotho": "LSO", "Benin": "BEN",
         "Sudan": "SDN", "South Sudan": "SSD", "Burkina Faso": "BFA",
-        "Cote d'Ivoire": "CIV", "Mali": "MLI", "India": "IND", "Colombia": "COL"}
+        "Cote d'Ivoire": "CIV", "Mali": "MLI", "India": "IND", "Colombia": "COL",
+        "Bangladesh": "BGD"}
 # UN/World Bank regional grouping, for the region rule
 REGION = {"South Africa": "Southern Africa", "Lesotho": "Southern Africa",
           "Zambia": "Eastern Africa", "Malawi": "Eastern Africa",
@@ -89,7 +90,8 @@ REGION = {"South Africa": "Southern Africa", "Lesotho": "Southern Africa",
           "Senegal": "Western Africa", "Sierra Leone": "Western Africa",
           "Benin": "Western Africa", "Burkina Faso": "Western Africa",
           "Cote d'Ivoire": "Western Africa", "Mali": "Western Africa",
-          "Brazil": "Latin America", "Colombia": "Latin America", "India": "South Asia"}
+          "Brazil": "Latin America", "Colombia": "Latin America", "India": "South Asia",
+          "Bangladesh": "South Asia"}
 
 
 def wb(iso3, year, indicator="NY.GNP.PCAP.CD"):

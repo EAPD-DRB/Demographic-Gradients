@@ -60,6 +60,29 @@ OG_FAMILY = ["South Africa", "Philippines", "Indonesia", "Ethiopia", "Brazil"]
 # Curated per-country provenance notes (narrative is fixed here by design —
 # same rule as the rest of this generator). Keys are country names.
 COUNTRY_NOTES = {
+    "Bangladesh": [
+        "Adult-mortality estimates use the Bangladesh Maternal Mortality and Health "
+        "Care Survey 2016 (BMMS; NIPORT, icddr,b and MEASURE Evaluation), which "
+        "recorded every death of a usual household member since April 2013 in about "
+        "298,000 households. As for India's NFHS, deaths in the 24 months before the "
+        "interview are used, with the survey's own wealth quintiles "
+        "(`scripts/build_adult_mortality_survey.py`; data open on UNC Dataverse).",
+        "The 45q15 gradient is close to zero (−0.07, cluster bootstrap standard "
+        "error 0.07), far less steep than the general gradient at Bangladesh's "
+        "income and outside its 95% prediction interval. The survey passes the "
+        "checks applied to every survey: death records match each household's "
+        "count, dates and ages are complete, and national 45q15 is 141 per 1,000 "
+        "for men and 107 for women. An asset index built as for the censuses gives "
+        "−0.11, and the gradient is close to zero in both rural and urban households.",
+        "The gradient weakens with time since death: −0.15, +0.02 and +0.13 for "
+        "deaths 0–11, 12–23 and 24–35 months before the interview. This is "
+        "consistent with recall of deaths fading faster in poorer households, but "
+        "the differences are within sampling error.",
+        "The survey's household-member file is cut off at 1,048,575 records (a "
+        "spreadsheet limit) and lacks about 70,000 households; persons are taken "
+        "from the roster in the household file, which agrees with the survey's own "
+        "de jure count.",
+    ],
     "Colombia": [
         "Adult-mortality estimates use DANE's 2018 census microdata (full count; "
         "deaths in households during 2017). Colombia 2018 is not in IPUMS "
@@ -317,8 +340,14 @@ NUMWORD = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}
 
 
 def basis(source):
-    """'DHS survey' for rows from build_adult_mortality_survey.py, else 'census'."""
-    return "DHS survey" if str(source).startswith("The DHS Program") else "census"
+    """The kind of source of an adult-mortality row: a DHS survey, Bangladesh's
+    BMMS (both from build_adult_mortality_survey.py), or a census."""
+    s = str(source)
+    if s.startswith("The DHS Program"):
+        return "DHS survey"
+    if "Maternal Mortality and Health Care Survey" in s:
+        return "BMMS survey"
+    return "census"
 
 
 def within_country(amr):
@@ -460,7 +489,7 @@ def write_general_gradient_page(amr):
         cont = ("African" if "Africa" in reg else "Latin American" if "Latin" in reg
                 else "South Asian" if "South Asia" in reg else reg)
         kind = basis(src.get((r.country, r.year), ""))
-        kind = "survey" if kind == "DHS survey" else "census"
+        kind = "survey" if kind.endswith("survey") else "census"
         comp[(cont, kind)] = comp.get((cont, kind), 0) + 1
     parts = [f"{n} {c} {k}{'es' if k == 'census' and n > 1 else 's' if n > 1 else ''}"
              for (c, k), n in sorted(comp.items(), key=lambda kv: -kv[1])]
@@ -501,8 +530,8 @@ estimate, where one exists, is always preferred.
 
 Across countries, the gradient in 45q15 (the probability of dying between ages
 15 and 60) becomes steeper as national income rises. Estimated by ordinary
-least squares on {gg_n:.0f} observations, censuses and DHS surveys with a
-household-deaths module, each with equal weight:
+least squares on {gg_n:.0f} observations, censuses and household surveys (DHS,
+and Bangladesh's BMMS) with a household-deaths module, each with equal weight:
 
     gradient(45q15) = {gg_a:.3f} {gg_bsign} {gg_babs:.3f} × ln(GDP per capita, PPP, constant 2021 international $)
 
@@ -866,9 +895,11 @@ differ by census and are recorded in the census scripts
 (`scripts/build_adult_mortality.py`, and `_brazil.py` and `_colombia.py` for the
 two censuses taken from the statistical office's own microdata). Colombia 2018
 is a full count; its deaths are those of calendar year 2017, and its index has
-the fewest items (electricity, internet and toilet type). In DHS
-surveys, households are ranked by the DHS wealth index, and deaths are those
-of the two years before the interview (`scripts/build_adult_mortality_survey.py`). `45q15` is the probability
+the fewest items (electricity, internet and toilet type). In surveys (India's
+NFHS, through the DHS Program, and Bangladesh's Maternal Mortality and Health
+Care Survey, BMMS), households are ranked by the survey's own wealth index, and
+deaths are those of the two years before the interview
+(`scripts/build_adult_mortality_survey.py`). `45q15` is the probability
 of dying between ages 15 and 60; `mx` is the age-specific death rate for the
 band shown. The low/high ratio is the rate in the lowest wealth group divided
 by the rate in the highest. "Linked" is the share of the census's death
@@ -1243,7 +1274,7 @@ lowest wealth quintile divided by the rate in the highest, and as the
 [glossary](docs/glossary.md)). The data cover {n_by_src['DHS']} Demographic and Health
 Surveys (DHS) and {n_by_src['MICS']} Multiple Indicator Cluster Surveys (MICS) with a
 complete wealth-quintile breakdown in {n_countries} countries, and, for adult
-mortality, household-death records from censuses and DHS surveys. All figures and numbers are
+mortality, household-death records from censuses and household surveys. All figures and numbers are
 computed from the files in [`data/`](data/).
 
 ## Fertility and infant mortality by wealth quintile
@@ -1365,8 +1396,8 @@ comparison.
 
 Adult mortality by wealth requires deaths recorded against the deceased's own
 household. The library uses censuses that record deaths of household members
-during a recent period, usually the previous year, and, for India, DHS surveys
-that record them for the previous two years
+during a recent period, usually the previous year, and, for India and
+Bangladesh, household surveys that record them for the previous two years
 ([methods](docs/methods/adult-mortality.md); [all estimates](docs/tables/adult_mortality.md)).
 Across the {n_fit} censuses and surveys with an income estimate, the gradient in
 45q15 is steeper in richer countries (r = {fmt(gg['income_rule.r'])}): the fitted

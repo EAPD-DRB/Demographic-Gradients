@@ -11,13 +11,13 @@ estimate, where one exists, is always preferred.
 
 Across countries, the gradient in 45q15 (the probability of dying between ages
 15 and 60) becomes steeper as national income rises. Estimated by ordinary
-least squares on 18 observations, censuses and DHS surveys with a
-household-deaths module, each with equal weight:
+least squares on 19 observations, censuses and household surveys (DHS,
+and Bangladesh's BMMS) with a household-deaths module, each with equal weight:
 
-    gradient(45q15) = 2.718 − 0.391 × ln(GDP per capita, PPP, constant 2021 international $)
+    gradient(45q15) = 2.629 − 0.377 × ln(GDP per capita, PPP, constant 2021 international $)
 
-with r = −0.88 and a residual standard error of 0.19. A doubling of
-income per capita corresponds to a change of −0.27 in the gradient.
+with r = −0.82 and a residual standard error of 0.23. A doubling of
+income per capita corresponds to a change of −0.26 in the gradient.
 
 Income is GDP per capita at purchasing-power parity in constant 2021
 international dollars (World Bank, `NY.GDP.PCAP.PP.KD`), the measure
@@ -30,12 +30,12 @@ two fit about equally well.
 
 | | Estimate | Standard error | 95% confidence interval |
 |---|---|---|---|
-| Intercept | 2.718 | 0.432 | |
-| Slope on ln(income per capita) | −0.391 | 0.052 | −0.501 to −0.281 |
+| Intercept | 2.629 | 0.525 | |
+| Slope on ln(income per capita) | −0.377 | 0.063 | −0.510 to −0.244 |
 
-Intervals use Student's t with 16 degrees of freedom. Some countries
+Intervals use Student's t with 17 degrees of freedom. Some countries
 contribute more than one observation (India 3, Malawi 2, South Africa 2); clustering the standard
-error of the slope by country gives 0.051, close to the
+error of the slope by country gives 0.057, close to the
 conventional value.
 
 The slope is estimated precisely, but a single country can lie well off the
@@ -46,8 +46,8 @@ line. For a country without its own estimate, the relevant uncertainty is the
 
 with s the residual standard error and the remaining terms in
 [`data/general_gradient.csv`](../../data/general_gradient.csv). At GDP per
-capita (PPP) of $2,000 the general gradient is −0.26 (95% prediction interval −0.68 to 0.17); at $10,000 it
-is −0.89 (95% prediction interval −1.31 to −0.46). The leave-one-out prediction errors reported below are of
+capita (PPP) of $2,000 the general gradient is −0.24 (95% prediction interval −0.75 to 0.28); at $10,000 it
+is −0.84 (95% prediction interval −1.36 to −0.33). The leave-one-out prediction errors reported below are of
 the same order. The observations, their income and the leave-one-out
 predictions are in
 [`data/general_gradient_points.csv`](../../data/general_gradient_points.csv);
@@ -68,12 +68,12 @@ subregion is available.
 
 | Candidate rule | Mean absolute error |
 |---|---|
-| A single value for all countries (pooled median) | 0.330 |
-| **Linear in ln(income per capita)** | **0.165** |
-| Regional median | 0.295 |
+| A single value for all countries (pooled median) | 0.339 |
+| **Linear in ln(income per capita)** | **0.194** |
+| Regional median | 0.370 |
 
-The income rule has the lowest error, and is used. The largest out-of-sample error is for Malawi 2008: a prediction of −0.03 against a measured −0.47. Where no income figure is available, the pooled
-median of all estimates, −0.46, is used.
+The income rule has the lowest error, and is used. The largest out-of-sample error is for Bangladesh 2016: a prediction of −0.67 against a measured −0.07. Where no income figure is available, the pooled
+median of all estimates, −0.44, is used.
 
 ## Age pattern
 
@@ -85,11 +85,11 @@ each estimate's band gradient and its 45q15 gradient:
 |---|---|---|
 | 15–29 | −0.46 |  |
 | 30–44 | −0.28 |  |
-| 45–59 | 0.13 | least reliable |
-| 60–74 | 0.44 | least reliable |
+| 45–59 | 0.14 | least reliable |
+| 60–74 | 0.43 | least reliable |
 
 Applied to the estimates' own 45q15 gradients, the offsets reproduce the
-measured band gradients with a median absolute error of 0.12. The
+measured band gradients with a median absolute error of 0.11. The
 offsets for ages 45–59 and 60–74 are the least reliable values in the library:
 they are positive because, in several low-income censuses, recorded mortality
 at older ages rises with household wealth (see below). Where working-age
@@ -110,14 +110,14 @@ or let it follow the income relationship; the two bracket the evidence.
 
 The rule is estimated on observations with GDP per capita (PPP) between about
 $1,100 and $18,000 and should not be extrapolated beyond that range. The
-18 observations are 13 African censuses, 3 South Asian surveys and 2 Latin American censuses. There is no estimate for East or
+19 observations are 13 African censuses, 4 South Asian surveys and 2 Latin American censuses. There is no estimate for East or
 Southeast Asia, so predictions for the Philippines or Indonesia rest on a
 relationship estimated largely outside their region.
 
 ## Older-age reversals
 
 At the oldest ages measured, recorded mortality is higher in wealthier
-households in Ethiopia 2007, Sudan 2008, Uganda 2002 and Zambia 2010. Two explanations are consistent with this. Where
+households in Bangladesh 2016, Ethiopia 2007, Sudan 2008, Uganda 2002 and Zambia 2010. Two explanations are consistent with this. Where
 most households are poor, survival may differ little by wealth, and causes of
 death are less socially graded than in middle-income countries. Alternatively,
 elderly people in poor health often move into better-off households before

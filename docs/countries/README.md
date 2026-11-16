@@ -12,7 +12,7 @@ One page per country, giving the values for an OG-Core calibration and the estim
 | [Argentina](argentina.md) | Latin America & Caribbean | MICS 2012 | — | — |
 | [Armenia](armenia.md) | North Africa/West Asia/Europe | DHS 2016 | — | — |
 | [Azerbaijan](azerbaijan.md) | North Africa/West Asia/Europe | DHS 2006 | — | — |
-| [Bangladesh](bangladesh.md) | South & Southeast Asia | DHS 2022 | — | — |
+| [Bangladesh](bangladesh.md) | South & Southeast Asia | DHS 2022 | 2016 | — |
 | [Belize](belize.md) | Latin America & Caribbean | MICS 2016 | — | — |
 | [Benin](benin.md) | Sub-Saharan Africa | DHS 2017 | 2013 | — |
 | [Bhutan](bhutan.md) | South & Southeast Asia | MICS 2010 | — | — |

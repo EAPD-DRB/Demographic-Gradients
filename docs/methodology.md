@@ -14,7 +14,8 @@ rates across lifetime-income groups: `fert_gradient` (fertility),
 Fertility and child mortality come from surveys of the DHS Program and from
 UNICEF's Multiple Indicator Cluster Surveys (MICS); adult
 mortality comes from records of deaths in the household, in population
-censuses and, for India, in DHS surveys; child mortality for Brazil also comes
+censuses and, for India and Bangladesh, in household surveys; child mortality
+for Brazil also comes
 from censuses.
 
 ## 2. Summary measures
@@ -127,8 +128,9 @@ reference period alongside the household's characteristics
 International, for Brazil from IBGE's 2010 census sample microdata, and for
 Colombia from DANE's 2018 census microdata; the reference period is usually
 twelve months (calendar year 2017 for Colombia). Survey estimates come from India's
-National Family Health Survey, using deaths in the two years before the
-interview, with households ranked by the DHS wealth quintiles.
+National Family Health Survey and Bangladesh's Maternal Mortality and Health
+Care Survey 2016, using deaths in the two years before the interview, with
+households ranked by each survey's own wealth quintiles.
 
 For each wealth group, the death rate in each age band (15–29, 30–44, 45–59
 and 60–74) is the weighted number of deaths divided by the weighted population

@@ -26,6 +26,13 @@ the estimates.
   interview, with sex, age and month and year of death. The estimates use the
   deaths of the two years before the interview, since reporting of earlier
   deaths falls off.
+- **Bangladesh Maternal Mortality and Health Care Survey 2016 (BMMS).** The
+  same design: every death of a usual household member since April 2013 in
+  about 298,000 households, with sex, age and date of death. It is processed
+  by the same script and rules, with the survey's own wealth quintiles. The
+  data are open (UNC Dataverse, CC0). The survey's household-member file is
+  incomplete (cut off at a spreadsheet row limit), so persons are taken from
+  the roster in the household file, which agrees with the survey's own count.
 
 Microdata are processed locally and only aggregate estimates are published,
 as the IPUMS license and the DHS terms of use require.
@@ -163,7 +170,15 @@ pre-pandemic one (see the [India page](../countries/india.md)).
 
 The DHS surveys of the Philippines, Indonesia, Bangladesh, Cambodia, Nepal and
 other Asian countries were examined and have no module recording deaths at all
-ages. India is therefore the only Asian country with an estimate.
+ages. India and Bangladesh (through the BMMS, not the DHS) are therefore the
+only Asian countries with an estimate.
+
+Bangladesh's gradient is close to zero, far less steep than the general
+gradient at its income, although the survey passes every check above and an
+asset index built as for the censuses gives a similar value. It is published
+as measured. The gradient weakens with time since death, which is consistent
+with recall fading faster in poorer households; the differences between years
+are within sampling error ([Bangladesh page](../countries/bangladesh.md)).
 
 ## Verification for new samples
 

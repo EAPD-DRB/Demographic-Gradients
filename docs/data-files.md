@@ -27,8 +27,9 @@ All files in [`data/`](../data/) are CSV and are rebuilt by the scripts in
 
 `adult_mortality_gradients.csv` also contains `sex`; `measure` (`45q15` or `mx`);
 `age_lo` and `age_hi`; `n_deaths`; `ranking` (`asset_index` for censuses,
-`dhs_wealth_index` for surveys); `source` (the census or survey; survey rows
-begin "The DHS Program"); `groups` (number of wealth groups); and
+`dhs_wealth_index` for DHS surveys, `survey_wealth_index` for Bangladesh's
+BMMS, ranked by the survey's own wealth quintiles); `source` (the census or
+survey); `groups` (number of wealth groups); and
 `linked_share` (share of the census's death records matched to household
 assets; 1 for surveys).
 

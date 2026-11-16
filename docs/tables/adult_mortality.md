@@ -13,9 +13,11 @@ differ by census and are recorded in the census scripts
 (`scripts/build_adult_mortality.py`, and `_brazil.py` and `_colombia.py` for the
 two censuses taken from the statistical office's own microdata). Colombia 2018
 is a full count; its deaths are those of calendar year 2017, and its index has
-the fewest items (electricity, internet and toilet type). In DHS
-surveys, households are ranked by the DHS wealth index, and deaths are those
-of the two years before the interview (`scripts/build_adult_mortality_survey.py`). `45q15` is the probability
+the fewest items (electricity, internet and toilet type). In surveys (India's
+NFHS, through the DHS Program, and Bangladesh's Maternal Mortality and Health
+Care Survey, BMMS), households are ranked by the survey's own wealth index, and
+deaths are those of the two years before the interview
+(`scripts/build_adult_mortality_survey.py`). `45q15` is the probability
 of dying between ages 15 and 60; `mx` is the age-specific death rate for the
 band shown. The low/high ratio is the rate in the lowest wealth group divided
 by the rate in the highest. "Linked" is the share of the census's death
@@ -249,3 +251,11 @@ Rates are per 1,000.
 | India | 2020 | DHS survey | female | 45–59 | mx | −0.56 | 1.56 | 2,362 | 100% |
 | India | 2020 | DHS survey | female | 60–74 | mx | −0.19 | 1.13 | 4,843 | 100% |
 | India | 2020 | DHS survey | female | 15–59 | 45q15 | −0.74 | 1.87 | 4,409 | 100% |
+| Bangladesh | 2016 | BMMS survey | all | 45–59 | mx | 0.07 | 0.92 | 1,927 | 100% |
+| Bangladesh | 2016 | BMMS survey | all | 60–74 | mx | 0.27 | 0.79 | 5,297 | 100% |
+| Bangladesh | 2016 | BMMS survey | all | 15–59 | 45q15 | −0.07 | 1.05 | 3,469 | 100% |
+| Bangladesh | 2016 | BMMS survey | male | 45–59 | mx | 0.03 | 0.93 | 1,102 | 100% |
+| Bangladesh | 2016 | BMMS survey | male | 60–74 | mx | 0.22 | 0.85 | 2,945 | 100% |
+| Bangladesh | 2016 | BMMS survey | male | 15–59 | 45q15 | −0.04 | 1.01 | 2,006 | 100% |
+| Bangladesh | 2016 | BMMS survey | female | 60–74 | mx | 0.33 | 0.72 | 2,352 | 100% |
+| Bangladesh | 2016 | BMMS survey | female | 15–59 | 45q15 | −0.08 | 1.10 | 1,463 | 100% |

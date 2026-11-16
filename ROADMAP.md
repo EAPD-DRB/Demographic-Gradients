@@ -288,9 +288,20 @@ these are done, since they may change the picture for Asia.
     cut at the maximum score, which merged a real top group. Only Malawi
     1998 moved: 45q15 −0.139 → −0.120. The H5 two-group rejects stay at 2
     groups.
-- [ ] **H7. Bangladesh BMMS 2016** (all household deaths in three years,
-  ~298,000 households; UNC Dataverse). Access terms and wealth index
-  unverified.
+- [x] **H7. Bangladesh BMMS 2016** (done 2026-11-16). Open data (UNC Dataverse,
+  CC0). Deaths of usual members since April 2013 in 298,284 households, run
+  through the survey script (24-month window, survey quintiles).
+  - 45q15 gradient −0.07 (bootstrap SE 0.07), against −0.67 predicted.
+    Published by ruling: it passes every check.
+  - Cross-checks: census-style index −0.11; rural −0.08, urban −0.03.
+  - The gradient flattens with time since death (−0.15/+0.02/+0.13), within
+    sampling error.
+  - The BMMS16_HM member file is truncated at 1,048,575 rows. Persons come
+    from the household file's roster instead.
+  - Survey rows are now identified by `ranking` (new value
+    `survey_wealth_index`).
+  - BMMS 2010 (same design) is not yet examined; it is a natural check on
+    whether the flat gradient repeats.
 - [ ] **H8. Indonesia IFLS** (RAND, free with registration): cross-check only;
   published wealth-quartile life expectancy in Sudharsanan (2019).
 - [ ] **H9. MORTNUM-only IPUMS samples** (Vietnam 1989/1999, Indonesia 2010,
@@ -323,6 +334,10 @@ these are done, since they may change the picture for Asia.
   2.718, slope −0.378 → −0.391; Philippines −0.88 → −0.90 (PI −1.33 to −0.47),
   Indonesia −1.01 → −1.03 (PI −1.47 to −0.59); age offsets 15–29 −0.46,
   30–44 −0.28, 45–59 +0.13, 60–74 +0.44.
+- After H7 (Bangladesh BMMS 2016 added, 2026-11-16): intercept 2.718 → 2.629,
+  slope −0.391 → −0.377, residual SE 0.19 → 0.23; Philippines −0.90 → −0.86
+  (PI −1.38 to −0.34), Indonesia −1.03 → −0.98 (PI −1.51 to −0.45); age
+  offsets 45–59 +0.14, 60–74 +0.43 (15–29 and 30–44 unchanged).
 - OG-ETH, OG-PHL: still pass plain `tilt / 100` and one TFR tilt at every
   age; switch to the A1 conversion and the A2 age offsets, then align with
   the C1 recipe once written.

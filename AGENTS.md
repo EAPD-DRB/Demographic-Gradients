@@ -25,7 +25,7 @@ demographic rates by income group. The library supplies three:
 |---|---|---|---|
 | `fert_gradient` | `data/gradient_library_latest.csv` + `data/fertility_age_offsets.csv` | `indicator == "TFR"`, plus the offset by age | 96 countries (DHS or MICS) |
 | `infmort_gradient` | `data/gradient_library_latest.csv` | `indicator == "IMR"` | 88 countries (DHS or MICS) |
-| `mort_gradient` | `data/adult_mortality_gradients.csv` | `measure == "45q15"`, `sex == "all"`, latest year | 15 countries (14 by census, India by DHS survey) |
+| `mort_gradient` | `data/adult_mortality_gradients.csv` | `measure == "45q15"`, `sex == "all"`, latest year | 16 countries (14 by census; India and Bangladesh by household survey) |
 | `imm_pctiles` | not provided | — | — |
 
 `imm_pctiles` is not a gradient: it is the lifetime-income distribution of new
@@ -72,39 +72,41 @@ and the survey or census year.
 
 `data/general_gradient.csv` provides a fallback for any country:
 
-    gradient(45q15) = 2.718 − 0.391 × ln(GDP per capita, PPP, constant 2021 international $)
+    gradient(45q15) = 2.629 − 0.377 × ln(GDP per capita, PPP, constant 2021 international $)
 
 Income is the World Bank's `NY.GDP.PCAP.PP.KD`: it is comparable across
 countries and years, so the rule is applied to the same series for any year
 with no conversion. Do not plug in GNI in current US dollars (the measure used
 before 2026-11-13).
 
-It is fitted on 18 observations: 15 censuses and India's three DHS surveys with
-a household-deaths module (NFHS-2, -4, -5), with equal weight. The slope has a
-standard error of 0.052 (95% CI −0.501 to −0.282), but a single country can lie
-well off the line: the 95% prediction interval for a country without its own
-estimate is about ±0.43 (residual standard error 0.19).
+It is fitted on 19 observations: 15 censuses and four household surveys with a
+household-deaths module (India's NFHS-2, -4, -5 and Bangladesh's BMMS 2016),
+with equal weight. The slope has a standard error of 0.063 (95% CI −0.510 to
+−0.244), but a single country can lie well off the line: the 95% prediction
+interval for a country without its own estimate is about ±0.5 (residual
+standard error 0.23).
 Report the prediction interval with any value taken from the rule; the file
 holds the terms needed to compute it at any income (formula in
 [docs/methods/general-gradient.md](docs/methods/general-gradient.md)).
 
 It was selected by leave-one-country-out prediction error against two
-alternatives: mean absolute error 0.165, compared with 0.330 for a single pooled
-value and 0.295 for regional medians, scored on the same 18 observations. The
-error is 0.20 below $3,000 per capita (PPP) and 0.14 above. The largest misses
-are Malawi 2008 (−0.47 measured against −0.03 predicted), Uganda 2002 (+0.15
-against −0.21), India 1999 (−0.73 against −0.39) and Zambia 2010 (−0.14
-against −0.47). The same file contains age offsets and a pooled median for use
+alternatives: mean absolute error 0.194, compared with 0.339 for a single pooled
+value and 0.370 for regional medians, scored on the same 19 observations. The
+error is 0.21 below $3,000 per capita (PPP) and 0.18 above. The largest misses
+are Bangladesh 2016 (−0.07 measured against −0.67 predicted), Malawi 2008
+(−0.47 against −0.01), India 1999 (−0.73 against −0.35) and Uganda 2002
+(+0.15 against −0.19). The same file contains age offsets and a pooled median for use
 when no income figure is available.
 
-Values at 2024 GDP per capita (PPP): Philippines −0.90 (95% prediction interval
-−1.33 to −0.47; $10,378), Indonesia −1.03 (−1.47 to −0.59; $14,471). Countries with
+Values at 2024 GDP per capita (PPP): Philippines −0.86 (95% prediction interval
+−1.38 to −0.34; $10,378), Indonesia −0.98 (−1.51 to −0.45; $14,471). Countries with
 their own estimate (for example South Africa 2007, −1.23; Ethiopia 2007, +0.01;
-India 2020, −0.72; Colombia 2018, −1.18) use that estimate, not the rule.
+India 2020, −0.72; Colombia 2018, −1.18; Bangladesh 2016, −0.07) use that
+estimate, not the rule.
 
 **There is no income-based fallback for fertility or infant mortality.** The
 same comparison was run for them: an income rule improved on a single pooled
-value by 0.4 percent for fertility, against 50 percent for adult mortality,
+value by 0.4 percent for fertility, against 43 percent for adult mortality,
 because these gradients vary little with national income. For a country with no
 DHS or MICS survey, use the regional median and interquartile range from
 [ANALYSIS.md](ANALYSIS.md#regional-medians) and report the value as borrowed.
@@ -124,7 +126,8 @@ DHS or MICS survey, use the regional median and interquartile range from
   between surveys; part of the change may be the switch.
 - **Do not pool measurement bases.** `gradient_library*.csv` contains DHS and
   MICS survey rates; `adult_mortality_gradients.csv` household death records (censuses, and
-  for India DHS surveys, whose rows have `ranking == "dhs_wealth_index"`);
+  household surveys: India's DHS surveys, `ranking == "dhs_wealth_index"`, and
+  Bangladesh's BMMS 2016, `ranking == "survey_wealth_index"`);
   `census_child_mortality.csv` a census cumulative proportion. Their gradients
   agree where they have been compared, but their levels (`q1..q5`) measure
   different quantities.
@@ -162,8 +165,8 @@ documentation.
 ## Long-run projections
 
 Across countries the adult-mortality gradient is more negative at higher
-national income (r = −0.88); a doubling of income per capita corresponds to
-about −0.27 in the gradient. Within countries the evidence is limited and
+national income (r = −0.82); a doubling of income per capita corresponds to
+about −0.26 in the gradient. Within countries the evidence is limited and
 mixed: Malawi's gradient steepened between its 1998 and 2008 censuses as income
 rose, but India's was −0.73, −0.74 and −0.72 in 1999, 2015 and 2020 while GDP
 per capita (PPP) rose from about $3,000 to $7,200. A model projecting several decades ahead
@@ -182,8 +185,11 @@ State the gap rather than interpolating:
   2021 international $). It must not be
   extrapolated to high-income countries; if asked, say the library does not
   cover them.
-- The only Asian estimates of adult mortality are India's (DHS surveys). There
-  is none for East or Southeast Asia: the Philippine and Indonesian DHS surveys
+- The only Asian estimates of adult mortality are India's (DHS surveys) and
+  Bangladesh's (BMMS 2016). Bangladesh's gradient is close to zero (−0.07), far
+  from the income rule's prediction, although it passes every check; report it
+  as measured and note the caveats on its country page. There is none for East
+  or Southeast Asia: the Philippine and Indonesian DHS surveys
   have no module on deaths at all ages, and their values come from a
   relationship estimated mostly on African censuses.
 - DHS sibling histories were tested as a source for adult mortality and
@@ -199,7 +205,8 @@ the originating statistical office for rows with `source == "MICS"`; IPUMS Inter
 for census-based estimates; IBGE directly for Brazil's adult-mortality rows,
 which come from IBGE's own microdata rather than IPUMS; DANE directly for
 Colombia's (2018 census microdata); The DHS Program and IIPS
-for India's adult-mortality rows (NFHS). The `source` column is
+for India's adult-mortality rows (NFHS); NIPORT, icddr,b and MEASURE Evaluation
+for Bangladesh's (BMMS 2016, UNC Dataverse doi:10.15139/S3/X33NIZ). The `source` column is
 accurate row by row — use it.
 
 ---
@@ -322,10 +329,11 @@ scripts, and the documentation is generated — respect that architecture.
   biases steep by ~0.3) and mz2007a (0.89/1.09/0.97/1.05 - biases flat by
   ~0.15). za2007a has MORTNUM and passes; za2001a and ci1998a have none.
 - Gradient steepness tracks national income, not region:
-  `gradient ~ 2.72 - 0.391*ln(GDP per capita, PPP, constant 2021 intl $)`,
-  r = -0.88 over 18 observations (15 censuses + India NFHS-2/-4/-5; survey
-  rows enter the rule on the same footing as censuses, ruled 2026-11-12;
-  Colombia 2018 added 2026-11-16).
+  `gradient ~ 2.63 - 0.377*ln(GDP per capita, PPP, constant 2021 intl $)`,
+  r = -0.82 over 19 observations (15 censuses + India NFHS-2/-4/-5 +
+  Bangladesh BMMS 2016; survey rows enter the rule on the same footing as
+  censuses, ruled 2026-11-12; Colombia 2018 and Bangladesh 2016 added
+  2026-11-16).
   Income measure ruled 2026-11-13: GDP per capita PPP constant
   (NY.GDP.PCAP.PP.KD), the standard for cross-country living-standard and
   health-income comparisons; it replaced Atlas GNI in current US$, which mixed
@@ -333,8 +341,8 @@ scripts, and the documentation is generated — respect that architecture.
   Same fit quality (LOCO MAE 0.175 vs 0.176, on the 17 observations of the
   time). Constant-price GNI (US$ or PPP) was rejected: WDI lacked it for 7 of
   those 17. Inference is
-  classical OLS with n - 2 df (ruled 2026-11-12): slope SE 0.052,
-  clustered-by-country SE 0.051; publish the 95% prediction interval (~±0.43)
+  classical OLS with n - 2 df (ruled 2026-11-12): slope SE 0.063,
+  clustered-by-country SE 0.057; publish the 95% prediction interval (~±0.5)
   with any value read off the rule. Income is pinned in
   `data/income_census_years.csv` (WDI revises history; each ICP round revises
   PPPs), with Atlas GNI kept for reference; refresh only with
@@ -354,9 +362,19 @@ scripts, and the documentation is generated — respect that architecture.
   (NFHS-5 is 2020). The script prints the survey analogues of the census
   gates: records vs the household's own death count, year-2/year-1 recall by
   quintile, unknown date/age by quintile, heaping and a boundary-split
-  sensitivity, national 45q15 against WDI, cluster-bootstrap SE. Only India
-  qualifies so far; every Asian DHS since 1997 and every DHS tagged for
+  sensitivity, national 45q15 against WDI, cluster-bootstrap SE. Of the DHS,
+  only India qualifies; every Asian DHS since 1997 and every DHS tagged for
   causes of death was scanned (ROADMAP H1).
+- **Bangladesh BMMS 2016** (ruled 2026-11-16: publish under the survey rules)
+  goes through the same script (loader "bmms"), with the survey's own wealth
+  quintiles and `qhweightoverall`; rows have `ranking ==
+  "survey_wealth_index"`. Survey rows are told from census rows by `ranking`
+  (anything but "asset_index"), not by source text. Its member file
+  (BMMS16_HM) is truncated at 1,048,575 rows in both Dataverse formats —
+  persons come from the household file's roster, which matches `dejure`
+  exactly. 45q15 gradient −0.07 (bootstrap SE 0.07); own census-style index
+  −0.11; rural and urban both near zero; the gradient flattens with time since
+  death (−0.15/+0.02/+0.13 by year back), within sampling error.
 - The gradient fades with age in every census and survey measured at 15-29
   and an older band (15/15, mean drift +0.88 from 15-29 to the oldest band), and in 4
   censuses, all with GDP pc PPP <= $4,446 (Ethiopia, Uganda, Zambia, Sudan), it becomes

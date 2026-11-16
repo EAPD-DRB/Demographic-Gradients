@@ -37,7 +37,11 @@ DHS = "Source: DHS Program indicator API; author's calculations."
 SURVEYS = ("Source: DHS Program indicator API; UNICEF MICS, as compiled in the World Bank's "
            "Health Nutrition and Population Statistics by Wealth Quintile; author's calculations.")
 CENSUS = ("Source: IPUMS International, IBGE and DANE census microdata; DHS Program "
-          "(India NFHS); World Bank GDP per capita, PPP; author's calculations.")
+          "(India NFHS); NIPORT, icddr,b and MEASURE Evaluation\n(Bangladesh BMMS 2016); "
+          "World Bank GDP per capita, PPP; author's calculations.")
+# the age figure draws only estimates with a 15-29 band, which BMMS 2016 lacks
+CENSUS_AGE = ("Source: IPUMS International, IBGE and DANE census microdata; DHS Program "
+              "(India NFHS); World Bank GDP per capita, PPP; author's calculations.")
 
 plt.style.use(Path(__file__).with_name("figures.mplstyle"))
 
@@ -281,13 +285,13 @@ def adult_mortality_vs_income():
     ax.axhline(0, color=INK, lw=1, alpha=0.55, zorder=1)
     # DHS survey observations (household-deaths module) drawn open, censuses filled
     amr = pd.read_csv(DATA / "adult_mortality_gradients.csv")
-    survey = set(zip(amr.loc[amr["source"].str.startswith("The DHS Program"), "country"],
-                     amr.loc[amr["source"].str.startswith("The DHS Program"), "year"]))
+    sv = amr["ranking"] != "asset_index"  # survey rows rank by the survey's wealth index
+    survey = set(zip(amr.loc[sv, "country"], amr.loc[sv, "year"]))
     is_s = np.array([(c, y) in survey for c, y in zip(pts["country"], pts["year"])])
     ax.scatter(pts["gni"][~is_s], pts["tilt_45q15"][~is_s], s=55, color=INK, edgecolors=SURF,
                linewidths=2, zorder=3, label="census")
     ax.scatter(pts["gni"][is_s], pts["tilt_45q15"][is_s], s=55, facecolors=SURF,
-               edgecolors=INK, linewidths=1.8, zorder=3, label="DHS survey")
+               edgecolors=INK, linewidths=1.8, zorder=3, label="household survey (DHS, BMMS)")
     ax.legend(loc="lower left", frameon=False, fontsize=9.5)
     # every point labelled; adjustText places the labels clear of points and each other.
     # Adjacent observations of one country share a label, placed between them.
@@ -323,12 +327,12 @@ def adult_mortality_vs_income():
                 iter_lim=2000,
                 arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.6))
     frame(fig, "Wealth gradient in adult mortality (45q15) and GDP per capita, by census or survey",
-          "Each dot is one census, or one DHS survey with a household-deaths module (South "
+          "Each dot is one census, or one household survey with a household-deaths module (South "
           "Sudan 2008 is omitted: no income estimate).\n45q15 is the probability of dying between "
           f"ages 15 and 60. Line: least-squares fit (r = {num(r)}); dark band: 95% confidence "
           "interval for the line;\nlight band: 95% prediction interval for a single country. "
           "A negative gradient means mortality falls as household wealth rises; zero means "
-          "no difference.", CENSUS, bottom=0.23)
+          "no difference.", CENSUS, bottom=0.26)
     save(fig, "adult_mortality_vs_income.png")
 
 
@@ -376,7 +380,7 @@ def adult_mortality_by_age():
           "per capita (PPP, constant 2021 international $, in brackets).\n"
           "The oldest band is 60–74 except where "
           "marked (too few deaths above 60). Positive values: death rates rise with "
-          "household wealth.", CENSUS, top=0.85)
+          "household wealth.", CENSUS_AGE, top=0.85)
     fig.subplots_adjust(left=0.29)
     save(fig, "adult_mortality_by_age.png")
 
