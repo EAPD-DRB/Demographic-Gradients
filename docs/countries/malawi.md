@@ -38,7 +38,7 @@ Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_m
 
 | Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| Census 1998 | −0.14 | −0.42 | −0.31 | −0.01 |  | 4 | 6,380 |
+| Census 1998 | −0.12 | −0.34 | −0.27 | −0.01 |  | 4 | 6,380 |
 | Census 2008 | −0.47 | −0.96 | −0.83 | −0.26 |  | 3 | 5,243 |
 
 Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi.

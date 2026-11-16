@@ -11,13 +11,14 @@ household SERIAL; households are ranked by an asset index; and the wealth
 gradient — the slope of ln(death rate) on wealth rank — is estimated by sex
 and age band. Brazil 2010 is built separately from IBGE's own microdata by
 build_adult_mortality_brazil.py (the IPUMS supplement for it fails the
-completeness check below).
+completeness check below), and Colombia 2018, which is not in IPUMS, from
+DANE's microdata by build_adult_mortality_colombia.py.
 
 Subcommands
     submit   define + submit the slim extracts via the IPUMS API
     download poll and download completed extracts
     estimate build data/adult_mortality_gradients.csv from local files
-             (keeps the IBGE Brazil rows already in the file)
+             (keeps the Brazil, Colombia and survey rows already in the file)
 
 Inputs the API cannot fetch: the supplementary mortality files, downloaded
 once per sample (logged in) from
@@ -529,8 +530,8 @@ def cmd_estimate(args):
         rows += estimate_sample(sample, cfg, args.extracts_dir, args.deaths_dir)
     new = pd.DataFrame(rows)
     if OUT.exists():
-        # keep only rows this pipeline does not produce (Brazil, from IBGE via
-        # build_adult_mortality_brazil.py); every IPUMS row is rebuilt here, so
+        # keep only rows this pipeline does not produce (Brazil, Colombia and
+        # the DHS surveys, from their own scripts); every IPUMS row is rebuilt here, so
         # a sample that no longer publishes drops out of the file
         old = pd.read_csv(OUT)
         keep = old[~old["source"].astype(str).str.startswith("IPUMS")]

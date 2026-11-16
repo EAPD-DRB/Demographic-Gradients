@@ -199,11 +199,12 @@ def main():
     new = pd.DataFrame(rows)
     old = pd.read_csv(OUT) if os.path.exists(OUT) else pd.DataFrame()
     keep = old[old["source"] != SRC] if len(old) else old
-    # IPUMS rows, then Brazil, then the survey rows of
-    # build_adult_mortality_survey.py, so the file is identical whichever
+    # IPUMS rows, then Brazil, then the rest (Colombia, from
+    # build_adult_mortality_colombia.py, then the survey rows of
+    # build_adult_mortality_survey.py), so the file is identical whichever
     # script ran last
-    survey = keep["source"].astype(str).str.startswith("The DHS Program") if len(keep) else []
-    out = pd.concat([keep[~survey], new, keep[survey]] if len(keep) else [new], ignore_index=True)
+    ipums = keep["source"].astype(str).str.startswith("IPUMS") if len(keep) else []
+    out = pd.concat([keep[ipums], new, keep[~ipums]] if len(keep) else [new], ignore_index=True)
     out[COLUMNS].to_csv(OUT, index=False)
     print(f"wrote {os.path.normpath(OUT)} ({len(new)} Brazil rows)")
 

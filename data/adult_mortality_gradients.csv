@@ -99,16 +99,16 @@ AMR,Cote d'Ivoire,1998,male,45q15,15,59,-0.4942,1.626,452.759,323.06,349.708,293
 AMR,Cote d'Ivoire,1998,female,mx,15,29,-0.9345,2.354,8.912,5.787,5.388,4.495,3.785,1219,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Institut National de la Statistique, Cote d'Ivoire",5,1.0
 AMR,Cote d'Ivoire,1998,female,mx,30,44,-0.6877,1.753,11.172,9.137,8.965,6.842,6.373,1055,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Institut National de la Statistique, Cote d'Ivoire",5,1.0
 AMR,Cote d'Ivoire,1998,female,45q15,15,59,-0.4451,1.414,396.059,352.092,334.22,277.025,280.024,2939,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Institut National de la Statistique, Cote d'Ivoire",5,1.0
-AMR,Malawi,1998,all,mx,15,29,-0.4205,1.51,11.695,6.016,12.611,7.745,,2764,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
-AMR,Malawi,1998,all,mx,30,44,-0.3078,1.372,17.625,9.631,19.972,12.841,,2204,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
-AMR,Malawi,1998,all,mx,45,59,-0.0075,1.034,18.474,14.393,21.681,17.858,,1412,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
-AMR,Malawi,1998,all,45q15,15,59,-0.1393,1.168,514.649,364.367,560.35,440.549,,6380,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
-AMR,Malawi,1998,male,mx,15,29,-0.5836,1.709,14.493,7.185,14.64,8.48,,1507,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
-AMR,Malawi,1998,male,mx,30,44,-0.5195,1.632,21.145,10.076,23.081,12.956,,1182,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
-AMR,Malawi,1998,male,45q15,15,59,-0.2691,1.32,601.822,373.953,629.12,456.087,,3514,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
-AMR,Malawi,1998,female,mx,15,29,-0.2561,1.344,9.479,4.949,10.776,7.053,,1257,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
-AMR,Malawi,1998,female,mx,30,44,-0.102,1.165,14.807,9.113,17.327,12.711,,1022,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
-AMR,Malawi,1998,female,45q15,15,59,-0.0102,1.027,433.308,357.832,493.941,421.752,,2866,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
+AMR,Malawi,1998,all,mx,15,29,-0.3444,1.467,11.695,6.016,12.017,7.974,,2764,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
+AMR,Malawi,1998,all,mx,30,44,-0.2665,1.357,17.625,9.631,19.346,12.988,,2204,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
+AMR,Malawi,1998,all,mx,45,59,-0.0119,1.041,18.474,14.393,21.67,17.744,,1412,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
+AMR,Malawi,1998,all,45q15,15,59,-0.1195,1.162,514.649,364.367,552.014,442.746,,6380,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
+AMR,Malawi,1998,male,mx,15,29,-0.4632,1.623,14.493,7.185,13.677,8.931,,1507,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
+AMR,Malawi,1998,male,mx,30,44,-0.4676,1.612,21.145,10.076,22.051,13.119,,1182,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
+AMR,Malawi,1998,male,45q15,15,59,-0.2375,1.307,601.822,373.953,615.898,460.461,,3514,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
+AMR,Malawi,1998,female,mx,15,29,-0.2295,1.339,9.479,4.949,10.5,7.079,,1257,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
+AMR,Malawi,1998,female,mx,30,44,-0.0702,1.153,14.807,9.113,16.966,12.84,,1022,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
+AMR,Malawi,1998,female,45q15,15,59,-0.0028,1.027,433.308,357.832,489.785,421.808,,2866,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi",4,1.0
 AMR,Sudan,2008,all,mx,15,29,-1.09,2.189,5.96,5.97,3.898,2.722,,7995,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Central Bureau of Statistics, Sudan",4,1.0
 AMR,Sudan,2008,all,mx,30,44,-0.7543,1.715,6.969,6.966,5.154,4.064,,5739,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Central Bureau of Statistics, Sudan",4,1.0
 AMR,Sudan,2008,all,mx,45,59,-0.103,1.086,10.474,12.37,10.424,9.643,,3980,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Central Bureau of Statistics, Sudan",4,1.0
@@ -144,6 +144,21 @@ AMR,Brazil,2010,female,mx,30,44,-1.1958,2.725,2.218,1.693,1.536,1.149,0.814,3303
 AMR,Brazil,2010,female,mx,45,59,-1.0189,2.364,5.65,5.424,4.77,3.946,2.39,6881,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
 AMR,Brazil,2010,female,mx,60,74,-0.3336,1.297,15.404,15.575,13.768,13.417,11.881,12148,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
 AMR,Brazil,2010,female,45q15,15,59,-1.0111,2.338,123.88,111.715,100.751,80.772,52.982,12060,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
+AMR,Colombia,2018,all,mx,15,29,-1.4757,2.478,2.53,2.282,1.021,,,20618,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,all,mx,30,44,-1.4791,2.483,3.018,2.725,1.215,,,19529,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,all,mx,45,59,-1.0478,1.885,5.318,5.225,2.822,,,30967,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,all,mx,60,74,-0.6487,1.491,15.187,14.458,10.183,,,53773,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,all,45q15,15,59,-1.1838,2.06,150.678,142.537,73.139,,,71114,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,male,mx,15,29,-1.3909,2.314,3.696,3.651,1.597,,,15917,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,male,mx,30,44,-1.367,2.284,3.977,3.899,1.741,,,13252,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,male,mx,45,59,-0.7626,1.548,5.889,6.581,3.803,,,18111,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,male,mx,60,74,-0.3682,1.226,16.478,18.077,13.442,,,30415,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,male,45q15,15,59,-1.0016,1.814,184.457,191.435,101.711,,,47280,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,female,mx,15,29,-1.6256,2.84,1.308,0.929,0.461,,,4701,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,female,mx,30,44,-1.5768,2.702,2.04,1.61,0.755,,,6277,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,female,mx,45,59,-1.3314,2.293,4.702,4.045,2.05,,,12856,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,female,mx,60,74,-0.8928,1.769,13.711,11.546,7.753,,,23358,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
+AMR,Colombia,2018,female,45q15,15,59,-1.3813,2.381,113.929,94.176,47.843,,,23834,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
 AMR,India,1999,all,mx,45,59,-0.6877,1.787,13.369,11.61,10.829,9.37,7.481,1020,dhs_wealth_index,"The DHS Program, India NFHS-2 1998-99, household deaths module; original data: International Institute for Population Sciences (IIPS), Mumbai",5,1.0
 AMR,India,1999,all,mx,60,74,-0.493,1.513,43.708,36.603,34.37,31.267,28.886,2118,dhs_wealth_index,"The DHS Program, India NFHS-2 1998-99, household deaths module; original data: International Institute for Population Sciences (IIPS), Mumbai",5,1.0
 AMR,India,1999,all,45q15,15,59,-0.7335,1.844,284.234,256.108,227.647,200.804,154.154,2422,dhs_wealth_index,"The DHS Program, India NFHS-2 1998-99, household deaths module; original data: International Institute for Population Sciences (IIPS), Mumbai",5,1.0

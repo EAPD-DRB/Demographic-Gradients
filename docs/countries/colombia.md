@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.98, by age as below | DHS 2015, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −1.68 | DHS 2015, infant mortality rate |
-| `mort_gradient` | 2.61 − 0.378 × ln(GDP per capita, PPP) | [general gradient](../methods/general-gradient.md), GDP per capita in constant 2021 international $; for example −0.26 at $2,000 and −0.87 at $10,000, each with a 95% prediction interval of about ±0.4 |
+| `mort_gradient` | −1.18 | census 2018, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -31,3 +31,19 @@ Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey 
 | Total fertility rate (births per woman) | DHS 2015 | 2.8 | 2.3 | 1.9 | 1.5 | 1.3 | 2.15 | −0.98 |
 | Infant mortality rate (per 1,000 live births) | DHS 2015 | 22 | 21 | 10 | 14 | 5 | 4.40 | −1.68 |
 | Under-five mortality rate (per 1,000 live births) | DHS 2015 | 27 | 23 | 12 | 17 | 7 | 3.86 | −1.50 |
+
+### Adult mortality from household-death records
+
+Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv); [methods](../methods/adult-mortality.md); estimates by sex in the [full table](../tables/adult_mortality.md)). Blank cells: too few deaths to publish.
+
+| Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
+|---|---|---|---|---|---|---|---|
+| Census 2018 | −1.18 | −1.48 | −1.48 | −1.05 | −0.65 | 3 | 71,114 |
+
+Source: DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017).
+
+## Notes
+
+- Adult-mortality estimates use DANE's 2018 census microdata (full count; deaths in households during 2017). Colombia 2018 is not in IPUMS International. The script is `scripts/build_adult_mortality_colombia.py`; DANE's files are free of charge but each download is behind a CAPTCHA, so they are fetched by hand (instructions in the script).
+- The census records no durable goods, so the asset index uses electricity, internet and toilet type only, and supports three wealth groups. An index that also uses housing materials, water, sewerage, gas, refuse collection, cooking arrangements and crowding gives five groups and a 45q15 gradient of −1.10, against −1.18 on the published index. It is reported as a robustness check and not published, because the other censuses' indices do not use housing items (ruled 2026-11-13).
+- Death records and each household's count of its deaths agree exactly, so the completeness check used for IPUMS samples cannot detect lost records here. The census records 95 percent of the deaths the World Bank estimates for 2017; age at death is missing for 0.1 percent. The share of deaths with a death certificate rises from 67 percent in the lowest wealth group to 88 percent in the highest.

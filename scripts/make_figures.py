@@ -36,8 +36,8 @@ RATIO_TICKS = [0.3, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 10]
 DHS = "Source: DHS Program indicator API; author's calculations."
 SURVEYS = ("Source: DHS Program indicator API; UNICEF MICS, as compiled in the World Bank's "
            "Health Nutrition and Population Statistics by Wealth Quintile; author's calculations.")
-CENSUS = ("Source: IPUMS International and IBGE census microdata; DHS Program (India "
-          "NFHS); World Bank GDP per capita, PPP; author's calculations.")
+CENSUS = ("Source: IPUMS International, IBGE and DANE census microdata; DHS Program "
+          "(India NFHS); World Bank GDP per capita, PPP; author's calculations.")
 
 plt.style.use(Path(__file__).with_name("figures.mplstyle"))
 
@@ -276,7 +276,8 @@ def adult_mortality_vs_income():
                     lw=0)
     ax.fill_between(g, a + b * np.log(g) - ci, a + b * np.log(g) + ci, color=HI, alpha=0.22,
                     lw=0)
-    ax.plot(g, a + b * np.log(g), color=HI, lw=2.5, zorder=2)
+    ax.plot(g, a + b * np.log(g), color=HI, lw=2.5, zorder=2,
+            label=f"fitted: {num(a, '.3f')} − {abs(b):.3f} × ln(GDP per capita)")
     ax.axhline(0, color=INK, lw=1, alpha=0.55, zorder=1)
     # DHS survey observations (household-deaths module) drawn open, censuses filled
     amr = pd.read_csv(DATA / "adult_mortality_gradients.csv")
@@ -314,11 +315,6 @@ def adult_mortality_vs_income():
     ax.set_xlabel("GDP per capita in the census or survey year (PPP, constant 2021 "
                   "international $, log scale)")
     ax.set_ylabel("wealth gradient in 45q15")
-    texts.append(ax.text(9000, a + b * np.log(9000) + 0.08,
-                         f"fitted: {num(a, '.3f')} − {abs(b):.3f} × ln(GDP per capita)",
-                         fontsize=9.5))
-    tx.append(9000)
-    ty.append(a + b * np.log(9000))
     adjust_text(texts, x=pts["gni"].values, y=pts["tilt_45q15"].values, ax=ax,
                 target_x=tx, target_y=ty,
                 expand=(1.3, 1.8), force_text=(0.6, 0.9), force_static=(0.6, 0.8),

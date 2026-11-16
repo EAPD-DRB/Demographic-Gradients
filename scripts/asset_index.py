@@ -97,8 +97,13 @@ def wealth_groups(score, weight):
     """Wealth groups at the population quintiles of the score.
 
     Cut points are placed at the score values closest to the 20th, 40th, 60th
-    and 80th percentiles of the person-weighted distribution. Coinciding cuts,
-    and cuts at the minimum or maximum, are dropped. Where many households
+    and 80th percentiles of the person-weighted distribution. A household whose
+    score equals a cut belongs to the group above it. Coinciding cuts are
+    dropped, and so is a cut at the minimum score, which would leave the lowest
+    group empty; a cut at the maximum is kept, since it separates the
+    households with the highest score into a group of their own (ruled
+    2026-11-13; dropping it had merged a real top group in Colombia 2018 and
+    Malawi 1998). Where many households
     share a score, a group can still be very small; any group holding less than
     MIN_GROUP_SHARE of the population is merged into its smaller neighbour,
     repeatedly, so every group is large enough to give a stable rate.
@@ -110,7 +115,7 @@ def wealth_groups(score, weight):
                       "w": np.asarray(weight, dtype=float)}).sort_values("s")
     cum = d["w"].cumsum() / d["w"].sum()
     cuts = sorted({float(d["s"].iloc[int((cum - q).abs().values.argmin())]) for q in QUANTILES})
-    cuts = [c for c in cuts if d["s"].min() < c < d["s"].max()]
+    cuts = [c for c in cuts if c > d["s"].min()]
 
     def shares(cuts):
         g = np.searchsorted(cuts, d["s"].values, side="right")

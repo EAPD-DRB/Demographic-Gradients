@@ -21,7 +21,10 @@ A copy of these downloads is kept in `data/` and refreshed with
 
 **Adult mortality.** Census microdata with household-death modules, from
 [IPUMS International](https://international.ipums.org) (free registration) and,
-for Brazil, IBGE's 2010 census sample; for India, the household recode files of
+for Brazil, IBGE's 2010 census sample; for Colombia, DANE's 2018 census
+([microdata catalogue](https://microdatos.dane.gov.co/index.php/catalog/643),
+free of charge; redistribution of the microdata is not permitted); for India,
+the household recode files of
 the National Family Health Survey from the [DHS Program](https://dhsprogram.com)
 (free registration and project approval). Only aggregate estimates are
 published here, as the IPUMS license and the DHS terms of use require; no
@@ -46,7 +49,9 @@ separately: adult mortality with `scripts/build_adult_mortality.py` and child
 mortality with `scripts/build_census_child_mortality.py` (both require an IPUMS
 account), Brazil's adult mortality with
 `scripts/build_adult_mortality_brazil.py` (downloads IBGE's public microdata,
-about 1.5 GB), India's adult mortality with
+about 1.5 GB), Colombia's with `scripts/build_adult_mortality_colombia.py`
+(reads DANE's department files, about 2.5 GB, downloaded by hand because each
+download is behind a CAPTCHA), India's adult mortality with
 `scripts/build_adult_mortality_survey.py` (requires the DHS household recode
 files), and the general gradient with `scripts/build_general_gradient.py`.
 The census scripts share the asset index in `scripts/asset_index.py`.
@@ -63,6 +68,8 @@ Cite this repository together with the underlying sources:
   the national statistical office that conducted the census (given in the
   `source` column and on each [country page](countries/)).
 - Brazil, adult mortality: IBGE, 2010 Census sample microdata.
+- Colombia, adult mortality: Departamento Administrativo Nacional de
+  Estadística (DANE), Censo Nacional de Población y Vivienda 2018, microdata.
 - India, adult mortality: International Institute for Population Sciences
   (IIPS) and ICF, National Family Health Survey (NFHS-2, NFHS-4, NFHS-5),
   through The DHS Program.

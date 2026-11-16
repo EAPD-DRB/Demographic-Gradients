@@ -104,8 +104,8 @@ the deceased's household.
 ### IPUMS International
 A project at the University of Minnesota that harmonizes census microdata
 provided by national statistical offices. Most census estimates in the library
-use IPUMS samples; Brazil's adult-mortality estimates use IBGE microdata
-directly.
+use IPUMS samples; the adult-mortality estimates for Brazil and Colombia use
+the microdata of IBGE and DANE directly.
 
 ### GDP per capita (PPP)
 Gross domestic product per person at purchasing-power parity, in constant 2021

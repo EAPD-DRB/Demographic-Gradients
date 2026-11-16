@@ -272,9 +272,22 @@ these are done, since they may change the picture for Asia.
   change, needs a ruling): add housing characteristics (floor, wall, roof,
   water, cooking fuel, rooms) to the index, as the DHS wealth index does —
   may rescue the two-group samples, but changes every published census.
-- [ ] **H6. Colombia 2018 census** (DANE, free download): deaths in 2017 by
-  age and sex, with death-certificate flag. Housing and services only (no
-  durable goods), so the index is coarse.
+- [x] **H6. Colombia 2018 census** (DANE; done 2026-11-16). Full count; deaths
+  in 2017; not in IPUMS. `scripts/build_adult_mortality_colombia.py` reads the
+  33 department archives, which are downloaded by hand (each is behind a
+  reCAPTCHA) into `~/Projects/data/co2018/`.
+  - Index: electricity, internet and toilet type (no durables), giving 3 groups.
+    45q15 gradient −1.18; the income rule had predicted −1.07.
+  - Housing-extended index: −1.10 with 5 groups. Reported on the country page
+    as a robustness check; housing items stay out of the index (ruled
+    2026-11-13).
+  - Checks: linkage 100%, about 95% of WDI deaths, unknown age 0.1%.
+    Records equal the households' own counts by construction, so the
+    MORTNUM-style check cannot detect loss.
+  - Found and fixed on the way (ruled 2026-11-13): `wealth_groups` dropped a
+    cut at the maximum score, which merged a real top group. Only Malawi
+    1998 moved: 45q15 −0.139 → −0.120. The H5 two-group rejects stay at 2
+    groups.
 - [ ] **H7. Bangladesh BMMS 2016** (all household deaths in three years,
   ~298,000 households; UNC Dataverse). Access terms and wealth index
   unverified.
@@ -306,6 +319,10 @@ these are done, since they may change the picture for Asia.
   rule and project it on current-dollar GNI growth: switch their income input
   to GDP per capita PPP (constant) and the new coefficients. Age offsets
   unchanged.
+- After H6 (Colombia 2018 added, cut-rule fix, 2026-11-16): intercept 2.610 →
+  2.718, slope −0.378 → −0.391; Philippines −0.88 → −0.90 (PI −1.33 to −0.47),
+  Indonesia −1.01 → −1.03 (PI −1.47 to −0.59); age offsets 15–29 −0.46,
+  30–44 −0.28, 45–59 +0.13, 60–74 +0.44.
 - OG-ETH, OG-PHL: still pass plain `tilt / 100` and one TFR tilt at every
   age; switch to the A1 conversion and the A2 age offsets, then align with
   the C1 recipe once written.

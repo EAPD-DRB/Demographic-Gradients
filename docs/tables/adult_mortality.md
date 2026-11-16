@@ -9,7 +9,11 @@ countries without an estimate use the [general gradient](../methods/general-grad
 
 In censuses, households are ranked by an asset index, the first principal
 component of indicators for household assets and toilet type; the assets used
-differ by census and are recorded in `scripts/build_adult_mortality.py`. In DHS
+differ by census and are recorded in the census scripts
+(`scripts/build_adult_mortality.py`, and `_brazil.py` and `_colombia.py` for the
+two censuses taken from the statistical office's own microdata). Colombia 2018
+is a full count; its deaths are those of calendar year 2017, and its index has
+the fewest items (electricity, internet and toilet type). In DHS
 surveys, households are ranked by the DHS wealth index, and deaths are those
 of the two years before the interview (`scripts/build_adult_mortality_survey.py`). `45q15` is the probability
 of dying between ages 15 and 60; `mx` is the age-specific death rate for the
@@ -23,12 +27,18 @@ weighted death records are compared with that number within each wealth group;
 `scripts/build_adult_mortality.py` prints the comparison for every sample.
 Uniform under-recording does not affect a gradient; under-recording that varies
 with wealth does. The check could not be made for South Africa 2001 or Côte
-d'Ivoire 1998, which do not record `MORTNUM`. The following samples are not
+d'Ivoire 1998, which do not record `MORTNUM`. In Colombia 2018 the death records
+and the household's count of deaths come from the same questionnaire and agree
+exactly, so the check is satisfied by construction and cannot detect lost
+records. The following samples are not
 published, with the evidence recorded in the script: South Africa 2011,
 Mozambique 2007, Nepal 2001 and El Salvador 2007 (death records missing
 unevenly across wealth groups); the IPUMS supplement for Brazil 2010 (about
 half of the deaths the census reports, with the shortfall concentrated in
 wealthier households; the Brazil estimates below use IBGE's own microdata);
+Benin 1992 and 2002, Guinea 1983, Indonesia 1976, Lesotho 1996, Malawi 1987,
+Mali 1987 and 1998 and El Salvador 1992 (too few deaths, fewer than three
+wealth groups, or death records missing unevenly);
 Burkina Faso 1996 (deaths cannot be assigned to households reliably); Rwanda
 2002 (only two wealth groups); and Cambodia 2008 (held pending review). Of the
 DHS surveys with a household-deaths module, India NFHS-1 (1992–93) is not
@@ -142,16 +152,16 @@ Rates are per 1,000.
 | Cote d'Ivoire | 1998 | census | female | 15–29 | mx | −0.93 | 2.35 | 1,219 | 100% |
 | Cote d'Ivoire | 1998 | census | female | 30–44 | mx | −0.69 | 1.75 | 1,055 | 100% |
 | Cote d'Ivoire | 1998 | census | female | 15–59 | 45q15 | −0.45 | 1.41 | 2,939 | 100% |
-| Malawi | 1998 | census | all | 15–29 | mx | −0.42 | 1.51 | 2,764 | 100% |
-| Malawi | 1998 | census | all | 30–44 | mx | −0.31 | 1.37 | 2,204 | 100% |
-| Malawi | 1998 | census | all | 45–59 | mx | −0.01 | 1.03 | 1,412 | 100% |
-| Malawi | 1998 | census | all | 15–59 | 45q15 | −0.14 | 1.17 | 6,380 | 100% |
-| Malawi | 1998 | census | male | 15–29 | mx | −0.58 | 1.71 | 1,507 | 100% |
-| Malawi | 1998 | census | male | 30–44 | mx | −0.52 | 1.63 | 1,182 | 100% |
-| Malawi | 1998 | census | male | 15–59 | 45q15 | −0.27 | 1.32 | 3,514 | 100% |
-| Malawi | 1998 | census | female | 15–29 | mx | −0.26 | 1.34 | 1,257 | 100% |
-| Malawi | 1998 | census | female | 30–44 | mx | −0.10 | 1.17 | 1,022 | 100% |
-| Malawi | 1998 | census | female | 15–59 | 45q15 | −0.01 | 1.03 | 2,866 | 100% |
+| Malawi | 1998 | census | all | 15–29 | mx | −0.34 | 1.47 | 2,764 | 100% |
+| Malawi | 1998 | census | all | 30–44 | mx | −0.27 | 1.36 | 2,204 | 100% |
+| Malawi | 1998 | census | all | 45–59 | mx | −0.01 | 1.04 | 1,412 | 100% |
+| Malawi | 1998 | census | all | 15–59 | 45q15 | −0.12 | 1.16 | 6,380 | 100% |
+| Malawi | 1998 | census | male | 15–29 | mx | −0.46 | 1.62 | 1,507 | 100% |
+| Malawi | 1998 | census | male | 30–44 | mx | −0.47 | 1.61 | 1,182 | 100% |
+| Malawi | 1998 | census | male | 15–59 | 45q15 | −0.24 | 1.31 | 3,514 | 100% |
+| Malawi | 1998 | census | female | 15–29 | mx | −0.23 | 1.34 | 1,257 | 100% |
+| Malawi | 1998 | census | female | 30–44 | mx | −0.07 | 1.15 | 1,022 | 100% |
+| Malawi | 1998 | census | female | 15–59 | 45q15 | −0.00 | 1.03 | 2,866 | 100% |
 | Sudan | 2008 | census | all | 15–29 | mx | −1.09 | 2.19 | 7,995 | 100% |
 | Sudan | 2008 | census | all | 30–44 | mx | −0.75 | 1.72 | 5,739 | 100% |
 | Sudan | 2008 | census | all | 45–59 | mx | −0.10 | 1.09 | 3,980 | 100% |
@@ -187,6 +197,21 @@ Rates are per 1,000.
 | Brazil | 2010 | census | female | 45–59 | mx | −1.02 | 2.36 | 6,881 | 100% |
 | Brazil | 2010 | census | female | 60–74 | mx | −0.33 | 1.30 | 12,148 | 100% |
 | Brazil | 2010 | census | female | 15–59 | 45q15 | −1.01 | 2.34 | 12,060 | 100% |
+| Colombia | 2018 | census | all | 15–29 | mx | −1.48 | 2.48 | 20,618 | 100% |
+| Colombia | 2018 | census | all | 30–44 | mx | −1.48 | 2.48 | 19,529 | 100% |
+| Colombia | 2018 | census | all | 45–59 | mx | −1.05 | 1.89 | 30,967 | 100% |
+| Colombia | 2018 | census | all | 60–74 | mx | −0.65 | 1.49 | 53,773 | 100% |
+| Colombia | 2018 | census | all | 15–59 | 45q15 | −1.18 | 2.06 | 71,114 | 100% |
+| Colombia | 2018 | census | male | 15–29 | mx | −1.39 | 2.31 | 15,917 | 100% |
+| Colombia | 2018 | census | male | 30–44 | mx | −1.37 | 2.28 | 13,252 | 100% |
+| Colombia | 2018 | census | male | 45–59 | mx | −0.76 | 1.55 | 18,111 | 100% |
+| Colombia | 2018 | census | male | 60–74 | mx | −0.37 | 1.23 | 30,415 | 100% |
+| Colombia | 2018 | census | male | 15–59 | 45q15 | −1.00 | 1.81 | 47,280 | 100% |
+| Colombia | 2018 | census | female | 15–29 | mx | −1.63 | 2.84 | 4,701 | 100% |
+| Colombia | 2018 | census | female | 30–44 | mx | −1.58 | 2.70 | 6,277 | 100% |
+| Colombia | 2018 | census | female | 45–59 | mx | −1.33 | 2.29 | 12,856 | 100% |
+| Colombia | 2018 | census | female | 60–74 | mx | −0.89 | 1.77 | 23,358 | 100% |
+| Colombia | 2018 | census | female | 15–59 | 45q15 | −1.38 | 2.38 | 23,834 | 100% |
 | India | 1999 | DHS survey | all | 45–59 | mx | −0.69 | 1.79 | 1,020 | 100% |
 | India | 1999 | DHS survey | all | 60–74 | mx | −0.49 | 1.51 | 2,118 | 100% |
 | India | 1999 | DHS survey | all | 15–59 | 45q15 | −0.73 | 1.84 | 2,422 | 100% |

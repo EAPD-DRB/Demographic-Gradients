@@ -60,6 +60,26 @@ OG_FAMILY = ["South Africa", "Philippines", "Indonesia", "Ethiopia", "Brazil"]
 # Curated per-country provenance notes (narrative is fixed here by design —
 # same rule as the rest of this generator). Keys are country names.
 COUNTRY_NOTES = {
+    "Colombia": [
+        "Adult-mortality estimates use DANE's 2018 census microdata (full count; "
+        "deaths in households during 2017). Colombia 2018 is not in IPUMS "
+        "International. The script is `scripts/build_adult_mortality_colombia.py`; "
+        "DANE's files are free of charge but each download is behind a CAPTCHA, so "
+        "they are fetched by hand (instructions in the script).",
+        "The census records no durable goods, so the asset index uses electricity, "
+        "internet and toilet type only, and supports three wealth groups. An index "
+        "that also uses housing materials, water, sewerage, gas, refuse collection, "
+        "cooking arrangements and crowding gives five groups and a 45q15 gradient of "
+        "−1.10, against −1.18 on the published index. It is reported as a "
+        "robustness check and not published, because the other censuses' indices "
+        "do not use housing items (ruled 2026-11-13).",
+        "Death records and each household's count of its deaths agree exactly, so "
+        "the completeness check used for IPUMS samples cannot detect lost records "
+        "here. The census records 95 percent of the deaths the World Bank estimates "
+        "for 2017; age at death is missing for 0.1 percent. The share of deaths "
+        "with a death certificate rises from 67 percent in the lowest wealth group "
+        "to 88 percent in the highest.",
+    ],
     "Brazil": [
         "Adult-mortality estimates use IBGE's 2010 census sample microdata rather "
         "than the IPUMS mortality supplement. The supplement contains about half "
@@ -842,7 +862,11 @@ countries without an estimate use the [general gradient](../methods/general-grad
 
 In censuses, households are ranked by an asset index, the first principal
 component of indicators for household assets and toilet type; the assets used
-differ by census and are recorded in `scripts/build_adult_mortality.py`. In DHS
+differ by census and are recorded in the census scripts
+(`scripts/build_adult_mortality.py`, and `_brazil.py` and `_colombia.py` for the
+two censuses taken from the statistical office's own microdata). Colombia 2018
+is a full count; its deaths are those of calendar year 2017, and its index has
+the fewest items (electricity, internet and toilet type). In DHS
 surveys, households are ranked by the DHS wealth index, and deaths are those
 of the two years before the interview (`scripts/build_adult_mortality_survey.py`). `45q15` is the probability
 of dying between ages 15 and 60; `mx` is the age-specific death rate for the
@@ -856,12 +880,18 @@ weighted death records are compared with that number within each wealth group;
 `scripts/build_adult_mortality.py` prints the comparison for every sample.
 Uniform under-recording does not affect a gradient; under-recording that varies
 with wealth does. The check could not be made for South Africa 2001 or Côte
-d'Ivoire 1998, which do not record `MORTNUM`. The following samples are not
+d'Ivoire 1998, which do not record `MORTNUM`. In Colombia 2018 the death records
+and the household's count of deaths come from the same questionnaire and agree
+exactly, so the check is satisfied by construction and cannot detect lost
+records. The following samples are not
 published, with the evidence recorded in the script: South Africa 2011,
 Mozambique 2007, Nepal 2001 and El Salvador 2007 (death records missing
 unevenly across wealth groups); the IPUMS supplement for Brazil 2010 (about
 half of the deaths the census reports, with the shortfall concentrated in
 wealthier households; the Brazil estimates below use IBGE's own microdata);
+Benin 1992 and 2002, Guinea 1983, Indonesia 1976, Lesotho 1996, Malawi 1987,
+Mali 1987 and 1998 and El Salvador 1992 (too few deaths, fewer than three
+wealth groups, or death records missing unevenly);
 Burkina Faso 1996 (deaths cannot be assigned to households reliably); Rwanda
 2002 (only two wealth groups); and Cambodia 2008 (held pending review). Of the
 DHS surveys with a household-deaths module, India NFHS-1 (1992–93) is not

@@ -24,7 +24,7 @@ One page per country, giving the values for an OG-Core calibration and the estim
 | [Cameroon](cameroon.md) | Sub-Saharan Africa | DHS 2022 | — | — |
 | [Central African Republic](central-african-republic.md) | Sub-Saharan Africa | MICS 2019 | — | — |
 | [Chad](chad.md) | Sub-Saharan Africa | MICS 2019 | — | — |
-| [Colombia](colombia.md) | Latin America & Caribbean | DHS 2015 | — | — |
+| [Colombia](colombia.md) | Latin America & Caribbean | DHS 2015 | 2018 | — |
 | [Comoros](comoros.md) | Sub-Saharan Africa | DHS 2012 | — | — |
 | [Congo](congo.md) | Sub-Saharan Africa | MICS 2016 | — | — |
 | [Congo Democratic Republic](congo-democratic-republic.md) | Sub-Saharan Africa | DHS 2023 | — | — |

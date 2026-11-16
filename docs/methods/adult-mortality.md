@@ -18,8 +18,9 @@ deceased. These records, linked to the household's assets, are the basis of
 the estimates.
 
 - **Censuses.** Samples come from IPUMS International; Brazil's come from
-  IBGE's 2010 census sample microdata. The reference period is usually the
-  previous twelve months.
+  IBGE's 2010 census sample microdata, and Colombia's from DANE's 2018 census
+  microdata (a full count). The reference period is usually the previous
+  twelve months; in Colombia it is calendar year 2017.
 - **DHS surveys.** India's National Family Health Survey records deaths of
   usual household members since a fixed date several years before the
   interview, with sex, age and month and year of death. The estimates use the
@@ -54,8 +55,11 @@ characteristics, divided into quintiles of the household population.
 
 In censuses, wealth groups are formed by cutting the index at the values closest to the
 20th, 40th, 60th and 80th percentiles of its distribution over the household
-population. Where many households share a score, cut points can coincide or
-fall at the minimum or maximum, and are dropped; a group holding less than 10
+population; a household whose score equals a cut point belongs to the group
+above it. Where many households share a score, cut points can coincide, and
+are then dropped; so is a cut at the minimum score, which would leave the
+lowest group empty. A cut at the maximum is kept: it separates the households
+with the highest score into a group of their own. A group holding less than 10
 percent of the population is merged with its smaller neighbour. The number of
 groups therefore depends on the asset distribution (`groups` column): fewer
 than five where many households share the same index value, as where most own
@@ -107,11 +111,25 @@ are retained in `scripts/build_adult_mortality.py` with `publish=False`.
 | Brazil 2010 (IPUMS supplement) | About half of the deaths the census reports, with the shortfall concentrated in wealthier households; Brazil's estimates use IBGE's own microdata instead |
 | Burkina Faso 1996 | Death records identify the dwelling, not the household, so deaths cannot be assigned to households reliably |
 | Rwanda 2002 | Only two wealth groups |
+| Benin 1992, Lesotho 1996 | Fewer than 900 adult death records |
+| Benin 2002, Guinea 1983, Indonesia 1976, Malawi 1987, Mali 1987 and 1998 | Too few recorded assets for three wealth groups |
+| El Salvador 1992 | Death records short in the richer groups, and some not linked to a household |
 | Cambodia 2008 | Held pending review; it passes the checks |
 
 Brazil's estimates are produced by `scripts/build_adult_mortality_brazil.py`,
 which downloads the 2010 census sample microdata from IBGE's public server
 and applies the same index and rules.
+
+Colombia's estimates are produced by `scripts/build_adult_mortality_colombia.py`
+from DANE's 2018 census microdata, which are free of charge but are downloaded
+by hand (each department file is behind a CAPTCHA). The census records no
+durable goods, so its index uses electricity, internet and toilet type, the
+fewest items of any census in the library. Each household's count of its
+deaths is taken from the same questionnaire as the death records and agrees
+with them exactly, so the completeness check cannot detect lost records; the
+national envelope check is the main test of completeness. The script also
+prints, for comparison only, the gradient on an index that adds housing
+materials and services; the two are similar ([country page](../countries/colombia.md)).
 
 ### Surveys
 

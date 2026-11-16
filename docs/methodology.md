@@ -58,7 +58,8 @@ refrigerator or a television) and one for each type of toilet. The assets
 available differ by census. The index is cut at the values closest to the
 20th, 40th, 60th and 80th percentiles of its distribution over the household
 population. Where many households have the same score, cut points can
-coincide or fall at the minimum or maximum, and are dropped; a group holding
+coincide, and are then dropped; a cut at the lowest score, which would leave
+the lowest group empty, is also dropped. A group holding
 less than 10 percent of the population is merged with its smaller neighbour.
 A census may therefore yield three, four or five groups; one that yields fewer
 than three is not used. Because assets are measured after the death, ranking
@@ -123,8 +124,9 @@ respondents produced gradients of implausible sign. The library therefore uses
 censuses and surveys that record deaths of household members during a recent
 reference period alongside the household's characteristics
 ([details](methods/adult-mortality.md)). Census samples come from IPUMS
-International, and for Brazil from IBGE's 2010 census sample microdata; the
-reference period is usually twelve months. Survey estimates come from India's
+International, for Brazil from IBGE's 2010 census sample microdata, and for
+Colombia from DANE's 2018 census microdata; the reference period is usually
+twelve months (calendar year 2017 for Colombia). Survey estimates come from India's
 National Family Health Survey, using deaths in the two years before the
 interview, with households ranked by the DHS wealth quintiles.
 
