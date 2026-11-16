@@ -25,7 +25,7 @@ it.
 |---|---|---|---|---|
 | Fertility, by age of mother | `fert_gradient` | DHS, MICS | 96 | 1.88 (TFR); 3.72 at ages 15–19 |
 | Infant mortality | `infmort_gradient` | DHS, MICS | 88 | 1.66 |
-| Adult mortality (45q15) | `mort_gradient` | household-death records (censuses; DHS for India) | 17; other countries through the general gradient | 1.46 |
+| Adult mortality (45q15) | `mort_gradient` | household-death records (censuses; household surveys for India and Bangladesh) | 17; other countries through the general gradient | 1.46 |
 | Income distribution of immigrants | `imm_pctiles` | not provided | — | — |
 <!-- END AUTO-GENERATED -->
 
@@ -116,7 +116,9 @@ its GDP per capita, given on its country page with the prediction interval.
 Please cite this repository together with the underlying sources: the DHS
 Program and UNICEF (MICS) for fertility and child mortality, and IPUMS International (Ruggles et
 al., doi:10.18128/D020.V7.7) with the national statistical office for
-census-based estimates ([details](docs/sources.md)).
+census-based estimates; adult-mortality rows taken directly from a statistical
+office or survey cite the source named in their `source` column (IBGE, DANE,
+IIPS and the DHS Program, NIPORT) ([details](docs/sources.md#citation)).
 
 ## Maintenance
 

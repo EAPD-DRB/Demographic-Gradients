@@ -104,8 +104,8 @@ offsets**; a country's fertility gradient at age *a* is its TFR gradient plus
 the offset for *a*. In a comparison over consecutive surveys of the same
 country, the pooled offsets (estimated without that country) predicted the
 next survey's age pattern considerably better than a single TFR gradient. The
-country's own previous survey performed about as well overall, better at
-15–24 and worse at 35–44. Pooled offsets are used because they are available
+country's own previous survey performed about as well overall, better below
+age 30 and worse from age 35. Pooled offsets are used because they are available
 for every country and age; the 45–49 offset rests on fewer countries than the
 others ([details](methods/fertility-by-age.md)).
 
@@ -176,11 +176,9 @@ household, the weighted death records are compared with that number within
 each wealth group; the build script prints the comparison for every such
 sample, and samples in which the ratio varies with wealth are not published.
 The check cannot be made for South Africa 2001 or Côte d'Ivoire 1998, which do
-not record that number. South Africa 2011, Mozambique 2007, Nepal 2001,
-El Salvador 2007 and the IPUMS supplement for Brazil 2010 are not published on
-these grounds; Burkina Faso 1996 is not published because its deaths cannot be
-assigned to households reliably, Rwanda 2002 because it yields two wealth
-groups. Censuses and surveys also
+not record that number. The samples not published, on these and other grounds,
+are listed with the reasons on the
+[adult-mortality page](methods/adult-mortality.md#samples-not-published). Censuses and surveys also
 miss deaths that dissolve a household and deaths in institutions.
 
 Survey records are part of the household interview, so no records are lost
@@ -200,7 +198,8 @@ in constant international dollars (World Bank), in the census or survey year:
 the conventional measure for comparing living standards across countries and
 over time. Census and survey
 observations enter with equal weight. Most observations are African censuses;
-the others are Brazil's 2010 census and India's surveys. The rule was selected
+the others are Latin American and Asian censuses and South Asian surveys
+([the list](methods/general-gradient.md)). The rule was selected
 over a single pooled value and over regional medians by leave-one-country-out
 prediction error, all three scored on the same observations. Standard errors
 and confidence intervals are conventional OLS ones. For a country without its
@@ -260,6 +259,7 @@ updated.
 
 Asset rank is used as a proxy for lifetime income; no source distinguishes
 groups within the richest quintile; some surveys are old; older-age
-adult-mortality estimates are uncertain; the only Asian adult-mortality
-estimates are India's; and no sampling uncertainty is published. See
+adult-mortality estimates are uncertain; Asian adult-mortality estimates are
+few, with none for East Asia; and the standard errors published cover sampling
+variability only. See
 [sources, citation and limitations](sources.md).

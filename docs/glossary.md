@@ -14,6 +14,10 @@ countries and indicators. For 45q15, which is a probability rather than a
 rate, the gradient is fitted to the cumulative death rate it implies (see
 [45q15](#45q15)). It is the `slope` column in the data files.
 
+### Tilt
+An older name for the wealth gradient, kept in some file and column names
+(`fertility_age_tilts.csv`, `tilt_45q15`).
+
 ### Low/high ratio
 The rate in the lowest wealth group divided by the rate in the highest, as in
 DHS reports. For census estimates with fewer than five groups, it is not
@@ -39,6 +43,30 @@ estimated across censuses and surveys, used for countries without their own
 estimate. See
 [the general gradient](methods/general-gradient.md).
 
+### Prediction interval
+The range within which a single country's gradient is expected to fall, with
+95 percent probability, given its income. It is reported with every value read
+from the general gradient, and is much wider than the confidence interval of
+the fitted line, because countries scatter around the line.
+
+### Leave-one-country-out
+A test of how well a rule predicts a country it has not seen: the rule is
+fitted without the country and then used to predict it. The mean absolute
+error of these predictions is the measure used to choose between candidate
+rules.
+
+### Standard error (`se`)
+The sampling variability of an adult-mortality gradient: a cluster bootstrap
+for surveys, a Poisson approximation from the number of deaths in each wealth
+group for censuses. It does not cover errors in the wealth ranking or in the
+recording of deaths.
+
+### Regional median
+The median gradient of the countries of a region, used for a country with no
+survey of the indicator. Regions are those of the DHS Program (countries
+surveyed only by MICS, and South Sudan, are assigned one). The general
+gradient's comparison rule uses United Nations subregions instead.
+
 ## Wealth ranking
 
 ### Wealth quintile
@@ -55,6 +83,16 @@ censuses an index built the same way, the first principal component of
 indicators for durable goods and amenities (for example electricity, a
 refrigerator, a television or a car) and the type of toilet. Assets reflect
 longer-term economic status better than current income.
+
+### Wealth group share
+The share of the population in a census wealth group (`share1`–`share5`).
+Many households share an asset score, so census groups are not exactly
+quintiles; each group is placed at the midpoint of its share on the 0–1 wealth
+rank.
+
+### De jure population
+The usual residents of a household, whether or not present on the night
+before the interview. Survey death rates use it as the population at risk.
 
 ## Indicators
 
@@ -103,10 +141,11 @@ offices with support from UNICEF. Their reports include fertility and child
 mortality by wealth quintile, computed with methods close to those of the DHS.
 
 ### Household-death records
-Questions in some censuses, and in a few DHS-type surveys such as India's
-National Family Health Survey, on deaths of household members during a recent
-period (usually the previous twelve months in censuses; several years in the
-Indian surveys, of which the library uses the last two), recorded alongside
+Questions in some censuses, and in a few surveys (India's National Family
+Health Survey and Bangladesh's Maternal Mortality and Health Care Survey), on
+deaths of household members during a recent period (usually the previous
+twelve months in censuses; several years in the surveys, of which the library
+uses the last two), recorded alongside
 the household's characteristics. They are the source for adult mortality by
 wealth, which sibling histories cannot measure because they do not identify
 the deceased's household.
@@ -128,6 +167,28 @@ comparable over time. The income measure of the general gradient.
 Gross national income per person in current US dollars (World Bank, Atlas
 method). Used by the World Bank to classify countries by income group; kept in
 the library for reference.
+
+### Completeness check
+A census test that the per-death records are not missing unevenly across
+wealth groups: the records are compared with each household's own count of
+its deaths (`MORTNUM` in IPUMS), within each group. Even loss leaves a
+gradient unchanged; loss that varies with wealth biases it.
+
+### Envelope check
+The census's recorded deaths compared with the national total implied by the
+World Bank's crude death rate and population. It measures overall coverage,
+which does not affect a gradient if it is even across wealth groups.
+
+### Linked share
+The share of a census's death records matched to a household with asset
+information (`linked_share`).
+
+### Survey names
+NFHS: India's National Family Health Survey (a DHS survey). NDHS, IDHS: the
+national DHS surveys of the Philippines and Indonesia. BMMS: Bangladesh
+Maternal Mortality and Health Care Survey. FBH, SBH: full birth history and
+summary birth history, the direct and indirect methods of estimating child
+mortality in MICS surveys.
 
 ## OG-Core
 

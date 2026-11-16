@@ -80,7 +80,8 @@ data file: each group is placed at the midpoint of its share. The number of
 groups therefore depends on the asset distribution (`groups` column): fewer
 than five where many households share the same index value, as where most own
 none of the recorded assets. A census yielding fewer than three groups is not
-published. Survey estimates use the five DHS wealth quintiles.
+published. Survey estimates use the five wealth quintiles of each survey's own
+wealth index (the DHS wealth index for India; the BMMS index for Bangladesh).
 
 The 45q15 gradient is computed from the death rates of three 15-year age
 bands. Computing it instead from nine 5-year bands, which would remove any
@@ -129,7 +130,9 @@ for every sample; samples in which the ratio varies with wealth are not
 published. The check cannot be made for South Africa 2001 or Côte d'Ivoire
 1998, which have no `MORTNUM`.
 
-The following samples are not published. Their configuration and the evidence
+### Samples not published
+
+The following census samples are not published. Their configuration and the evidence
 are retained in `scripts/build_adult_mortality.py` with `publish=False`.
 
 | Sample | Reason |

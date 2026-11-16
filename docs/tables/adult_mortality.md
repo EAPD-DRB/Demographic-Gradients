@@ -37,22 +37,9 @@ with wealth does. The check could not be made for South Africa 2001 or Côte
 d'Ivoire 1998, which do not record `MORTNUM`. In Colombia 2018 the death records
 and the household's count of deaths come from the same questionnaire and agree
 exactly, so the check is satisfied by construction and cannot detect lost
-records. The following samples are not
-published, with the evidence recorded in the script: South Africa 2011,
-Mozambique 2007, Nepal 2001 and El Salvador 2007 (death records missing
-unevenly across wealth groups); the IPUMS supplement for Brazil 2010 (about
-half of the deaths the census reports, with the shortfall concentrated in
-wealthier households; the Brazil estimates below use IBGE's own microdata);
-Malawi 1998 (its three asset items do not rank Malawian households by wealth);
-Benin 1992 and 2002, Guinea 1983, Indonesia 1976, Lesotho 1996, Malawi 1987,
-Mali 1987 and 1998 and El Salvador 1992 (too few deaths, fewer than three
-wealth groups, or death records missing unevenly);
-Burkina Faso 1996 (deaths cannot be assigned to households reliably); and
-Rwanda 2002 (only two wealth groups). Of the
-DHS surveys with a household-deaths module, India NFHS-1 (1992–93) is not
-published because its data file contains no age at death, and Pakistan 2006–07
-because only the subsample with asset data can be ranked, and it holds too few
-deaths.
+records. Samples that fail these checks are not published; they are listed
+with the reasons on the
+[adult-mortality page](../methods/adult-mortality.md#samples-not-published).
 
 Age-band rates (`mx`) and 45q15 are published only where they rest on at least
 900 death records; `Deaths` gives the number of records behind each estimate.

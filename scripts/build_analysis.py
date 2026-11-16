@@ -137,8 +137,9 @@ COUNTRY_NOTES = {
         "registration) and uses the same asset index as the other censuses.",
         "The DHS survey (1996) predates the census series. The census estimates "
         "show the child-mortality gradient becoming considerably less steep between "
-        "1991 and 2010 (child-mortality table above); the census value is therefore used for "
-        "`infmort_gradient`.",
+        "1991 and 2010 (child-mortality table above). The census value is used for "
+        "`infmort_gradient` provisionally; whether to use it or the 1996 DHS infant "
+        "gradient is awaiting a ruling ([ROADMAP](../../ROADMAP.md)).",
         "Census child-mortality estimates are published on two asset indices "
         "(`index` column): `full`, using all assets in each census, and `common`, "
         "using only electricity, refrigerator, television, radio and car, which all "
@@ -191,7 +192,7 @@ COUNTRY_NOTES = {
         "men), +0.06 (rural women) and −0.45 (rural men), mean −0.32. These are for "
         "ages 30–80, where gradients are weaker than in 45q15 (see the age offsets of "
         "the general gradient), and each rests on a few hundred deaths; they are "
-        "consistent with the general gradient but too imprecise to replace it. By a "
+        "flatter than the general gradient, as expected at these ages, but too imprecise to test it. By a "
         "rough calculation from the sample size and national mortality, the "
         "survey's own microdata would hold fewer than the 900 deaths at ages 15–59 "
         "needed for a publishable estimate.",
@@ -324,6 +325,7 @@ def census_child_mortality():
             "f9100": float(ff[ff.year == 2000].slope.iloc[0] - ff[ff.year == 1991].slope.iloc[0]),
             "c9100": float(cc[cc.year == 2000].slope.iloc[0] - cc[cc.year == 1991].slope.iloc[0]),
             "n_common": len(str(cc.asset_vars.iloc[0]).split()),
+            "c_last": int(cc.year.iloc[-1]) if len(cc) else 0,
             "check": next((x for x in f["dhs_check"] if isinstance(x, str) and x), ""),
             "df": d}
 
@@ -543,6 +545,13 @@ ages 1–4 gradient is predicted with a mean absolute error of
     comp_txt = ", ".join(parts[:-1]) + " and " + parts[-1] if len(parts) > 1 else "".join(parts)
     multi = [c for c, ys, _ in within_country(amr) if c in set(pts.get("country", []))]
     multi_txt = ", ".join(f"{c} {len(ys)}" for c, ys, _ in within_country(amr) if c in multi)
+    _fit = set(zip(pd.read_csv(DATA / "general_gradient_points.csv").dropna(subset=["gdp_ppp"])["country"],
+                   pd.read_csv(DATA / "general_gradient_points.csv").dropna(subset=["gdp_ppp"])["year"]))
+    _q = amr[amr["measure"] == "45q15"][["country", "year"]].drop_duplicates()
+    _missing = [f"{c} {int(y)}" for c, y in zip(_q["country"], _q["year"]) if (c, y) not in _fit]
+    no_income_txt = (f" {and_join(_missing)} {'is' if len(_missing) == 1 else 'are'} not in the "
+                     "fit: the World Bank has no GDP per capita figure for "
+                     f"{'it' if len(_missing) == 1 else 'them'}." if _missing else "")
     series = within_country(amr)
     series_txt = "".join(
         f" In {c}, the gradient was "
@@ -705,7 +714,7 @@ or let it follow the income relationship; the two bracket the evidence.
 
 The rule is estimated on observations with GDP per capita (PPP) between about
 ${round(pts["gdp_ppp"].min(), -2):,.0f} and ${round(pts["gdp_ppp"].max(), -3):,.0f} and should not be extrapolated beyond that range. The
-{n_fit_gg} observations are {comp_txt}. The only Southeast Asian observation is
+{n_fit_gg} observations are {comp_txt}.{no_income_txt} The only Southeast Asian observation is
 Cambodia 2008, a thin census, and there is none for East Asia, so predictions
 for the Philippines or Indonesia rest largely on a relationship estimated
 outside their region.
@@ -1261,22 +1270,9 @@ with wealth does. The check could not be made for South Africa 2001 or Côte
 d'Ivoire 1998, which do not record `MORTNUM`. In Colombia 2018 the death records
 and the household's count of deaths come from the same questionnaire and agree
 exactly, so the check is satisfied by construction and cannot detect lost
-records. The following samples are not
-published, with the evidence recorded in the script: South Africa 2011,
-Mozambique 2007, Nepal 2001 and El Salvador 2007 (death records missing
-unevenly across wealth groups); the IPUMS supplement for Brazil 2010 (about
-half of the deaths the census reports, with the shortfall concentrated in
-wealthier households; the Brazil estimates below use IBGE's own microdata);
-Malawi 1998 (its three asset items do not rank Malawian households by wealth);
-Benin 1992 and 2002, Guinea 1983, Indonesia 1976, Lesotho 1996, Malawi 1987,
-Mali 1987 and 1998 and El Salvador 1992 (too few deaths, fewer than three
-wealth groups, or death records missing unevenly);
-Burkina Faso 1996 (deaths cannot be assigned to households reliably); and
-Rwanda 2002 (only two wealth groups). Of the
-DHS surveys with a household-deaths module, India NFHS-1 (1992–93) is not
-published because its data file contains no age at death, and Pakistan 2006–07
-because only the subsample with asset data can be ranked, and it holds too few
-deaths.
+records. Samples that fail these checks are not published; they are listed
+with the reasons on the
+[adult-mortality page](../methods/adult-mortality.md#samples-not-published).
 
 Age-band rates (`mx`) and 45q15 are published only where they rest on at least
 900 death records; `Deaths` gives the number of records behind each estimate.
@@ -1614,6 +1610,17 @@ def write_country_pages(latest, amr, ccm):
     return countries
 
 
+def reversals(amr):
+    """Estimates whose gradient is positive at the oldest band, among those with two or more bands."""
+    out = []
+    for (c, y), g in amr[amr["measure"] == "mx"].groupby(["country", "year"]):
+        g = (g[g["sex"] == "all"] if (g["sex"] == "all").any() else
+             g[g["sex"].isin(["male", "female"])]).groupby("age_lo")["slope"].mean().sort_index()
+        if len(g) > 1 and g.iloc[-1] > 0:
+            out.append((c, int(y), g.index[0] == 15))
+    return out
+
+
 def age_fade(amr):
     """Estimates at two or more ages (both sexes): how many weaken / reverse."""
     mx = amr[amr["measure"] == "mx"]
@@ -1636,6 +1643,10 @@ def age_fade(amr):
 
 def main():
     lib, latest = load()
+    _extra = [f"{c} {y}" for c, y, has15 in reversals(pd.read_csv(DATA / "adult_mortality_gradients.csv"))
+              if not has15]
+    rev_extra = (f" (as it is in {', '.join(_extra)}, which has no estimate at ages 15–29)"
+                 if _extra else "")
     tfr, u5, imr = headline(latest, "TFR"), headline(latest, "U5MR"), headline(latest, "IMR")
     # lib has one row per survey x indicator; a survey is a country-year-source
     n_by_src = lib.groupby("source").apply(lambda d: d.groupby(["country", "year"]).ngroups)
@@ -1662,7 +1673,7 @@ def main():
     )
     if amr_h:
         table += (f"| Adult mortality (45q15) | `mort_gradient` | household-death records "
-                  f"(censuses; DHS for India) | {amr_h['n']}; other countries through the general gradient | "
+                  f"(censuses; household surveys for India and Bangladesh) | {amr_h['n']}; other countries through the general gradient | "
                   f"{amr_h['ratio']:.2f} |\n")
     table += "| Income distribution of immigrants | `imm_pctiles` | not provided | — | — |"
     readme = replace_between(
@@ -1778,11 +1789,12 @@ under-five mortality rate in the {ccm['vsurvey']} survey.
 The gradient changed from {fmt(ccm['t0'])} in {ccm['y0']} to {fmt(ccm['t1'])} in
 {ccm['y1']}: child mortality fell in all groups, and most in the poorest. On an
 index restricted to the {ccm['n_common']} assets recorded in all three censuses,
-the 1991–2000 change is {fmt(ccm['c9100'])}, compared with {fmt(ccm['f9100'])} on the
-full index, so the change does not stem from the larger asset set of later
-censuses. In 2010 the restricted index separates fewer than three groups, so
-no 2010 value is published on it. For Brazil, the census estimate is used in
-preference to the 1996 survey.
+the change from {ccm['y0']} to {ccm['c_last']} is {fmt(ccm['chg_common'])}, compared with {fmt(ccm['chg_full'])} on
+the full index, so the change does not stem from the larger asset set of later
+censuses. Brazil's country page uses the {ccm['y1']} census value for
+`infmort_gradient`, provisionally: it resembles under-five mortality and
+probably overstates the infant gradient, and the alternative, the 1996 DHS
+infant gradient, is awaiting a ruling ([ROADMAP](ROADMAP.md)).
 """
     if off is not None:
         doc += f"""
@@ -1849,7 +1861,7 @@ per capita rose {india_rise}.
 In {f"all {fade['n']}" if fade['weaker'] == fade['n'] else f"{fade['weaker']} of the {fade['n']}"} censuses and surveys with estimates at ages 15–29
 and at least one older band, the gradient is weaker at the oldest band measured
 than at ages 15–29. In {fade['reversed']} censuses, all with GDP per capita (PPP) of
-${fade['rev_max_gni']:,.0f} or less, it is positive at the oldest band: recorded
+${fade['rev_max_gni']:,.0f} or less, it is positive at the oldest band{rev_extra}: recorded
 death rates rise with household wealth. Two explanations are consistent with
 this: small survival differences where most households are poor, and elderly
 people in poor health moving into better-off households before death. The

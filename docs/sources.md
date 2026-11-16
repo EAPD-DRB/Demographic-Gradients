@@ -47,17 +47,13 @@ uv run scripts/refresh.py
 ```
 
 downloads the DHS data and rebuilds the survey-based files, the OG-Core units
-check, the figures and the generated pages. Census-based files are rebuilt
-separately: adult mortality with `scripts/build_adult_mortality.py` and child
-mortality with `scripts/build_census_child_mortality.py` (both require an IPUMS
-account), Brazil's adult mortality with
-`scripts/build_adult_mortality_brazil.py` (downloads IBGE's public microdata,
-about 1.5 GB), Colombia's with `scripts/build_adult_mortality_colombia.py`
-(reads DANE's department files, about 2.5 GB, downloaded by hand because each
-download is behind a CAPTCHA), India's adult mortality with
-`scripts/build_adult_mortality_survey.py` (requires the DHS household recode
-files, and for Bangladesh the BMMS household file), and the general gradient with `scripts/build_general_gradient.py`.
-The census scripts share the asset index in `scripts/asset_index.py`.
+check, the figures and the generated pages. The adult-mortality estimates, the
+census child mortality and the general gradient are rebuilt by their own
+scripts, which need the microdata: IPUMS census samples (free registration),
+IBGE's and DANE's census files (free; DANE's are downloaded by hand), the DHS
+household recode files for India (free registration and project approval) and
+the BMMS household file for Bangladesh (open). [Files](files.md) lists every
+script and the order of a full rebuild.
 
 ## Citation
 

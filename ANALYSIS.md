@@ -94,11 +94,12 @@ under-five mortality rate in the Brazil 1996 DHS survey.
 The gradient changed from −1.81 in 1991 to −0.93 in
 2010: child mortality fell in all groups, and most in the poorest. On an
 index restricted to the 5 assets recorded in all three censuses,
-the 1991–2000 change is 0.46, compared with 0.41 on the
-full index, so the change does not stem from the larger asset set of later
-censuses. In 2010 the restricted index separates fewer than three groups, so
-no 2010 value is published on it. For Brazil, the census estimate is used in
-preference to the 1996 survey.
+the change from 1991 to 2010 is 1.01, compared with 0.88 on
+the full index, so the change does not stem from the larger asset set of later
+censuses. Brazil's country page uses the 2010 census value for
+`infmort_gradient`, provisionally: it resembles under-five mortality and
+probably overstates the infant gradient, and the alternative, the 1996 DHS
+infant gradient, is awaiting a ruling ([ROADMAP](ROADMAP.md)).
 
 ## Fertility by age of mother
 
@@ -152,7 +153,7 @@ per capita rose by a factor of 2.4.
 In all 14 censuses and surveys with estimates at ages 15–29
 and at least one older band, the gradient is weaker at the oldest band measured
 than at ages 15–29. In 5 censuses, all with GDP per capita (PPP) of
-$5,093 or less, it is positive at the oldest band: recorded
+$5,093 or less, it is positive at the oldest band (as it is in Bangladesh 2016, which has no estimate at ages 15–29): recorded
 death rates rise with household wealth. Two explanations are consistent with
 this: small survival differences where most households are poor, and elderly
 people in poor health moving into better-off households before death. The

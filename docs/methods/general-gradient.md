@@ -151,7 +151,7 @@ or let it follow the income relationship; the two bracket the evidence.
 
 The rule is estimated on observations with GDP per capita (PPP) between about
 $1,100 and $18,000 and should not be extrapolated beyond that range. The
-19 observations are 12 African censuses, 4 South Asian surveys, 2 Latin American censuses and 1 Southeast Asian census. The only Southeast Asian observation is
+19 observations are 12 African censuses, 4 South Asian surveys, 2 Latin American censuses and 1 Southeast Asian census. South Sudan 2008 is not in the fit: the World Bank has no GDP per capita figure for it. The only Southeast Asian observation is
 Cambodia 2008, a thin census, and there is none for East Asia, so predictions
 for the Philippines or Indonesia rest largely on a relationship estimated
 outside their region.

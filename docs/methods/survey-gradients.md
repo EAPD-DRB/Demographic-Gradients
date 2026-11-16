@@ -47,7 +47,7 @@ the following rules.
   are excluded: such rates are correct as published but rest on very few
   deaths, and rounding alone changes the gradient substantially. No DHS set has
   a rate below 5.
-- **Fertility.** For seven surveys of 2018–19 the compilation files the
+- **Fertility.** For several surveys of 2018–19 the compilation files the
   adolescent birth rate, the column beside the total fertility rate in the
   MICS fertility table, under the total fertility rate. The total fertility
   rates by quintile for these surveys are taken from the reports
@@ -57,7 +57,8 @@ the following rules.
   fertility rate (World Development Indicators) by more than a factor of 1.4,
   the widest discrepancy among DHS surveys, unless the set has been checked
   against its report. A survey's own national rate can differ from the WDI
-  estimate; North Macedonia 2018–19 (1.9 against 1.34) is correct as published.
+  estimate: North Macedonia's 2018–19 survey (labelled 2019 in the data files)
+reports a higher rate than the WDI estimate and is correct as published.
 - **Scope.** Surveys in countries classified by the World Bank as high income
   in the survey year are excluded.
 - **Reference period.** MICS rates by wealth refer to the five or ten years
