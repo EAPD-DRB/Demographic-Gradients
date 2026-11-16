@@ -54,6 +54,14 @@ oriented so that it rises with the number of assets owned
 recorded for each sample in `scripts/build_adult_mortality.py`; for Brazil the
 index uses ten durable goods and the number of bathrooms.
 
+An index built from few items ranks households less precisely, which flattens
+a gradient. Re-estimating each published census with only radio, electricity
+and toilet type, the items of the thinnest index, leaves most gradients nearly
+unchanged and flattens a few by up to about 0.2. In Malawi, however, these three
+items do not rank households by wealth: applied to the 2008 census they reverse
+its gradient. Malawi's 1998 census, which records only these items, is
+therefore not published.
+
 Survey estimates use the DHS wealth index distributed with each survey, an
 index of the same kind built from a larger set of assets and housing
 characteristics, divided into quintiles of the household population.
@@ -126,6 +134,7 @@ are retained in `scripts/build_adult_mortality.py` with `publish=False`.
 | Brazil 2010 (IPUMS supplement) | About half of the deaths the census reports, with the shortfall concentrated in wealthier households; Brazil's estimates use IBGE's own microdata instead |
 | Burkina Faso 1996 | Death records identify the dwelling, not the household, so deaths cannot be assigned to households reliably |
 | Rwanda 2002 | Only two wealth groups |
+| Malawi 1998 | Records only radio, electricity and toilet type, which do not rank Malawian households by wealth: the same items reverse the 2008 census's gradient |
 | Benin 1992, Lesotho 1996 | Fewer than 900 adult death records |
 | Benin 2002, Guinea 1983, Indonesia 1976, Malawi 1987, Mali 1987 and 1998 | Too few recorded assets for three wealth groups |
 | El Salvador 1992 | Death records short in the richer groups, and some not linked to a household |

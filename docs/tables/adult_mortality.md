@@ -38,6 +38,7 @@ Mozambique 2007, Nepal 2001 and El Salvador 2007 (death records missing
 unevenly across wealth groups); the IPUMS supplement for Brazil 2010 (about
 half of the deaths the census reports, with the shortfall concentrated in
 wealthier households; the Brazil estimates below use IBGE's own microdata);
+Malawi 1998 (its three asset items do not rank Malawian households by wealth);
 Benin 1992 and 2002, Guinea 1983, Indonesia 1976, Lesotho 1996, Malawi 1987,
 Mali 1987 and 1998 and El Salvador 1992 (too few deaths, fewer than three
 wealth groups, or death records missing unevenly);
@@ -155,16 +156,6 @@ Rates are per 1,000.
 | Cote d'Ivoire | 1998 | census | female | 15–29 | mx | −0.93 | 2.35 | 1,219 | 100% |
 | Cote d'Ivoire | 1998 | census | female | 30–44 | mx | −0.69 | 1.75 | 1,055 | 100% |
 | Cote d'Ivoire | 1998 | census | female | 15–59 | 45q15 | −0.55 | 1.41 | 2,939 | 100% |
-| Malawi | 1998 | census | all | 15–29 | mx | −0.34 | 1.47 | 2,764 | 100% |
-| Malawi | 1998 | census | all | 30–44 | mx | −0.27 | 1.36 | 2,204 | 100% |
-| Malawi | 1998 | census | all | 45–59 | mx | −0.01 | 1.04 | 1,412 | 100% |
-| Malawi | 1998 | census | all | 15–59 | 45q15 | −0.18 | 1.16 | 6,380 | 100% |
-| Malawi | 1998 | census | male | 15–29 | mx | −0.46 | 1.62 | 1,507 | 100% |
-| Malawi | 1998 | census | male | 30–44 | mx | −0.47 | 1.61 | 1,182 | 100% |
-| Malawi | 1998 | census | male | 15–59 | 45q15 | −0.37 | 1.31 | 3,514 | 100% |
-| Malawi | 1998 | census | female | 15–29 | mx | −0.23 | 1.34 | 1,257 | 100% |
-| Malawi | 1998 | census | female | 30–44 | mx | −0.07 | 1.15 | 1,022 | 100% |
-| Malawi | 1998 | census | female | 15–59 | 45q15 | −0.01 | 1.03 | 2,866 | 100% |
 | Sudan | 2008 | census | all | 15–29 | mx | −1.09 | 2.19 | 7,995 | 100% |
 | Sudan | 2008 | census | all | 30–44 | mx | −0.75 | 1.72 | 5,739 | 100% |
 | Sudan | 2008 | census | all | 45–59 | mx | −0.10 | 1.09 | 3,980 | 100% |

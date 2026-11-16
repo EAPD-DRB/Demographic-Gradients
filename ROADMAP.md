@@ -83,11 +83,25 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
   AGENTS.md calls the least trustworthy numbers here. One documented rule.
   *Validate:* show the effect of each choice on survival from 20 to 65 and on
   life expectancy at 65 by group, so the ruling is made on consequences.
+- [x] **Review A3/A4. Malawi 1998 withdrawn; thin-index check**
+  (2026-11-16).
+  - mw2008a on the 1998 items (radio, electricity, toilet): 45q15 −0.60 →
+    +0.41. The 1998 index does not rank Malawian households, so mw1998a is
+    `publish=False`, and the "Malawi steepened 1998→2008" evidence is
+    withdrawn.
+  - Every other published census on the same thin set moves by −0.14 to
+    +0.23 (mostly flatter). Scripts: `~/.cache/review-work/thin.py`,
+    `malawi.py`.
+  - Rule refitted on 19 observations: 2.959 − 0.431 ln income; Philippines
+    −1.03, Indonesia −1.17.
+  - Within-country evidence is now South Africa 2001→2007 (steeper) and
+    India 1999–2020 (flat).
 - [R] **B2. Updating a stale measurement.** OG-ETH's method: measured tilt plus
   the income rule's change since the census year, then along the model's
   growth path, capped at $10,000 GNI. OG-PHL uses the rule's level directly.
-  *Validate:* backtest on the library's within-country pairs — Malawi
-  1998 → 2008, South Africa 2001 → 2007 (2011 withdrawn in G1) — predicting the later tilt
+  *Validate:* backtest on the library's within-country pairs — South Africa
+  2001 → 2007 and India 1999 → 2015 → 2020 (Malawi 1998 withdrawn
+  2026-11-16; South Africa 2011 in G1) — predicting the later tilt
   from the earlier one plus the rule's change.
 
 ## C. Something calibrations can ingest

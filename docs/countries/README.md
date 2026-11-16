@@ -57,7 +57,7 @@ One page per country, giving the values for an OG-Core calibration and the estim
 | [Lesotho](lesotho.md) | Sub-Saharan Africa | DHS 2023 | 2006 | — |
 | [Liberia](liberia.md) | Sub-Saharan Africa | DHS 2022 | — | — |
 | [Madagascar](madagascar.md) | Sub-Saharan Africa | DHS 2021 | — | — |
-| [Malawi](malawi.md) | Sub-Saharan Africa | DHS 2024 | 1998, 2008 | — |
+| [Malawi](malawi.md) | Sub-Saharan Africa | DHS 2024 | 2008 | — |
 | [Maldives](maldives.md) | South & Southeast Asia | DHS 2016 | — | — |
 | [Mali](mali.md) | Sub-Saharan Africa | DHS 2023 | — | — |
 | [Mauritania](mauritania.md) | Sub-Saharan Africa | DHS 2020 | — | — |

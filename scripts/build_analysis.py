@@ -184,14 +184,12 @@ COUNTRY_NOTES = {
         "affect the gradient, but rate levels are not meaningful.",
     ],
     "Malawi": [
-        "With two censuses (1998 and 2008), Malawi shows the adult-mortality "
-        "gradient steepening as income per capita rose, in line with the income "
-        "relationship described in the general-gradient documentation.",
-        "The 1998 census records only radio, electricity and toilet type. The asset "
-        "index built from them ranks some households with a flush toilet or "
-        "electricity below households with a latrine, so the 1998 wealth ranking "
-        "rests on little information; its estimates should be used with caution. "
-        "The 2008 census is used for `mort_gradient`.",
+        "Adult mortality uses the 2008 census. The 1998 census is not published "
+        "(ruled 2026-11-16): it records only radio, electricity and toilet type, and "
+        "these items do not rank Malawian households by wealth. Applied to the 2008 "
+        "census, the same three items turn its 45q15 gradient from −0.60 (full "
+        "index) to +0.41. The 1998 estimate therefore cannot be compared with 2008 "
+        "as evidence of change over time.",
     ],
     "Mozambique": [
         "The 2007 census includes a household-deaths module but is not published. "
@@ -481,16 +479,7 @@ def write_general_gradient_page(amr):
     gg_mae_i = gg.get("validation.loo_mae_rule_income", float("nan"))
     gg_mae_r = gg.get("validation.loo_mae_rule_region", float("nan"))
     gg_agemae = gg.get("validation.age_offset_mae", float("nan"))
-    mw = amr[(amr.country == "Malawi") & (amr.measure == "45q15")
-             & (amr.sex == "all")].sort_values("year")
-    gg_mw0 = float(mw.slope.iloc[0]) if len(mw) > 1 else float("nan")
-    gg_mw1 = float(mw.slope.iloc[-1]) if len(mw) > 1 else float("nan")
     gg_bsign, gg_babs = ("+" if gg_b >= 0 else NEG), abs(gg_b)
-    _pg = (pd.read_csv(DATA / "general_gradient_points.csv").set_index(["country", "year"])
-           ["gdp_ppp"])
-    mw_g0, mw_g1 = ((_pg.get(("Malawi", int(mw.year.iloc[0])), np.nan),
-                     _pg.get(("Malawi", int(mw.year.iloc[-1])), np.nan))
-                    if len(mw) > 1 else (np.nan, np.nan))
     co = child_offset()
     child_txt = "" if co is None else f"""
 
@@ -532,6 +521,13 @@ ages 1–4 gradient is predicted with a mean absolute error of
     comp_txt = ", ".join(parts[:-1]) + " and " + parts[-1] if len(parts) > 1 else "".join(parts)
     multi = [c for c, ys, _ in within_country(amr) if c in set(pts.get("country", []))]
     multi_txt = ", ".join(f"{c} {len(ys)}" for c, ys, _ in within_country(amr) if c in multi)
+    series = within_country(amr)
+    series_txt = "".join(
+        f" In {c}, the gradient was "
+        + ", ".join(f"{fmt(v)} in {y}" for y, v in ys[:-1]) + f" and {fmt(ys[-1][1])} in {ys[-1][0]}"
+        + (f", while GDP per capita (PPP) rose from about ${gs[0]:,.0f} to ${gs[-1]:,.0f}."
+           if len(gs) and not np.isnan(gs[0]) and not np.isnan(gs[-1]) else ".")
+        for c, ys, gs in series)
     flat_txt = ""
     for c, ys, gs in within_country(amr):
         vals = [v for _, v in ys]
@@ -676,11 +672,9 @@ rule may understate them.
 ## Use over long horizons
 
 Across countries the gradient is steeper at higher income. Whether a
-country's gradient steepens as its own income rises is not established; the
-evidence within countries is limited and mixed. Between Malawi's 1998 and 2008
-censuses the 45q15 gradient moved from {fmt(gg_mw0)} to {fmt(gg_mw1)} as GDP per
-capita (PPP) rose from about ${mw_g0:,.0f} to ${mw_g1:,.0f} (the 1998 wealth ranking rests on only
-three asset variables; see the [Malawi page](../countries/malawi.md)).{flat_txt}
+country's gradient steepens as its own income rises is not established: only
+{NUMWORD.get(len(series), len(series))} countries have more than one estimate, and they do not show a common
+pattern.{series_txt}
 A model projecting a country over several decades can hold the gradient fixed
 or let it follow the income relationship; the two bracket the evidence.
 
@@ -987,6 +981,7 @@ Mozambique 2007, Nepal 2001 and El Salvador 2007 (death records missing
 unevenly across wealth groups); the IPUMS supplement for Brazil 2010 (about
 half of the deaths the census reports, with the shortfall concentrated in
 wealthier households; the Brazil estimates below use IBGE's own microdata);
+Malawi 1998 (its three asset items do not rank Malawian households by wealth);
 Benin 1992 and 2002, Guinea 1983, Indonesia 1976, Lesotho 1996, Malawi 1987,
 Mali 1987 and 1998 and El Salvador 1992 (too few deaths, fewer than three
 wealth groups, or death records missing unevenly);
@@ -1533,9 +1528,9 @@ international $) of $2,000 and
 {fmt(a + b * np.log(10000))} at $10,000. This relationship, the general gradient,
 provides values for countries without their own estimate
 ([details](docs/methods/general-gradient.md)). Within countries the evidence
-is limited and mixed: Malawi's gradient steepened between its 1998 and 2008
-censuses, while India's changed little between 1999 and 2020 as its income per
-capita rose {india_rise}.
+is limited and mixed: South Africa's gradient steepened between its 2001 and
+2007 censuses, while India's changed little between 1999 and 2020 as its income
+per capita rose {india_rise}.
 
 ![Wealth gradient in adult mortality and income per capita](figures/adult_mortality_vs_income.png)
 

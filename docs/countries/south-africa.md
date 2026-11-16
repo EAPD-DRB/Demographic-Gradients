@@ -24,7 +24,7 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 
 | 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |
 |---|---|---|---|---|---|---|
-| −2.00 (DHS 2016) | −2.14 | −2.14 | −1.92 | −1.58 | −1.58 at 60, falling to 0 at 75 | 0 |
+| −2.00 (DHS 2016) | −2.16 | −2.16 | −1.93 | −1.57 | −1.57 at 60, falling to 0 at 75 | 0 |
 
 Ages 1–4 use the country's own gradient in child mortality at ages 1–4 (DHS), or, where there is none, its under-five gradient plus a pooled offset ([details](../methods/general-gradient.md#age-pattern)). Infant mortality (age 0) is `infmort_gradient`, above.
 

@@ -214,12 +214,16 @@ SAMPLES = {
                     drop=["CELL", "COMPUTER"],
                     death_weight=None, age_col="agedyr", age_unknown=[99],
                     nso="Institut National de la Statistique, Cote d'Ivoire"),
-    # mw1998a: a second Malawi census, giving a within-country trend against 2008.
-    # Published with a caveat (ruled 2026-11-11): only radio, electricity and
-    # toilet type are recorded, and the first principal component ranks
-    # flush-toilet and electrified households below latrine households, so the
-    # wealth ranking rests on very little information.
-    "mw1998a": dict(country="Malawi", year=1998, asset_extra=["MORTNUM"],
+    # mw1998a: NOT published (publish=False; ruled 2026-11-16, review A3/A4).
+    # Only radio, electricity and toilet type are recorded, and the first
+    # principal component ranks flush-toilet and electrified households below
+    # latrine households. Test: re-estimating mw2008a on the same three items
+    # turns its 45q15 gradient from -0.60 (full index) to +0.41, so in Malawi
+    # these items do not rank households by wealth. (Across the other published
+    # censuses the same thin index moves the gradient by -0.14 to +0.23.) It
+    # was published with a caveat from 2026-11-11 and cited as within-country
+    # steepening against 2008; both withdrawn.
+    "mw1998a": dict(country="Malawi", year=1998, publish=False, asset_extra=["MORTNUM"],
                     drop=["PHONE", "CELL", "REFRIG", "TV", "COMPUTER"],
                     death_weight=None,
                     nso="National Statistical Office, Malawi"),

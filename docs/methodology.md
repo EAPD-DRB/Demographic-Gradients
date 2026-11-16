@@ -203,8 +203,8 @@ and confidence intervals are conventional OLS ones. For a country without its
 own estimate the rule is reported with a 95% prediction interval, which is
 much wider than the confidence interval of the line because individual
 countries scatter around it. Within countries the evidence on change over time
-is limited: Malawi's gradient steepened between two censuses as income rose,
-while India's changed little over two decades of rising income. The rule is
+is limited: South Africa's gradient steepened between two censuses as income
+rose, while India's changed little over two decades of rising income. The rule is
 spread across age bands by adding the median difference, across estimates,
 between each band's gradient and the 45q15 gradient; these offsets are fitted
 in-sample, and those for ages 45–59 and 60–74 are the least reliable

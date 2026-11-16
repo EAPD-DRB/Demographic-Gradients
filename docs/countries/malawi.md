@@ -24,7 +24,7 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 
 | 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |
 |---|---|---|---|---|---|---|
-| −0.68 (DHS 2024) | −0.97 | −0.97 | −0.75 | −0.41 | −0.41 at 60, falling to 0 at 75 | 0 |
+| −0.68 (DHS 2024) | −0.99 | −0.99 | −0.76 | −0.40 | −0.40 at 60, falling to 0 at 75 | 0 |
 
 Ages 1–4 use the country's own gradient in child mortality at ages 1–4 (DHS), or, where there is none, its under-five gradient plus a pooled offset ([details](../methods/general-gradient.md#age-pattern)). Infant mortality (age 0) is `infmort_gradient`, above.
 
@@ -47,12 +47,10 @@ Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_m
 
 | Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| Census 1998 | −0.18 | −0.34 | −0.27 | −0.01 |  | 4 | 6,380 |
 | Census 2008 | −0.60 | −0.96 | −0.83 | −0.26 |  | 3 | 5,243 |
 
 Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Statistical Office, Malawi.
 
 ## Notes
 
-- With two censuses (1998 and 2008), Malawi shows the adult-mortality gradient steepening as income per capita rose, in line with the income relationship described in the general-gradient documentation.
-- The 1998 census records only radio, electricity and toilet type. The asset index built from them ranks some households with a flush toilet or electricity below households with a latrine, so the 1998 wealth ranking rests on little information; its estimates should be used with caution. The 2008 census is used for `mort_gradient`.
+- Adult mortality uses the 2008 census. The 1998 census is not published (ruled 2026-11-16): it records only radio, electricity and toilet type, and these items do not rank Malawian households by wealth. Applied to the 2008 census, the same three items turn its 45q15 gradient from −0.60 (full index) to +0.41. The 1998 estimate therefore cannot be compared with 2008 as evidence of change over time.

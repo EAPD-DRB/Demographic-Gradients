@@ -134,22 +134,22 @@ household. The library uses censuses that record deaths of household members
 during a recent period, usually the previous year, and, for India and
 Bangladesh, household surveys that record them for the previous two years
 ([methods](docs/methods/adult-mortality.md); [all estimates](docs/tables/adult_mortality.md)).
-Across the 20 censuses and surveys with an income estimate, the gradient in
-45q15 is steeper in richer countries (r = −0.77): the fitted
+Across the 19 censuses and surveys with an income estimate, the gradient in
+45q15 is steeper in richer countries (r = −0.75): the fitted
 gradient is −0.32 at a GDP per capita (PPP, constant 2021
 international $) of $2,000 and
 −1.01 at $10,000. This relationship, the general gradient,
 provides values for countries without their own estimate
 ([details](docs/methods/general-gradient.md)). Within countries the evidence
-is limited and mixed: Malawi's gradient steepened between its 1998 and 2008
-censuses, while India's changed little between 1999 and 2020 as its income per
-capita rose by a factor of 2.4.
+is limited and mixed: South Africa's gradient steepened between its 2001 and
+2007 censuses, while India's changed little between 1999 and 2020 as its income
+per capita rose by a factor of 2.4.
 
 ![Wealth gradient in adult mortality and income per capita](figures/adult_mortality_vs_income.png)
 
 ## Adult mortality by age
 
-In all 15 censuses and surveys with estimates at ages 15–29
+In all 14 censuses and surveys with estimates at ages 15–29
 and at least one older band, the gradient is weaker at the oldest band measured
 than at ages 15–29. In 4 censuses, all with GDP per capita (PPP) of
 $4,446 or less, it is positive at the oldest band: recorded
