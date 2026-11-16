@@ -312,9 +312,19 @@ these are done, since they may change the picture for Asia.
   - Own IFLS microdata (RAND registration) not pursued: a 2007–2014 cohort
     would hold roughly 600–750 deaths at 15–59 (estimated from sample size
     and national mortality, not counted), under MIN_BAND_DEATHS.
-- [ ] **H9. MORTNUM-only IPUMS samples** (Vietnam 1989/1999, Indonesia 2010,
-  Cambodia 2004/2013/2019, Bolivia, Colombia 2005 and others): no age at
-  death, so would need a new all-ages method. Not before H2–H6.
+- [x] **H9. MORTNUM-only IPUMS samples** (Vietnam 1989/1999, Indonesia 2010,
+  Cambodia 2004/2013/2019, Bolivia, Colombia 2005 and others): closed
+  2026-11-16, not usable.
+  - Method tested: an all-ages gradient from household death counts
+    (observed deaths over deaths expected from members' ages, with a pooled
+    age pattern), translated to 45q15 by a line fitted where both exist.
+  - African censuses: 45q15 ≈ 0.115 + 0.985 × all-ages, r 0.83; error
+    leaving one country out 0.17–0.22, no better than the income rule.
+  - Outside Africa, ages hidden: India 1999/2015/2020 predicted
+    −0.56/−0.40/−0.32 (published −0.73/−0.74/−0.73); Bangladesh +0.17
+    (−0.07); Colombia 2018 −0.59 (−1.18). Mean error 0.35, against 0.26 for
+    the income rule, and too flat in 4 of 5.
+  - Exploratory scripts in `~/.cache/h9-work/`.
 
 ## Downstream — not this repo, tracked so they are not lost
 
