@@ -121,7 +121,6 @@ are retained in `scripts/build_adult_mortality.py` with `publish=False`.
 | Benin 1992, Lesotho 1996 | Fewer than 900 adult death records |
 | Benin 2002, Guinea 1983, Indonesia 1976, Malawi 1987, Mali 1987 and 1998 | Too few recorded assets for three wealth groups |
 | El Salvador 1992 | Death records short in the richer groups, and some not linked to a household |
-| Cambodia 2008 | Held pending review; it passes the checks |
 
 Brazil's estimates are produced by `scripts/build_adult_mortality_brazil.py`,
 which downloads the 2010 census sample microdata from IBGE's public server
@@ -170,8 +169,9 @@ pre-pandemic one (see the [India page](../countries/india.md)).
 
 The DHS surveys of the Philippines, Indonesia, Bangladesh, Cambodia, Nepal and
 other Asian countries were examined and have no module recording deaths at all
-ages. India and Bangladesh (through the BMMS, not the DHS) are therefore the
-only Asian countries with an estimate.
+ages. The Asian estimates are therefore India's and Bangladesh's (through the
+BMMS, not the DHS) surveys and Cambodia's 2008 census, the only Southeast Asian
+one, which rests on few deaths and is published for both sexes combined only.
 
 Bangladesh's gradient is close to zero, far less steep than the general
 gradient at its income, although the survey passes every check above and an

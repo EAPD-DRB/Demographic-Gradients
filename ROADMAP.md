@@ -77,15 +77,11 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 
 ## D. Coverage gaps (separate tracks)
 
-- [ ] **D1. An East or Southeast Asian adult-mortality observation.** India
-  (NFHS, H2) is now the only Asian estimate; the Philippines and Indonesia
-  still rest on the income rule. Routes: Vietnam 1999 census (mortality as
-  household-record variables, untried), or published IFLS life tables by
-  consumption quartile (Sudharsanan 2019). Cambodia 2008 passes every check
-  but is held (ruling 2026-11-11, renewed 2026-11-12 until the H review is
-  finished): 1,250 adult death records, no band reaches 900, 45q15 gradient
-  −0.73 (Benin 2013, published, is comparably thin: 1,555 records, 35%
-  coverage).
+- [x] **D1. A Southeast Asian adult-mortality observation** (2026-11-16).
+  Cambodia 2008 published by ruling after the H review: 45q15 −0.73,
+  5 groups, 1,250 records (both sexes only), 48% death coverage, every check
+  passed. The Philippines and Indonesia still rest on the income rule; no
+  usable source exists for them (H8, H9). No East Asian observation.
 - [ ] **D2. `imm_pctiles`** — the lifetime-income distribution of new
   immigrants. Not covered. Scope before building.
 
@@ -356,6 +352,9 @@ these are done, since they may change the picture for Asia.
   slope −0.391 → −0.377, residual SE 0.19 → 0.23; Philippines −0.90 → −0.86
   (PI −1.38 to −0.34), Indonesia −1.03 → −0.98 (PI −1.51 to −0.45); age
   offsets 45–59 +0.14, 60–74 +0.43 (15–29 and 30–44 unchanged).
+- After Cambodia 2008 (2026-11-16): intercept 2.629 → 2.590, slope −0.377 →
+  −0.374; Philippines −0.86 → −0.87 (PI −1.39 to −0.35), Indonesia −0.98 →
+  −0.99 (PI −1.53 to −0.46); age offsets unchanged.
 - OG-ETH, OG-PHL: still pass plain `tilt / 100` and one TFR tilt at every
   age; switch to the A1 conversion and the A2 age offsets, then align with
   the C1 recipe once written.

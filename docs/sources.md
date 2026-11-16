@@ -104,10 +104,11 @@ Cite this repository together with the underlying sources:
   general gradient are pinned with their retrieval date, and a country's
   income should be taken from the same series and vintage where possible.
 - **Regional coverage of adult mortality.** The general gradient is estimated
-  mainly from African censuses, with two Latin American censuses and the
-  surveys of India and Bangladesh;
-  there is no estimate for East or Southeast Asia, so values for those
-  countries rest on a relationship estimated largely outside the region.
+  mainly from African censuses, with two Latin American censuses, one
+  Southeast Asian census (Cambodia 2008, a thin sample) and the surveys of
+  India and Bangladesh; there is no estimate for East Asia, so values for
+  East and Southeast Asian countries rest largely on a relationship estimated
+  outside the region.
 - **Older ages.** Adult-mortality gradients weaken with age and in several
   low-income censuses become positive at older ages. Estimates for these ages
   are the least certain in the library.

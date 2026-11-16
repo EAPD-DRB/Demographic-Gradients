@@ -25,7 +25,7 @@ it.
 |---|---|---|---|---|
 | Fertility, by age of mother | `fert_gradient` | DHS, MICS | 96 | 1.88 (TFR); 3.72 at ages 15–19 |
 | Infant mortality | `infmort_gradient` | DHS, MICS | 88 | 1.66 |
-| Adult mortality (45q15) | `mort_gradient` | household-death records (censuses; DHS for India) | 16; other countries through the general gradient | 1.35 |
+| Adult mortality (45q15) | `mort_gradient` | household-death records (censuses; DHS for India) | 17; other countries through the general gradient | 1.36 |
 | Income distribution of immigrants | `imm_pctiles` | not provided | — | — |
 <!-- END AUTO-GENERATED -->
 

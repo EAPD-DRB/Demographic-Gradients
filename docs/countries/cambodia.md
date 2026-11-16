@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.54, by age as below | DHS 2021, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −1.30 | DHS 2021, infant mortality rate |
-| `mort_gradient` | 2.63 − 0.377 × ln(GDP per capita, PPP) | [general gradient](../methods/general-gradient.md), GDP per capita in constant 2021 international $; for example −0.24 at $2,000 and −0.84 at $10,000, each with a 95% prediction interval of about ±0.5 |
+| `mort_gradient` | −0.73 | census 2008, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -32,6 +32,16 @@ Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey 
 | Infant mortality rate (per 1,000 live births) | DHS 2021 | 22 | 14 | 19 | 14 | 6 | 3.67 | −1.30 |
 | Under-five mortality rate (per 1,000 live births) | DHS 2021 | 28 | 17 | 25 | 18 | 7 | 4.00 | −1.36 |
 
+### Adult mortality from household-death records
+
+Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv); [methods](../methods/adult-mortality.md); estimates by sex in the [full table](../tables/adult_mortality.md)). Blank cells: too few deaths to publish.
+
+| Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
+|---|---|---|---|---|---|---|---|
+| Census 2008 | −0.73 |  |  |  |  | 5 | 1,250 |
+
+Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: National Institute of Statistics, Cambodia.
+
 ## Notes
 
-- The 2008 census includes a household-deaths module and passes the population, linkage and completeness checks. It is held pending review; its 45q15 estimate would rest on about 1,250 death records. Adult mortality uses the general gradient.
+- Adult mortality uses the 2008 census (IPUMS International), the library's only Southeast Asian estimate. It passes the population, linkage and completeness checks, but it is thin: 1,250 death records at ages 15–59, enough for the both-sexes 45q15 gradient but not for estimates by sex or age band. The census records about 48 percent of the deaths expected nationally; the gradient is unaffected if the missing deaths are spread evenly across wealth groups, which cannot be checked. Published by ruling (2026-11-16) after being held while other Asian sources were reviewed.

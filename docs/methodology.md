@@ -159,7 +159,7 @@ not record that number. South Africa 2011, Mozambique 2007, Nepal 2001,
 El Salvador 2007 and the IPUMS supplement for Brazil 2010 are not published on
 these grounds; Burkina Faso 1996 is not published because its deaths cannot be
 assigned to households reliably, Rwanda 2002 because it yields two wealth
-groups, and Cambodia 2008 is held pending review. Censuses and surveys also
+groups. Censuses and surveys also
 miss deaths that dissolve a household and deaths in institutions.
 
 Survey records are part of the household interview, so no records are lost

@@ -174,13 +174,14 @@ SAMPLES = {
     "np2001a": dict(country="Nepal", year=2001, publish=False, asset_extra=["MORTNUM"],
                     drop=["PHONE", "CELL", "REFRIG", "COMPUTER"], death_weight=None,
                     nso="Central Bureau of Statistics, Nepal"),
-    # kh2008a: HELD (publish=False; ruled 2026-11-11, renewed 2026-11-12)
-    # until the new-source review (ROADMAP H) is finished. Passes population (13.40m) and linkage (99.8%); death coverage
-    # 48% of the expected national total; the MORTNUM check passes (the death
-    # file reproduces MORTNUM exactly, ratio 1.00 in every group);
-    # 1,250 death records at 15-59, none of the age bands reaches 900. The
-    # 45q15 gradient is -0.73 (PCA index).
-    "kh2008a": dict(country="Cambodia", year=2008, publish=False,
+    # kh2008a: published by ruling 2026-11-16, after the new-source review
+    # (ROADMAP H; it had been held since 2026-11-11). Passes population
+    # (13.40m) and linkage (99.8%); death coverage 48% of the expected national
+    # total; the MORTNUM check passes (the death file reproduces MORTNUM
+    # exactly, ratio 1.00 in every group); 1,250 death records at 15-59, so
+    # only the both-sexes 45q15 reaches 900 (no sex or age-band rows). The
+    # 45q15 gradient is -0.73 (PCA index, 5 groups).
+    "kh2008a": dict(country="Cambodia", year=2008,
                     asset_extra=["INTERNET", "AUTOS", "MORTNUM"],
                     drop=["REFRIG"], death_weight=None,
                     nso="National Institute of Statistics, Cambodia"),

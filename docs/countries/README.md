@@ -20,7 +20,7 @@ One page per country, giving the values for an OG-Core calibration and the estim
 | [Brazil](brazil.md) | Latin America & Caribbean | DHS 1996 | 2010 | 1991, 2000, 2010 |
 | [Burkina Faso](burkina-faso.md) | Sub-Saharan Africa | DHS 2021 | — | — |
 | [Burundi](burundi.md) | Sub-Saharan Africa | DHS 2016 | — | — |
-| [Cambodia](cambodia.md) | South & Southeast Asia | DHS 2021 | — | — |
+| [Cambodia](cambodia.md) | South & Southeast Asia | DHS 2021 | 2008 | — |
 | [Cameroon](cameroon.md) | Sub-Saharan Africa | DHS 2022 | — | — |
 | [Central African Republic](central-african-republic.md) | Sub-Saharan Africa | MICS 2019 | — | — |
 | [Chad](chad.md) | Sub-Saharan Africa | MICS 2019 | — | — |

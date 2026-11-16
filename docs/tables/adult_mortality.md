@@ -41,8 +41,8 @@ wealthier households; the Brazil estimates below use IBGE's own microdata);
 Benin 1992 and 2002, Guinea 1983, Indonesia 1976, Lesotho 1996, Malawi 1987,
 Mali 1987 and 1998 and El Salvador 1992 (too few deaths, fewer than three
 wealth groups, or death records missing unevenly);
-Burkina Faso 1996 (deaths cannot be assigned to households reliably); Rwanda
-2002 (only two wealth groups); and Cambodia 2008 (held pending review). Of the
+Burkina Faso 1996 (deaths cannot be assigned to households reliably); and
+Rwanda 2002 (only two wealth groups). Of the
 DHS surveys with a household-deaths module, India NFHS-1 (1992–93) is not
 published because its data file contains no age at death, and Pakistan 2006–07
 because only the subsample with asset data can be ranked, and it holds too few
@@ -143,6 +143,7 @@ Rates are per 1,000.
 | Lesotho | 2006 | census | male | 15–59 | 45q15 | −0.29 | 1.28 | 1,270 | 100% |
 | Lesotho | 2006 | census | female | 15–59 | 45q15 | −0.43 | 1.41 | 1,302 | 100% |
 | Benin | 2013 | census | all | 15–59 | 45q15 | −0.57 | 1.75 | 1,555 | 100% |
+| Cambodia | 2008 | census | all | 15–59 | 45q15 | −0.73 | 1.78 | 1,250 | 100% |
 | Cote d'Ivoire | 1998 | census | all | 15–29 | mx | −0.90 | 2.31 | 2,128 | 100% |
 | Cote d'Ivoire | 1998 | census | all | 30–44 | mx | −0.73 | 1.94 | 2,240 | 100% |
 | Cote d'Ivoire | 1998 | census | all | 45–59 | mx | −0.35 | 1.34 | 1,561 | 100% |

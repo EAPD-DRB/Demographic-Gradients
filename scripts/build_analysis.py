@@ -207,10 +207,15 @@ COUNTRY_NOTES = {
         "gradient.",
     ],
     "Cambodia": [
-        "The 2008 census includes a household-deaths module and passes the "
-        "population, linkage and completeness checks. It is held pending review; "
-        "its 45q15 estimate would rest on about 1,250 death records. Adult "
-        "mortality uses the general gradient.",
+        "Adult mortality uses the 2008 census (IPUMS International), the "
+        "library's only Southeast Asian estimate. It passes the population, "
+        "linkage and completeness checks, but it is thin: 1,250 death records at "
+        "ages 15–59, enough for the both-sexes 45q15 gradient but not for "
+        "estimates by sex or age band. The census records about 48 percent of the "
+        "deaths expected nationally; the gradient is unaffected if the missing "
+        "deaths are spread evenly across wealth groups, which cannot be checked. "
+        "Published by ruling (2026-11-16) after being held while other Asian "
+        "sources were reviewed.",
     ],
     "India": [
         "Adult-mortality estimates come from the household-deaths module of the "
@@ -499,7 +504,8 @@ def write_general_gradient_page(amr):
     for r in pts.itertuples():
         reg = str(getattr(r, "region", "unknown"))
         cont = ("African" if "Africa" in reg else "Latin American" if "Latin" in reg
-                else "South Asian" if "South Asia" in reg else reg)
+                else "South Asian" if "South Asia" in reg
+                else "Southeast Asian" if "South-eastern Asia" in reg else reg)
         kind = basis(src.get((r.country, r.year), ""))
         kind = "survey" if kind.endswith("survey") else "census"
         comp[(cont, kind)] = comp.get((cont, kind), 0) + 1
@@ -638,9 +644,10 @@ or let it follow the income relationship; the two bracket the evidence.
 
 The rule is estimated on observations with GDP per capita (PPP) between about
 ${round(pts["gdp_ppp"].min(), -2):,.0f} and ${round(pts["gdp_ppp"].max(), -3):,.0f} and should not be extrapolated beyond that range. The
-{n_fit_gg} observations are {comp_txt}. There is no estimate for East or
-Southeast Asia, so predictions for the Philippines or Indonesia rest on a
-relationship estimated largely outside their region.
+{n_fit_gg} observations are {comp_txt}. The only Southeast Asian observation is
+Cambodia 2008, a thin census, and there is none for East Asia, so predictions
+for the Philippines or Indonesia rest largely on a relationship estimated
+outside their region.
 
 ## Older-age reversals
 
@@ -935,8 +942,8 @@ wealthier households; the Brazil estimates below use IBGE's own microdata);
 Benin 1992 and 2002, Guinea 1983, Indonesia 1976, Lesotho 1996, Malawi 1987,
 Mali 1987 and 1998 and El Salvador 1992 (too few deaths, fewer than three
 wealth groups, or death records missing unevenly);
-Burkina Faso 1996 (deaths cannot be assigned to households reliably); Rwanda
-2002 (only two wealth groups); and Cambodia 2008 (held pending review). Of the
+Burkina Faso 1996 (deaths cannot be assigned to households reliably); and
+Rwanda 2002 (only two wealth groups). Of the
 DHS surveys with a household-deaths module, India NFHS-1 (1992–93) is not
 published because its data file contains no age at death, and Pakistan 2006–07
 because only the subsample with asset data can be ranked, and it holds too few
