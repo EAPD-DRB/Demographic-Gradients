@@ -82,19 +82,19 @@ therefore also estimated from the 1991, 2000 and 2010 censuses, using the
 proportion of children ever born who have died among mothers aged 25–29
 ([`census_child_mortality.csv`](data/census_child_mortality.csv)). The levels
 are not comparable with survey mortality rates, but the gradients are: the
-2000 census gives −1.42, against −1.46 for the
+2000 census gives −1.40, against −1.46 for the
 under-five mortality rate in the Brazil 1996 DHS survey.
 
 | Census | Wealth groups | Gradient | Low/high ratio | Lowest group, children who died (%) |
 |---|---|---|---|---|
-| 1991 | 3 | −1.69 | 2.77 | 9.9 |
-| 2000 | 3 | −1.42 | 2.33 | 5.8 |
+| 1991 | 4 | −1.81 | 4.16 | 9.9 |
+| 2000 | 4 | −1.40 | 3.01 | 5.8 |
 | 2010 | 5 | −0.96 | 2.26 | 2.5 |
 
-The gradient changed from −1.69 in 1991 to −0.96 in
+The gradient changed from −1.81 in 1991 to −0.96 in
 2010: child mortality fell in all groups, and most in the poorest. On an
 index restricted to the 5 assets recorded in all three censuses,
-the 1991–2000 change is 0.34, compared with 0.27 on the
+the 1991–2000 change is 0.46, compared with 0.41 on the
 full index, so the change does not stem from the larger asset set of later
 censuses. In 2010 the restricted index separates fewer than three groups, so
 no 2010 value is published on it. For Brazil, the census estimate is used in

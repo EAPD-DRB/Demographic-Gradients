@@ -40,13 +40,14 @@ Proportion of children ever born who have died, mothers aged 25–29 ([`census_c
 
 | Census | Asset index | Wealth groups | Low/high ratio | Gradient |
 |---|---|---|---|---|
-| 1991 | common | 3 | 2.77 | −1.69 |
-| 1991 | full | 3 | 2.77 | −1.69 |
+| 1991 | common | 4 | 4.16 | −1.81 |
+| 1991 | full | 4 | 4.16 | −1.81 |
 | 2000 | common | 4 | 2.85 | −1.35 |
-| 2000 | full | 3 | 2.33 | −1.42 |
+| 2000 | full | 4 | 3.01 | −1.40 |
+| 2010 | common | 3 | 1.73 | −0.80 |
 | 2010 | full | 5 | 2.26 | −0.96 |
 
-Comparison with the DHS: the 2000 census gradient (−1.42) is close to the under-five mortality gradient in the Brazil 1996 DHS (−1.46).
+Comparison with the DHS: the 2000 census gradient (−1.40) is close to the under-five mortality gradient in the Brazil 1996 DHS (−1.46).
 
 ### Adult mortality from household-death records
 

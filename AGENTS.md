@@ -139,7 +139,7 @@ DHS or MICS survey, use the regional median and interquartile range from
   mortality is what matters, rely on the 15–29 and 30–44 offsets and state the
   caveat.
 - **Brazil's DHS survey is from 1996.** Census estimates show its
-  child-mortality gradient falling from −1.69 (1991) to −0.96 (2010). The census
+  child-mortality gradient falling from −1.81 (1991) to −0.96 (2010). The census
   measure resembles under-five mortality and probably overstates the infant
   gradient; the alternative is the 1996 DHS infant gradient (−1.37). State
   which is used and why.
