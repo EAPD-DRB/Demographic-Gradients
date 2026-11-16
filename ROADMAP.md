@@ -114,9 +114,17 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
   South Africa 2011 and Mozambique 2007 on the PCA index and shows South
   Africa 2007 passing. The linkage composition comparison stays manual; it
   only concerned South Africa 2011, now unpublished.
-- [ ] **F5. Senegal 2002 death counts.** `n_deaths` repeats exactly (1,086 for
-  15–29 and 30–44; 1,311 for 60–74 and male 45q15), and still does on the PCA
-  index. Check against the microdata.
+- [x] **F5. Senegal 2002 death counts** (closed 2026-11-16: coincidence, no
+  change).
+  - The raw death file gives the same counts from different sex splits:
+    15–29 is 446 men + 640 women, 30–44 is 445 + 638 (both 1,086). Male 15–59
+    is 446 + 445 + 420 and all 60–74 is 620 + 691 (both 1,311).
+  - Noted, no effect on published values: ages 98 and 99 are heaped (249, 281
+    records against 12 at 97), probably top-coded and unknown, all outside
+    15–74. Adult female deaths exceed male (1,725 vs 1,311 at 15–59), so
+    female 45q15 > male. Possible causes: maternal deaths (270 flagged) or
+    unrecorded deaths of migrant men. Gradients by sex are similar (−0.35 /
+    −0.32).
 - [x] **F6. Uncertainty of the income rule (2026-11-12).** Standard OLS
   inference: residual standard error with n − 2 df (0.177, was 0.170 with
   n − 1), coefficient SEs and 95% CIs, and the 95% prediction interval
