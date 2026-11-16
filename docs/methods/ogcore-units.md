@@ -74,3 +74,12 @@ applies to any number and size of income groups.
 The conversion requires p < 1. At OG-Core's final age the death probability is
 1 and every group dies, so the mortality gradient is set to 0 there before
 converting ([mortality by age](general-gradient.md#age-pattern)).
+
+Argument shapes, checked against OG-Core 0.24.1 (`ogcore/demographics.py`):
+`fert_gradient` and `mort_gradient` accept a scalar, a vector by age (length S
+or E + S) or a period-by-age array, and are applied by age and period with the
+UN mean rate preserved; `infmort_gradient` is a scalar for each period. In the
+mortality array returned by `get_mort`, element *i* is the death rate at age
+*i* + 1 (infant mortality is returned separately), so a `mort_gradient`
+vector is indexed the same way; the [README example](../../README.md) builds
+all three inputs and has been run against OG-Core.
