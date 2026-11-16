@@ -81,10 +81,16 @@ census; `common`, assets recorded in all three censuses); `n_mothers`;
 | `refresh.py` | Runs `build_gradient_library.py` (and `check_ogcore_units.py` after a DHS pull), `make_figures.py` and `build_analysis.py` in order | — |
 | `build_adult_mortality_dhs.py` | Not used: adult mortality from DHS sibling survival histories, a method tested and rejected (the wealth gradients come out with the wrong sign; see [adult mortality](methods/adult-mortality.md)). Kept as the record of that test | — |
 
-Order of a full rebuild: the survey library; the adult-mortality scripts (in
-any order; the output file is the same whichever runs last); the census child
-mortality; the general gradient, which reads the adult-mortality rows; then the
-figures and the generated pages.
+`uv run scripts/refresh.py` rebuilds the survey library (from the DHS API),
+the figures and the generated pages. A full rebuild runs, in order: the survey
+library; the adult-mortality scripts (in any order; the output file is the same
+whichever runs last); the census child mortality; the general gradient, which
+reads the adult-mortality rows; then the figures and the generated pages. The
+adult-mortality and census scripts need microdata that are not in the
+repository: IPUMS census samples (free registration), IBGE's and DANE's census
+files (free; DANE's are downloaded by hand), the DHS household recode files for
+India (free registration and project approval) and the BMMS household file for
+Bangladesh (open).
 
 ## Figures
 

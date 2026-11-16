@@ -1,20 +1,14 @@
 # Demographic-Gradients
 
-Demographic-Gradients provides estimates of wealth differentials in fertility,
-infant mortality and adult mortality for low- and middle-income countries. The
-estimates are derived from Demographic and Health Surveys (DHS), UNICEF's
-Multiple Indicator Cluster Surveys (MICS), and census and survey records of
-household deaths, and are intended for calibrating models in which
-demographic rates differ by income, in particular the
-[OG-Core](https://github.com/PSLmodels/OG-Core) family of overlapping-generations
-models (OG-ZAF, OG-PHL, OG-IDN, OG-ETH, OG-BRA and others). All data and code
-are open.
+How much fertility, infant mortality and adult mortality differ between poorer
+and richer households in low- and middle-income countries, measured from DHS
+and MICS surveys and from census and survey records of household deaths. The
+values are for calibrating [OG-Core](https://github.com/PSLmodels/OG-Core)
+models in which demographic rates differ by income. All data and code are
+open.
 
-Each differential is summarized by a **wealth gradient**: the slope of the log
-rate on household wealth rank, estimated across wealth groups (quintiles in
-surveys; three to five groups in censuses). The **low/high ratio**, the rate in the
-lowest wealth group divided by the rate in the highest, is reported alongside
-it.
+Each difference is summarized by a **wealth gradient**, the slope of the log
+rate on household wealth rank (0 = poorest, 1 = richest).
 
 ![Total fertility rate by household wealth quintile, Philippines, DHS 2022](figures/what_is_a_gradient.png)
 
@@ -34,16 +28,11 @@ last updated December 2022.)* The library
 covers low- and middle-income countries only; its sources and the income
 relationship for adult mortality do not extend to high-income countries.
 
-## Country pages
-
-[docs/countries/](docs/countries/) has one page per country, with the values
-for an OG-Core calibration and the estimates they are based on.
-
 ## Use in an OG-Core calibration
 
-The [calibration guide](docs/calibration-guide.md) gives the full recipe, with
-current values; each [country page](docs/countries/README.md) applies it. In
-short: use the country's own estimate (otherwise the general gradient for adult
+Start with the country's page in [docs/countries/](docs/countries/README.md),
+which gives every value; the [calibration guide](docs/calibration-guide.md)
+explains them. In short: use the country's own estimate (otherwise the general gradient for adult
 mortality, or the regional median for fertility and infant mortality, reported
 as borrowed); pass fertility and mortality as vectors by age; and convert every
 gradient to OG-Core's units by dividing by 100 × (1 − p), where p is OG-Core's
@@ -122,12 +111,8 @@ IIPS and the DHS Program, NIPORT) ([details](docs/sources.md#citation)).
 
 ## Maintenance
 
-`uv run scripts/refresh.py` rebuilds the survey-based data, figures and generated
-pages from free public sources; census-based files are rebuilt separately
-([details](docs/sources.md#reproduction)).
-Pages marked as generated are written by the scripts and should be changed
-there; see [AGENTS.md, Working on this repo](AGENTS.md#working-on-this-repo) and
-[files](docs/files.md).
-[CHANGELOG.md](CHANGELOG.md) records changes to published values, for models
-that use them; [ROADMAP.md](ROADMAP.md) lists open work; `research/` holds
-archived working notes from the initial build.
+`uv run scripts/refresh.py` rebuilds the survey data, figures and generated
+pages; [files](docs/files.md) lists every script and the full rebuild. Pages
+marked as generated are changed through the scripts
+([AGENTS.md](AGENTS.md#working-on-this-repo)). [CHANGELOG.md](CHANGELOG.md)
+records changes to published values; [ROADMAP.md](ROADMAP.md) lists open work.

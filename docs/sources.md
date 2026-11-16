@@ -40,21 +40,6 @@ capita, Atlas method (`NY.GNP.PCAP.CD`), is kept beside it for reference.
 **OG-Core.** The conversion to OG-Core units is verified against the published
 OG-Core source code.
 
-## Reproduction
-
-```
-uv run scripts/refresh.py
-```
-
-downloads the DHS data and rebuilds the survey-based files, the OG-Core units
-check, the figures and the generated pages. The adult-mortality estimates, the
-census child mortality and the general gradient are rebuilt by their own
-scripts, which need the microdata: IPUMS census samples (free registration),
-IBGE's and DANE's census files (free; DANE's are downloaded by hand), the DHS
-household recode files for India (free registration and project approval) and
-the BMMS household file for Bangladesh (open). [Files](files.md) lists every
-script and the order of a full rebuild.
-
 ## Citation
 
 Cite this repository together with the underlying sources:
