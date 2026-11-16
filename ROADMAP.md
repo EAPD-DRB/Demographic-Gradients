@@ -302,8 +302,16 @@ these are done, since they may change the picture for Asia.
     `survey_wealth_index`).
   - BMMS 2010 (same design) is not yet examined; it is a natural check on
     whether the flat gradient repeats.
-- [ ] **H8. Indonesia IFLS** (RAND, free with registration): cross-check only;
-  published wealth-quartile life expectancy in Sudharsanan (2019).
+- [x] **H8. Indonesia IFLS** (cross-check only; done 2026-11-16).
+  - Sudharsanan (2019, J Gerontol B, doi:10.1093/geronb/gbx061): IFLS
+    2007→2014-15, ages 30–80, 1,443 deaths. Odds ratios by asset-index
+    quartile imply gradients of −0.61/−0.30/+0.06/−0.45 (urban women/men,
+    rural women/men), mean −0.32, at ages where gradients are weaker.
+  - Consistent with the rule (Indonesia −0.98 in 45q15) but imprecise.
+    Recorded on Indonesia's country page.
+  - Own IFLS microdata (RAND registration) not pursued: a 2007–2014 cohort
+    would hold roughly 600–750 deaths at 15–59 (estimated from sample size
+    and national mortality, not counted), under MIN_BAND_DEATHS.
 - [ ] **H9. MORTNUM-only IPUMS samples** (Vietnam 1989/1999, Indonesia 2010,
   Cambodia 2004/2013/2019, Bolivia, Colombia 2005 and others): no age at
   death, so would need a new all-ages method. Not before H2–H6.
