@@ -1409,14 +1409,13 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
     out = ("## Values for OG-Core\n\n"
            "| OG-Core input | Wealth gradient | Source |\n|---|---|---|\n"
            + "\n".join(rows) + "\n\n"
-           "Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are "
-           "passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at "
-           "that age ([details](../methods/ogcore-units.md)).\n")
+           "Divide each value by 100 × (1 − p) before passing it to OG-Core "
+           "([how](../calibration-guide.md#converting-a-gradient-to-og-cores-units)).\n")
     if off is not None:
         base = t if t is not None else None
         if base is not None:
-            out += ("\n**Fertility gradient by age of mother** (`fert_gradient`; ages below 15 "
-                    "use the 15–19 value, ages 50 and above the 45–49 value):\n\n"
+            out += ("\n**`fert_gradient` by age of mother** "
+                    "([how](../calibration-guide.md#fertility-by-age)):\n\n"
                     "| " + " | ".join(f"{x}–{y}" for x, y in zip(off.age_lo, off.age_hi))
                     + " |\n|" + "---|" * len(off) + "\n"
                     "| " + " | ".join(fmt(base + o) for o in off.offset) + " |\n")
@@ -1464,28 +1463,17 @@ def mortality_by_age(own, gg, c, latest):
     if base is not None:
         cell = {k: fmt(base + offs[k]) for k in ("15-29", "30-44", "45-59")}
         cell["60-74"] = f"{cell['45-59']} at 60, falling to 0 at 75"
-        lead = ("the 45q15 gradient above plus the pooled offset for each band "
-                "([age pattern](../methods/general-gradient.md#age-pattern))")
     elif inc is not None:  # income outside the rule's range: no adult value
         cell = {k: "—" for k in ("15-29", "30-44", "45-59", "60-74")}
-        lead = "no value; see `mort_gradient` above"
     else:
         cell = {k: f"value {NEG} {abs(offs[k]):.2f}" if offs[k] < 0 else f"value + {offs[k]:.2f}"
                 for k in ("15-29", "30-44", "45-59")}
         cell["60-74"] = "the 45–59 value at 60, falling to 0 at 75"
-        lead = ("the general-gradient value for this country plus the pooled offset for "
-                "each band ([age pattern](../methods/general-gradient.md#age-pattern))")
-    return ("\n**Adult and child mortality gradient by age** (`mort_gradient`; ages 15–59: "
-            f"{lead}; ages 5–14 use the 15–29 value; ages 60–74 fall in a straight line from "
-            "the 45–59 value to 0 at age 75; ages 75 and above, and OG-Core's final age, "
-            "use 0):\n\n"
+    return ("\n**`mort_gradient` by age** "
+            "([how](../calibration-guide.md#mortality-by-age)):\n\n"
             "| 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |\n|---|---|---|---|---|---|---|\n"
             f"| {ages_1_4(c, latest)} | {cell['15-29']} | {cell['15-29']} | {cell['30-44']} "
-            f"| {cell['45-59']} | {cell['60-74']} | 0 |\n\n"
-            "Ages 1–4 use the country's own gradient in child mortality at ages 1–4 (DHS), "
-            "or, where there is none, its under-five gradient plus a pooled offset "
-            "([details](../methods/general-gradient.md#age-pattern)). Infant mortality "
-            "(age 0) is `infmort_gradient`, above.\n")
+            f"| {cell['45-59']} | {cell['60-74']} | 0 |\n")
 
 
 def deaths_15_60(g):
@@ -1499,15 +1487,9 @@ def country_dhs_block(latest, country):
     rows = latest[latest["country"] == country]
     if not len(rows):
         return ""
-    srcs = set(rows["source"])
     out = ("### Household surveys\n\n"
-           "Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster "
-           "Survey (MICS) with a complete wealth-quintile breakdown, for each indicator "
-           "([`gradient_library_latest.csv`](../../data/gradient_library_latest.csv); earlier "
-           "surveys in `gradient_library.csv`)."
-           + (" MICS rates are taken from the World Bank's compilation of survey results "
-              "by wealth quintile ([sources](../sources.md))." if "MICS" in srcs else "")
-           + "\n\n"
+           "Latest DHS or MICS survey for each indicator "
+           "([`gradient_library_latest.csv`](../../data/gradient_library_latest.csv)).\n\n"
            "| Indicator | Survey | Lowest | Second | Middle | Fourth | Highest | Low/high ratio "
            "| Gradient |\n|---|---|---|---|---|---|---|---|---|\n")
     order = {"TFR": 0, "IMR": 1, "U5MR": 2, "CMR": 3}
@@ -1551,11 +1533,8 @@ def country_amr_block(amr, country):
     srcs = sorted(rows["source"].dropna().unique())
     bands = [(15, 29), (30, 44), (45, 59), (60, 74)]
     out = ("### Adult mortality from household-death records\n\n"
-           "Wealth gradients in 45q15 and in age-specific death rates, both sexes "
-           "([`adult_mortality_gradients.csv`](../../data/adult_mortality_gradients.csv); "
-           "[methods](../methods/adult-mortality.md); estimates by sex in the "
-           "[full table](../tables/adult_mortality.md)). Blank cells: too few deaths to "
-           "publish.\n\n"
+           "Both sexes ([full table](../tables/adult_mortality.md), with estimates by sex; "
+           "[methods](../methods/adult-mortality.md)). Blank: too few deaths.\n\n"
            "| Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |\n"
            "|---|---|---|---|---|---|---|---|\n")
     for y, g in rows.groupby("year"):
@@ -1587,9 +1566,8 @@ def write_country_pages(latest, amr, ccm):
         notes = COUNTRY_NOTES.get(c, [])
         note_txt = ("\n## Notes\n\n" + "\n".join(f"- {n}" for n in notes) + "\n") if notes else ""
         doc = (f"{GENERATED_BANNER}# {c}\n\n"
-               "Wealth gradients in fertility and mortality: the values for an OG-Core "
-               "calibration, followed by the estimates they are based on. Terms are "
-               "defined in the [glossary](../glossary.md).\n\n"
+               "Values for an OG-Core calibration, then the estimates behind them. How to "
+               "use them: [calibration guide](../calibration-guide.md).\n\n"
                + what_to_use(c, latest, amr, ccm_df, off, regions)
                + "\n## Estimates\n\n"
                + "\n".join(b for b in evidence if b) + note_txt)
