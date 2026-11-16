@@ -74,10 +74,6 @@ def regional(latest, ind, region):
     if not len(s):
         return None
     return float(s.median()), float(s.quantile(0.25)), float(s.quantile(0.75)), len(s)
-# Formerly: GNI per capita, Atlas method, current US$, 2024 (World Bank NY.GNP.PCAP.CD,
-# retrieved 2026-11-11), used to print general-gradient values for OG-family
-# countries without their own estimate. Update when the World Bank revises.
-WORKED_GNI = {"Philippines": 4470, "Indonesia": 4920}
 
 # Countries that get a provenance page even without census-based content
 # (the OG-Core family this library exists to serve).
@@ -971,6 +967,260 @@ Source: DHS Program indicator API, age-specific fertility rates
     (DOCS / "methods" / "fertility-by-age.md").write_text(doc)
 
 
+def signed(x):
+    """A value with an explicit sign: +0.21, −0.41."""
+    return f"+{x:.2f}" if x >= 0 else fmt(x)
+
+
+def and_join(items):
+    items = list(items)
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+
+def income_fallback_test(latest):
+    """Would an income rule help for fertility or infant mortality? Leave-one-out
+    mean absolute error of a linear rule in ln(latest GDP per capita, PPP) against a
+    single pooled median, over countries' latest survey gradients."""
+    inc = latest_income()
+    out = {}
+    for ind in ("TFR", "IMR"):
+        d = latest[latest["indicator"] == ind][["country", "slope"]]
+        d = d[d["country"].isin(inc)].copy()
+        d["lg"] = np.log([inc[c][0] for c in d["country"]])
+        e_c, e_i = [], []
+        for i in d.index:
+            t = d.drop(i)
+            e_c.append(abs(d.loc[i, "slope"] - t["slope"].median()))
+            b, a = np.polyfit(t["lg"], t["slope"], 1)
+            e_i.append(abs(d.loc[i, "slope"] - (a + b * d.loc[i, "lg"])))
+        out[ind] = {"n": len(d), "const": float(np.mean(e_c)), "income": float(np.mean(e_i)),
+                    "r": float(np.corrcoef(d["lg"], d["slope"])[0, 1])}
+    return out
+
+
+def write_calibration_guide(lib, latest, amr, ccm_df, off):
+    """docs/calibration-guide.md: the single recipe for an OG-Core calibration (generated)."""
+    gg = general_gradient() or {}
+    a, b = gg["income_rule.intercept"], gg["income_rule.slope_ln_income"]
+    n_fit = int(gg["income_rule.n_observations"])
+    rmin, rmax = rule_range()
+    inc = latest_income()
+    co = child_offset()
+    u = pd.read_csv(DATA / "ogcore_units_check.csv").set_index("margin")
+    iu = imr_vs_u5mr(lib)
+    fb = income_fallback_test(latest)
+    offs = dict(gg.get("_ages", []))
+    cov = {k: latest[latest["indicator"] == k]["country"].nunique() for k in ("TFR", "IMR", "CMR")}
+    q = amr[(amr["measure"] == "45q15") & (amr["sex"] == "all")]
+    own_countries = sorted(set(amr[amr["measure"] == "45q15"]["country"]))
+    surv = sorted(set(amr[amr["ranking"] != "asset_index"]["country"]))
+    n_cens_c = len(set(amr[amr["ranking"] == "asset_index"]["country"]))
+    adult_rate = float(np.nanmedian(amr[(amr["measure"] == "mx") & (amr["sex"] == "all")
+                                        & (amr["age_lo"] < 60)][["q1", "q5"]].values) / 1000)
+    pts = pd.read_csv(DATA / "general_gradient_points.csv")
+    asian = sorted(set(pts[pts["region"].astype(str).str.contains("Asia")]["country"]))
+    se = q.set_index("country")["se"]
+    ex = []
+    for c in ("Philippines", "Indonesia"):
+        if c in inc and rmin <= inc[c][0] <= rmax:
+            f, lo, hi = rule_predict(gg, inc[c][0])
+            ex.append(f"{c} {fmt(f)} (95% prediction interval {fmt(lo)} to {fmt(hi)}; "
+                      f"${inc[c][0]:,.0f} in {inc[c][1]})")
+    half = rule_predict(gg, np.exp(gg["income_rule.mean_ln_income"]))
+    half = (half[2] - half[1]) / 2
+    br = ccm_df[(ccm_df["country"] == "Brazil") & (ccm_df["index"] == "full")
+                & (ccm_df["measure"] == "prop_dead_2529")].sort_values("year") if ccm_df is not None else None
+    br_imr = latest[(latest["country"] == "Brazil") & (latest["indicator"] == "IMR")]
+    series = within_country(amr)
+    ser_txt = "; ".join(f"{c} " + ", ".join(f"{fmt(v)} ({y})" for y, v in ys) for c, ys, _ in series)
+    fertrows = "\n".join(f"| {int(r.age_lo)}–{int(r.age_hi)} | {signed(r.offset)} |" for r in off.itertuples())
+
+    doc = f"""{GENERATED_BANNER}# Calibration guide
+
+How to take values from this library into an OG-Core country calibration. The
+library measures how fertility and mortality differ between poorer and richer
+households; OG-Core (version 0.18 and later) can differentiate these rates
+across lifetime-income groups, in place of its default of no difference. Every
+number on this page is computed from the files in [`data/`](../data/). Terms
+are defined in the [glossary](glossary.md).
+
+**Start with the country's page** in [`countries/`](countries/README.md): it
+gives the value for each input, by age where the input varies with age, and the
+estimates behind them. The rest of this page explains those values and how to
+pass them to OG-Core.
+
+## The inputs
+
+`ogcore.demographics.get_pop_objs()` takes four arguments that differentiate
+demographic rates by income group. The library supplies three.
+
+| Argument | Source | Coverage |
+|---|---|---|
+| `fert_gradient` | `gradient_library_latest.csv`, `indicator == "TFR"`, plus the age offsets in `fertility_age_offsets.csv` | {cov['TFR']} countries (DHS or MICS) |
+| `infmort_gradient` | `gradient_library_latest.csv`, `indicator == "IMR"` | {cov['IMR']} countries (DHS or MICS) |
+| `mort_gradient` | ages 1–4: `indicator == "CMR"` (else U5MR plus `child_mortality_offset.csv`); ages 5–74: `adult_mortality_gradients.csv` (`measure == "45q15"`, `sex == "all"`, latest year), else the general gradient in `general_gradient.csv`, plus the age offsets there | ages 1–4: {cov['CMR']} countries with their own value; adult ages: {len(own_countries)} countries with their own estimate ({n_cens_c} by census; {and_join(surv)} by household survey) |
+| `imm_pctiles` | not provided | — |
+
+`imm_pctiles` is not a gradient: it is the lifetime-income distribution of new
+immigrants. The library does not provide it; say so rather than substituting a
+gradient. `income_percentiles` is the model's own `lambdas`, not library data.
+
+## Converting a gradient to OG-Core's units
+
+The library's wealth gradient is the slope of the log rate on wealth rank (0 to
+1). OG-Core reads a log-odds slope per centered percentile point. Pass
+
+    gradient / (100 × (1 − p))
+
+where p is OG-Core's own mean rate at that age and period on OG-Core's scale
+(fertility: births per person per year, the UN rate per 1,000 women divided by
+2,000; mortality: annual probability of death). Omitting the 100 changes
+results by a factor of 100. Omitting (1 − p) understates the slope by the
+factor (1 − p): at median rates about {100 * adult_rate:.0f} percent for adult mortality,
+{100 * u.loc["Infant mortality", "median_rate"]:.0f} percent for infant mortality, {100 * u.loc["Child mortality, ages 1-4", "median_rate"]:.1f} percent at ages 1–4 and
+{100 * u.filter(like="Fertility", axis=0)["median_rate"].min():.0f}–{100 * u.filter(like="Fertility", axis=0)["median_rate"].max():.0f} percent for fertility, depending on age. Because p varies by age,
+a converted gradient is a vector by age. At OG-Core's final age the death
+probability is 1 and the conversion is undefined; the mortality gradient is 0
+there. Details and the check against OG-Core's own functions:
+[OG-Core units](methods/ogcore-units.md).
+
+## Fertility by age
+
+Pass `fert_gradient` as a vector by age: the country's TFR gradient plus the
+offset for each age group (ages below 15 use the 15–19 offset, ages 50 and
+above the 45–49 offset), then convert. A single TFR gradient at every age
+reproduces the difference in completed fertility but not in the timing of
+births. Use the pooled offsets, not a country's own age gradients
+(`fertility_age_tilts.csv` is supporting data): the reasons are on the
+[fertility-by-age page](methods/fertility-by-age.md).
+
+| Age | Offset |
+|---|---|
+{fertrows}
+
+## Mortality by age
+
+Pass `mort_gradient` as a vector by age:
+
+| Ages | Value |
+|---|---|
+| 0 | none (infant mortality is `infmort_gradient`) |
+| 1–4 | the country's gradient in child mortality at ages 1–4 (`CMR`); where there is none, its under-five gradient {signed(co['offset'])} |
+| 5–14 | the 15–29 value |
+| 15–29 | the 45q15 gradient {signed(offs['15-29'])} |
+| 30–44 | the 45q15 gradient {signed(offs['30-44'])} |
+| 45–59 | the 45q15 gradient {signed(offs['45-59'])} |
+| 60–74 | the 45–59 value at age 60, falling in a straight line to 0 at age 75 |
+| 75 and above, and the final age | 0 |
+
+The 45q15 gradient is the country's own estimate where there is one, otherwise
+the general gradient below. The reasons for each choice, including why the
+measured pattern at 60–74 is not used, are on the
+[general-gradient page](methods/general-gradient.md#age-pattern).
+
+## Own estimate first, then a fallback
+
+If the country has its own estimate, use it. If not:
+
+**Adult mortality: the general gradient.**
+
+    gradient(45q15) = {a:.3f} {NEG} {abs(b):.3f} × ln(GDP per capita, PPP, constant 2021 international $)
+
+Income is the World Bank's `NY.GDP.PCAP.PP.KD`, applied to the same series for
+any year with no conversion. The rule is fitted on {n_fit} censuses and surveys;
+the slope has a standard error of {gg['income_rule.se_slope']:.3f}, but a single country can
+lie well off the line, and the 95% prediction interval for a country without
+its own estimate is about ±{half:.1f}. Report it with any value taken from the rule.
+It is estimated on GDP per capita between about ${round(rmin, -2):,.0f} and
+${round(rmax, -3):,.0f} and is not extrapolated beyond that range; country pages
+give no value for countries outside it. Values at the latest GDP per capita:
+{'; '.join(ex)}. Details, validation and the largest misses:
+[general gradient](methods/general-gradient.md).
+
+**Fertility and infant mortality: the regional median.** For a country with no
+survey of the indicator, use the median of its region and report the value as
+borrowed (country pages print it with the interquartile range). There is no
+income-based fallback for these: across countries' latest surveys, the
+correlation of the gradient with ln(GDP per capita) is {fmt(fb['TFR']['r'])} for fertility and
+{fmt(fb['IMR']['r'])} for infant mortality, and a rule in income predicts a left-out country's
+gradient with a mean absolute error of {fb['TFR']['income']:.2f} against {fb['TFR']['const']:.2f} for a single
+pooled value (fertility) and {fb['IMR']['income']:.2f} against {fb['IMR']['const']:.2f} (infant mortality).
+
+Never substitute another country's value without saying so; state the source
+and the survey or census year.
+
+## Pitfalls
+
+- **Use `IMR`, not `U5MR`, for `infmort_gradient`.** The under-five gradient is
+  steeper: across {iu['n']} surveys reporting both, by a median {abs(iu['med_diff']):.2f}. U5MR is
+  published for comparison; at ages 1–4 use `CMR`.
+- **DHS and MICS rows share one basis** and are marked in `source`. Name the
+  source with the year ("MICS 2019"). A country's series can switch source
+  between surveys, and part of a change may be the switch.
+- **Do not pool measurement bases.** Survey rates, census and survey
+  household-death records and census child mortality measure different
+  quantities; their gradients can be compared, their levels (`q1`–`q5`) cannot.
+- **`groups` is not always 5.** Census estimates use as many wealth groups as
+  the asset data support (3 to 5), each at the midpoint of its population
+  share (`share1`–`share5`).
+- **Brazil's DHS survey is from 1996.** Census estimates of child mortality
+  show its gradient changing from {fmt(float(br['slope'].iloc[0]))} ({int(br['year'].iloc[0])}) to {fmt(float(br['slope'].iloc[-1]))} ({int(br['year'].iloc[-1])}); the census
+  measure resembles under-five mortality and probably overstates the infant
+  gradient; the alternative is the 1996 DHS infant gradient
+  ({fmt(float(br_imr['slope'].iloc[0]))}). State which is used and why.
+
+## Uncertainty
+
+Adult-mortality estimates carry a standard error of sampling variability
+(`se`), from {se.min():.3f} ({se.idxmin()}) to {se.max():.3f} ({se.idxmax()}) for 45q15. It leaves out errors
+in the wealth ranking and in the recording of deaths, which are usually larger.
+Values from the general gradient carry the much wider prediction interval
+above. Survey gradients for fertility and infant mortality are published
+without standard errors.
+
+## Sign and interpretation
+
+A negative gradient means rates are higher in poorer households, the usual
+case. A gradient of −0.80 implies a fitted rate in the lowest quintile about
+e^(0.80 × 0.8) ≈ 1.9 times that in the highest. The `ratio` column is the
+measured lowest/highest ratio, which is noisier. A positive adult-mortality
+gradient is not necessarily an error; several low-income censuses record it at
+older ages.
+
+## Long-run projections
+
+Across countries the adult-mortality gradient is steeper at higher income
+(r = {fmt(gg['income_rule.r'])}; a doubling of income per capita corresponds to {fmt(b * np.log(2))} in the
+gradient). Within countries the evidence is limited and mixed: {ser_txt}.
+A model projecting several decades ahead can hold the gradient fixed or let it
+follow the income relationship; report which, and treat the two as a range.
+
+## What the library cannot answer
+
+- **High-income countries** are outside its scope, and the general gradient is
+  not extrapolated beyond the incomes it is estimated on.
+- **Adult mortality in East Asia, the Philippines and Indonesia** has no
+  estimate of its own: the only Asian estimates are those of {and_join(asian)}. The
+  Philippine and Indonesian DHS surveys have no module on deaths at all ages,
+  and their values come from a relationship estimated mostly on African
+  censuses.
+- **DHS sibling histories** were tested for adult mortality and rejected (they
+  give wealth gradients of the wrong sign); do not propose them.
+
+## What to report
+
+For each input: the value, its source and year (or "general gradient at GDP per
+capita of $X in year Y", with its prediction interval, or "regional median,
+borrowed"), the conversion applied, and for mortality the treatment by age.
+
+## Citation
+
+Cite the source in each row's `source` column, and
+[the citation list](sources.md#citation).
+"""
+    (DOCS / "calibration-guide.md").write_text(doc)
+
+
 def write_adult_table_page(amr):
     """docs/tables/adult_mortality.md — the full table of estimates + column notes."""
     doc = f"""{GENERATED_BANNER}# Adult mortality by household wealth: all estimates
@@ -1628,6 +1878,9 @@ the least certain in the library.
         write_adult_table_page(amr)
         print("wrote docs/tables/adult_mortality.md")
         countries = write_country_pages(latest, amr, ccm)
+        write_calibration_guide(lib, latest, amr, ccm["df"] if ccm else None,
+                                fertility_offsets())
+        print("wrote docs/calibration-guide.md")
         print(f"wrote docs/countries/ ({len(countries)} pages + index)")
 
 

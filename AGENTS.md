@@ -1,240 +1,30 @@
-# Using this library for an OG-Core calibration
+# Demographic-Gradients: guidance for agents
 
-Guidance for an AI agent (or a person) answering calibration questions with
-this repository's data. The first part covers *using* the data; for working
-*on* the repository (rebuilding it, adding countries) see
-[Working on this repo](#working-on-this-repo) below.
+## Answering calibration questions
 
-For a specific country, start with its page in
-[`docs/countries/`](docs/countries/): it gives the value for each OG-Core input,
-the estimates behind them and their sources. Then apply the rules below. Terms
-are defined in [`docs/glossary.md`](docs/glossary.md); the methods are
-summarized in [`docs/methodology.md`](docs/methodology.md).
+Use [`docs/calibration-guide.md`](docs/calibration-guide.md) and the country's
+page in [`docs/countries/`](docs/countries/README.md). Both are generated from
+the data, so their values are current; do not quote values from memory or from
+older notes. Terms are in [`docs/glossary.md`](docs/glossary.md).
 
-The library measures how fertility and mortality differ between poorer and
-richer households. OG-Core (version 0.18 and later) can differentiate these
-rates across lifetime-income groups; the library provides the measured
-differentials, in place of the default assumption of no difference.
+The rules, in brief (the guide gives the values and the reasons):
 
-## The four inputs and their sources
-
-`ogcore.demographics.get_pop_objs()` takes four arguments that differentiate
-demographic rates by income group. The library supplies three:
-
-| Argument | File | Selection | Coverage |
-|---|---|---|---|
-| `fert_gradient` | `data/gradient_library_latest.csv` + `data/fertility_age_offsets.csv` | `indicator == "TFR"`, plus the offset by age | 96 countries (DHS or MICS) |
-| `infmort_gradient` | `data/gradient_library_latest.csv` | `indicator == "IMR"` | 88 countries (DHS or MICS) |
-| `mort_gradient` | `data/adult_mortality_gradients.csv` | `measure == "45q15"`, `sex == "all"`, latest year | 17 countries (15 by census; India and Bangladesh by household survey) |
-| `imm_pctiles` | not provided | — | — |
-
-`imm_pctiles` is not a gradient: it is the lifetime-income distribution of new
-immigrants (shape num_per × S × J). The library does not provide it; say so
-rather than substituting a gradient. `income_percentiles` is the model's own
-`lambdas`, not library data.
-
-## The two main rules
-
-**1. Convert the gradient: divide by 100 × (1 − p).** The library's wealth
-gradient is a log-rate slope per unit of wealth rank (0 to 1). OG-Core reads a
-*log-odds* slope per *centered percentile point*. Pass
-`gradient / (100 × (1 − p))`, where p is OG-Core's own mean rate at that age
-and period on OG-Core's scale (fertility: births per *person* per year, the UN
-rate per 1,000 women divided by 2,000; mortality: annual probability of death).
-Omitting the 100 changes results by a factor of 100. Omitting (1 − p)
-understates the slope by the factor (1 − p): at median rates, about 1 percent
-for adult mortality (where `gradient / 100` is an acceptable approximation),
-5 percent for infant mortality and 1–11 percent for fertility depending on age.
-Because p varies by age, a converted fertility gradient is a vector by age.
-The conversion is verified on the DHS quintile sets for infant mortality,
-child mortality at ages 1–4, under-five mortality and age-specific fertility;
-see
-[docs/methods/ogcore-units.md](docs/methods/ogcore-units.md).
-
-**Fertility by age.** Pass `fert_gradient` as a vector by age: the country's
-TFR gradient plus the offset for each age from `data/fertility_age_offsets.csv`
-(ages below 15 use the 15–19 offset, ages 50 and above the 45–49 offset), then
-convert as above. A single TFR gradient at every age reproduces the
-differential in completed fertility but not in the timing of births: the
-gradient at ages 15–19 is about twice the TFR gradient. Use the pooled offsets,
-not a country's own age gradients (`fertility_age_tilts.csv` is supporting
-data): over consecutive surveys, a country's own age pattern predicts the next
-survey about as well overall (better below 30, worse from 35), and it cannot be
-estimated at older ages in many surveys. Details:
-[docs/methods/fertility-by-age.md](docs/methods/fertility-by-age.md).
-
-**Mortality by age.** Pass `mort_gradient` as a vector by age, built from the
-country's 45q15 gradient (its own, else the general gradient) and the pooled
-band offsets in `data/general_gradient.csv` (`component == "age_offset"`):
-
-- ages 15–29, 30–44 and 45–59: the 45q15 gradient plus that band's offset;
-- ages 5–14: the 15–29 value;
-- ages 60–74: the 45–59 value at 60, falling linearly to 0 at 75 (not the
-  60–74 offset, which reverses the sign where the 45q15 gradient is weak);
-- ages 75 and above, and OG-Core's final age: 0. At the final age the model's
-  death probability is 1, so the conversion is undefined there; set it to 0
-  before converting.
-- ages 1–4: the country's child-mortality gradient (`indicator == "CMR"` in
-  `gradient_library_latest.csv`, DHS only); where there is none, its U5MR
-  gradient plus the offset in `data/child_mortality_offset.csv`.
-
-Age 0 is `infmort_gradient`. Do not substitute a country's own band gradients
-for the offsets. The country pages show the resulting vector. Details:
-[docs/methods/general-gradient.md](docs/methods/general-gradient.md#age-pattern).
-
-**2. Own estimate first, general gradient as fallback.** If the country has a
-row in the relevant file, use it. If not, use the general gradient for adult
-mortality (below) or the regional median for fertility and infant mortality.
-Never substitute another country's value without saying so; state the source
-and the survey or census year.
-
-## Adult mortality for countries without their own estimate
-
-`data/general_gradient.csv` provides a fallback for any country:
-
-    gradient(45q15) = 2.975 − 0.432 × ln(GDP per capita, PPP, constant 2021 international $)
-
-Income is the World Bank's `NY.GDP.PCAP.PP.KD`: it is comparable across
-countries and years, so the rule is applied to the same series for any year
-with no conversion. Do not plug in GNI in current US dollars (the measure used
-before 2026-11-13).
-
-It is fitted on 19 observations: 15 censuses and four household surveys with a
-household-deaths module (India's NFHS-2, -4, -5 and Bangladesh's BMMS 2016),
-with equal weight. The slope has a standard error of 0.091 (95% CI −0.624 to
-−0.241), but a single country can lie well off the line: the 95% prediction
-interval for a country without its own estimate is about ±0.7 (residual
-standard error 0.32).
-Report the prediction interval with any value taken from the rule; the file
-holds the terms needed to compute it at any income (formula in
-[docs/methods/general-gradient.md](docs/methods/general-gradient.md)).
-
-It was selected by leave-one-country-out prediction error against two
-alternatives: mean absolute error 0.272, compared with 0.403 for a single pooled
-value and 0.426 for regional medians, scored on the same 19 observations. The
-error is 0.29 below $3,000 per capita (PPP) and 0.26 above. The largest misses
-are South Africa 2007 (−1.75 measured against −0.99 predicted), Bangladesh 2016
-(−0.07 against −0.81), Malawi 2008 (−0.60 against −0.07) and Uganda 2002
-(+0.18 against −0.28). The same file contains age offsets and a pooled median for use
-when no income figure is available.
-
-Values at 2024 GDP per capita (PPP): Philippines −1.02 (95% prediction interval
-−1.73 to −0.32; $10,378), Indonesia −1.17 (−1.89 to −0.44; $14,471). Countries with
-their own estimate (for example South Africa 2007, −1.75; Ethiopia 2007, +0.07;
-India 2020, −0.79; Colombia 2018, −1.25; Bangladesh 2016, −0.07; Cambodia 2008,
-−0.79) use that
-estimate, not the rule.
-
-**There is no income-based fallback for fertility or infant mortality.** The
-same comparison was run for them: an income rule improved on a single pooled
-value by 0.4 percent for fertility, against 33 percent for adult mortality,
-because these gradients vary little with national income. For a country with no
-DHS or MICS survey, use the regional median and interquartile range from
-[ANALYSIS.md](ANALYSIS.md#regional-medians) and report the value as borrowed.
-
-## Known pitfalls
-
-- **Use `IMR`, not `U5MR`, for `infmort_gradient`.** The under-five gradient is
-  steeper: across 339 surveys reporting both, by a median 0.14, and by 0.67 in
-  Nigeria 2018. Every survey in the library that reports U5MR by quintile also
-  reports IMR; U5MR is published for comparison only. Likewise use `CMR`
-  (ages 1–4), not U5MR, for `mort_gradient` at ages 1–4.
-- **DHS and MICS rows share one basis.** `gradient_library*.csv` holds both,
-  marked in `source`. MICS rows are UNICEF survey rates taken from the World
-  Bank's compilation (pinned in `mics_quintiles_raw.csv`), mortality only where
-  UNICEF records a direct (full birth history) estimate; `mics_surveys.csv`
-  says what each survey contributes and why anything is excluded. Name the
-  source with the year ("MICS 2019"). A country's history can switch source
-  between surveys; part of the change may be the switch.
-- **Do not pool measurement bases.** `gradient_library*.csv` contains DHS and
-  MICS survey rates; `adult_mortality_gradients.csv` household death records (censuses, and
-  household surveys: India's DHS surveys, `ranking == "dhs_wealth_index"`, and
-  Bangladesh's BMMS 2016, `ranking == "survey_wealth_index"`);
-  `census_child_mortality.csv` a census cumulative proportion. Their gradients
-  agree where they have been compared, but their levels (`q1..q5`) measure
-  different quantities.
-- **The older-age offsets in `general_gradient.csv` are the least reliable
-  values in the library.** The 45–59 and 60–74 offsets are positive because, in
-  several low-income censuses, recorded mortality at older ages rises with
-  wealth; this is at least partly a reporting effect. The 60–74 offset is
-  therefore not used for OG-Core: ages 60–74 taper the 45–59 value to 0 by
-  age 75 (see Mortality by age). The 45–59 offset is used, with this caveat.
-- **Brazil's DHS survey is from 1996.** Census estimates show its
-  child-mortality gradient falling from −1.81 (1991) to −0.93 (2010). The census
-  measure resembles under-five mortality and probably overstates the infant
-  gradient; the alternative is the 1996 DHS infant gradient (−1.37). State
-  which is used and why.
-- **`groups` is not always 5.** Census rows use as many wealth groups as the
-  asset distribution supports (3 to 5; fewer than 3 is not published), with
-  each group placed at its realized population midpoint. The `q1..q5` columns stop at the last group, and the
-  low/high ratio then compares the lowest and highest of those groups.
-- **`linked_share` is the share of death records matched to a household.**
-  Every published row is above 0.99 (survey rows are 1 by construction). A sample with low linkage is publishable
-  only if linkage does not vary with wealth; South Africa 2011 (9 percent
-  linked, linkage lower in richer households) failed that test and is not
-  published.
-
-## Sign and interpretation
-
-A negative gradient means rates are higher in poorer households, which is the
-usual case for every indicator here. A gradient of −0.79 implies a fitted rate
-in the lowest quintile about e^(0.79 × 0.8) ≈ 1.9 times that in the highest.
-The `ratio` column is the measured low/high ratio (q1/q5), which is noisier. A
-positive adult-mortality gradient is not necessarily an error: several
-low-income censuses record it, for reasons discussed in the general-gradient
-documentation.
-
-## Long-run projections
-
-Across countries the adult-mortality gradient is more negative at higher
-national income (r = −0.76); a doubling of income per capita corresponds to
-about −0.30 in the gradient. Within countries the evidence is limited and
-mixed: South Africa's gradient steepened between its 2001 and 2007 censuses
-(−1.16 to −1.75) as income rose, but India's was −0.83, −0.81 and −0.79 in
-1999, 2015 and 2020 while GDP
-per capita (PPP) rose from about $3,000 to $7,200. A model projecting several decades ahead
-can hold the gradient fixed or let it follow the income relationship; report
-which, and treat the two as a range. The
-pooled fertility and infant gradients change little across 35 years of
-surveys, although a single country can change considerably, as Brazil shows.
-
-## Questions the library cannot answer
-
-State the gap rather than interpolating:
-
-- **High-income countries are outside the library's scope.** Its sources are
-  designed for low- and middle-income countries, and the income rule is
-  estimated between about $1,100 and $18,000 GDP per capita (PPP, constant
-  2021 international $). It must not be
-  extrapolated to high-income countries; if asked, say the library does not
-  cover them.
-- The only Asian estimates of adult mortality are India's (DHS surveys),
-  Bangladesh's (BMMS 2016) and Cambodia's (2008 census, the only Southeast
-  Asian one). Bangladesh's gradient is close to zero (−0.07), far from the
-  income rule's prediction, although it passes every check; report it as
-  measured and note the caveats on its country page. Cambodia's rests on 1,250
-  deaths (both sexes only) and 48% death coverage. There is none for East
-  Asia, and none for the Philippines or Indonesia: their DHS surveys have no
-  module on deaths at all ages, and their values come from a relationship
-  estimated mostly on African censuses.
-- DHS sibling histories were tested as a source for adult mortality and
-  rejected: they reproduce national levels but give wealth gradients of the
-  wrong sign, because poorer respondents under-report deaths. Do not propose
-  them as an alternative.
-
-## Citation
-
-Cite The DHS Program for fertility and child mortality, and UNICEF (MICS) plus
-the originating statistical office for rows with `source == "MICS"`; IPUMS International
-(Ruggles et al., doi:10.18128/D020.V7.7) plus the originating statistical office
-for census-based estimates; IBGE directly for Brazil's adult-mortality rows,
-which come from IBGE's own microdata rather than IPUMS; DANE directly for
-Colombia's (2018 census microdata); The DHS Program and IIPS
-for India's adult-mortality rows (NFHS); NIPORT, icddr,b and MEASURE Evaluation
-for Bangladesh's (BMMS 2016, UNC Dataverse doi:10.15139/S3/X33NIZ). The `source` column is
-accurate row by row — use it.
-
----
+- Use the country's own estimate where there is one. Otherwise use the general
+  gradient for adult mortality (with its 95% prediction interval, and only
+  within the income range it is estimated on), or the regional median for
+  fertility and infant mortality, reported as borrowed. Never substitute
+  another country's value without saying so.
+- Convert every gradient to OG-Core's units: divide by 100 × (1 − p), with p
+  OG-Core's own rate at that age and period.
+- Pass fertility and mortality as vectors by age, following the guide's
+  tables.
+- Use IMR, not U5MR, for `infmort_gradient`, and CMR at ages 1–4 of
+  `mort_gradient`.
+- `imm_pctiles` is not provided; say so.
+- State the source and year of every value, and what is borrowed.
+- High-income countries are outside the library's scope. DHS sibling
+  histories were tested for adult mortality and rejected; do not propose
+  them.
 
 # Working on this repo
 
@@ -244,8 +34,8 @@ scripts, and the documentation is generated — respect that architecture.
 
 ## Non-negotiables
 
-- **Never hand-edit the generated docs** — `ANALYSIS.md`, the README's marked
-  coverage table, the marked line-fit table in `docs/methods/survey-gradients.md`, `docs/methods/general-gradient.md`,
+- **Never hand-edit the generated docs** — `ANALYSIS.md`,
+  `docs/calibration-guide.md`, the README's marked coverage table, the marked line-fit table in `docs/methods/survey-gradients.md`, `docs/methods/general-gradient.md`,
   `docs/methods/ogcore-units.md`, `docs/methods/fertility-by-age.md`,
   `docs/tables/adult_mortality.md`, and
   everything under `docs/countries/`
@@ -312,7 +102,7 @@ scripts, and the documentation is generated — respect that architecture.
   Ruled 2026-11-05 — offsets, not per-country age gradients.
 - **Mortality at ages 1–4 uses the country's own CMR gradient** (DHS
   `CM_ECMR_C_CMR`, 4q1), falling back to U5MR + the pooled offset
-  (`child_mortality_offset.csv`, −0.53). Ruled 2026-11-16 (ROADMAP A3).
+  (`child_mortality_offset.csv`, −0.53). Ruled 2026-11-16.
   - (1 − IMR)(1 − CMR) reproduces DHS's U5MR per quintile within rounding.
   - CMR is steeper than U5MR in 85% of 74 countries.
   - Backtest over 203 consecutive-survey pairs: own previous CMR 0.43,
@@ -390,12 +180,13 @@ scripts, and the documentation is generated — respect that architecture.
   also rejected za2011a (0.066/0.073/0.064/0.059/0.055 linked/reported -
   biases steep by ~0.3) and mz2007a (0.89/1.09/0.97/1.05 - biases flat by
   ~0.15). za2007a has MORTNUM and passes; za2001a and ci1998a have none.
-- Gradient steepness tracks national income, not region:
-  `gradient ~ 2.97 - 0.432*ln(GDP per capita, PPP, constant 2021 intl $)`,
-  r = -0.76 over 19 observations (15 censuses + India NFHS-2/-4/-5 +
-  Bangladesh BMMS 2016; survey rows enter the rule on the same footing as
-  censuses, ruled 2026-11-12; Colombia 2018, Bangladesh 2016 and Cambodia
-  2008 added and Malawi 1998 withdrawn 2026-11-16).
+- Gradient steepness tracks national income, not region: the general
+  gradient is linear in ln(GDP per capita, PPP, constant 2021 intl $), over
+  every census and survey estimate (current coefficients and fit statistics:
+  `data/general_gradient.csv` and the generated general-gradient page; do not
+  copy them here). Survey rows enter the rule on the same footing as
+  censuses (ruled 2026-11-12). Changes to the set of observations are logged
+  in CHANGELOG.md.
   Income measure ruled 2026-11-13: GDP per capita PPP constant
   (NY.GDP.PCAP.PP.KD), the standard for cross-country living-standard and
   health-income comparisons; it replaced Atlas GNI in current US$, which mixed
@@ -426,7 +217,7 @@ scripts, and the documentation is generated — respect that architecture.
   quintile, unknown date/age by quintile, heaping and a boundary-split
   sensitivity, national 45q15 against WDI, cluster-bootstrap SE. Of the DHS,
   only India qualifies; every Asian DHS since 1997 and every DHS tagged for
-  causes of death was scanned (ROADMAP H1).
+  causes of death was scanned (2026-11-12).
 - **Bangladesh BMMS 2016** (ruled 2026-11-16: publish under the survey rules)
   goes through the same script (loader "bmms"), with the survey's own wealth
   quintiles and `qhweightoverall`; rows have `ranking ==
@@ -544,7 +335,7 @@ scripts, and the documentation is generated — respect that architecture.
    under-reporting is fine and cancels; record the capture rate as a caveat
    (bj2013a 35% publishes; note its ~16-month window). kh2008a (48%) passes
    every check and was published by ruling 2026-11-16, after being held
-   through the new-source review (ROADMAP H).
+   through the new-source review (see CHANGELOG.md).
 5. Gradient cross-checked against the library's existing range and any published
    national evidence.
 6. The shipped script — not session code — produces the committed rows,

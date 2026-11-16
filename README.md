@@ -41,13 +41,16 @@ for an OG-Core calibration and the estimates they are based on.
 
 ## Use in an OG-Core calibration
 
-1. **Select the gradient.** Use the country's own estimate. Where there is none,
-   use the general gradient for adult mortality and the regional median for
-   fertility and infant mortality, and report the value as borrowed.
-2. **Fertility by age.** Add the [age offsets](docs/methods/fertility-by-age.md)
-   to the country's total-fertility gradient.
-3. **Convert to OG-Core's units.** Divide by 100 × (1 − p), where p is
-   OG-Core's own rate at that age ([details](docs/methods/ogcore-units.md)).
+The [calibration guide](docs/calibration-guide.md) gives the full recipe, with
+current values; each [country page](docs/countries/README.md) applies it. In
+short: use the country's own estimate (otherwise the general gradient for adult
+mortality, or the regional median for fertility and infant mortality, reported
+as borrowed); pass fertility and mortality as vectors by age; and convert every
+gradient to OG-Core's units by dividing by 100 × (1 − p), where p is OG-Core's
+own rate at that age ([details](docs/methods/ogcore-units.md)).
+
+For a country with its own estimates (South Africa), with `p` the model's
+`Specifications` object and 100 model ages:
 
 ```python
 import numpy as np
@@ -56,28 +59,51 @@ from ogcore import demographics
 
 BASE = "https://raw.githubusercontent.com/EAPD-DRB/Demographic-Gradients/main/data/"
 lib = pd.read_csv(BASE + "gradient_library_latest.csv")
-off = pd.read_csv(BASE + "fertility_age_offsets.csv").set_index("age_lo")["offset"]
+amr = pd.read_csv(BASE + "adult_mortality_gradients.csv")
+fert_off = pd.read_csv(BASE + "fertility_age_offsets.csv").set_index("age_lo")["offset"]
+gg = pd.read_csv(BASE + "general_gradient.csv").set_index(["component", "key"])["value"]
+child_off = pd.read_csv(BASE + "child_mortality_offset.csv")["offset"].iloc[0]
 
 country, un_code = "South Africa", "710"
-tfr_gradient = lib.query("country == @country and indicator == 'TFR'")["slope"].iloc[0]
+def survey(ind):
+    return lib.query("country == @country and indicator == @ind")["slope"]
 
-ages = np.arange(p.E + p.S)   # p: the model's Specifications object; ages 0-99
-gradient_by_age = tfr_gradient + off.loc[np.clip(ages // 5 * 5, 15, 45)].values
+# Fertility by age (element i is age i)
+ages = np.arange(p.E + p.S)
 fert = demographics.get_fert(p.E + p.S, 0, 99, country_id=un_code)
-fert_gradient = gradient_by_age / (100 * (1 - fert[0]))
+fert_gradient = ((survey("TFR").iloc[0] + fert_off.loc[np.clip(ages // 5 * 5, 15, 45)].values)
+                 / (100 * (1 - fert[0])))
+
+# Infant mortality
+mort, infmort = demographics.get_mort(p.E + p.S, 0, 99, country_id=un_code)
+infmort_gradient = survey("IMR").iloc[0] / (100 * (1 - infmort[0]))
+
+# Mortality by age (element i is age i + 1, as in get_mort)
+q45 = (amr.query("country == @country and measure == '45q15' and sex == 'all'")
+       .sort_values("year")["slope"].iloc[-1])
+off = {b: gg[("age_offset", b)] for b in ("15-29", "30-44", "45-59")}
+cmr = survey("CMR").iloc[0] if len(survey("CMR")) else survey("U5MR").iloc[0] + child_off
+a = np.arange(1, p.E + p.S + 1)
+by_age = np.select([a <= 4, a <= 29, a <= 44, a <= 59, a <= 74],
+                   [cmr, q45 + off["15-29"], q45 + off["30-44"], q45 + off["45-59"],
+                    (q45 + off["45-59"]) * (75 - a) / 15], 0.0)
+mort_gradient = np.where(mort[0] < 1, by_age / (100 * (1 - mort[0])), 0.0)
 
 pop = demographics.get_pop_objs(p.E, p.S, p.T, 0, 99, country_id=un_code,
                                 income_percentiles=list(p.lambdas),
-                                fert_gradient=fert_gradient)
+                                fert_gradient=fert_gradient,
+                                mort_gradient=mort_gradient,
+                                infmort_gradient=infmort_gradient)
 ```
 
-The complete rules, including known pitfalls, are in [AGENTS.md](AGENTS.md),
-which is written so that it can also be followed by an AI assistant.
+For a country without its own adult estimate, `q45` is the general gradient at
+its GDP per capita, given on its country page with the prediction interval.
 
 ## Documentation
 
 | | |
 |---|---|
+| [Calibration guide](docs/calibration-guide.md) | The recipe for an OG-Core calibration, with current values |
 | [Methodology](docs/methodology.md) | How the estimates are produced, in brief |
 | [Main results](ANALYSIS.md) | Summary of the estimates, with figures and regional medians |
 | [Glossary](docs/glossary.md) | Definitions of terms and abbreviations |
@@ -98,6 +124,8 @@ census-based estimates ([details](docs/sources.md)).
 pages from free public sources; census-based files are rebuilt separately
 ([details](docs/sources.md#reproduction)).
 Pages marked as generated are written by the scripts and should be changed
-there; see [AGENTS.md, Working on this repo](AGENTS.md#working-on-this-repo).
-[ROADMAP.md](ROADMAP.md) lists open work; `research/` contains working notes
-from the initial build.
+there; see [AGENTS.md, Working on this repo](AGENTS.md#working-on-this-repo) and
+[files](docs/files.md).
+[CHANGELOG.md](CHANGELOG.md) records changes to published values, for models
+that use them; [ROADMAP.md](ROADMAP.md) lists open work; `research/` holds
+archived working notes from the initial build.
