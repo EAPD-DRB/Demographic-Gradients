@@ -16,9 +16,12 @@ Each stage is also runnable on its own:
     make_figures.py             rebuild figures/ from data/
     build_analysis.py           regenerate the generated documentation from data/
 
-Census-based files are rebuilt separately: build_adult_mortality.py and
-build_census_child_mortality.py (IPUMS account required) and
-build_general_gradient.py (World Bank API).
+The census and survey adult-mortality files are rebuilt separately, before
+the general gradient, which reads them: build_adult_mortality.py (IPUMS),
+build_adult_mortality_brazil.py, build_adult_mortality_colombia.py and
+build_adult_mortality_survey.py, then build_census_child_mortality.py and
+build_general_gradient.py. docs/files.md lists every script and the order of
+a full rebuild.
 """
 
 import argparse

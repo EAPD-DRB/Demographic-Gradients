@@ -81,8 +81,8 @@ which is written so that it can also be followed by an AI assistant.
 | [Methodology](docs/methodology.md) | How the estimates are produced, in brief |
 | [Main results](ANALYSIS.md) | Summary of the estimates, with figures and regional medians |
 | [Glossary](docs/glossary.md) | Definitions of terms and abbreviations |
-| [Data files](docs/data-files.md) | Contents of each file in `data/` |
-| Methods | [Survey estimates](docs/methods/dhs-gradients.md) · [Fertility by age](docs/methods/fertility-by-age.md) · [Adult mortality](docs/methods/adult-mortality.md) · [General gradient](docs/methods/general-gradient.md) · [Conversion to OG-Core units](docs/methods/ogcore-units.md) |
+| [Files](docs/files.md) | Data files, scripts, figures and the research archive, and the order of a full rebuild |
+| Methods | [Survey estimates](docs/methods/survey-gradients.md) · [Fertility by age](docs/methods/fertility-by-age.md) · [Adult mortality](docs/methods/adult-mortality.md) · [General gradient](docs/methods/general-gradient.md) · [Conversion to OG-Core units](docs/methods/ogcore-units.md) |
 | [Sources and limitations](docs/sources.md) | Data sources, citation and limitations |
 
 ## Citation

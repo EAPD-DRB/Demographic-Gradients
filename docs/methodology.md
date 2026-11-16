@@ -80,12 +80,12 @@ Surveys. TFR, IMR and U5MR from MICS surveys are added from the World Bank's
 compilation of survey results, with infant and under-five mortality only where
 they are direct estimates from a full birth history, as in the DHS, and with
 checks that exclude values filed under the wrong indicator
-([details](methods/dhs-gradients.md#multiple-indicator-cluster-surveys)). All
+([details](methods/survey-gradients.md#multiple-indicator-cluster-surveys)). All
 surveys are kept; each row records its source. Fertility rates refer to the three years before the survey and
 mortality rates to the ten years before it. Surveys without a positive value
 for every quintile are excluded. A gradient is estimated for each survey, and
 calibrations use the latest survey for each country
-([details](methods/dhs-gradients.md)).
+([details](methods/survey-gradients.md)).
 
 **Infant mortality.** `infmort_gradient` uses the IMR gradient. The U5MR
 includes deaths at ages 1–4, which are more strongly associated with wealth,

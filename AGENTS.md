@@ -245,7 +245,7 @@ scripts, and the documentation is generated — respect that architecture.
 ## Non-negotiables
 
 - **Never hand-edit the generated docs** — `ANALYSIS.md`, the README's marked
-  coverage table, the marked line-fit table in `docs/methods/dhs-gradients.md`, `docs/methods/general-gradient.md`,
+  coverage table, the marked line-fit table in `docs/methods/survey-gradients.md`, `docs/methods/general-gradient.md`,
   `docs/methods/ogcore-units.md`, `docs/methods/fertility-by-age.md`,
   `docs/tables/adult_mortality.md`, and
   everything under `docs/countries/`
@@ -253,8 +253,8 @@ scripts, and the documentation is generated — respect that architecture.
   GENERATED banner). Change the generator or the data, then regenerate
   (`uv run scripts/build_analysis.py`, or `uv run scripts/refresh.py` for the
   full DHS refresh). The rest of `README.md`, `docs/methodology.md`, `docs/glossary.md`,
-  `docs/data-files.md`, `docs/sources.md`, `docs/methods/adult-mortality.md`
-  and `docs/methods/dhs-gradients.md` are hand-written — edit those directly,
+  `docs/files.md`, `docs/sources.md`, `docs/methods/adult-mortality.md`
+  and `docs/methods/survey-gradients.md` are hand-written — edit those directly,
   but keep any numbers in them qualitative so they cannot drift.
 - **Writing standard: statistical-publication style.** Documentation follows
   the conventions of DHS reports and World Bank indicator notes: neutral,

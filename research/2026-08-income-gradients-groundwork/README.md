@@ -1,5 +1,11 @@
 # Income-gradient groundwork (session notes, June–August 2026)
 
+> **Archive.** Notes kept for the record. Counts, values and recommendations
+> here are superseded by the library's current pages (start at the
+> [README](../../README.md)); for example, the library now covers 96
+> countries for fertility, and Asian adult-mortality estimates exist for
+> India, Bangladesh and Cambodia.
+
 Exploratory research that preceded and parallels this library: data sources for
 mortality and fertility differentiated by income, per country, and a prototype
 construction of income-group mortality-rate schedules. Preserved here as

@@ -16,7 +16,7 @@ database, which compiles them from the MICS reports; UNICEF's child-mortality
 database ([data.unicef.org](https://data.unicef.org)) records whether each
 survey's mortality rates are direct or indirect estimates, and the World Bank's
 historical income classification and World Development Indicators supply the
-checks described in [the methods](methods/dhs-gradients.md#multiple-indicator-cluster-surveys).
+checks described in [the methods](methods/survey-gradients.md#multiple-indicator-cluster-surveys).
 A copy of these downloads is kept in `data/` and refreshed with
 `scripts/fetch_mics.py`.
 

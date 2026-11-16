@@ -1,7 +1,7 @@
 # South Africa — income-differentiated mortality data & method (handoff brief)
 
 > Written 2026-08 before the Demographic-Gradients library existed. The
-> library's own ZAF census rows (2001/2007/2011) and AGENTS.md precedence rules
+> library's own ZAF census rows (2001 and 2007; 2011 was later withdrawn) and its rules
 > now take priority for calibration; this brief remains useful for its
 > Agincourt/HAALSI/SAPRIN/cohort sourcing, the HIV-era caveats, and the
 > validation targets.

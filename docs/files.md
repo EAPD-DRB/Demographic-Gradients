@@ -1,7 +1,9 @@
-# Data files
+# Files
 
-All files in [`data/`](../data/) are CSV and are rebuilt by the scripts in
-[`scripts/`](../scripts/). Terms are defined in the [glossary](glossary.md).
+What each file in the repository holds and how it is produced. The data files
+in [`data/`](../data/) are CSV and are rebuilt by the scripts in
+[`scripts/`](../scripts/); the figures and the generated documentation are
+rebuilt from the data files. Terms are defined in the [glossary](glossary.md).
 
 ## Files used in a calibration
 
@@ -58,6 +60,48 @@ census; `common`, assets recorded in all three censuses); `n_mothers`;
 | [`mics_methods_reports.csv`](../data/mics_methods_reports.csv) | Child-mortality method from the MICS report, for surveys UNICEF does not classify |
 | [`dhs_regions.csv`](../data/dhs_regions.csv) | DHS Program region of each country; countries surveyed only by MICS are assigned to a region (`classification == "assigned"`) |
 | [`ogcore_units_check.csv`](../data/ogcore_units_check.csv) | Results of the check that determines the conversion to OG-Core units |
+
+## Scripts
+
+| Script | What it does | Writes |
+|---|---|---|
+| `build_gradient_library.py` | Pulls the DHS API (or, with `--no-pull`, uses the stored copy), adds the pinned MICS values, and computes the survey gradients, the fertility age offsets and the ages 1–4 offset | `gradient_library*.csv`, `dhs_gradients_raw.csv`, `fertility_age_*.csv`, `child_mortality_offset.csv`, `dhs_regions.csv`, `mics_surveys.csv` |
+| `fetch_mics.py` | Downloads the World Bank's MICS compilation and UNICEF's method classification; run only when a MICS refresh is intended | `mics_quintiles_raw.csv`, `mics_methods_unicef.csv` |
+| `check_ogcore_units.py` | Runs every DHS quintile set through OG-Core's own rate function to check the conversion to OG-Core units | `ogcore_units_check.csv` |
+| `build_adult_mortality.py` | Adult mortality from IPUMS census samples (`submit`, `download`, `estimate`); requires an IPUMS account and the supplementary death files | rows of `adult_mortality_gradients.csv` |
+| `build_adult_mortality_brazil.py` | Adult mortality from IBGE's 2010 census microdata (downloads them) | Brazil rows |
+| `build_adult_mortality_colombia.py` | Adult mortality from DANE's 2018 census microdata (downloaded by hand) | Colombia rows |
+| `build_adult_mortality_survey.py` | Adult mortality from household-death modules in surveys: India's NFHS (DHS recode files) and Bangladesh's BMMS 2016 | survey rows |
+| `asset_index.py` | Shared by the census scripts: the asset index, the wealth groups, the gradient and its standard error | — |
+| `build_census_child_mortality.py` | Child mortality by wealth from IPUMS census samples (Brazil) | `census_child_mortality.csv` |
+| `build_general_gradient.py` | Fits the income relationship for adult mortality and the age offsets; fetches missing income figures from the World Bank | `general_gradient*.csv`, `income_census_years.csv` |
+| `make_figures.py` (style: `figures.mplstyle`) | Draws the figures | `figures/*.png` |
+| `build_analysis.py` | Writes every generated page | `ANALYSIS.md`, the README coverage table, `docs/countries/`, `docs/tables/`, the generated method pages |
+| `refresh.py` | Runs `build_gradient_library.py` (and `check_ogcore_units.py` after a DHS pull), `make_figures.py` and `build_analysis.py` in order | — |
+| `build_adult_mortality_dhs.py` | Not used: adult mortality from DHS sibling survival histories, a method tested and rejected (the wealth gradients come out with the wrong sign; see [adult mortality](methods/adult-mortality.md)). Kept as the record of that test | — |
+
+Order of a full rebuild: the survey library; the adult-mortality scripts (in
+any order; the output file is the same whichever runs last); the census child
+mortality; the general gradient, which reads the adult-mortality rows; then the
+figures and the generated pages.
+
+## Figures
+
+| File | Shows |
+|---|---|
+| `what_is_a_gradient.png` | How a wealth gradient is fitted to five quintile rates |
+| `by_wealth.png` | Fertility and infant mortality by wealth quintile, every country's latest survey |
+| `by_region.png` | Low/high ratios by region |
+| `over_time.png` | Low/high ratios by survey year |
+| `fertility_by_age.png` | The fertility gradient by age of mother |
+| `adult_mortality_vs_income.png` | The adult-mortality gradient against GDP per capita, with the general gradient |
+| `adult_mortality_by_age.png` | The adult-mortality gradient at ages 15–29 and at older ages |
+
+## Research archive
+
+[`research/`](../research/) holds working notes from June–August 2026 that preceded
+the library's current methods. They are kept for the record; their figures and
+statements are superseded by the pages above.
 
 ## Comparability
 

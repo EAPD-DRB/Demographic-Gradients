@@ -134,7 +134,7 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
   front door with a generated coverage table; seven figures rebuilt to one
   standard (finding as title, poorest-to-richest ratio, one accent), including
   two new ones: what a gradient is, and adult mortality against income;
-  `docs/glossary.md`, `docs/data-files.md`, `docs/sources.md`; ANALYSIS.md
+  `docs/glossary.md`, `docs/files.md`, `docs/sources.md`; ANALYSIS.md
   rewritten as seven findings; a page for every country (80) opening with
   "What to use in OG-Core".
 
