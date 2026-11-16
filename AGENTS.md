@@ -42,7 +42,7 @@ scripts, and the documentation is generated — respect that architecture.
   are written by `scripts/build_analysis.py` from the CSVs (each carries a
   GENERATED banner). Change the generator or the data, then regenerate
   (`uv run scripts/build_analysis.py`, or `uv run scripts/refresh.py` for the
-  full DHS refresh). The rest of `README.md`, `docs/methodology.md`, `docs/glossary.md`,
+  full DHS refresh). The rest of `README.md`, `docs/glossary.md`,
   `docs/files.md`, `docs/sources.md`, `docs/methods/adult-mortality.md`
   and `docs/methods/survey-gradients.md` are hand-written — edit those directly,
   but keep any numbers in them qualitative so they cannot drift.

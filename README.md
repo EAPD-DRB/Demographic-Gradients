@@ -104,7 +104,6 @@ its GDP per capita, given on its country page with the prediction interval.
 | | |
 |---|---|
 | [Calibration guide](docs/calibration-guide.md) | The recipe for an OG-Core calibration, with current values |
-| [Methodology](docs/methodology.md) | How the estimates are produced, in brief |
 | [Main results](ANALYSIS.md) | Summary of the estimates, with figures and regional medians |
 | [Adult mortality: all estimates](docs/tables/adult_mortality.md) | Every census and survey estimate, by sex and age band |
 | [Glossary](docs/glossary.md) | Definitions of terms and abbreviations |
