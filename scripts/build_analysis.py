@@ -46,8 +46,34 @@ GENERATED_BANNER = (
 # NY.GDP.PCAP.PP.KD, retrieved 2026-11-13), the income rule's measure; used to
 # print general-gradient values for OG-family countries without their own
 # estimate. Update when the World Bank revises (each ICP round revises PPPs).
-WORKED_INCOME = {"Philippines": 10378, "Indonesia": 14471}
-WORKED_YEAR = 2024
+# Countries with an adult-mortality estimate but no DHS or MICS survey get a
+# region by assignment, as MICS-only countries do in dhs_regions.csv.
+ASSIGNED_REGIONS = {"South Sudan": "Sub-Saharan Africa"}
+
+
+def latest_income():
+    """Each country's latest GDP per capita (PPP) and its year, pinned by
+    build_general_gradient.py in data/income_latest.csv."""
+    p = DATA / "income_latest.csv"
+    if not p.exists():
+        return {}
+    d = pd.read_csv(p).dropna(subset=["gdp_ppp"])
+    return {r.country: (float(r.gdp_ppp), int(r.year)) for r in d.itertuples()}
+
+
+def rule_range():
+    """GDP per capita (PPP) range of the observations the general gradient is fitted on."""
+    p = DATA / "general_gradient_points.csv"
+    g = pd.read_csv(p)["gdp_ppp"].dropna() if p.exists() else pd.Series(dtype=float)
+    return (float(g.min()), float(g.max())) if len(g) else (np.nan, np.nan)
+
+
+def regional(latest, ind, region):
+    """Regional median and interquartile range of the latest gradients."""
+    s = latest[(latest["indicator"] == ind) & (latest["region"] == region)]["slope"]
+    if not len(s):
+        return None
+    return float(s.median()), float(s.quantile(0.25)), float(s.quantile(0.75)), len(s)
 # Formerly: GNI per capita, Atlas method, current US$, 2024 (World Bank NY.GNP.PCAP.CD,
 # retrieved 2026-11-11), used to print general-gradient values for OG-family
 # countries without their own estimate. Update when the World Bank revises.
@@ -1040,10 +1066,16 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
     rows, notes = [], []
     tfr = latest[(latest["country"] == c) & (latest["indicator"] == "TFR")]
     region = regions.get(c)
-    borrow = (f"no DHS or MICS survey with a wealth breakdown; regional median for {region} "
-              f"([table](../../ANALYSIS.md#{REGION_ANCHOR}))" if region else
-              "no DHS or MICS survey with a wealth breakdown; regional median "
-              f"([table](../../ANALYSIS.md#{REGION_ANCHOR}))")
+
+    def borrow(ind, what):
+        """Value and source text for a country with no survey of this indicator."""
+        rm = regional(latest, ind, region) if region else None
+        if rm is None:
+            return None, f"no survey with {what} by wealth quintile; no regional median available"
+        med, q25, q75, n = rm
+        return med, (f"no survey with {what} by wealth quintile; median of the {n} countries of "
+                     f"{region} (interquartile range {fmt(q25)} to {fmt(q75)}; "
+                     f"[table](../../ANALYSIS.md#{REGION_ANCHOR}))")
     if len(tfr):
         t, y = float(tfr["slope"].iloc[0]), int(tfr["year"].iloc[0])
         rows.append(f"| `fert_gradient` | {fmt(t)}, by age as below | {tfr['source'].iloc[0]} "
@@ -1053,8 +1085,10 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
                          "Gradients can change substantially over such a period; state the "
                          "survey year when using these values.")
     else:
-        t = None
-        rows.append(f"| `fert_gradient` | — | {borrow}, plus age offsets |")
+        t, why = borrow("TFR", "fertility")
+        rows.append(f"| `fert_gradient` | {fmt(t) if t is not None else '—'}"
+                    f"{', by age as below' if t is not None else ''} | {why}, plus "
+                    "[age offsets](../methods/fertility-by-age.md) |")
     imr = latest[(latest["country"] == c) & (latest["indicator"] == "IMR")]
     u5 = latest[(latest["country"] == c) & (latest["indicator"] == "U5MR")]
     cc = (ccm_df[(ccm_df["country"] == c) & (ccm_df["index"] == "full")
@@ -1081,7 +1115,8 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
                     f"| {u5['source'].iloc[0]} {int(u5['year'].iloc[0])}, under-five mortality rate (no infant "
                     "rate by quintile; somewhat steeper) |")
     else:
-        rows.append(f"| `infmort_gradient` | — | {borrow} |")
+        v, why = borrow("IMR", "infant mortality")
+        rows.append(f"| `infmort_gradient` | {fmt(v) if v is not None else '—'} | {why} |")
     own = own_adult(amr, c)
     gg = general_gradient() or {}
     a = gg.get("income_rule.intercept", float("nan"))
@@ -1093,12 +1128,21 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
             notes.append(f"The {own['year']} census links {own['linked']:.0%} of death records "
                          "to household assets. The gradient is retained; rate levels for that "
                          "census are not meaningful.")
-    elif c in WORKED_INCOME:
-        f, lo, hi = rule_predict(gg, WORKED_INCOME[c])
+    elif c in latest_income() and not (rule_range()[0] <= latest_income()[c][0] <= rule_range()[1]):
+        inc, yr = latest_income()[c]
+        rmin, rmax = rule_range()
+        rows.append(f"| `mort_gradient` | — | GDP per capita (PPP, constant 2021 international $) of "
+                    f"${inc:,.0f} ({yr}, World Bank) is {'above' if inc > rmax else 'below'} the range "
+                    f"the [general gradient](../methods/general-gradient.md#scope) is estimated on "
+                    f"(${round(rmin, -2):,.0f} to ${round(rmax, -3):,.0f}); it is not extrapolated, and the "
+                    "library provides no value |")
+    elif c in latest_income():
+        inc, yr = latest_income()[c]
+        f, lo, hi = rule_predict(gg, inc)
         rows.append(f"| `mort_gradient` | {fmt(f)} (95% prediction interval {fmt(lo)} to "
                     f"{fmt(hi)}) | [general gradient](../methods/general-gradient.md) at GDP "
                     f"per capita (PPP, constant 2021 international $) of "
-                    f"${WORKED_INCOME[c]:,} ({WORKED_YEAR}) |")
+                    f"${inc:,.0f} ({yr}, World Bank) |")
     else:
         rows.append(f"| `mort_gradient` | {fmt(a)} {NEG} {abs(b):.3f} × ln(GDP per capita, PPP) "
                     f"| [general gradient](../methods/general-gradient.md), GDP per capita in "
@@ -1159,13 +1203,17 @@ def mortality_by_age(own, gg, c, latest):
     offs = dict(gg.get("_ages", []))
     if not all(k in offs for k in ("15-29", "30-44", "45-59")):
         return ""
-    base = own["tilt"] if own else (rule_predict(gg, WORKED_INCOME[c])[0]
-                                    if c in WORKED_INCOME else None)
+    inc = latest_income().get(c)
+    in_range = inc is not None and rule_range()[0] <= inc[0] <= rule_range()[1]
+    base = own["tilt"] if own else (rule_predict(gg, inc[0])[0] if in_range else None)
     if base is not None:
         cell = {k: fmt(base + offs[k]) for k in ("15-29", "30-44", "45-59")}
         cell["60-74"] = f"{cell['45-59']} at 60, falling to 0 at 75"
         lead = ("the 45q15 gradient above plus the pooled offset for each band "
                 "([age pattern](../methods/general-gradient.md#age-pattern))")
+    elif inc is not None:  # income outside the rule's range: no adult value
+        cell = {k: "—" for k in ("15-29", "30-44", "45-59", "60-74")}
+        lead = "no value; see `mort_gradient` above"
     else:
         cell = {k: f"value {NEG} {abs(offs[k]):.2f}" if offs[k] < 0 else f"value + {offs[k]:.2f}"
                 for k in ("15-29", "30-44", "45-59")}
@@ -1274,6 +1322,7 @@ def write_country_pages(latest, amr, ccm):
     ccm_df = ccm["df"] if ccm else None
     off = fertility_offsets()
     regions = pd.read_csv(DATA / "dhs_regions.csv").set_index("country")["region"].to_dict()
+    regions.update({k: v for k, v in ASSIGNED_REGIONS.items() if k not in regions})
     countries = sorted(set(latest["country"]) | set(amr["country"]) | set(OG_FAMILY)
                        | (set(ccm_df["country"]) if ccm_df is not None else set()))
     index_rows = []
@@ -1291,12 +1340,11 @@ def write_country_pages(latest, amr, ccm):
                + "\n".join(b for b in evidence if b) + note_txt)
         (DOCS / "countries" / f"{slug(c)}.md").write_text(doc)
         what = []
-        dhs_rows = latest[latest["country"] == c]
-        if len(dhs_rows):
-            top = dhs_rows.sort_values("year").iloc[-1]
-            dhs = f"{top['source']} {int(top['year'])}"
-        else:
-            dhs = "—"
+
+        def survey(ind):
+            r = latest[(latest["country"] == c) & (latest["indicator"] == ind)]
+            return f"{r['source'].iloc[0]} {int(r['year'].iloc[0])}" if len(r) else "—"
+        dhs = f"{survey('TFR')} | {survey('IMR')}"
         cens = sorted(set(amr[amr["country"] == c]["year"]))
         child = (sorted(set(ccm_df[ccm_df["country"] == c]["year"]))
                  if ccm_df is not None else [])
@@ -1309,8 +1357,8 @@ def write_country_pages(latest, amr, ccm):
            "use the [general gradient](../methods/general-gradient.md). Countries not listed "
            "have no DHS or MICS survey with a wealth breakdown; regional medians are given in "
            f"[the main results](../../ANALYSIS.md#{REGION_ANCHOR}).\n\n"
-           "| Country | Region | Latest survey | Adult mortality "
-           "| Census, child mortality |\n|---|---|---|---|---|\n"
+           "| Country | Region | Fertility survey | Infant-mortality survey | Adult mortality "
+           "| Census, child mortality |\n|---|---|---|---|---|---|\n"
            + "\n".join(index_rows) + "\n")
     (DOCS / "countries" / "README.md").write_text(idx)
     return countries

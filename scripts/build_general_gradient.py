@@ -70,6 +70,10 @@ SRC = ROOT / "data" / "adult_mortality_gradients.csv"
 OUT = ROOT / "data" / "general_gradient.csv"
 POINTS = ROOT / "data" / "general_gradient_points.csv"
 INCOME = ROOT / "data" / "income_census_years.csv"
+LATEST_INCOME = ROOT / "data" / "income_latest.csv"
+LIBRARY = ROOT / "data" / "gradient_library_latest.csv"
+MICS_RAW = ROOT / "data" / "mics_quintiles_raw.csv"
+MICS_NAMES = {"Congo, Rep.": "Congo", "Gambia, The": "Gambia"}  # as in build_gradient_library.py
 PPP = "NY.GDP.PCAP.PP.KD"   # GDP per capita, PPP, constant 2021 international $
 ATLAS = "NY.GNP.PCAP.CD"    # GNI per capita, Atlas method, current US$ (reference)
 BANDS = [(15, 29), (30, 44), (45, 59), (60, 74)]
@@ -205,11 +209,66 @@ def age_shape(src=SRC):
     return o.groupby("band")["offset"].agg(["median", "count"])
 
 
+def latest_income(refresh=False):
+    """Each country's most recent GDP per capita (PPP), pinned in data/income_latest.csv.
+
+    For every country with a page (any survey gradient or adult-mortality
+    estimate), the World Bank's latest non-empty value of NY.GDP.PCAP.PP.KD
+    and its year, so country pages can show the general gradient's value and
+    prediction interval for countries without their own estimate. Countries
+    already pinned are not fetched again; --refresh-income re-fetches all.
+    ISO3 codes come from the pinned file, the census list (ISO3), the MICS
+    file, and otherwise the DHS API's country list.
+    """
+    countries = sorted(set(pd.read_csv(LIBRARY)["country"]) | set(pd.read_csv(SRC)["country"]))
+    cols = ["country", "iso3", "year", "gdp_ppp", "retrieved"]
+    have = (pd.read_csv(LATEST_INCOME, dtype={"retrieved": object})
+            if LATEST_INCOME.exists() and not refresh else pd.DataFrame(columns=cols))
+    todo = [c for c in countries if c not in set(have["country"])]
+    if todo:
+        iso = dict(zip(have["country"], have["iso3"]))
+        iso.update(ISO3)
+        m = pd.read_csv(MICS_RAW)
+        iso.update(dict(zip(m["wb_country"].replace(MICS_NAMES), m["iso3"])))
+        if any(c not in iso for c in todo):
+            with urllib.request.urlopen("https://api.dhsprogram.com/rest/dhs/countries?f=json"
+                                        "&returnFields=CountryName,ISO3_CountryCode", timeout=120) as r:
+                iso.update({x["CountryName"]: x["ISO3_CountryCode"] for x in json.load(r)["Data"]})
+        today = datetime.date.today().isoformat()
+        # one request for every country's latest non-empty value
+        url = (f"https://api.worldbank.org/v2/country/all/indicator/{PPP}"
+               "?mrnev=1&format=json&per_page=500")
+        for attempt in range(5):
+            try:
+                with urllib.request.urlopen(url, timeout=120) as r:
+                    body = json.load(r)
+                break
+            except Exception as err:
+                last = err
+                time.sleep(10 * (attempt + 1))
+        else:
+            raise RuntimeError(f"World Bank API failed: {last}")
+        wb = {x["countryiso3code"]: (int(x["date"]), x["value"]) for x in body[1]
+              if x.get("countryiso3code") and x.get("value") is not None}
+        rows = []
+        for c in todo:
+            code = iso.get(c)
+            year, value = wb.get(code, (None, None))
+            rows.append(dict(country=c, iso3=code, year=year, gdp_ppp=value, retrieved=today))
+            print(f"  latest income {c} ({code}): {value} ({year})")
+        have = pd.concat([have, pd.DataFrame(rows)], ignore_index=True).sort_values("country")
+        have.to_csv(LATEST_INCOME, index=False)
+        print(f"fetched latest income for {len(todo)} countries; wrote {LATEST_INCOME}")
+    return have
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--refresh-income", action="store_true",
-                    help="re-download every observation's income instead of using the pinned file")
-    d = observations(ap.parse_args().refresh_income)
+                    help="re-download every income figure instead of using the pinned files")
+    refresh = ap.parse_args().refresh_income
+    latest_income(refresh)
+    d = observations(refresh)
     print(f"{len(d)} observations ({d['country'].nunique()} countries)\n")
     e = loo_errors(d)
 

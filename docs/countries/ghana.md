@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −1.01, by age as below | DHS 2022, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.57 | DHS 2022, infant mortality rate |
-| `mort_gradient` | 2.97 − 0.432 × ln(GDP per capita, PPP) | [general gradient](../methods/general-gradient.md), GDP per capita in constant 2021 international $; for example −0.31 at $2,000 and −1.01 at $10,000, each with a 95% prediction interval of about ±0.7 |
+| `mort_gradient` | −0.88 (95% prediction interval −1.57 to −0.18) | [general gradient](../methods/general-gradient.md) at GDP per capita (PPP, constant 2021 international $) of $7,358 (2025, World Bank) |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -20,11 +20,11 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 |---|---|---|---|---|---|---|
 | −1.79 | −1.11 | −0.80 | −0.69 | −0.92 | −1.40 | −1.99 |
 
-**Adult and child mortality gradient by age** (`mort_gradient`; ages 15–59: the general-gradient value for this country plus the pooled offset for each band ([age pattern](../methods/general-gradient.md#age-pattern)); ages 5–14 use the 15–29 value; ages 60–74 fall in a straight line from the 45–59 value to 0 at age 75; ages 75 and above, and OG-Core's final age, use 0):
+**Adult and child mortality gradient by age** (`mort_gradient`; ages 15–59: the 45q15 gradient above plus the pooled offset for each band ([age pattern](../methods/general-gradient.md#age-pattern)); ages 5–14 use the 15–29 value; ages 60–74 fall in a straight line from the 45–59 value to 0 at age 75; ages 75 and above, and OG-Core's final age, use 0):
 
 | 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |
 |---|---|---|---|---|---|---|
-| −1.78 (DHS 2022) | value − 0.41 | value − 0.41 | value − 0.18 | value + 0.21 | the 45–59 value at 60, falling to 0 at 75 | 0 |
+| −1.78 (DHS 2022) | −1.28 | −1.28 | −1.06 | −0.67 | −0.67 at 60, falling to 0 at 75 | 0 |
 
 Ages 1–4 use the country's own gradient in child mortality at ages 1–4 (DHS), or, where there is none, its under-five gradient plus a pooled offset ([details](../methods/general-gradient.md#age-pattern)). Infant mortality (age 0) is `infmort_gradient`, above.
 

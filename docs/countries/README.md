@@ -3,103 +3,103 @@
 
 One page per country, giving the values for an OG-Core calibration and the estimates behind them. Countries without their own estimate of adult mortality use the [general gradient](../methods/general-gradient.md). Countries not listed have no DHS or MICS survey with a wealth breakdown; regional medians are given in [the main results](../../ANALYSIS.md#regional-medians).
 
-| Country | Region | Latest survey | Adult mortality | Census, child mortality |
-|---|---|---|---|---|
-| [Afghanistan](afghanistan.md) | South & Southeast Asia | DHS 2015 | — | — |
-| [Albania](albania.md) | North Africa/West Asia/Europe | DHS 2017 | — | — |
-| [Algeria](algeria.md) | North Africa/West Asia/Europe | MICS 2019 | — | — |
-| [Angola](angola.md) | Sub-Saharan Africa | DHS 2023 | — | — |
-| [Argentina](argentina.md) | Latin America & Caribbean | MICS 2012 | — | — |
-| [Armenia](armenia.md) | North Africa/West Asia/Europe | DHS 2016 | — | — |
-| [Azerbaijan](azerbaijan.md) | North Africa/West Asia/Europe | DHS 2006 | — | — |
-| [Bangladesh](bangladesh.md) | South & Southeast Asia | DHS 2022 | 2016 | — |
-| [Belize](belize.md) | Latin America & Caribbean | MICS 2016 | — | — |
-| [Benin](benin.md) | Sub-Saharan Africa | DHS 2017 | 2013 | — |
-| [Bhutan](bhutan.md) | South & Southeast Asia | MICS 2010 | — | — |
-| [Bolivia](bolivia.md) | Latin America & Caribbean | DHS 2008 | — | — |
-| [Brazil](brazil.md) | Latin America & Caribbean | DHS 1996 | 2010 | 1991, 2000, 2010 |
-| [Burkina Faso](burkina-faso.md) | Sub-Saharan Africa | DHS 2021 | — | — |
-| [Burundi](burundi.md) | Sub-Saharan Africa | DHS 2016 | — | — |
-| [Cambodia](cambodia.md) | South & Southeast Asia | DHS 2021 | 2008 | — |
-| [Cameroon](cameroon.md) | Sub-Saharan Africa | DHS 2022 | — | — |
-| [Central African Republic](central-african-republic.md) | Sub-Saharan Africa | MICS 2019 | — | — |
-| [Chad](chad.md) | Sub-Saharan Africa | MICS 2019 | — | — |
-| [Colombia](colombia.md) | Latin America & Caribbean | DHS 2015 | 2018 | — |
-| [Comoros](comoros.md) | Sub-Saharan Africa | DHS 2012 | — | — |
-| [Congo](congo.md) | Sub-Saharan Africa | MICS 2016 | — | — |
-| [Congo Democratic Republic](congo-democratic-republic.md) | Sub-Saharan Africa | DHS 2023 | — | — |
-| [Cote d'Ivoire](cote-d-ivoire.md) | Sub-Saharan Africa | DHS 2021 | 1998 | — |
-| [Dominican Republic](dominican-republic.md) | Latin America & Caribbean | MICS 2014 | — | — |
-| [Egypt](egypt.md) | North Africa/West Asia/Europe | DHS 2014 | — | — |
-| [El Salvador](el-salvador.md) | Latin America & Caribbean | MICS 2014 | — | — |
-| [Eritrea](eritrea.md) | Sub-Saharan Africa | DHS 2002 | — | — |
-| [Eswatini](eswatini.md) | Sub-Saharan Africa | MICS 2014 | — | — |
-| [Ethiopia](ethiopia.md) | Sub-Saharan Africa | DHS 2024 | 2007 | — |
-| [Gabon](gabon.md) | Sub-Saharan Africa | DHS 2019 | — | — |
-| [Gambia](gambia.md) | Sub-Saharan Africa | DHS 2019 | — | — |
-| [Ghana](ghana.md) | Sub-Saharan Africa | DHS 2022 | — | — |
-| [Guatemala](guatemala.md) | Latin America & Caribbean | DHS 2015 | — | — |
-| [Guinea](guinea.md) | Sub-Saharan Africa | DHS 2021 | — | — |
-| [Guinea-Bissau](guinea-bissau.md) | Sub-Saharan Africa | MICS 2019 | — | — |
-| [Guyana](guyana.md) | Latin America & Caribbean | MICS 2014 | — | — |
-| [Haiti](haiti.md) | Latin America & Caribbean | DHS 2016 | — | — |
-| [Honduras](honduras.md) | Latin America & Caribbean | MICS 2019 | — | — |
-| [India](india.md) | South & Southeast Asia | DHS 2020 | 1999, 2015, 2020 | — |
-| [Indonesia](indonesia.md) | South & Southeast Asia | DHS 2017 | — | — |
-| [Iraq](iraq.md) | North Africa/West Asia/Europe | MICS 2018 | — | — |
-| [Jamaica](jamaica.md) | Latin America & Caribbean | MICS 2011 | — | — |
-| [Jordan](jordan.md) | North Africa/West Asia/Europe | DHS 2023 | — | — |
-| [Kazakhstan](kazakhstan.md) | Central Asia | MICS 2015 | — | — |
-| [Kenya](kenya.md) | Sub-Saharan Africa | DHS 2025 | — | — |
-| [Kiribati](kiribati.md) | Oceania | MICS 2019 | — | — |
-| [Kyrgyz Republic](kyrgyz-republic.md) | Central Asia | MICS 2018 | — | — |
-| [Lao PDR](lao-pdr.md) | South & Southeast Asia | MICS 2017 | — | — |
-| [Lesotho](lesotho.md) | Sub-Saharan Africa | DHS 2023 | 2006 | — |
-| [Liberia](liberia.md) | Sub-Saharan Africa | DHS 2022 | — | — |
-| [Madagascar](madagascar.md) | Sub-Saharan Africa | DHS 2021 | — | — |
-| [Malawi](malawi.md) | Sub-Saharan Africa | DHS 2024 | 2008 | — |
-| [Maldives](maldives.md) | South & Southeast Asia | DHS 2016 | — | — |
-| [Mali](mali.md) | Sub-Saharan Africa | DHS 2023 | — | — |
-| [Mauritania](mauritania.md) | Sub-Saharan Africa | DHS 2020 | — | — |
-| [Moldova](moldova.md) | North Africa/West Asia/Europe | DHS 2005 | — | — |
-| [Mongolia](mongolia.md) | Central Asia | MICS 2018 | — | — |
-| [Morocco](morocco.md) | North Africa/West Asia/Europe | DHS 2003 | — | — |
-| [Mozambique](mozambique.md) | Sub-Saharan Africa | DHS 2022 | — | — |
-| [Myanmar](myanmar.md) | South & Southeast Asia | DHS 2016 | — | — |
-| [Namibia](namibia.md) | Sub-Saharan Africa | DHS 2013 | — | — |
-| [Nepal](nepal.md) | South & Southeast Asia | DHS 2022 | — | — |
-| [Nicaragua](nicaragua.md) | Latin America & Caribbean | DHS 2001 | — | — |
-| [Niger](niger.md) | Sub-Saharan Africa | DHS 2021 | — | — |
-| [Nigeria](nigeria.md) | Sub-Saharan Africa | DHS 2024 | — | — |
-| [North Macedonia](north-macedonia.md) | North Africa/West Asia/Europe | MICS 2019 | — | — |
-| [Pakistan](pakistan.md) | South & Southeast Asia | DHS 2017 | — | — |
-| [Papua New Guinea](papua-new-guinea.md) | Oceania | DHS 2017 | — | — |
-| [Paraguay](paraguay.md) | Latin America & Caribbean | MICS 2016 | — | — |
-| [Peru](peru.md) | Latin America & Caribbean | DHS 2012 | — | — |
-| [Philippines](philippines.md) | South & Southeast Asia | DHS 2022 | — | — |
-| [Rwanda](rwanda.md) | Sub-Saharan Africa | DHS 2025 | — | — |
-| [Samoa](samoa.md) | Oceania | MICS 2020 | — | — |
-| [Sao Tome and Principe](sao-tome-and-principe.md) | Sub-Saharan Africa | MICS 2019 | — | — |
-| [Senegal](senegal.md) | Sub-Saharan Africa | DHS 2023 | 2002 | — |
-| [Serbia](serbia.md) | North Africa/West Asia/Europe | MICS 2010 | — | — |
-| [Sierra Leone](sierra-leone.md) | Sub-Saharan Africa | DHS 2019 | 2004 | — |
-| [South Africa](south-africa.md) | Sub-Saharan Africa | DHS 2016 | 2001, 2007 | — |
-| [South Sudan](south-sudan.md) | — | — | 2008 | — |
-| [Sudan](sudan.md) | Sub-Saharan Africa | MICS 2014 | 2008 | — |
-| [Suriname](suriname.md) | Latin America & Caribbean | MICS 2018 | — | — |
-| [Tajikistan](tajikistan.md) | Central Asia | DHS 2023 | — | — |
-| [Tanzania](tanzania.md) | Sub-Saharan Africa | DHS 2022 | — | — |
-| [Thailand](thailand.md) | South & Southeast Asia | MICS 2019 | — | — |
-| [Timor-Leste](timor-leste.md) | South & Southeast Asia | DHS 2016 | — | — |
-| [Togo](togo.md) | Sub-Saharan Africa | DHS 2017 | — | — |
-| [Tonga](tonga.md) | Oceania | MICS 2019 | — | — |
-| [Tunisia](tunisia.md) | North Africa/West Asia/Europe | MICS 2018 | — | — |
-| [Turkey](turkey.md) | North Africa/West Asia/Europe | DHS 2013 | — | — |
-| [Turkmenistan](turkmenistan.md) | Central Asia | MICS 2019 | — | — |
-| [Uganda](uganda.md) | Sub-Saharan Africa | DHS 2024 | 2002 | — |
-| [Ukraine](ukraine.md) | North Africa/West Asia/Europe | MICS 2012 | — | — |
-| [Uzbekistan](uzbekistan.md) | Central Asia | DHS 1996 | — | — |
-| [Vietnam](vietnam.md) | South & Southeast Asia | MICS 2011 | — | — |
-| [Yemen](yemen.md) | North Africa/West Asia/Europe | DHS 2013 | — | — |
-| [Zambia](zambia.md) | Sub-Saharan Africa | DHS 2024 | 2010 | — |
-| [Zimbabwe](zimbabwe.md) | Sub-Saharan Africa | MICS 2019 | — | — |
+| Country | Region | Fertility survey | Infant-mortality survey | Adult mortality | Census, child mortality |
+|---|---|---|---|---|---|
+| [Afghanistan](afghanistan.md) | South & Southeast Asia | DHS 2015 | DHS 2015 | — | — |
+| [Albania](albania.md) | North Africa/West Asia/Europe | DHS 2017 | DHS 2008 | — | — |
+| [Algeria](algeria.md) | North Africa/West Asia/Europe | MICS 2019 | MICS 2019 | — | — |
+| [Angola](angola.md) | Sub-Saharan Africa | DHS 2023 | DHS 2023 | — | — |
+| [Argentina](argentina.md) | Latin America & Caribbean | MICS 2012 | — | — | — |
+| [Armenia](armenia.md) | North Africa/West Asia/Europe | DHS 2016 | DHS 2016 | — | — |
+| [Azerbaijan](azerbaijan.md) | North Africa/West Asia/Europe | DHS 2006 | DHS 2006 | — | — |
+| [Bangladesh](bangladesh.md) | South & Southeast Asia | DHS 2022 | DHS 2022 | 2016 | — |
+| [Belize](belize.md) | Latin America & Caribbean | MICS 2016 | — | — | — |
+| [Benin](benin.md) | Sub-Saharan Africa | DHS 2017 | DHS 2017 | 2013 | — |
+| [Bhutan](bhutan.md) | South & Southeast Asia | MICS 2010 | — | — | — |
+| [Bolivia](bolivia.md) | Latin America & Caribbean | DHS 2008 | DHS 2008 | — | — |
+| [Brazil](brazil.md) | Latin America & Caribbean | DHS 1996 | DHS 1996 | 2010 | 1991, 2000, 2010 |
+| [Burkina Faso](burkina-faso.md) | Sub-Saharan Africa | DHS 2021 | DHS 2021 | — | — |
+| [Burundi](burundi.md) | Sub-Saharan Africa | DHS 2016 | DHS 2016 | — | — |
+| [Cambodia](cambodia.md) | South & Southeast Asia | DHS 2021 | DHS 2021 | 2008 | — |
+| [Cameroon](cameroon.md) | Sub-Saharan Africa | DHS 2022 | DHS 2018 | — | — |
+| [Central African Republic](central-african-republic.md) | Sub-Saharan Africa | MICS 2019 | MICS 2019 | — | — |
+| [Chad](chad.md) | Sub-Saharan Africa | MICS 2019 | MICS 2019 | — | — |
+| [Colombia](colombia.md) | Latin America & Caribbean | DHS 2015 | DHS 2015 | 2018 | — |
+| [Comoros](comoros.md) | Sub-Saharan Africa | DHS 2012 | DHS 2012 | — | — |
+| [Congo](congo.md) | Sub-Saharan Africa | MICS 2016 | MICS 2016 | — | — |
+| [Congo Democratic Republic](congo-democratic-republic.md) | Sub-Saharan Africa | DHS 2023 | DHS 2023 | — | — |
+| [Cote d'Ivoire](cote-d-ivoire.md) | Sub-Saharan Africa | DHS 2021 | DHS 2021 | 1998 | — |
+| [Dominican Republic](dominican-republic.md) | Latin America & Caribbean | MICS 2014 | MICS 2014 | — | — |
+| [Egypt](egypt.md) | North Africa/West Asia/Europe | DHS 2014 | DHS 2014 | — | — |
+| [El Salvador](el-salvador.md) | Latin America & Caribbean | MICS 2014 | MICS 2014 | — | — |
+| [Eritrea](eritrea.md) | Sub-Saharan Africa | DHS 2002 | DHS 2002 | — | — |
+| [Eswatini](eswatini.md) | Sub-Saharan Africa | MICS 2014 | MICS 2014 | — | — |
+| [Ethiopia](ethiopia.md) | Sub-Saharan Africa | DHS 2024 | DHS 2024 | 2007 | — |
+| [Gabon](gabon.md) | Sub-Saharan Africa | DHS 2019 | DHS 2019 | — | — |
+| [Gambia](gambia.md) | Sub-Saharan Africa | DHS 2019 | DHS 2019 | — | — |
+| [Ghana](ghana.md) | Sub-Saharan Africa | DHS 2022 | DHS 2022 | — | — |
+| [Guatemala](guatemala.md) | Latin America & Caribbean | DHS 2015 | DHS 2015 | — | — |
+| [Guinea](guinea.md) | Sub-Saharan Africa | DHS 2021 | DHS 2018 | — | — |
+| [Guinea-Bissau](guinea-bissau.md) | Sub-Saharan Africa | MICS 2019 | MICS 2019 | — | — |
+| [Guyana](guyana.md) | Latin America & Caribbean | MICS 2014 | DHS 2009 | — | — |
+| [Haiti](haiti.md) | Latin America & Caribbean | DHS 2016 | DHS 2016 | — | — |
+| [Honduras](honduras.md) | Latin America & Caribbean | MICS 2019 | MICS 2019 | — | — |
+| [India](india.md) | South & Southeast Asia | DHS 2020 | DHS 2020 | 1999, 2015, 2020 | — |
+| [Indonesia](indonesia.md) | South & Southeast Asia | DHS 2017 | DHS 2017 | — | — |
+| [Iraq](iraq.md) | North Africa/West Asia/Europe | MICS 2018 | MICS 2018 | — | — |
+| [Jamaica](jamaica.md) | Latin America & Caribbean | MICS 2011 | — | — | — |
+| [Jordan](jordan.md) | North Africa/West Asia/Europe | DHS 2023 | DHS 2023 | — | — |
+| [Kazakhstan](kazakhstan.md) | Central Asia | MICS 2015 | DHS 1999 | — | — |
+| [Kenya](kenya.md) | Sub-Saharan Africa | DHS 2025 | DHS 2025 | — | — |
+| [Kiribati](kiribati.md) | Oceania | MICS 2019 | MICS 2019 | — | — |
+| [Kyrgyz Republic](kyrgyz-republic.md) | Central Asia | MICS 2018 | MICS 2018 | — | — |
+| [Lao PDR](lao-pdr.md) | South & Southeast Asia | MICS 2017 | MICS 2017 | — | — |
+| [Lesotho](lesotho.md) | Sub-Saharan Africa | DHS 2023 | DHS 2023 | 2006 | — |
+| [Liberia](liberia.md) | Sub-Saharan Africa | DHS 2022 | DHS 2019 | — | — |
+| [Madagascar](madagascar.md) | Sub-Saharan Africa | DHS 2021 | DHS 2021 | — | — |
+| [Malawi](malawi.md) | Sub-Saharan Africa | DHS 2024 | DHS 2024 | 2008 | — |
+| [Maldives](maldives.md) | South & Southeast Asia | DHS 2016 | DHS 2016 | — | — |
+| [Mali](mali.md) | Sub-Saharan Africa | DHS 2023 | DHS 2023 | — | — |
+| [Mauritania](mauritania.md) | Sub-Saharan Africa | DHS 2020 | DHS 2020 | — | — |
+| [Moldova](moldova.md) | North Africa/West Asia/Europe | DHS 2005 | DHS 2005 | — | — |
+| [Mongolia](mongolia.md) | Central Asia | MICS 2018 | MICS 2018 | — | — |
+| [Morocco](morocco.md) | North Africa/West Asia/Europe | DHS 2003 | DHS 2003 | — | — |
+| [Mozambique](mozambique.md) | Sub-Saharan Africa | DHS 2022 | DHS 2022 | — | — |
+| [Myanmar](myanmar.md) | South & Southeast Asia | DHS 2016 | DHS 2016 | — | — |
+| [Namibia](namibia.md) | Sub-Saharan Africa | DHS 2013 | DHS 2013 | — | — |
+| [Nepal](nepal.md) | South & Southeast Asia | DHS 2022 | DHS 2022 | — | — |
+| [Nicaragua](nicaragua.md) | Latin America & Caribbean | DHS 2001 | DHS 2001 | — | — |
+| [Niger](niger.md) | Sub-Saharan Africa | DHS 2021 | DHS 2012 | — | — |
+| [Nigeria](nigeria.md) | Sub-Saharan Africa | DHS 2024 | DHS 2024 | — | — |
+| [North Macedonia](north-macedonia.md) | North Africa/West Asia/Europe | MICS 2019 | — | — | — |
+| [Pakistan](pakistan.md) | South & Southeast Asia | DHS 2017 | DHS 2017 | — | — |
+| [Papua New Guinea](papua-new-guinea.md) | Oceania | DHS 2017 | DHS 2017 | — | — |
+| [Paraguay](paraguay.md) | Latin America & Caribbean | MICS 2016 | DHS 1990 | — | — |
+| [Peru](peru.md) | Latin America & Caribbean | DHS 2012 | DHS 2012 | — | — |
+| [Philippines](philippines.md) | South & Southeast Asia | DHS 2022 | DHS 2022 | — | — |
+| [Rwanda](rwanda.md) | Sub-Saharan Africa | DHS 2025 | DHS 2025 | — | — |
+| [Samoa](samoa.md) | Oceania | MICS 2020 | MICS 2020 | — | — |
+| [Sao Tome and Principe](sao-tome-and-principe.md) | Sub-Saharan Africa | MICS 2019 | MICS 2019 | — | — |
+| [Senegal](senegal.md) | Sub-Saharan Africa | DHS 2023 | DHS 2023 | 2002 | — |
+| [Serbia](serbia.md) | North Africa/West Asia/Europe | MICS 2010 | — | — | — |
+| [Sierra Leone](sierra-leone.md) | Sub-Saharan Africa | DHS 2019 | DHS 2019 | 2004 | — |
+| [South Africa](south-africa.md) | Sub-Saharan Africa | DHS 2016 | DHS 2016 | 2001, 2007 | — |
+| [South Sudan](south-sudan.md) | Sub-Saharan Africa | — | — | 2008 | — |
+| [Sudan](sudan.md) | Sub-Saharan Africa | — | MICS 2014 | 2008 | — |
+| [Suriname](suriname.md) | Latin America & Caribbean | MICS 2018 | MICS 2018 | — | — |
+| [Tajikistan](tajikistan.md) | Central Asia | DHS 2023 | DHS 2023 | — | — |
+| [Tanzania](tanzania.md) | Sub-Saharan Africa | DHS 2022 | DHS 2022 | — | — |
+| [Thailand](thailand.md) | South & Southeast Asia | MICS 2019 | — | — | — |
+| [Timor-Leste](timor-leste.md) | South & Southeast Asia | DHS 2016 | DHS 2016 | — | — |
+| [Togo](togo.md) | Sub-Saharan Africa | DHS 2017 | DHS 2013 | — | — |
+| [Tonga](tonga.md) | Oceania | MICS 2019 | — | — | — |
+| [Tunisia](tunisia.md) | North Africa/West Asia/Europe | MICS 2018 | — | — | — |
+| [Turkey](turkey.md) | North Africa/West Asia/Europe | DHS 2013 | DHS 2013 | — | — |
+| [Turkmenistan](turkmenistan.md) | Central Asia | MICS 2019 | MICS 2019 | — | — |
+| [Uganda](uganda.md) | Sub-Saharan Africa | DHS 2024 | DHS 2016 | 2002 | — |
+| [Ukraine](ukraine.md) | North Africa/West Asia/Europe | MICS 2012 | DHS 2007 | — | — |
+| [Uzbekistan](uzbekistan.md) | Central Asia | DHS 1996 | DHS 1996 | — | — |
+| [Vietnam](vietnam.md) | South & Southeast Asia | MICS 2011 | DHS 2002 | — | — |
+| [Yemen](yemen.md) | North Africa/West Asia/Europe | DHS 2013 | DHS 2013 | — | — |
+| [Zambia](zambia.md) | Sub-Saharan Africa | DHS 2024 | DHS 2024 | 2010 | — |
+| [Zimbabwe](zimbabwe.md) | Sub-Saharan Africa | MICS 2019 | MICS 2019 | — | — |

@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.38, by age as below | DHS 2017, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.73 | DHS 2017, infant mortality rate |
-| `mort_gradient` | −1.17 (95% prediction interval −1.89 to −0.44) | [general gradient](../methods/general-gradient.md) at GDP per capita (PPP, constant 2021 international $) of $14,471 (2024) |
+| `mort_gradient` | −1.19 (95% prediction interval −1.91 to −0.46) | [general gradient](../methods/general-gradient.md) at GDP per capita (PPP, constant 2021 international $) of $15,091 (2025, World Bank) |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -24,7 +24,7 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 
 | 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |
 |---|---|---|---|---|---|---|
-| −1.18 (DHS 2017) | −1.57 | −1.57 | −1.35 | −0.96 | −0.96 at 60, falling to 0 at 75 | 0 |
+| −1.18 (DHS 2017) | −1.59 | −1.59 | −1.37 | −0.98 | −0.98 at 60, falling to 0 at 75 | 0 |
 
 Ages 1–4 use the country's own gradient in child mortality at ages 1–4 (DHS), or, where there is none, its under-five gradient plus a pooled offset ([details](../methods/general-gradient.md#age-pattern)). Infant mortality (age 0) is `infmort_gradient`, above.
 

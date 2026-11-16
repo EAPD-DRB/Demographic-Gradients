@@ -7,12 +7,18 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
-| `fert_gradient` | — | no DHS or MICS survey with a wealth breakdown; regional median for Sub-Saharan Africa ([table](../../ANALYSIS.md#regional-medians)), plus age offsets |
+| `fert_gradient` | −0.83, by age as below | no survey with fertility by wealth quintile; median of the 40 countries of Sub-Saharan Africa (interquartile range −0.94 to −0.64; [table](../../ANALYSIS.md#regional-medians)), plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.82 | MICS 2014, infant mortality rate |
 | `mort_gradient` | −0.48 (standard error 0.04) | census 2008, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
+
+**Fertility gradient by age of mother** (`fert_gradient`; ages below 15 use the 15–19 value, ages 50 and above the 45–49 value):
+
+| 15–19 | 20–24 | 25–29 | 30–34 | 35–39 | 40–44 | 45–49 |
+|---|---|---|---|---|---|---|
+| −1.61 | −0.93 | −0.62 | −0.51 | −0.74 | −1.22 | −1.81 |
 
 **Adult and child mortality gradient by age** (`mort_gradient`; ages 15–59: the 45q15 gradient above plus the pooled offset for each band ([age pattern](../methods/general-gradient.md#age-pattern)); ages 5–14 use the 15–29 value; ages 60–74 fall in a straight line from the 45–59 value to 0 at age 75; ages 75 and above, and OG-Core's final age, use 0):
 

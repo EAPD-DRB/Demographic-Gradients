@@ -52,6 +52,7 @@ census; `common`, assets recorded in all three censuses); `n_mothers`;
 | [`dhs_gradients_raw.csv`](../data/dhs_gradients_raw.csv) | Quintile values as downloaded from the DHS API, including age-specific fertility rates |
 | [`fertility_age_tilts.csv`](../data/fertility_age_tilts.csv) | Fertility gradient by age for each survey, from which the age offsets are computed |
 | [`general_gradient_points.csv`](../data/general_gradient_points.csv) | Census and survey observations behind the general gradient: UN subregion (`region`), GDP per capita PPP (`gdp_ppp`, the rule's income) and GNI per capita (`gni_atlas`, reference), measured 45q15 gradient (`tilt_45q15`) and leave-one-out prediction |
+| [`income_latest.csv`](../data/income_latest.csv) | Each country's latest GDP per capita, PPP, constant 2021 international $ (World Bank `NY.GDP.PCAP.PP.KD`), with its year and retrieval date; used to show the general gradient's value on country pages. Blank where the World Bank has no figure |
 | [`income_census_years.csv`](../data/income_census_years.csv) | For each census or survey year: GDP per capita, PPP, constant 2021 international $ (`gdp_ppp`, the input to the general gradient) and GNI per capita, Atlas method, current US$ (`gni_atlas`, reference), each with its retrieval date |
 | [`mics_quintiles_raw.csv`](../data/mics_quintiles_raw.csv) | MICS quintile values as downloaded from the World Bank's compilation, with the footnote naming the survey, the income group in the survey year and the national TFR |
 | [`mics_methods_unicef.csv`](../data/mics_methods_unicef.csv) | UNICEF's classification of each MICS survey's child-mortality estimates: `FBH` (direct, full birth history) or `SBH` (indirect) |
@@ -74,7 +75,7 @@ census; `common`, assets recorded in all three censuses); `n_mothers`;
 | `build_adult_mortality_survey.py` | Adult mortality from household-death modules in surveys: India's NFHS (DHS recode files) and Bangladesh's BMMS 2016 | survey rows |
 | `asset_index.py` | Shared by the census scripts: the asset index, the wealth groups, the gradient and its standard error | — |
 | `build_census_child_mortality.py` | Child mortality by wealth from IPUMS census samples (Brazil) | `census_child_mortality.csv` |
-| `build_general_gradient.py` | Fits the income relationship for adult mortality and the age offsets; fetches missing income figures from the World Bank | `general_gradient*.csv`, `income_census_years.csv` |
+| `build_general_gradient.py` | Fits the income relationship for adult mortality and the age offsets; fetches missing income figures from the World Bank (pinned; `--refresh-income` re-fetches) | `general_gradient*.csv`, `income_census_years.csv`, `income_latest.csv` |
 | `make_figures.py` (style: `figures.mplstyle`) | Draws the figures | `figures/*.png` |
 | `build_analysis.py` | Writes every generated page | `ANALYSIS.md`, the README coverage table, `docs/countries/`, `docs/tables/`, the generated method pages |
 | `refresh.py` | Runs `build_gradient_library.py` (and `check_ogcore_units.py` after a DHS pull), `make_figures.py` and `build_analysis.py` in order | — |
