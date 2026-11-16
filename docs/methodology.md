@@ -144,6 +144,14 @@ constant annual probability. Band rates and 45q15 are published only where
 they rest on at least 900 death records; the number of records behind each
 estimate is given in the `n_deaths` column. Rates are stored per 1,000.
 
+The 45q15 gradient is fitted to −ln(1 − 45q15), the cumulative death rate
+over ages 15–59, not to 45q15 itself. A probability cannot exceed 1, so where
+adult mortality is high, 45q15 differs between wealth groups by less than the
+death rates behind it, and a gradient fitted to it would understate the
+gradient in death rates, which is what OG-Core applies. The cumulative death
+rate is proportional to the death rates, so its gradient is also unaffected by
+under-recording that is uniform across wealth groups.
+
 `mort_gradient` uses the 45q15 gradient. It can be spread across ages with the
 pooled age offsets described in section 7 or, where a country's own band
 gradients are published, with those.

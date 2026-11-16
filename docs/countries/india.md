@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.59, by age as below | DHS 2020, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −1.14 | DHS 2020, infant mortality rate |
-| `mort_gradient` | −0.72 | DHS survey 2020, 45q15 |
+| `mort_gradient` | −0.79 | DHS survey 2020, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -38,15 +38,15 @@ Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_m
 
 | Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| DHS survey 1999 | −0.73 |  |  | −0.69 | −0.49 | 5 | 2,422 |
-| DHS survey 2015 | −0.74 | −1.37 | −0.94 | −0.62 | −0.40 | 5 | 11,330 |
-| DHS survey 2020 | −0.72 | −1.52 | −1.08 | −0.54 | −0.41 | 5 | 11,994 |
+| DHS survey 1999 | −0.83 |  |  | −0.69 | −0.49 | 5 | 2,422 |
+| DHS survey 2015 | −0.81 | −1.37 | −0.94 | −0.62 | −0.40 | 5 | 11,330 |
+| DHS survey 2020 | −0.79 | −1.52 | −1.08 | −0.54 | −0.41 | 5 | 11,994 |
 
 Source: The DHS Program, India NFHS-2 1998-99, household deaths module; original data: International Institute for Population Sciences (IIPS), Mumbai; The DHS Program, India NFHS-4 2015-16, household deaths module; original data: International Institute for Population Sciences (IIPS), Mumbai; The DHS Program, India NFHS-5 2019-21, household deaths module; original data: International Institute for Population Sciences (IIPS), Mumbai.
 
 ## Notes
 
 - Adult-mortality estimates come from the household-deaths module of the National Family Health Survey (NFHS-2, 1998–99; NFHS-4, 2015–16; NFHS-5, 2019–21): deaths of usual household members in the two years before the interview, with households ranked by the DHS wealth index ([methods](../methods/adult-mortality.md)). NFHS-5, labelled 2020, is used for `mort_gradient`. Men's and women's gradients are close to those published by Dhakad and Saikia (Demographic Research 55(16), 2026) from the same surveys.
-- NFHS-5 fieldwork was interrupted by the COVID-19 pandemic. About one seventh of the exposure, and a little under one fifth of the adult deaths, fall in March 2020 or later. The 45q15 gradient is −0.76 from deaths and exposure before March 2020 and −0.56 from those from March 2020; the published value, for the whole period, is −0.72.
+- NFHS-5 fieldwork was interrupted by the COVID-19 pandemic. About one seventh of the exposure, and a little under one fifth of the adult deaths, fall in March 2020 or later. The 45q15 gradient is −0.83 from deaths and exposure before March 2020 and −0.63 from those from March 2020; the published value, for the whole period, is −0.79.
 - The 45q15 gradient is nearly the same in the three surveys while income per capita rose substantially; see the general-gradient documentation.
 - NFHS-1 (1992–93) also recorded household deaths, but its released data file contains no age at death, and it is not used.

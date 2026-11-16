@@ -148,3 +148,19 @@ def gradient(mids, rates, shares):
     """
     return float(np.polyfit(np.asarray(mids), np.log(np.asarray(rates, dtype=float)), 1,
                             w=np.sqrt(np.asarray(shares, dtype=float)))[0])
+
+
+def q45_gradient(mids, q45, shares):
+    """Wealth gradient of adult mortality (ages 15-59) on the death-rate scale.
+
+    45q15 is a probability and approaches 1 where adult mortality is high, so
+    ln(45q15) moves less than the death rates behind it: with rates twice as
+    high in the poorest group, 45q15 may differ by much less than a factor of
+    two. The gradient is therefore fitted to the cumulative death rate over the
+    age range, -ln(1 - 45q15) (the sum of the age-specific rates times 15 years
+    each), which is proportional to the death rates. This is the scale on which
+    OG-Core applies a mortality gradient (annual death rates), and a uniform
+    under-recording of deaths leaves it unchanged. Ruled 2026-11-16; 45q15
+    itself is still what the q1..q5 columns report.
+    """
+    return gradient(mids, -np.log1p(-np.asarray(q45, dtype=float)), shares)

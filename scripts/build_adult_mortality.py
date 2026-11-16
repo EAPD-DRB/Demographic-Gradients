@@ -503,7 +503,7 @@ def estimate_sample(sample, cfg, extracts_dir, deaths_dir):
 def _row(cfg, sex, measure, a0, a1, vals, mids, shares, n, G, linked_share, src):
     r = dict(indicator="AMR", country=cfg["country"], year=cfg["year"], sex=sex,
              measure=measure, age_lo=a0, age_hi=a1,
-             slope=round(ai.gradient(mids, vals, shares), 4),
+             slope=round((ai.q45_gradient if measure == "45q15" else ai.gradient)(mids, vals, shares), 4),
              ratio=round(float(vals[0] / vals[-1]), 3))
     scale = 1000
     for i in range(5):

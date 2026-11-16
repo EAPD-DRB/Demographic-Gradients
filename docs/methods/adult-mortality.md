@@ -89,9 +89,17 @@ The wealth gradient is the slope of the log rate on wealth rank, with each
 group placed at the midpoint of its realized population share and weighted by
 that share. Because the census index takes a limited number of distinct
 values, groups do not always contain equal shares of the population, and the
-realized midpoints are used rather than nominal quintile midpoints. DHS
+realized midpoints are used rather than nominal quintile midpoints. Survey
 quintiles hold equal shares, and the fit reduces to ordinary least squares at
 0.1, 0.3, 0.5, 0.7 and 0.9.
+
+For 45q15 the gradient is fitted to −ln(1 − 45q15), the cumulative death rate
+over ages 15–59, rather than to 45q15. Where adult mortality is high, 45q15
+approaches its upper bound of 1 and differs between wealth groups by less than
+the underlying death rates; on the cumulative-rate scale the gradient is that
+of the death rates, as for the age bands, and uniform under-recording leaves
+it unchanged. The difference is small where 45q15 is low and large where it is
+high; the published 45q15 levels (`q1`–`q5`) are unchanged.
 
 ## Completeness of death reporting
 

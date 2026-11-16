@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −1.21, by age as below | DHS 1996, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.96 | census 2010, proportion of children ever born who have died (mothers 25–29). This measure resembles under-five mortality and probably overstates the infant gradient; the alternative is the DHS 1996 infant gradient (−1.37) |
-| `mort_gradient` | −1.00 | census 2010, 45q15 |
+| `mort_gradient` | −1.07 | census 2010, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -55,7 +55,7 @@ Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_m
 
 | Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| Census 2010 | −1.00 | −1.36 | −1.43 | −0.85 | −0.21 | 5 | 37,467 |
+| Census 2010 | −1.07 | −1.36 | −1.43 | −0.85 | −0.21 | 5 | 37,467 |
 
 Source: IBGE Census 2010 sample microdata, household deaths module.
 

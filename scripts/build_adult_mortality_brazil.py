@@ -211,7 +211,8 @@ def main():
 
 def row(sex, measure, a0, a1, vals, mids, shares, n, G):
     r = dict(indicator="AMR", country="Brazil", year=2010, sex=sex, measure=measure,
-             age_lo=a0, age_hi=a1, slope=round(ai.gradient(mids, vals, shares), 4),
+             age_lo=a0, age_hi=a1,
+             slope=round((ai.q45_gradient if measure == "45q15" else ai.gradient)(mids, vals, shares), 4),
              ratio=round(float(vals[0] / vals[-1]), 3))
     for i in range(5):
         r[f"q{i + 1}"] = round(float(1000 * vals[i]), 3) if i < G else ""

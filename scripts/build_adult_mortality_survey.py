@@ -293,7 +293,7 @@ def checks(h, p, d, cfg, win):
         x = x.add(df[df["age"] == a1 + 1].groupby("q")["w"].sum() * 0.5, fill_value=0)
         return x.reindex(range(1, 6), fill_value=0).values
     R = np.array([soft(win, a0, a1) / (soft(p, a0, a1) * years) for a0, a1 in BANDS[:3]])
-    print(f"  45q15 gradient with boundary ages split: {ai.gradient(MID, q45(R), SHARES):+.3f}")
+    print(f"  45q15 gradient with boundary ages split: {ai.q45_gradient(MID, q45(R), SHARES):+.3f}")
     for sx, lab in [(1, "male"), (2, "female")]:
         with np.errstate(invalid="ignore", divide="ignore"):  # quintiles 2-5 empty here
             Rn, _ = band_rates(p[p["sex"] == sx].assign(q=1), win[win["sex"] == sx].assign(q=1), years)
@@ -305,11 +305,11 @@ def checks(h, p, d, cfg, win):
         pre = win[(win["cmc_int"] - win["mago"]) < c]
         R, N = band_rates(p, pre, yrs)
         print(f"  45q15 gradient from deaths and exposure before CMC {c} only: "
-              f"{ai.gradient(MID, q45(R), SHARES):+.3f} ({N[:3].sum()} records; "
+              f"{ai.q45_gradient(MID, q45(R), SHARES):+.3f} ({N[:3].sum()} records; "
               f"{(yrs * p['w']).sum() / (p['w'].sum() * WINDOW_MONTHS / 12):.0%} of exposure)")
         R, N = band_rates(p, win[(win["cmc_int"] - win["mago"]) >= c], WINDOW_MONTHS / 12 - yrs)
         print(f"  45q15 gradient from deaths and exposure from CMC {c} on: "
-              f"{ai.gradient(MID, q45(R), SHARES):+.3f} ({N[:3].sum()} records)")
+              f"{ai.q45_gradient(MID, q45(R), SHARES):+.3f} ({N[:3].sum()} records)")
     # cluster bootstrap of the all-sex 45q15 gradient
     bands = [14.5, 29.5, 44.5, 59.5]
     pe = p.assign(b=pd.cut(p["age"], bands, labels=False)).dropna(subset=["b"])
@@ -322,7 +322,7 @@ def checks(h, p, d, cfg, win):
 
     def g(ix):
         R = (Dv[ix].sum(0) / (Ev[ix].sum(0) * years)).reshape(5, 3).T
-        return ai.gradient(MID, q45(R), SHARES)
+        return ai.q45_gradient(MID, q45(R), SHARES)
     rng = np.random.default_rng(BOOT_SEED)
     groups = [np.flatnonzero(strat == s) for s in np.unique(strat)]
     bs = [g(np.concatenate([gr[rng.integers(0, len(gr), len(gr))] for gr in groups]))
@@ -418,7 +418,7 @@ def estimate(code, cfg, dhs_dir, bmms_dir=None):
 def row(cfg, sex, measure, a0, a1, vals, n, src):
     r = dict(indicator="AMR", country=cfg["country"], year=cfg["year"], sex=sex,
              measure=measure, age_lo=a0, age_hi=a1,
-             slope=round(ai.gradient(MID, vals, SHARES), 4),
+             slope=round((ai.q45_gradient if measure == "45q15" else ai.gradient)(MID, vals, SHARES), 4),
              ratio=round(float(vals[0] / vals[-1]), 3))
     for i in range(5):
         r[f"q{i+1}"] = round(float(1000 * vals[i]), 3)

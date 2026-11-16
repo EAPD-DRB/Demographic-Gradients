@@ -318,7 +318,7 @@ def adult_mortality_vs_income():
     ax.xaxis.set_ticklabels(["1,000", "2,000", "5,000", "10,000", "20,000"])
     ax.set_xlabel("GDP per capita in the census or survey year (PPP, constant 2021 "
                   "international $, log scale)")
-    ax.set_ylabel("wealth gradient in 45q15")
+    ax.set_ylabel("wealth gradient in adult mortality (15–59)")
     adjust_text(texts, x=pts["gni"].values, y=pts["tilt_45q15"].values, ax=ax,
                 target_x=tx, target_y=ty,
                 expand=(1.3, 1.8), force_text=(0.6, 0.9), force_static=(0.6, 0.8),
@@ -328,8 +328,8 @@ def adult_mortality_vs_income():
                 arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.6))
     frame(fig, "Wealth gradient in adult mortality (45q15) and GDP per capita, by census or survey",
           "Each dot is one census, or one household survey with a household-deaths module (South "
-          "Sudan 2008 is omitted: no income estimate).\n45q15 is the probability of dying between "
-          f"ages 15 and 60. Line: least-squares fit (r = {num(r)}); dark band: 95% confidence "
+          "Sudan 2008 is omitted: no income estimate).\nGradient in the cumulative death rate at ages 15–59, −ln(1 − 45q15)."
+          f" Line: least-squares fit (r = {num(r)}); dark band: 95% confidence "
           "interval for the line;\nlight band: 95% prediction interval for a single country. "
           "A negative gradient means mortality falls as household wealth rises; zero means "
           "no difference.", CENSUS, bottom=0.26)

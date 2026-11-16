@@ -14,10 +14,10 @@ Across countries, the gradient in 45q15 (the probability of dying between ages
 least squares on 20 observations, censuses and household surveys (DHS,
 and Bangladesh's BMMS) with a household-deaths module, each with equal weight:
 
-    gradient(45q15) = 2.590 − 0.374 × ln(GDP per capita, PPP, constant 2021 international $)
+    gradient(45q15) = 2.907 − 0.425 × ln(GDP per capita, PPP, constant 2021 international $)
 
-with r = −0.81 and a residual standard error of 0.24. A doubling of
-income per capita corresponds to a change of −0.26 in the gradient.
+with r = −0.77 and a residual standard error of 0.31. A doubling of
+income per capita corresponds to a change of −0.29 in the gradient.
 
 Income is GDP per capita at purchasing-power parity in constant 2021
 international dollars (World Bank, `NY.GDP.PCAP.PP.KD`), the measure
@@ -30,12 +30,12 @@ two fit about equally well.
 
 | | Estimate | Standard error | 95% confidence interval |
 |---|---|---|---|
-| Intercept | 2.590 | 0.531 | |
-| Slope on ln(income per capita) | −0.374 | 0.064 | −0.507 to −0.240 |
+| Intercept | 2.907 | 0.705 | |
+| Slope on ln(income per capita) | −0.425 | 0.085 | −0.602 to −0.247 |
 
 Intervals use Student's t with 18 degrees of freedom. Some countries
 contribute more than one observation (India 3, Malawi 2, South Africa 2); clustering the standard
-error of the slope by country gives 0.054, close to the
+error of the slope by country gives 0.092, close to the
 conventional value.
 
 The slope is estimated precisely, but a single country can lie well off the
@@ -46,8 +46,8 @@ line. For a country without its own estimate, the relevant uncertainty is the
 
 with s the residual standard error and the remaining terms in
 [`data/general_gradient.csv`](../../data/general_gradient.csv). At GDP per
-capita (PPP) of $2,000 the general gradient is −0.25 (95% prediction interval −0.77 to 0.26); at $10,000 it
-is −0.85 (95% prediction interval −1.38 to −0.33). The leave-one-out prediction errors reported below are of
+capita (PPP) of $2,000 the general gradient is −0.32 (95% prediction interval −1.01 to 0.36); at $10,000 it
+is −1.01 (95% prediction interval −1.70 to −0.32). The leave-one-out prediction errors reported below are of
 the same order. The observations, their income and the leave-one-out
 predictions are in
 [`data/general_gradient_points.csv`](../../data/general_gradient_points.csv);
@@ -68,12 +68,12 @@ subregion is available.
 
 | Candidate rule | Mean absolute error |
 |---|---|
-| A single value for all countries (pooled median) | 0.331 |
-| **Linear in ln(income per capita)** | **0.196** |
-| Regional median | 0.365 |
+| A single value for all countries (pooled median) | 0.382 |
+| **Linear in ln(income per capita)** | **0.264** |
+| Regional median | 0.403 |
 
-The income rule has the lowest error, and is used. The largest out-of-sample error is for Bangladesh 2016: a prediction of −0.68 against a measured −0.07. Where no income figure is available, the pooled
-median of all estimates, −0.46, is used.
+The income rule has the lowest error, and is used. The largest out-of-sample error is for South Africa 2007: a prediction of −0.99 against a measured −1.77. Where no income figure is available, the pooled
+median of all estimates, −0.60, is used.
 
 ## Age pattern
 
@@ -83,13 +83,13 @@ each estimate's band gradient and its 45q15 gradient:
 
 | Age band | Offset | |
 |---|---|---|
-| 15–29 | −0.46 |  |
-| 30–44 | −0.28 |  |
-| 45–59 | 0.14 | least reliable |
+| 15–29 | −0.37 |  |
+| 30–44 | −0.15 |  |
+| 45–59 | 0.19 | least reliable |
 | 60–74 | 0.43 | least reliable |
 
 Applied to the estimates' own 45q15 gradients, the offsets reproduce the
-measured band gradients with a median absolute error of 0.11. The
+measured band gradients with a median absolute error of 0.09. The
 offsets for ages 45–59 and 60–74 are the least reliable values in the library:
 they are positive because, in several low-income censuses, recorded mortality
 at older ages rises with household wealth (see below). Where working-age
@@ -100,9 +100,9 @@ mortality is what matters, the 15–29 and 30–44 offsets are the more reliable
 Across countries the gradient is steeper at higher income. Whether a
 country's gradient steepens as its own income rises is not established; the
 evidence within countries is limited and mixed. Between Malawi's 1998 and 2008
-censuses the 45q15 gradient moved from −0.12 to −0.47 as GDP per
+censuses the 45q15 gradient moved from −0.18 to −0.60 as GDP per
 capita (PPP) rose from about $1,242 to $1,378 (the 1998 wealth ranking rests on only
-three asset variables; see the [Malawi page](../countries/malawi.md)). India's three estimates show no such change: the gradient was −0.73, −0.74 and −0.72 in 1999, 2015 and 2020, while GDP per capita (PPP) rose from about $2,954 to $7,187.
+three asset variables; see the [Malawi page](../countries/malawi.md)). India's three estimates show no such change: the gradient was −0.83, −0.81 and −0.79 in 1999, 2015 and 2020, while GDP per capita (PPP) rose from about $2,954 to $7,187.
 A model projecting a country over several decades can hold the gradient fixed
 or let it follow the income relationship; the two bracket the evidence.
 
@@ -133,6 +133,6 @@ distinguish the two explanations, which is why the older-age offsets carry a
 caution.
 
 HIV does not appear to drive the pattern: Lesotho, the highest-prevalence
-country in the set, has a 45q15 gradient of −0.36, and
+country in the set, has a 45q15 gradient of −0.73, and
 most reversals occur in the oldest age bands, where HIV mortality is
 comparatively low.

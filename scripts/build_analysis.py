@@ -68,13 +68,13 @@ COUNTRY_NOTES = {
         "interview are used, with the survey's own wealth quintiles "
         "(`scripts/build_adult_mortality_survey.py`; data open on UNC Dataverse).",
         "The 45q15 gradient is close to zero (−0.07, cluster bootstrap standard "
-        "error 0.07), far less steep than the general gradient at Bangladesh's "
+        "error 0.08), far less steep than the general gradient at Bangladesh's "
         "income and outside its 95% prediction interval. The survey passes the "
         "checks applied to every survey: death records match each household's "
         "count, dates and ages are complete, and national 45q15 is 141 per 1,000 "
         "for men and 107 for women. An asset index built as for the censuses gives "
-        "−0.11, and the gradient is close to zero in both rural and urban households.",
-        "The gradient weakens with time since death: −0.15, +0.02 and +0.13 for "
+        "−0.12, and the gradient is close to zero in both rural and urban households.",
+        "The gradient weakens with time since death: −0.16, +0.02 and +0.14 for "
         "deaths 0–11, 12–23 and 24–35 months before the interview. This is "
         "consistent with recall of deaths fading faster in poorer households, but "
         "the differences are within sampling error.",
@@ -93,7 +93,7 @@ COUNTRY_NOTES = {
         "internet and toilet type only, and supports three wealth groups. An index "
         "that also uses housing materials, water, sewerage, gas, refuse collection, "
         "cooking arrangements and crowding gives five groups and a 45q15 gradient of "
-        "−1.10, against −1.18 on the published index. It is reported as a "
+        "−1.16, against −1.25 on the published index. It is reported as a "
         "robustness check and not published, because the other censuses' indices "
         "do not use housing items (ruled 2026-11-13).",
         "Death records and each household's count of its deaths agree exactly, so "
@@ -228,9 +228,9 @@ COUNTRY_NOTES = {
         "same surveys.",
         "NFHS-5 fieldwork was interrupted by the COVID-19 pandemic. About one "
         "seventh of the exposure, and a little under one fifth of the adult deaths, "
-        "fall in March 2020 or later. The 45q15 gradient is −0.76 from deaths and "
-        "exposure before March 2020 and −0.56 from those from March 2020; the "
-        "published value, for the whole period, is −0.72.",
+        "fall in March 2020 or later. The 45q15 gradient is −0.83 from deaths and "
+        "exposure before March 2020 and −0.63 from those from March 2020; the "
+        "published value, for the whole period, is −0.79.",
         "The 45q15 gradient is nearly the same in the three surveys while income per "
         "capita rose substantially; see the general-gradient documentation.",
         "NFHS-1 (1992–93) also recorded household deaths, but its released data "

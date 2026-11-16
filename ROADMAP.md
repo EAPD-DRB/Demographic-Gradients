@@ -363,6 +363,14 @@ these are done, since they may change the picture for Asia.
 - After Cambodia 2008 (2026-11-16): intercept 2.629 → 2.590, slope −0.377 →
   −0.374; Philippines −0.86 → −0.87 (PI −1.39 to −0.35), Indonesia −0.98 →
   −0.99 (PI −1.53 to −0.46); age offsets unchanged.
+- After the death-rate scale for 45q15 (2026-11-16, review item A1): every
+  45q15 gradient is now fitted to −ln(1 − 45q15). High-mortality countries
+  steepen most: South Africa 2007 −1.23 → −1.77, Lesotho −0.36 → −0.73.
+  Rule intercept 2.590 → 2.907, slope −0.374 → −0.425, residual SE 0.24 →
+  0.31; Philippines −0.87 → −1.02 (PI −1.72 to −0.33), Indonesia −0.99 →
+  −1.16 (PI −1.87 to −0.45); age offsets 15–29 −0.37, 30–44 −0.15, 45–59
+  +0.19, 60–74 +0.43. Every repo that hard-codes the rule or the offsets must
+  update.
 - OG-ETH, OG-PHL: still pass plain `tilt / 100` and one TFR tilt at every
   age; switch to the A1 conversion and the A2 age offsets, then align with
   the C1 recipe once written.

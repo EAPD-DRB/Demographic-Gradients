@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | — | no DHS or MICS survey with a wealth breakdown; regional median for Sub-Saharan Africa ([table](../../ANALYSIS.md#regional-medians)), plus age offsets |
 | `infmort_gradient` | −0.82 | MICS 2014, infant mortality rate |
-| `mort_gradient` | −0.42 | census 2008, 45q15 |
+| `mort_gradient` | −0.49 | census 2008, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -31,6 +31,6 @@ Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_m
 
 | Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| Census 2008 | −0.42 | −1.09 | −0.75 | −0.10 | 0.41 | 4 | 17,714 |
+| Census 2008 | −0.49 | −1.09 | −0.75 | −0.10 | 0.41 | 4 | 17,714 |
 
 Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Central Bureau of Statistics, Sudan.

@@ -135,10 +135,10 @@ during a recent period, usually the previous year, and, for India and
 Bangladesh, household surveys that record them for the previous two years
 ([methods](docs/methods/adult-mortality.md); [all estimates](docs/tables/adult_mortality.md)).
 Across the 20 censuses and surveys with an income estimate, the gradient in
-45q15 is steeper in richer countries (r = −0.81): the fitted
-gradient is −0.25 at a GDP per capita (PPP, constant 2021
+45q15 is steeper in richer countries (r = −0.77): the fitted
+gradient is −0.32 at a GDP per capita (PPP, constant 2021
 international $) of $2,000 and
-−0.85 at $10,000. This relationship, the general gradient,
+−1.01 at $10,000. This relationship, the general gradient,
 provides values for countries without their own estimate
 ([details](docs/methods/general-gradient.md)). Within countries the evidence
 is limited and mixed: Malawi's gradient steepened between its 1998 and 2008

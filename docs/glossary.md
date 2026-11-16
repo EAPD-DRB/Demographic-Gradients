@@ -10,7 +10,9 @@ and the slope is estimated by least squares, with census groups weighted by
 their population share. A negative gradient means the
 rate falls as wealth rises. Because the gradient is defined on the log scale,
 it does not depend on the level of the rate and can be compared across
-countries and indicators. It is the `slope` column in the data files.
+countries and indicators. For 45q15, which is a probability rather than a
+rate, the gradient is fitted to the cumulative death rate it implies (see
+[45q15](#45q15)). It is the `slope` column in the data files.
 
 ### Low/high ratio
 The rate in the lowest wealth group divided by the rate in the highest, as in
@@ -74,7 +76,11 @@ gradient is steeper than the infant gradient and it is not used for
 
 ### 45q15
 The probability that a person aged 15 dies before age 60. The library's summary
-measure of adult mortality.
+measure of adult mortality. Because a probability cannot exceed 1, 45q15
+understates differences in death rates where adult mortality is high; its
+wealth gradient is therefore fitted to −ln(1 − 45q15), the cumulative death
+rate over ages 15–59, which is proportional to the death rates themselves. The
+data files report 45q15 itself by wealth group.
 
 ### Age-specific death rate (mx)
 Deaths per person per year within an age band (15–29, 30–44, 45–59, 60–74);

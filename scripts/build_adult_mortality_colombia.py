@@ -227,7 +227,7 @@ def main():
     Rx, _ = rates(Tx, [1, 2], len(mx_))
     q45x = 1 - np.prod((1 - Rx[:3]) ** 15, axis=0)
     print(f"comparison (not published): index with housing items, {len(lx)} indicators, "
-          f"{len(mx_)} groups; 45q15 gradient {ai.gradient(mx_, q45x, shx):+.3f}, "
+          f"{len(mx_)} groups; 45q15 gradient {ai.q45_gradient(mx_, q45x, shx):+.3f}, "
           f"per 1000 {np.round(1000 * q45x, 1)}")
 
     new = pd.DataFrame(rows)
@@ -244,7 +244,8 @@ def main():
 
 def row(sex, measure, a0, a1, vals, mids, shares, n, G, linked_share):
     r = dict(indicator="AMR", country="Colombia", year=2018, sex=sex, measure=measure,
-             age_lo=a0, age_hi=a1, slope=round(ai.gradient(mids, vals, shares), 4),
+             age_lo=a0, age_hi=a1,
+             slope=round((ai.q45_gradient if measure == "45q15" else ai.gradient)(mids, vals, shares), 4),
              ratio=round(float(vals[0] / vals[-1]), 3))
     for i in range(5):
         r[f"q{i + 1}"] = round(float(1000 * vals[i]), 3) if i < G else ""
