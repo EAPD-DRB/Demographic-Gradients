@@ -207,19 +207,5 @@ as measured. The gradient weakens with time since death, which is consistent
 with recall fading faster in poorer households; the differences between years
 are within sampling error ([Bangladesh page](../countries/bangladesh.md)).
 
-## Verification for new samples
-
-For censuses:
-
-1. The weighted population of the extract reproduces the census total.
-2. The share of death records linked to households is recorded; where it is
-   below one, linked and unlinked deaths are compared by province, residence,
-   sex and age.
-3. The `MORTNUM` check shows no systematic variation with wealth.
-4. Recorded deaths are compared with the expected national total (crude death
-   rate × population), and the coverage is recorded.
-5. The gradient is compared with the library's existing range and with
-   published national evidence.
-6. The published rows are produced by the committed script and are reproduced
-   exactly on a re-run.
-7. Figures and documentation are regenerated.
+The checklist applied before a new census or survey is published is in
+[AGENTS.md](../../AGENTS.md#verification-standard-for-any-new-country).

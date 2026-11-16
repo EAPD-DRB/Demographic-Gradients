@@ -96,17 +96,8 @@ they are positive because, in several low-income censuses, recorded mortality
 at older ages rises with household wealth (see below). Where working-age
 mortality is what matters, the 15–29 and 30–44 offsets are the more reliable.
 
-**Gradient by age for OG-Core** (ruled 2026-11-16):
-
-| Ages | `mort_gradient` |
-|---|---|
-| 0 | none: infant mortality is `infmort_gradient` |
-| 1–4 | the country's gradient in child mortality at ages 1–4 (DHS); where there is none, its under-five gradient plus the pooled offset below |
-| 5–14 | the 15–29 value |
-| 15–29, 30–44, 45–59 | the country's 45q15 gradient (its own, else the general gradient) plus the band's offset |
-| 60–74 | the 45–59 value at age 60, falling in a straight line to 0 at age 75 |
-| 75 and above | 0 |
-| OG-Core's final age | 0 (the death probability is 1 there, so the [conversion to OG-Core units](ogcore-units.md) is undefined) |
+**Use in OG-Core.** The [calibration guide](../calibration-guide.md#mortality-by-age)
+gives the gradient for every age. The reasons for its choices follow.
 
 The country's own band gradients, where published, are not used in place of
 the offsets, as for fertility by age: they rest on fewer deaths than 45q15, and
@@ -128,9 +119,12 @@ ages 1–4 gradient is predicted with a mean absolute error of
 0.38 by the under-five gradient plus the offset and
 0.55 by the under-five gradient alone.
 
-The 60–74 offset in the table above is not used for OG-Core. Applied to a
-country with a weak 45q15 gradient, it reverses the sign at older ages (poorer
-groups would outlive richer ones), a pattern recorded mainly in low-income
+The 60–74 offset above is not used for OG-Core; ages 60–74 instead fall in a
+straight line from the 45–59 value to zero at age 75, and ages 75 and above,
+including OG-Core's final age (where the death probability is 1 and the
+conversion is undefined), have no gradient. Applied to a
+country with a weak 45q15 gradient, the 60–74 offset would reverse the sign at
+older ages (poorer groups would outlive richer ones), a pattern recorded mainly in low-income
 censuses and possibly a reporting effect; the measured 60–74 gradients of the
 estimates for South Africa, Brazil, Colombia and India are negative. The taper keeps the sign of the 45–59
 value and fades it out by age 75. With no gradient from age 75, this choice

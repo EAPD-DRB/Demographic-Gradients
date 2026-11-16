@@ -139,7 +139,14 @@ and the survey or census year.
   gradient; the alternative is the 1996 DHS infant gradient
   (−1.37). State which is used and why.
 
-## Uncertainty
+## Reading the values
+
+A negative gradient means rates are higher in poorer households, the usual
+case: −0.80 implies a fitted rate in the lowest quintile about
+e^(0.80 × 0.8) ≈ 1.9 times that in the highest. The `ratio` column is the
+measured lowest/highest ratio, which is noisier. A positive adult-mortality
+gradient is not necessarily an error; several low-income censuses record it at
+older ages.
 
 Adult-mortality estimates carry a standard error of sampling variability
 (`se`), from 0.015 (Colombia) to 0.110 (Cambodia) for 45q15. It leaves out errors
@@ -147,15 +154,6 @@ in the wealth ranking and in the recording of deaths, which are usually larger.
 Values from the general gradient carry the much wider prediction interval
 above. Survey gradients for fertility and infant mortality are published
 without standard errors.
-
-## Sign and interpretation
-
-A negative gradient means rates are higher in poorer households, the usual
-case. A gradient of −0.80 implies a fitted rate in the lowest quintile about
-e^(0.80 × 0.8) ≈ 1.9 times that in the highest. The `ratio` column is the
-measured lowest/highest ratio, which is noisier. A positive adult-mortality
-gradient is not necessarily an error; several low-income censuses record it at
-older ages.
 
 ## Long-run projections
 
@@ -182,8 +180,4 @@ follow the income relationship; report which, and treat the two as a range.
 For each input: the value, its source and year (or "general gradient at GDP per
 capita of $X in year Y", with its prediction interval, or "regional median,
 borrowed"), the conversion applied, and for mortality the treatment by age.
-
-## Citation
-
-Cite the source in each row's `source` column, and
-[the citation list](sources.md#citation).
+Cite the source in each row's `source` column ([citation list](sources.md#citation)).

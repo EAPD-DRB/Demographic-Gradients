@@ -81,27 +81,9 @@ ages, where a single survey often cannot be fitted.
   approximately zero, so adding them leaves the TFR gradient essentially
   unchanged.
 
-## Application
-
-1. Take the country's TFR gradient from
-   [`gradient_library_latest.csv`](../../data/gradient_library_latest.csv), or
-   the regional median for a country without a survey.
-2. Add the offset for each single year of age; ages below 15 use the 15–19
-   offset and ages 50 and above the 45–49 offset (fertility is close to zero at
-   those ages).
-3. Convert to OG-Core's units as for any gradient: divide by
-   100 × (1 − p), with p OG-Core's fertility rate at that age
-   ([details](ogcore-units.md)).
-
-For a model with 100 ages (E + S = 100, ages 0–99):
-
-```python
-off = pd.read_csv(".../data/fertility_age_offsets.csv").set_index("age_lo")["offset"]
-ages = np.arange(p.E + p.S)
-gradient_by_age = tfr_gradient + off.loc[np.clip(ages // 5 * 5, 15, 45)].values
-fert = demographics.get_fert(p.E + p.S, 0, 99, country_id="710")
-fert_gradient = gradient_by_age / (100 * (1 - fert[0]))
-```
+How to apply the offsets in a calibration: the
+[calibration guide](../calibration-guide.md#fertility-by-age) and the
+[README example](../../README.md#use-in-an-og-core-calibration).
 
 Source: DHS Program indicator API, age-specific fertility rates
 (`FE_FRTR_W_A15` … `FE_FRTR_W_A45`) by wealth quintile.

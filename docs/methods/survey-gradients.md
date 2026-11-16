@@ -109,31 +109,14 @@ relatively few deaths.
 Quintile columns: median across countries of the difference between the published rate and the fitted line, in percent of the fitted value. R²: share of the variation in the five log rates that the line accounts for. Last column: share of countries whose quintile rates bend downward toward the richest quintile (negative quadratic term).
 <!-- END AUTO-GENERATED -->
 
-## Fertility by age of mother
+## Other rates
 
-The same procedure is applied to each age-specific fertility rate. The
-difference between each age gradient and the survey's TFR gradient, pooled
-across countries' latest surveys, gives the age offsets in
-`fertility_age_offsets.csv`; the survey-level values are in
-`fertility_age_tilts.csv`. Results and validation are reported in
-[fertility by age](fertility-by-age.md).
-
-## Infant and under-five mortality
-
-Both are published, but they are not interchangeable. The gradient in
-under-five mortality is steeper in most surveys (see
-[Main results](../../ANALYSIS.md#infant-and-under-five-mortality)), consistent
-with the larger share of infectious causes in deaths at ages 1–4.
-`infmort_gradient` uses the infant mortality rate; every survey in the library
-that reports the under-five rate by quintile also reports the infant rate.
-
-Child mortality at ages 1–4 (`CMR`) is what `mort_gradient` uses at those ages.
-Its gradient is steeper than the under-five gradient in most surveys, since
-under-five mortality includes infant deaths, whose gradient is flatter. It is
-available from DHS surveys only (the MICS compilation does not report it), and
-not where a wealth quintile records no child deaths. In those cases the
-under-five gradient is used with a pooled offset
-([age pattern](general-gradient.md#age-pattern); `child_mortality_offset.csv`).
+The same fit is applied to each age-specific fertility rate, which gives the
+fertility age offsets ([fertility by age](fertility-by-age.md)), and to child
+mortality at ages 1–4 (DHS surveys only; the MICS compilation does not report
+it). Under-five mortality is published for comparison: it mixes infant deaths
+with deaths at ages 1–4, so neither `infmort_gradient` nor `mort_gradient`
+uses it except as the fallback at ages 1–4 ([calibration guide](../calibration-guide.md)).
 
 ## Limitations
 

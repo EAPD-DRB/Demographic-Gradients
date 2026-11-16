@@ -675,25 +675,19 @@ they are positive because, in several low-income censuses, recorded mortality
 at older ages rises with household wealth (see below). Where working-age
 mortality is what matters, the 15–29 and 30–44 offsets are the more reliable.
 
-**Gradient by age for OG-Core** (ruled 2026-11-16):
-
-| Ages | `mort_gradient` |
-|---|---|
-| 0 | none: infant mortality is `infmort_gradient` |
-| 1–4 | the country's gradient in child mortality at ages 1–4 (DHS); where there is none, its under-five gradient plus the pooled offset below |
-| 5–14 | the 15–29 value |
-| 15–29, 30–44, 45–59 | the country's 45q15 gradient (its own, else the general gradient) plus the band's offset |
-| 60–74 | the 45–59 value at age 60, falling in a straight line to 0 at age 75 |
-| 75 and above | 0 |
-| OG-Core's final age | 0 (the death probability is 1 there, so the [conversion to OG-Core units](ogcore-units.md) is undefined) |
+**Use in OG-Core.** The [calibration guide](../calibration-guide.md#mortality-by-age)
+gives the gradient for every age. The reasons for its choices follow.
 
 The country's own band gradients, where published, are not used in place of
 the offsets, as for fertility by age: they rest on fewer deaths than 45q15, and
 several bands are not published for lack of deaths.{child_txt}
 
-The 60–74 offset in the table above is not used for OG-Core. Applied to a
-country with a weak 45q15 gradient, it reverses the sign at older ages (poorer
-groups would outlive richer ones), a pattern recorded mainly in low-income
+The 60–74 offset above is not used for OG-Core; ages 60–74 instead fall in a
+straight line from the 45–59 value to zero at age 75, and ages 75 and above,
+including OG-Core's final age (where the death probability is 1 and the
+conversion is undefined), have no gradient. Applied to a
+country with a weak 45q15 gradient, the 60–74 offset would reverse the sign at
+older ages (poorer groups would outlive richer ones), a pattern recorded mainly in low-income
 censuses and possibly a reporting effect; the measured 60–74 gradients of the
 estimates for South Africa, Brazil, Colombia and India are negative. The taper keeps the sign of the 45–59
 value and fades it out by age 75. With no gradient from age 75, this choice
@@ -957,27 +951,9 @@ ages, where a single survey often cannot be fitted.
   approximately zero, so adding them leaves the TFR gradient essentially
   unchanged.
 
-## Application
-
-1. Take the country's TFR gradient from
-   [`gradient_library_latest.csv`](../../data/gradient_library_latest.csv), or
-   the regional median for a country without a survey.
-2. Add the offset for each single year of age; ages below 15 use the 15–19
-   offset and ages 50 and above the 45–49 offset (fertility is close to zero at
-   those ages).
-3. Convert to OG-Core's units as for any gradient: divide by
-   100 × (1 − p), with p OG-Core's fertility rate at that age
-   ([details](ogcore-units.md)).
-
-For a model with 100 ages (E + S = 100, ages 0–99):
-
-```python
-off = pd.read_csv(".../data/fertility_age_offsets.csv").set_index("age_lo")["offset"]
-ages = np.arange(p.E + p.S)
-gradient_by_age = tfr_gradient + off.loc[np.clip(ages // 5 * 5, 15, 45)].values
-fert = demographics.get_fert(p.E + p.S, 0, 99, country_id="710")
-fert_gradient = gradient_by_age / (100 * (1 - fert[0]))
-```
+How to apply the offsets in a calibration: the
+[calibration guide](../calibration-guide.md#fertility-by-age) and the
+[README example](../../README.md#use-in-an-og-core-calibration).
 
 Source: DHS Program indicator API, age-specific fertility rates
 (`FE_FRTR_W_A15` … `FE_FRTR_W_A45`) by wealth quintile.
@@ -1187,7 +1163,14 @@ and the survey or census year.
   gradient; the alternative is the 1996 DHS infant gradient
   ({fmt(float(br_imr['slope'].iloc[0]))}). State which is used and why.
 
-## Uncertainty
+## Reading the values
+
+A negative gradient means rates are higher in poorer households, the usual
+case: −0.80 implies a fitted rate in the lowest quintile about
+e^(0.80 × 0.8) ≈ 1.9 times that in the highest. The `ratio` column is the
+measured lowest/highest ratio, which is noisier. A positive adult-mortality
+gradient is not necessarily an error; several low-income censuses record it at
+older ages.
 
 Adult-mortality estimates carry a standard error of sampling variability
 (`se`), from {se.min():.3f} ({se.idxmin()}) to {se.max():.3f} ({se.idxmax()}) for 45q15. It leaves out errors
@@ -1195,15 +1178,6 @@ in the wealth ranking and in the recording of deaths, which are usually larger.
 Values from the general gradient carry the much wider prediction interval
 above. Survey gradients for fertility and infant mortality are published
 without standard errors.
-
-## Sign and interpretation
-
-A negative gradient means rates are higher in poorer households, the usual
-case. A gradient of −0.80 implies a fitted rate in the lowest quintile about
-e^(0.80 × 0.8) ≈ 1.9 times that in the highest. The `ratio` column is the
-measured lowest/highest ratio, which is noisier. A positive adult-mortality
-gradient is not necessarily an error; several low-income censuses record it at
-older ages.
 
 ## Long-run projections
 
@@ -1230,11 +1204,7 @@ follow the income relationship; report which, and treat the two as a range.
 For each input: the value, its source and year (or "general gradient at GDP per
 capita of $X in year Y", with its prediction interval, or "regional median,
 borrowed"), the conversion applied, and for mortality the treatment by age.
-
-## Citation
-
-Cite the source in each row's `source` column, and
-[the citation list](sources.md#citation).
+Cite the source in each row's `source` column ([citation list](sources.md#citation)).
 """
     (DOCS / "calibration-guide.md").write_text(doc)
 
