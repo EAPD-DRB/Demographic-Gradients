@@ -103,13 +103,23 @@ mortality is what matters, the 15–29 and 30–44 offsets are the more reliable
 | 1–4 | awaiting a ruling (child-mortality gradient; ROADMAP A3) |
 | 5–14 | the 15–29 value |
 | 15–29, 30–44, 45–59 | the country's 45q15 gradient (its own, else the general gradient) plus the band's offset |
-| 60–74 | awaiting a ruling (ROADMAP B1) |
+| 60–74 | the 45–59 value at age 60, falling in a straight line to 0 at age 75 |
 | 75 and above | 0 |
 | OG-Core's final age | 0 (the death probability is 1 there, so the [conversion to OG-Core units](ogcore-units.md) is undefined) |
 
 The country's own band gradients, where published, are not used in place of
 the offsets, as for fertility by age: they rest on fewer deaths than 45q15, and
 several bands are not published for lack of deaths.
+
+The 60–74 offset in the table above is not used for OG-Core. Applied to a
+country with a weak 45q15 gradient, it reverses the sign at older ages (poorer
+groups would outlive richer ones), a pattern recorded mainly in low-income
+censuses and possibly a reporting effect; the measured 60–74 gradients of the
+estimates for South Africa, Brazil, Colombia and India are negative. The taper keeps the sign of the 45–59
+value and fades it out by age 75. With no gradient from age 75, this choice
+sets most of the difference in life expectancy at 65 between income groups;
+evidence from richer countries suggests differences persist beyond 75, so the
+rule may understate them.
 
 ## Use over long horizons
 

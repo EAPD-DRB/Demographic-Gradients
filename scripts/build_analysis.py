@@ -637,13 +637,23 @@ mortality is what matters, the 15–29 and 30–44 offsets are the more reliable
 | 1–4 | awaiting a ruling (child-mortality gradient; ROADMAP A3) |
 | 5–14 | the 15–29 value |
 | 15–29, 30–44, 45–59 | the country's 45q15 gradient (its own, else the general gradient) plus the band's offset |
-| 60–74 | awaiting a ruling (ROADMAP B1) |
+| 60–74 | the 45–59 value at age 60, falling in a straight line to 0 at age 75 |
 | 75 and above | 0 |
 | OG-Core's final age | 0 (the death probability is 1 there, so the [conversion to OG-Core units](ogcore-units.md) is undefined) |
 
 The country's own band gradients, where published, are not used in place of
 the offsets, as for fertility by age: they rest on fewer deaths than 45q15, and
 several bands are not published for lack of deaths.
+
+The 60–74 offset in the table above is not used for OG-Core. Applied to a
+country with a weak 45q15 gradient, it reverses the sign at older ages (poorer
+groups would outlive richer ones), a pattern recorded mainly in low-income
+censuses and possibly a reporting effect; the measured 60–74 gradients of the
+estimates for South Africa, Brazil, Colombia and India are negative. The taper keeps the sign of the 45–59
+value and fades it out by age 75. With no gradient from age 75, this choice
+sets most of the difference in life expectancy at 65 between income groups;
+evidence from richer countries suggests differences persist beyond 75, so the
+rule may understate them.
 
 ## Use over long horizons
 
@@ -1095,9 +1105,9 @@ def mortality_by_age(own, gg, c):
     """`mort_gradient` by age (ruled 2026-11-16, review item A2).
 
     15-59: the country's 45q15 gradient (its own, else the general gradient)
-    plus the pooled offset of each band; 5-14: the 15-29 value; 75 and over,
-    and OG-Core's final age: 0. Ages 1-4 and 60-74 await rulings (ROADMAP A3
-    and B1) and are shown as such.
+    plus the pooled offset of each band; 5-14: the 15-29 value; 60-74: the
+    45-59 value tapered linearly to 0 at age 75 (ruled 2026-11-16, B1); 75 and
+    over, and OG-Core's final age: 0. Ages 1-4 await a ruling (ROADMAP A3).
     """
     offs = dict(gg.get("_ages", []))
     if not all(k in offs for k in ("15-29", "30-44", "45-59")):
@@ -1106,22 +1116,24 @@ def mortality_by_age(own, gg, c):
                                     if c in WORKED_INCOME else None)
     if base is not None:
         cell = {k: fmt(base + offs[k]) for k in ("15-29", "30-44", "45-59")}
+        cell["60-74"] = f"{cell['45-59']} at 60, falling to 0 at 75"
         lead = ("the 45q15 gradient above plus the pooled offset for each band "
                 "([age pattern](../methods/general-gradient.md#age-pattern))")
     else:
         cell = {k: f"value {NEG} {abs(offs[k]):.2f}" if offs[k] < 0 else f"value + {offs[k]:.2f}"
                 for k in ("15-29", "30-44", "45-59")}
+        cell["60-74"] = "the 45–59 value at 60, falling to 0 at 75"
         lead = ("the general-gradient value for this country plus the pooled offset for "
                 "each band ([age pattern](../methods/general-gradient.md#age-pattern))")
     return ("\n**Adult and child mortality gradient by age** (`mort_gradient`; ages 15–59: "
-            f"{lead}; ages 5–14 use the 15–29 value; ages 75 and above, and OG-Core's final "
-            "age, use 0):\n\n"
+            f"{lead}; ages 5–14 use the 15–29 value; ages 60–74 fall in a straight line from "
+            "the 45–59 value to 0 at age 75; ages 75 and above, and OG-Core's final age, "
+            "use 0):\n\n"
             "| 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |\n|---|---|---|---|---|---|---|\n"
             f"| pending | {cell['15-29']} | {cell['15-29']} | {cell['30-44']} | {cell['45-59']} "
-            "| pending | 0 |\n\n"
-            "Ages 1–4 and 60–74 await a decision on the method (the child-mortality gradient "
-            "at ages 1–4, and how far the gradient at older ages can be trusted); see "
-            "[ROADMAP](../../ROADMAP.md) items A3 and B1. Infant mortality (age 0) is "
+            f"| {cell['60-74']} | 0 |\n\n"
+            "Ages 1–4 await a decision on the method (the child-mortality gradient at ages "
+            "1–4; [ROADMAP](../../ROADMAP.md) item A3). Infant mortality (age 0) is "
             "`infmort_gradient`, above.\n")
 
 

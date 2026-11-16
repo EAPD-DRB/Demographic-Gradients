@@ -57,8 +57,20 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
     offsets (own band gradients not substituted); 5–14 take the 15–29 value;
     75+ and OG-Core's final age take 0 (the conversion is undefined at p = 1).
   - Shown on every country page, the general-gradient page and AGENTS.md.
-  - Open: ages 1–4 (A3) and 60–74 (B1).
-- [R] **B1. Adult tilt at ages 45+.** OG-ETH applies none (the measured bands
+  - 60–74 ruled 2026-11-16 (B1): taper the 45–59 value linearly to 0 at
+    75. Open: ages 1–4 (A3).
+- [x] **B1. Adult tilt at ages 60–74** (ruled 2026-11-16: taper).
+  - Consequence check (`~/.cache/b1-work/b1.py`): OG-Core's own
+    `_mean_preserving_logit_rates` on the UN 2025 mortality schedules, five
+    equal groups. Gap in life expectancy at 65 (richest − poorest fifth),
+    under (a) offset +0.43 / (b) zero / (c) taper:
+    South Africa 4.4/0/2.0, Indonesia 2.0/0/1.0, Brazil 1.4/0/0.7,
+    India 1.0/0/0.6, Ethiopia −1.2/0/−0.2 years.
+  - (a) reverses the sign where the 45q15 gradient is weak. (b) contradicts
+    the negative 60–74 gradients measured for South Africa, Brazil, Colombia
+    and India (Bangladesh's survey is positive at 60–74, +0.27).
+  - The 75+ = 0 rule sets the rest; it may understate old-age gaps.
+  - Original text: **Adult tilt at ages 45+.** OG-ETH applies none (the measured bands
   reverse); OG-PHL applies the general-gradient offsets (then +0.13, +0.40;
   +0.13, +0.49 since G1), which
   AGENTS.md calls the least trustworthy numbers here. One documented rule.

@@ -68,11 +68,12 @@ band offsets in `data/general_gradient.csv` (`component == "age_offset"`):
 
 - ages 15–29, 30–44 and 45–59: the 45q15 gradient plus that band's offset;
 - ages 5–14: the 15–29 value;
+- ages 60–74: the 45–59 value at 60, falling linearly to 0 at 75 (not the
+  60–74 offset, which reverses the sign where the 45q15 gradient is weak);
 - ages 75 and above, and OG-Core's final age: 0. At the final age the model's
   death probability is 1, so the conversion is undefined there; set it to 0
   before converting.
-- Ages 1–4 and 60–74: not yet ruled (ROADMAP A3 and B1); say so, and state
-  what is used.
+- Ages 1–4: not yet ruled (ROADMAP A3); say so, and state what is used.
 
 Age 0 is `infmort_gradient`. Do not substitute a country's own band gradients
 for the offsets. The country pages show the resulting vector. Details:
@@ -151,9 +152,9 @@ DHS or MICS survey, use the regional median and interquartile range from
 - **The older-age offsets in `general_gradient.csv` are the least reliable
   values in the library.** The 45–59 and 60–74 offsets are positive because, in
   several low-income censuses, recorded mortality at older ages rises with
-  wealth; this is at least partly a reporting effect. Where working-age
-  mortality is what matters, rely on the 15–29 and 30–44 offsets and state the
-  caveat.
+  wealth; this is at least partly a reporting effect. The 60–74 offset is
+  therefore not used for OG-Core: ages 60–74 taper the 45–59 value to 0 by
+  age 75 (see Mortality by age). The 45–59 offset is used, with this caveat.
 - **Brazil's DHS survey is from 1996.** Census estimates show its
   child-mortality gradient falling from −1.81 (1991) to −0.96 (2010). The census
   measure resembles under-five mortality and probably overstates the infant

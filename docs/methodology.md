@@ -153,9 +153,10 @@ rate is proportional to the death rates, so its gradient is also unaffected by
 under-recording that is uniform across wealth groups.
 
 `mort_gradient` uses the 45q15 gradient, spread across ages 15–59 with the
-pooled age offsets described in section 7; ages 5–14 take the 15–29 value, and
-ages 75 and above and the model's final age take no gradient. The treatment of
-ages 1–4 and 60–74 is still to be decided. The full rule is on the
+pooled age offsets described in section 7; ages 5–14 take the 15–29 value;
+ages 60–74 take the 45–59 value, tapered to zero by age 75; and ages 75 and
+above and the model's final age take no gradient. The treatment of ages 1–4 is
+still to be decided. The full rule is on the
 [general-gradient page](methods/general-gradient.md#age-pattern) and each
 country page.
 
