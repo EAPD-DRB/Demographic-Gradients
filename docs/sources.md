@@ -6,7 +6,8 @@
 API](https://api.dhsprogram.com), wealth-quintile breakdowns of the total
 fertility rate (`FE_FRTR_W_TFR`), age-specific fertility rates
 (`FE_FRTR_W_A15` … `FE_FRTR_W_A45`), the infant mortality rate (`CM_ECMR_C_IMR`)
-and the under-five mortality rate (`CM_ECMR_C_U5M`). Access is free and does not
+the under-five mortality rate (`CM_ECMR_C_U5M`) and child mortality at ages 1–4
+(`CM_ECMR_C_CMR`). Access is free and does not
 require registration. Surveys without a complete quintile breakdown are
 excluded. Multiple Indicator Cluster Survey (MICS) rates by wealth quintile
 come from the World Bank's [Health Nutrition and Population Statistics by

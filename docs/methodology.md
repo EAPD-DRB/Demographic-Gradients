@@ -87,6 +87,11 @@ calibrations use the latest survey for each country
 includes deaths at ages 1–4, which are more strongly associated with wealth,
 and its gradient is steeper; it is published for comparison.
 
+**Child mortality at ages 1–4.** `mort_gradient` at ages 1–4 uses the gradient
+in child mortality at those ages (4q1, DHS surveys only). Where a country has
+none, its U5MR gradient is used with a pooled offset, the median difference
+between the two gradients in the same surveys.
+
 **Fertility by age.** The fertility differential is larger at ages 15–19 and
 40–49 than at 25–34. A gradient is estimated for the ASFR of each five-year age
 group, and its difference from the survey's TFR gradient is computed. The
@@ -155,8 +160,8 @@ under-recording that is uniform across wealth groups.
 `mort_gradient` uses the 45q15 gradient, spread across ages 15–59 with the
 pooled age offsets described in section 7; ages 5–14 take the 15–29 value;
 ages 60–74 take the 45–59 value, tapered to zero by age 75; and ages 75 and
-above and the model's final age take no gradient. The treatment of ages 1–4 is
-still to be decided. The full rule is on the
+above and the model's final age take no gradient. Ages 1–4 take the child
+mortality gradient described in section 3. The full rule is on the
 [general-gradient page](methods/general-gradient.md#age-pattern) and each
 country page.
 

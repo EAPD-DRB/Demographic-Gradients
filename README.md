@@ -29,7 +29,7 @@ it.
 | Income distribution of immigrants | `imm_pctiles` | not provided | — | — |
 <!-- END AUTO-GENERATED -->
 
-*(409 surveys, 97 countries; DHS API pull of 11 November 2026; MICS values from the World Bank's compilation,
+*(409 surveys, 97 countries; DHS API pull of 16 November 2026; MICS values from the World Bank's compilation,
 last updated December 2022.)* The library
 covers low- and middle-income countries only; its sources and the income
 relationship for adult mortality do not extend to high-income countries.

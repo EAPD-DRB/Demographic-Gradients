@@ -100,7 +100,7 @@ mortality is what matters, the 15–29 and 30–44 offsets are the more reliable
 | Ages | `mort_gradient` |
 |---|---|
 | 0 | none: infant mortality is `infmort_gradient` |
-| 1–4 | awaiting a ruling (child-mortality gradient; ROADMAP A3) |
+| 1–4 | the country's gradient in child mortality at ages 1–4 (DHS); where there is none, its under-five gradient plus the pooled offset below |
 | 5–14 | the 15–29 value |
 | 15–29, 30–44, 45–59 | the country's 45q15 gradient (its own, else the general gradient) plus the band's offset |
 | 60–74 | the 45–59 value at age 60, falling in a straight line to 0 at age 75 |
@@ -110,6 +110,22 @@ mortality is what matters, the 15–29 and 30–44 offsets are the more reliable
 The country's own band gradients, where published, are not used in place of
 the offsets, as for fertility by age: they rest on fewer deaths than 45q15, and
 several bands are not published for lack of deaths.
+
+**Ages 1–4.** The DHS publishes child mortality at ages 1–4 (4q1) by wealth
+quintile. Its gradient is steeper than the under-five gradient in
+85% of the 74 countries with both (latest DHS survey; median
+gradient −1.35 against −0.82), because under-five
+mortality includes infant deaths, whose gradient is flatter, and infant
+mortality has its own input. Ages 1–4 therefore use the country's own ages 1–4
+gradient; where there is none (MICS-only countries, or a survey with a wealth
+quintile without child deaths), they use the under-five gradient plus the median
+difference, −0.53 (interquartile range −0.78 to −0.28;
+[`data/child_mortality_offset.csv`](../../data/child_mortality_offset.csv)).
+Over 203 pairs of consecutive DHS surveys, the later survey's
+ages 1–4 gradient is predicted with a mean absolute error of
+0.43 by the earlier survey's own value,
+0.38 by the under-five gradient plus the offset and
+0.55 by the under-five gradient alone.
 
 The 60–74 offset in the table above is not used for OG-Core. Applied to a
 country with a weak 45q15 gradient, it reverses the sign at older ages (poorer

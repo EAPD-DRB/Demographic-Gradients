@@ -74,6 +74,10 @@ Deaths before age five per 1,000 live births. Published for comparison; its
 gradient is steeper than the infant gradient and it is not used for
 `infmort_gradient`.
 
+### Child mortality rate (CMR, 4q1)
+Deaths between ages one and five per 1,000 children reaching age one. Its
+gradient is used for `mort_gradient` at ages 1–4.
+
 ### 45q15
 The probability that a person aged 15 dies before age 60. The library's summary
 measure of adult mortality. Because a probability cannot exceed 1, 45q15

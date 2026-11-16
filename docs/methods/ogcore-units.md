@@ -37,8 +37,9 @@ differential is understated.
 
 | Rate | Quintile sets | Median rate p | Change, median (%) | Change, 10th percentile (%) | Remaining after conversion (%) |
 |---|---|---|---|---|---|
-| Mortality, ages 0–4 | 291 | 0.016 | −0.97 | −2.40 | −0.17 |
 | Infant mortality | 292 | 0.053 | −2.61 | −5.52 | −0.21 |
+| Child mortality, ages 1–4 | 277 | 0.006 | −0.60 | −1.69 | −0.48 |
+| Under–five mortality | 291 | 0.016 | −0.97 | −2.40 | −0.17 |
 | Fertility, ages 15–19 | 313 | 0.050 | −5.44 | −8.89 | −0.44 |
 | Fertility, ages 20–24 | 313 | 0.105 | −6.66 | −10.32 | −0.32 |
 | Fertility, ages 25–29 | 313 | 0.106 | −4.51 | −7.75 | −0.10 |

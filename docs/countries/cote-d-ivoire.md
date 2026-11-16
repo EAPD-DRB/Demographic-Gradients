@@ -24,9 +24,9 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 
 | 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |
 |---|---|---|---|---|---|---|
-| pending | −0.95 | −0.95 | −0.72 | −0.38 | −0.38 at 60, falling to 0 at 75 | 0 |
+| −0.90 (DHS 2021) | −0.95 | −0.95 | −0.72 | −0.38 | −0.38 at 60, falling to 0 at 75 | 0 |
 
-Ages 1–4 await a decision on the method (the child-mortality gradient at ages 1–4; [ROADMAP](../../ROADMAP.md) item A3). Infant mortality (age 0) is `infmort_gradient`, above.
+Ages 1–4 use the country's own gradient in child mortality at ages 1–4 (DHS), or, where there is none, its under-five gradient plus a pooled offset ([details](../methods/general-gradient.md#age-pattern)). Infant mortality (age 0) is `infmort_gradient`, above.
 
 ## Estimates
 
@@ -39,6 +39,7 @@ Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey 
 | Total fertility rate (births per woman) | DHS 2021 | 5.9 | 5.3 | 4.4 | 3.5 | 3 | 1.97 | −0.88 |
 | Infant mortality rate (per 1,000 live births) | DHS 2021 | 65 | 57 | 51 | 51 | 33 | 1.97 | −0.73 |
 | Under-five mortality rate (per 1,000 live births) | DHS 2021 | 98 | 87 | 73 | 69 | 51 | 1.92 | −0.77 |
+| Child mortality, ages 1–4 (per 1,000 children aged 1) | DHS 2021 | 35 | 32 | 22 | 18 | 19 | 1.84 | −0.90 |
 
 ### Adult mortality from household-death records
 

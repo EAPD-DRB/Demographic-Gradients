@@ -11,7 +11,8 @@ and `gradient_library.csv`, which contains every survey, are constructed by
 The estimates use the [DHS Program indicator API](https://api.dhsprogram.com):
 the total fertility rate (`FE_FRTR_W_TFR`), age-specific fertility rates
 (`FE_FRTR_W_A15` … `FE_FRTR_W_A45`), the infant mortality rate
-(`CM_ECMR_C_IMR`) and the under-five mortality rate (`CM_ECMR_C_U5M`), each by
+(`CM_ECMR_C_IMR`), the under-five mortality rate (`CM_ECMR_C_U5M`) and child
+mortality at ages 1–4 (`CM_ECMR_C_CMR`, 4q1), each by
 wealth quintile. Wealth quintiles are those of the DHS wealth index, an index
 of household assets and housing characteristics. Surveys without a value for
 every quintile are excluded; no values are imputed. The reference periods are
@@ -124,6 +125,14 @@ under-five mortality is steeper in most surveys (see
 with the larger share of infectious causes in deaths at ages 1–4.
 `infmort_gradient` uses the infant mortality rate; every survey in the library
 that reports the under-five rate by quintile also reports the infant rate.
+
+Child mortality at ages 1–4 (`CMR`) is what `mort_gradient` uses at those ages.
+Its gradient is steeper than the under-five gradient in most surveys, since
+under-five mortality includes infant deaths, whose gradient is flatter. It is
+available from DHS surveys only (the MICS compilation does not report it), and
+not where a wealth quintile records no child deaths. In those cases the
+under-five gradient is used with a pooled offset
+([age pattern](general-gradient.md#age-pattern); `child_mortality_offset.csv`).
 
 ## Limitations
 

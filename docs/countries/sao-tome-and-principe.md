@@ -24,9 +24,9 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 
 | 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |
 |---|---|---|---|---|---|---|
-| pending | value − 0.37 | value − 0.37 | value − 0.15 | value + 0.19 | the 45–59 value at 60, falling to 0 at 75 | 0 |
+| −3.65 (DHS 2008) | value − 0.37 | value − 0.37 | value − 0.15 | value + 0.19 | the 45–59 value at 60, falling to 0 at 75 | 0 |
 
-Ages 1–4 await a decision on the method (the child-mortality gradient at ages 1–4; [ROADMAP](../../ROADMAP.md) item A3). Infant mortality (age 0) is `infmort_gradient`, above.
+Ages 1–4 use the country's own gradient in child mortality at ages 1–4 (DHS), or, where there is none, its under-five gradient plus a pooled offset ([details](../methods/general-gradient.md#age-pattern)). Infant mortality (age 0) is `infmort_gradient`, above.
 
 ## Estimates
 
@@ -39,3 +39,4 @@ Latest Demographic and Health Survey (DHS) or Multiple Indicator Cluster Survey 
 | Total fertility rate (births per woman) | MICS 2019 | 5 | 4.2 | 3.9 | 3.4 | 2.8 | 1.79 | −0.69 |
 | Infant mortality rate (per 1,000 live births) | MICS 2019 | 20 | 13 | 11 | 6 | 18 | 1.11 | −0.49 |
 | Under-five mortality rate (per 1,000 live births) | MICS 2019 | 28 | 17 | 13 | 9 | 19 | 1.47 | −0.71 |
+| Child mortality, ages 1–4 (per 1,000 children aged 1) | DHS 2008 | 40 | 25 | 35 | 27 | 1 | 40.00 | −3.65 |

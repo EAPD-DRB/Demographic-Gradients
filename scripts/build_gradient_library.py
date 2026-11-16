@@ -24,6 +24,13 @@ comparison: its gradient is steeper in most surveys that report both, because
 it includes deaths at ages 1-4, where infectious causes weigh more. Every
 survey in the library that reports U5MR by quintile also reports IMR.
 
+CMR is child mortality at ages 1-4 (4q1, CM_ECMR_C_CMR, DHS only), the
+gradient OG-Core's `mort_gradient` takes at ages 1-4 (ruled 2026-11-16, ROADMAP
+A3). Where a country has no CMR gradient (MICS-only countries, or a quintile
+with no child deaths), the fallback is its U5MR gradient plus a pooled offset,
+the median difference between the CMR and U5MR gradients of the same survey;
+child_mortality_offset.csv holds it with a backtest over consecutive surveys.
+
 MICS surveys (UNICEF) are added from the pinned copy of the World Bank's
 compilation written by fetch_mics.py. Every survey of either kind goes into
 gradient_library.csv, with a `source` column (DHS or MICS); the latest file
@@ -59,7 +66,8 @@ import pandas as pd
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 API = "https://api.dhsprogram.com/rest/dhs"
-INDICATORS = {"FE_FRTR_W_TFR": "TFR", "CM_ECMR_C_IMR": "IMR", "CM_ECMR_C_U5M": "U5MR"}
+INDICATORS = {"FE_FRTR_W_TFR": "TFR", "CM_ECMR_C_IMR": "IMR", "CM_ECMR_C_U5M": "U5MR",
+              "CM_ECMR_C_CMR": "CMR"}
 ASFR_AGES = [15, 20, 25, 30, 35, 40, 45]
 ASFR = {f"FE_FRTR_W_A{a}": f"ASFR{a}" for a in ASFR_AGES}
 # The backtest leaves out 45-49: a quintile with no births makes it unfittable
@@ -197,6 +205,37 @@ def fertility_age_offsets(ages):
             "backtest_pairs": pairs if a in BACKTEST_AGES else 0,
         })
     return pd.DataFrame(rows)
+
+
+def child_mortality_offset(lib):
+    """Pooled CMR - U5MR offset (latest DHS survey per country) and its backtest.
+
+    Backtest over consecutive DHS surveys of a country that report both: predict
+    the later survey's CMR gradient from (a) the earlier survey's CMR gradient,
+    (b) the later survey's U5MR gradient plus the offset pooled over the other
+    countries, or (c) the later survey's U5MR gradient alone.
+    """
+    d = lib[(lib["source"] == "DHS") & lib["indicator"].isin(["CMR", "U5MR"])]
+    w = d.pivot_table(index=["country", "year"], columns="indicator", values="slope").dropna()
+    w = w.reset_index().sort_values(["country", "year"])
+    w["diff"] = w["CMR"] - w["U5MR"]
+    latest = w.groupby("country").tail(1)
+    err = {"own": [], "pooled": [], "u5mr": []}
+    for ctry, g in w.groupby("country"):
+        pool = w.loc[w["country"] != ctry].groupby("country").tail(1)["diff"].median()
+        for i in range(1, len(g)):
+            prev, cur = g.iloc[i - 1], g.iloc[i]
+            err["own"].append(abs(cur["CMR"] - prev["CMR"]))
+            err["pooled"].append(abs(cur["CMR"] - (cur["U5MR"] + pool)))
+            err["u5mr"].append(abs(cur["CMR"] - cur["U5MR"]))
+    x = latest["diff"]
+    return pd.DataFrame([{
+        "offset": x.median(), "iqr_lo": x.quantile(0.25), "iqr_hi": x.quantile(0.75),
+        "countries": len(x), "steeper_share": float((x < 0).mean()),
+        "median_cmr": latest["CMR"].median(), "median_u5mr": latest["U5MR"].median(),
+        **{f"backtest_err_{k}": float(np.mean(v)) for k, v in err.items()},
+        "backtest_pairs": len(err["own"]),
+    }])
 
 
 def gradient_rows(df, source):
@@ -383,6 +422,14 @@ def main():
         )
     print(f"surveys with complete quintets: {lib.groupby(['country', 'year', 'source']).ngroups} "
           f"({len(lib)} country-survey-indicator gradients)")
+
+    cm = child_mortality_offset(lib)
+    cm.to_csv(DATA_DIR / "child_mortality_offset.csv", index=False)
+    r = cm.iloc[0]
+    print(f"ages 1-4 (CMR): offset to U5MR {r['offset']:+.3f} over {int(r['countries'])} countries "
+          f"(CMR steeper in {r['steeper_share']:.0%}); backtest MAE own {r['backtest_err_own']:.3f}, "
+          f"U5MR+offset {r['backtest_err_pooled']:.3f}, U5MR alone {r['backtest_err_u5mr']:.3f} "
+          f"({int(r['backtest_pairs'])} pairs)")
 
     # 4. Fertility by age: per-survey age gradients and the pooled offsets (DHS)
     ages = fertility_age_tilts(raw)

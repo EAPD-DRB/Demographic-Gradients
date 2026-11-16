@@ -9,6 +9,7 @@ All files in [`data/`](../data/) are CSV and are rebuilt by the scripts in
 |---|---|---|
 | [`gradient_library_latest.csv`](../data/gradient_library_latest.csv) | Wealth gradients from the latest DHS or MICS survey, by country and indicator | `fert_gradient` (`indicator == "TFR"`); `infmort_gradient` (`"IMR"`) |
 | [`fertility_age_offsets.csv`](../data/fertility_age_offsets.csv) | Age offsets for fertility, with the validation results | `fert_gradient` by age of mother |
+| [`child_mortality_offset.csv`](../data/child_mortality_offset.csv) | Offset from the under-five to the ages 1–4 gradient, with its backtest | `mort_gradient` at ages 1–4 where a country has no ages 1–4 gradient |
 | [`adult_mortality_gradients.csv`](../data/adult_mortality_gradients.csv) | Census and survey estimates of adult mortality by sex and age band | `mort_gradient` (`measure == "45q15"`, `sex == "all"`, latest year) for countries with their own estimate |
 | [`general_gradient.csv`](../data/general_gradient.csv) | Income relationship for adult mortality with its standard errors and prediction-interval terms, age offsets and validation statistics | `mort_gradient` for other countries |
 | [`census_child_mortality.csv`](../data/census_child_mortality.csv) | Census estimates of child mortality (Brazil 1991, 2000, 2010) | child mortality where the DHS survey is old or absent |
@@ -17,11 +18,11 @@ All files in [`data/`](../data/) are CSV and are rebuilt by the scripts in
 
 | Column | Definition |
 |---|---|
-| `indicator` | `TFR`, `IMR`, `U5MR` (DHS and MICS surveys); `AMR` (adult mortality from household-death records); `CHMORT_CENSUS` (census child mortality) |
+| `indicator` | `TFR`, `IMR`, `U5MR` (DHS and MICS surveys); `CMR` (child mortality at ages 1–4, DHS only); `AMR` (adult mortality from household-death records); `CHMORT_CENSUS` (census child mortality) |
 | `country`, `year` | Country and year of the survey or census |
 | `slope` | Wealth gradient |
 | `ratio` | Low/high ratio: rate in the lowest wealth group divided by the rate in the highest |
-| `q1` … `q5` | Rate in each wealth group, lowest first. Units: births per woman (TFR), deaths per 1,000 live births (IMR, U5MR), deaths per 1,000 (adult mortality: annual rate for `mx`, probability for `45q15`), proportion dead (census child mortality). Blank where a census supports fewer than five groups |
+| `q1` … `q5` | Rate in each wealth group, lowest first. Units: births per woman (TFR), deaths per 1,000 live births (IMR, U5MR), deaths per 1,000 children aged one (CMR), deaths per 1,000 (adult mortality: annual rate for `mx`, probability for `45q15`), proportion dead (census child mortality). Blank where a census supports fewer than five groups |
 
 `gradient_library*.csv` also contain `source` (`DHS` or `MICS`).
 

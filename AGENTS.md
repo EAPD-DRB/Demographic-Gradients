@@ -47,7 +47,8 @@ for adult mortality (where `gradient / 100` is an acceptable approximation),
 5 percent for infant mortality and 1–11 percent for fertility depending on age.
 Because p varies by age, a converted fertility gradient is a vector by age.
 The conversion is verified on the DHS quintile sets for infant mortality,
-under-five mortality and age-specific fertility; see
+child mortality at ages 1–4, under-five mortality and age-specific fertility;
+see
 [docs/methods/ogcore-units.md](docs/methods/ogcore-units.md).
 
 **Fertility by age.** Pass `fert_gradient` as a vector by age: the country's
@@ -73,7 +74,9 @@ band offsets in `data/general_gradient.csv` (`component == "age_offset"`):
 - ages 75 and above, and OG-Core's final age: 0. At the final age the model's
   death probability is 1, so the conversion is undefined there; set it to 0
   before converting.
-- Ages 1–4: not yet ruled (ROADMAP A3); say so, and state what is used.
+- ages 1–4: the country's child-mortality gradient (`indicator == "CMR"` in
+  `gradient_library_latest.csv`, DHS only); where there is none, its U5MR
+  gradient plus the offset in `data/child_mortality_offset.csv`.
 
 Age 0 is `infmort_gradient`. Do not substitute a country's own band gradients
 for the offsets. The country pages show the resulting vector. Details:
@@ -134,7 +137,8 @@ DHS or MICS survey, use the regional median and interquartile range from
 - **Use `IMR`, not `U5MR`, for `infmort_gradient`.** The under-five gradient is
   steeper: across 339 surveys reporting both, by a median 0.14, and by 0.67 in
   Nigeria 2018. Every survey in the library that reports U5MR by quintile also
-  reports IMR; U5MR is published for comparison only.
+  reports IMR; U5MR is published for comparison only. Likewise use `CMR`
+  (ages 1–4), not U5MR, for `mort_gradient` at ages 1–4.
 - **DHS and MICS rows share one basis.** `gradient_library*.csv` holds both,
   marked in `source`. MICS rows are UNICEF survey rates taken from the World
   Bank's compilation (pinned in `mics_quintiles_raw.csv`), mortality only where
@@ -302,6 +306,15 @@ scripts, and the documentation is generated — respect that architecture.
   shows a country's own age shape predicts about as well overall (better
   under 30, worse from 35), while the pooled offsets have no gaps at 45–49.
   Ruled 2026-11-05 — offsets, not per-country age gradients.
+- **Mortality at ages 1–4 uses the country's own CMR gradient** (DHS
+  `CM_ECMR_C_CMR`, 4q1), falling back to U5MR + the pooled offset
+  (`child_mortality_offset.csv`, −0.53). Ruled 2026-11-16 (ROADMAP A3).
+  - (1 − IMR)(1 − CMR) reproduces DHS's U5MR per quintile within rounding.
+  - CMR is steeper than U5MR in 85% of 74 countries.
+  - Backtest over 203 consecutive-survey pairs: own previous CMR 0.43,
+    U5MR + offset 0.38, U5MR alone 0.55. The pooled route predicts the next
+    survey slightly better. Own CMR was ruled as the measured value for the
+    survey in use, as for IMR.
 - **MICS is a second survey source** for TFR, IMR and U5MR (ruled 2026-11-13):
   every MICS survey goes into `gradient_library.csv` with `source`; the latest
   file takes the newest survey of either kind (DHS on a same-year tie). MICS

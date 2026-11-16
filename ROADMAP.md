@@ -36,7 +36,14 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
   own age shape predicts its next survey no better (backtest in the same
   file). Docs: `docs/methods/fertility-by-age.md` (generated, with fig6),
   ANALYSIS.md, country pages, AGENTS.md, README, skill.
-- [R] **A3. Child mortality at ages 1–4.** Both repos use the under-5 tilt there,
+- [x] **A3. Child mortality at ages 1–4** (ruled 2026-11-16: option (a),
+  own CMR gradient, fallback U5MR + pooled offset).
+  - Implemented in `build_gradient_library.py` (indicator `CMR`,
+    `child_mortality_offset.csv`) and on every country page.
+  - A fresh DHS pull (16 November) brought no other new or revised data.
+  - Current backtest: own 0.43, U5MR + offset 0.38, U5MR 0.55 (203 pairs).
+    That is closer to favouring the pooled route than the 11 November figures.
+  - Original text: Both repos use the under-5 tilt there,
   which includes infant deaths. DHS publishes 4q1 by wealth (`CM_ECMR_C_CMR`).
   *Validated 2026-11-11:* (1 − IMR)(1 − CMR) reproduces DHS's U5MR in all
   1,461 quintile cells within 1.4 per 1,000 (rounding). 291 surveys,
@@ -51,14 +58,14 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done · `[R]` needs Marcelo's r
 
 ## B. Rules a calibration needs (method documentation)
 
-- [~] **B0. `mort_gradient` by age** (review 2026-11-16, item A2; partly ruled
+- [x] **B0. `mort_gradient` by age** (review 2026-11-16, item A2; partly ruled
   2026-11-16).
   - Ruled: ages 15–59 take the country's 45q15 gradient plus the pooled band
     offsets (own band gradients not substituted); 5–14 take the 15–29 value;
     75+ and OG-Core's final age take 0 (the conversion is undefined at p = 1).
   - Shown on every country page, the general-gradient page and AGENTS.md.
   - 60–74 ruled 2026-11-16 (B1): taper the 45–59 value linearly to 0 at
-    75. Open: ages 1–4 (A3).
+    75. Ages 1–4 ruled 2026-11-16 (A3): own CMR, else U5MR + offset.
 - [x] **B1. Adult tilt at ages 60–74** (ruled 2026-11-16: taper).
   - Consequence check (`~/.cache/b1-work/b1.py`): OG-Core's own
     `_mean_preserving_logit_rates` on the UN 2025 mortality schedules, five

@@ -491,6 +491,24 @@ def write_general_gradient_page(amr):
     mw_g0, mw_g1 = ((_pg.get(("Malawi", int(mw.year.iloc[0])), np.nan),
                      _pg.get(("Malawi", int(mw.year.iloc[-1])), np.nan))
                     if len(mw) > 1 else (np.nan, np.nan))
+    co = child_offset()
+    child_txt = "" if co is None else f"""
+
+**Ages 1–4.** The DHS publishes child mortality at ages 1–4 (4q1) by wealth
+quintile. Its gradient is steeper than the under-five gradient in
+{co['steeper_share']:.0%} of the {int(co['countries'])} countries with both (latest DHS survey; median
+gradient {fmt(co['median_cmr'])} against {fmt(co['median_u5mr'])}), because under-five
+mortality includes infant deaths, whose gradient is flatter, and infant
+mortality has its own input. Ages 1–4 therefore use the country's own ages 1–4
+gradient; where there is none (MICS-only countries, or a survey with a wealth
+quintile without child deaths), they use the under-five gradient plus the median
+difference, {fmt(co['offset'])} (interquartile range {fmt(co['iqr_lo'])} to {fmt(co['iqr_hi'])};
+[`data/child_mortality_offset.csv`](../../data/child_mortality_offset.csv)).
+Over {int(co['backtest_pairs'])} pairs of consecutive DHS surveys, the later survey's
+ages 1–4 gradient is predicted with a mean absolute error of
+{co['backtest_err_own']:.2f} by the earlier survey's own value,
+{co['backtest_err_pooled']:.2f} by the under-five gradient plus the offset and
+{co['backtest_err_u5mr']:.2f} by the under-five gradient alone."""
     gg_agerows = "\n".join(
         f"| {b.replace('-', '–')} | {fmt(v)} | {'least reliable' if b in ('45-59', '60-74') else ''} |"
         for b, v in gg.get("_ages", []))
@@ -634,7 +652,7 @@ mortality is what matters, the 15–29 and 30–44 offsets are the more reliable
 | Ages | `mort_gradient` |
 |---|---|
 | 0 | none: infant mortality is `infmort_gradient` |
-| 1–4 | awaiting a ruling (child-mortality gradient; ROADMAP A3) |
+| 1–4 | the country's gradient in child mortality at ages 1–4 (DHS); where there is none, its under-five gradient plus the pooled offset below |
 | 5–14 | the 15–29 value |
 | 15–29, 30–44, 45–59 | the country's 45q15 gradient (its own, else the general gradient) plus the band's offset |
 | 60–74 | the 45–59 value at age 60, falling in a straight line to 0 at age 75 |
@@ -643,7 +661,7 @@ mortality is what matters, the 15–29 and 30–44 offsets are the more reliable
 
 The country's own band gradients, where published, are not used in place of
 the offsets, as for fertility by age: they rest on fewer deaths than 45q15, and
-several bands are not published for lack of deaths.
+several bands are not published for lack of deaths.{child_txt}
 
 The 60–74 offset in the table above is not used for OG-Core. Applied to a
 country with a weak 45q15 gradient, it reverses the sign at older ages (poorer
@@ -991,7 +1009,8 @@ Rates are per 1,000.
 
 IND_NAME = {"TFR": "Total fertility rate (births per woman)",
             "IMR": "Infant mortality rate (per 1,000 live births)",
-            "U5MR": "Under-five mortality rate (per 1,000 live births)"}
+            "U5MR": "Under-five mortality rate (per 1,000 live births)",
+            "CMR": "Child mortality, ages 1–4 (per 1,000 children aged 1)"}
 STALE_YEAR = 2005  # surveys older than this get an explicit warning
 REGION_ANCHOR = "regional-medians"  # ANALYSIS.md heading that carries the regional tables
 
@@ -1095,19 +1114,40 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
                     "| " + " | ".join(f"{x}–{y}" for x, y in zip(off.age_lo, off.age_hi))
                     + " |\n|" + "---|" * len(off) + "\n"
                     "| " + " | ".join(fmt(base + o) for o in off.offset) + " |\n")
-    out += mortality_by_age(own, gg, c)
+    out += mortality_by_age(own, gg, c, latest)
     if notes:
         out += "\n" + "\n".join(f"*Note:* {n}" for n in notes) + "\n"
     return out
 
 
-def mortality_by_age(own, gg, c):
+def child_offset():
+    """The pooled CMR - U5MR offset (ages 1-4 fallback), read from data/."""
+    p = DATA / "child_mortality_offset.csv"
+    return pd.read_csv(p).iloc[0] if p.exists() else None
+
+
+def ages_1_4(c, latest):
+    """`mort_gradient` at ages 1-4: own CMR gradient, else U5MR + pooled offset."""
+    cmr = latest[(latest["country"] == c) & (latest["indicator"] == "CMR")]
+    if len(cmr):
+        return (f"{fmt(float(cmr['slope'].iloc[0]))} ({cmr['source'].iloc[0]} "
+                f"{int(cmr['year'].iloc[0])})")
+    u5 = latest[(latest["country"] == c) & (latest["indicator"] == "U5MR")]
+    co = child_offset()
+    if len(u5) and co is not None:
+        return f"{fmt(float(u5['slope'].iloc[0]) + float(co['offset']))} (under-five + offset)"
+    return "—"
+
+
+def mortality_by_age(own, gg, c, latest):
     """`mort_gradient` by age (ruled 2026-11-16, review item A2).
 
     15-59: the country's 45q15 gradient (its own, else the general gradient)
     plus the pooled offset of each band; 5-14: the 15-29 value; 60-74: the
     45-59 value tapered linearly to 0 at age 75 (ruled 2026-11-16, B1); 75 and
-    over, and OG-Core's final age: 0. Ages 1-4 await a ruling (ROADMAP A3).
+    over, and OG-Core's final age: 0; 1-4: the country's own child-mortality
+    (CMR) gradient, else its U5MR gradient plus the pooled offset (ruled
+    2026-11-16, A3).
     """
     offs = dict(gg.get("_ages", []))
     if not all(k in offs for k in ("15-29", "30-44", "45-59")):
@@ -1130,11 +1170,12 @@ def mortality_by_age(own, gg, c):
             "the 45–59 value to 0 at age 75; ages 75 and above, and OG-Core's final age, "
             "use 0):\n\n"
             "| 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |\n|---|---|---|---|---|---|---|\n"
-            f"| pending | {cell['15-29']} | {cell['15-29']} | {cell['30-44']} | {cell['45-59']} "
-            f"| {cell['60-74']} | 0 |\n\n"
-            "Ages 1–4 await a decision on the method (the child-mortality gradient at ages "
-            "1–4; [ROADMAP](../../ROADMAP.md) item A3). Infant mortality (age 0) is "
-            "`infmort_gradient`, above.\n")
+            f"| {ages_1_4(c, latest)} | {cell['15-29']} | {cell['15-29']} | {cell['30-44']} "
+            f"| {cell['45-59']} | {cell['60-74']} | 0 |\n\n"
+            "Ages 1–4 use the country's own gradient in child mortality at ages 1–4 (DHS), "
+            "or, where there is none, its under-five gradient plus a pooled offset "
+            "([details](../methods/general-gradient.md#age-pattern)). Infant mortality "
+            "(age 0) is `infmort_gradient`, above.\n")
 
 
 def deaths_15_60(g):
@@ -1159,7 +1200,7 @@ def country_dhs_block(latest, country):
            + "\n\n"
            "| Indicator | Survey | Lowest | Second | Middle | Fourth | Highest | Low/high ratio "
            "| Gradient |\n|---|---|---|---|---|---|---|---|---|\n")
-    order = {"TFR": 0, "IMR": 1, "U5MR": 2}
+    order = {"TFR": 0, "IMR": 1, "U5MR": 2, "CMR": 3}
     for _, r in rows.sort_values("indicator", key=lambda s: s.map(order)).iterrows():
         qs = " | ".join("" if pd.isna(r[q]) else f"{r[q]:g}" for q in ["q1", "q2", "q3", "q4", "q5"])
         out += (f"| {IND_NAME[r['indicator']]} | {r['source']} {int(r['year'])} | {qs} | {r['ratio']:.2f} "

@@ -13,7 +13,8 @@ the rate level OG-Core applies the slope to, so this check runs every measured
 quintile set through OG-Core's own functions, at OG-Core's own scaling:
 
     infant mortality   probability of dying per birth   (IMR / 1000)
-    ages 0-4           annual hazard  -ln(1 - U5MR/1000) / 5
+    under five         annual hazard  -ln(1 - U5MR/1000) / 5
+    ages 1-4           annual hazard  -ln(1 - CMR/1000) / 4
     fertility by age   births per person per year       (ASFR / 2000, as
                        OG-Core's get_fert does)
 
@@ -99,7 +100,9 @@ def quintile_sets():
         if ind == "IMR":
             yield "Infant mortality", v / 1000
         elif ind == "U5MR":
-            yield "Mortality, ages 0-4", -np.log(1 - v / 1000) / 5
+            yield "Under-five mortality", -np.log(1 - v / 1000) / 5
+        elif ind == "CMR":
+            yield "Child mortality, ages 1-4", -np.log(1 - v / 1000) / 4
     for age in ASFR_AGES:
         recs = pd.DataFrame([r for r in dhs_pages(f"FE_FRTR_W_A{age}")
                              if r["CharacteristicCategory"] == "Wealth quintile"])
@@ -130,7 +133,7 @@ def main():
                          units=100 * (r_plain / r_conv - 1),
                          residual=100 * (r_conv / r_opt - 1)))
     t = pd.DataFrame(rows)
-    order = (["Mortality, ages 0-4", "Infant mortality"]
+    order = (["Infant mortality", "Child mortality, ages 1-4", "Under-five mortality"]
              + [f"Fertility, ages {a}-{int(a) + 4}" for a in ASFR_AGES])
     out = (t.groupby("margin")
            .agg(quintile_sets=("rate", "size"),
