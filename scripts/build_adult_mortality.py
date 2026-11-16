@@ -75,7 +75,7 @@ BANDS = [(15, 29), (30, 44), (45, 59), (60, 74)]
 MIN_BAND_DEATHS = 900  # publish a band or 45q15 gradient only from at least this many records
 # column order of the published file, shared with build_adult_mortality_brazil.py
 COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "se", "ratio",
-           "q1", "q2", "q3", "q4", "q5", "n_deaths", "ranking", "source", "groups", "linked_share"]
+           "q1", "q2", "q3", "q4", "q5", "share1", "share2", "share3", "share4", "share5", "n_deaths", "ranking", "source", "groups", "linked_share"]
 MIN_GROUPS = 3  # a gradient needs at least three wealth groups (ruled 2026-11-11)
 
 # Harmonized IPUMS-I codes meaning "owns it"
@@ -517,6 +517,8 @@ def _row(cfg, sex, measure, a0, a1, vals, mids, shares, n, G, linked_share, src,
     scale = 1000
     for i in range(5):
         r[f"q{i+1}"] = round(float(scale * vals[i]), 3) if i < G else ""
+    for i in range(5):
+        r[f"share{i+1}"] = round(float(shares[i]), 4) if i < G else ""
     r.update(n_deaths=n, ranking="asset_index", groups=G,
              linked_share=round(linked_share, 3), source=src)
     return r

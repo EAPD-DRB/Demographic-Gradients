@@ -24,7 +24,7 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 
 | 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |
 |---|---|---|---|---|---|---|
-| −1.04 (DHS 2016) | −0.20 | −0.20 | 0.03 | 0.38 | 0.38 at 60, falling to 0 at 75 | 0 |
+| −1.04 (DHS 2016) | −0.23 | −0.23 | −0.00 | 0.38 | 0.38 at 60, falling to 0 at 75 | 0 |
 
 Ages 1–4 use the country's own gradient in child mortality at ages 1–4 (DHS), or, where there is none, its under-five gradient plus a pooled offset ([details](../methods/general-gradient.md#age-pattern)). Infant mortality (age 0) is `infmort_gradient`, above.
 
@@ -47,6 +47,6 @@ Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_m
 
 | Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| Census 2002 | 0.18 | −0.20 | 0.30 | 0.25 | 0.39 | 4 | 10,470 |
+| Census 2002 | 0.18 | −0.24 | 0.27 | 0.26 | 0.52 | 5 | 10,470 |
 
 Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Uganda Bureau of Statistics.

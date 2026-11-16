@@ -56,7 +56,7 @@ OUT = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "data",
                    "adult_mortality_gradients.csv")
 # column order of the published file, as in build_adult_mortality.py
 COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "se", "ratio",
-           "q1", "q2", "q3", "q4", "q5", "n_deaths", "ranking", "source", "groups", "linked_share"]
+           "q1", "q2", "q3", "q4", "q5", "share1", "share2", "share3", "share4", "share5", "n_deaths", "ranking", "source", "groups", "linked_share"]
 SRC = "IBGE Census 2010 sample microdata, household deaths module"
 
 
@@ -249,6 +249,8 @@ def row(sex, measure, a0, a1, vals, mids, shares, n, G, se, linked_share):
              ratio=round(float(vals[0] / vals[-1]), 3))
     for i in range(5):
         r[f"q{i + 1}"] = round(float(1000 * vals[i]), 3) if i < G else ""
+    for i in range(5):
+        r[f"share{i + 1}"] = round(float(shares[i]), 4) if i < G else ""
     r.update(n_deaths=int(n), ranking="asset_index", source=SRC, groups=G,
              linked_share=round(linked_share, 3))
     return r

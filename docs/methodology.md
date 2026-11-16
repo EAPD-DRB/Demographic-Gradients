@@ -60,11 +60,11 @@ Census estimates use an index built the same way (Filmer and Pritchett 2001):
 the first principal component of household indicators, one for each durable
 good or amenity recorded in the census (for example electricity, a
 refrigerator or a television) and one for each type of toilet. The assets
-available differ by census. The index is cut at the values closest to the
-20th, 40th, 60th and 80th percentiles of its distribution over the household
-population. Where many households have the same score, cut points can
-coincide, and are then dropped; a cut at the lowest score, which would leave
-the lowest group empty, is also dropped. A group holding
+available differ by census. Many households share the same score, so groups
+can only be separated between distinct scores; the index is cut at the
+boundaries whose population shares are closest to the 20th, 40th, 60th and
+80th percentiles of the household population. Where two percentiles fall at
+the same boundary, one cut is used. A group holding
 less than 10 percent of the population is merged with its smaller neighbour.
 A census may therefore yield three, four or five groups; one that yields fewer
 than three is not used. Because assets are measured after the death, ranking

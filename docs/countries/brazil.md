@@ -8,7 +8,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
 | `fert_gradient` | −1.21, by age as below | DHS 1996, TFR, plus [age offsets](../methods/fertility-by-age.md) |
-| `infmort_gradient` | −0.96 | census 2010, proportion of children ever born who have died (mothers 25–29). This measure resembles under-five mortality and probably overstates the infant gradient; the alternative is the DHS 1996 infant gradient (−1.37) |
+| `infmort_gradient` | −0.93 | census 2010, proportion of children ever born who have died (mothers 25–29). This measure resembles under-five mortality and probably overstates the infant gradient; the alternative is the DHS 1996 infant gradient (−1.37) |
 | `mort_gradient` | −1.07 (standard error 0.02) | census 2010, 45q15 |
 | `imm_pctiles` | not provided | — |
 
@@ -24,7 +24,7 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 
 | 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |
 |---|---|---|---|---|---|---|
-| −2.03 (DHS 1996) | −1.46 | −1.46 | −1.23 | −0.88 | −0.88 at 60, falling to 0 at 75 | 0 |
+| −2.03 (DHS 1996) | −1.48 | −1.48 | −1.25 | −0.87 | −0.87 at 60, falling to 0 at 75 | 0 |
 
 Ages 1–4 use the country's own gradient in child mortality at ages 1–4 (DHS), or, where there is none, its under-five gradient plus a pooled offset ([details](../methods/general-gradient.md#age-pattern)). Infant mortality (age 0) is `infmort_gradient`, above.
 
@@ -51,10 +51,10 @@ Proportion of children ever born who have died, mothers aged 25–29 ([`census_c
 |---|---|---|---|---|
 | 1991 | common | 4 | 4.16 | −1.81 |
 | 1991 | full | 4 | 4.16 | −1.81 |
-| 2000 | common | 4 | 2.85 | −1.35 |
+| 2000 | common | 3 | 2.64 | −1.35 |
 | 2000 | full | 4 | 3.01 | −1.40 |
 | 2010 | common | 3 | 1.73 | −0.80 |
-| 2010 | full | 5 | 2.26 | −0.96 |
+| 2010 | full | 5 | 2.11 | −0.93 |
 
 Comparison with the DHS: the 2000 census gradient (−1.40) is close to the under-five mortality gradient in the Brazil 1996 DHS (−1.46).
 

@@ -195,6 +195,8 @@ def estimate_sample(sample, cfg, extracts_dir, common=None):
                      ratio=round(float(v[0] / v[-1]), 3))
             for i in range(5):
                 r[f"q{i + 1}"] = round(float(v[i]), 5) if i < G else ""
+            for i in range(5):
+                r[f"share{i + 1}"] = round(float(shares[i]), 4) if i < G else ""
             r.update(n_mothers=n_moth, ranking="asset_index", groups=G,
                      asset_vars=" ".join(avail), source=src)
             chk = DHS_CHECK.get(sample)

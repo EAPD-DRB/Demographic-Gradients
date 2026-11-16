@@ -69,7 +69,7 @@ HK = K + ["H_NROHOG"]
 OUT = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "data",
                    "adult_mortality_gradients.csv")
 COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "se", "ratio",
-           "q1", "q2", "q3", "q4", "q5", "n_deaths", "ranking", "source", "groups", "linked_share"]
+           "q1", "q2", "q3", "q4", "q5", "share1", "share2", "share3", "share4", "share5", "n_deaths", "ranking", "source", "groups", "linked_share"]
 SRC = ("DANE, Censo Nacional de Población y Vivienda 2018, microdata "
        "(household deaths in 2017)")
 
@@ -254,6 +254,8 @@ def row(sex, measure, a0, a1, vals, mids, shares, n, G, linked_share, se):
              ratio=round(float(vals[0] / vals[-1]), 3))
     for i in range(5):
         r[f"q{i + 1}"] = round(float(1000 * vals[i]), 3) if i < G else ""
+    for i in range(5):
+        r[f"share{i + 1}"] = round(float(shares[i]), 4) if i < G else ""
     r.update(n_deaths=int(n), ranking="asset_index", source=SRC, groups=G,
              linked_share=round(linked_share, 3))
     return r

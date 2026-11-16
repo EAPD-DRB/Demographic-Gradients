@@ -414,6 +414,12 @@ these are done, since they may change the picture for Asia.
   −1.16 (PI −1.87 to −0.45); age offsets 15–29 −0.37, 30–44 −0.15, 45–59
   +0.19, 60–74 +0.43. Every repo that hard-codes the rule or the offsets must
   update.
+- After review items A2–A5 and 6 (2026-11-16): Malawi 1998 withdrawn, cuts
+  placed at the nearest boundary between tied scores. Rule 2.975 − 0.432 ln
+  income; Philippines −1.02 (PI −1.73 to −0.32), Indonesia −1.17 (PI −1.89
+  to −0.44); age offsets 15–29 −0.41, 30–44 −0.18, 45–59 +0.21 (60–74 not
+  used: taper). `mort_gradient` by age now covers 1–4 (own CMR) through 75+.
+  Downstream repos need the whole age recipe, not just the coefficients.
 - OG-ETH, OG-PHL: still pass plain `tilt / 100` and one TFR tilt at every
   age; switch to the A1 conversion and the A2 age offsets, then align with
   the C1 recipe once written.

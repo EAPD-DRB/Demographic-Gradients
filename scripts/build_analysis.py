@@ -894,7 +894,11 @@ prediction errors:
 {btrows}
 | **All, 15–44** | **{e['flat']:.2f}** | **{e['pooled']:.2f}** | **{e['own']:.2f}** |
 
-Ages 45–49 are excluded because too few surveys can be paired. The pooled
+Ages 45–49 are excluded because too few surveys can be paired. The 45–49
+offset itself is likely biased toward zero: about half the latest surveys have
+a wealth quintile with no births at 45–49 and are left out, and those are
+mostly the surveys with the steepest gradients. Births at these ages are few,
+so the effect on a fertility schedule is small. The pooled
 offsets reduce the error of a single TFR gradient by
 {100 * (1 - e['pooled'] / e['flat']):.0f} percent. Country-specific patterns perform
 about as well overall: better below age 30 and worse from age 35. The library

@@ -92,7 +92,7 @@ and the survey or census year.
 
 `data/general_gradient.csv` provides a fallback for any country:
 
-    gradient(45q15) = 2.959 − 0.431 × ln(GDP per capita, PPP, constant 2021 international $)
+    gradient(45q15) = 2.975 − 0.432 × ln(GDP per capita, PPP, constant 2021 international $)
 
 Income is the World Bank's `NY.GDP.PCAP.PP.KD`: it is comparable across
 countries and years, so the rule is applied to the same series for any year
@@ -101,8 +101,8 @@ before 2026-11-13).
 
 It is fitted on 19 observations: 15 censuses and four household surveys with a
 household-deaths module (India's NFHS-2, -4, -5 and Bangladesh's BMMS 2016),
-with equal weight. The slope has a standard error of 0.092 (95% CI −0.625 to
-−0.237), but a single country can lie well off the line: the 95% prediction
+with equal weight. The slope has a standard error of 0.091 (95% CI −0.624 to
+−0.241), but a single country can lie well off the line: the 95% prediction
 interval for a country without its own estimate is about ±0.7 (residual
 standard error 0.32).
 Report the prediction interval with any value taken from the rule; the file
@@ -110,24 +110,24 @@ holds the terms needed to compute it at any income (formula in
 [docs/methods/general-gradient.md](docs/methods/general-gradient.md)).
 
 It was selected by leave-one-country-out prediction error against two
-alternatives: mean absolute error 0.270, compared with 0.393 for a single pooled
-value and 0.422 for regional medians, scored on the same 19 observations. The
+alternatives: mean absolute error 0.272, compared with 0.403 for a single pooled
+value and 0.426 for regional medians, scored on the same 19 observations. The
 error is 0.29 below $3,000 per capita (PPP) and 0.26 above. The largest misses
-are South Africa 2007 (−1.77 measured against −0.99 predicted), Bangladesh 2016
+are South Africa 2007 (−1.75 measured against −0.99 predicted), Bangladesh 2016
 (−0.07 against −0.81), Malawi 2008 (−0.60 against −0.07) and Uganda 2002
 (+0.18 against −0.28). The same file contains age offsets and a pooled median for use
 when no income figure is available.
 
-Values at 2024 GDP per capita (PPP): Philippines −1.03 (95% prediction interval
-−1.74 to −0.31; $10,378), Indonesia −1.17 (−1.90 to −0.43; $14,471). Countries with
-their own estimate (for example South Africa 2007, −1.77; Ethiopia 2007, +0.01;
+Values at 2024 GDP per capita (PPP): Philippines −1.02 (95% prediction interval
+−1.73 to −0.32; $10,378), Indonesia −1.17 (−1.89 to −0.44; $14,471). Countries with
+their own estimate (for example South Africa 2007, −1.75; Ethiopia 2007, +0.07;
 India 2020, −0.79; Colombia 2018, −1.25; Bangladesh 2016, −0.07; Cambodia 2008,
-−0.76) use that
+−0.79) use that
 estimate, not the rule.
 
 **There is no income-based fallback for fertility or infant mortality.** The
 same comparison was run for them: an income rule improved on a single pooled
-value by 0.4 percent for fertility, against 31 percent for adult mortality,
+value by 0.4 percent for fertility, against 33 percent for adult mortality,
 because these gradients vary little with national income. For a country with no
 DHS or MICS survey, use the regional median and interquartile range from
 [ANALYSIS.md](ANALYSIS.md#regional-medians) and report the value as borrowed.
@@ -160,7 +160,7 @@ DHS or MICS survey, use the regional median and interquartile range from
   therefore not used for OG-Core: ages 60–74 taper the 45–59 value to 0 by
   age 75 (see Mortality by age). The 45–59 offset is used, with this caveat.
 - **Brazil's DHS survey is from 1996.** Census estimates show its
-  child-mortality gradient falling from −1.81 (1991) to −0.96 (2010). The census
+  child-mortality gradient falling from −1.81 (1991) to −0.93 (2010). The census
   measure resembles under-five mortality and probably overstates the infant
   gradient; the alternative is the 1996 DHS infant gradient (−1.37). State
   which is used and why.
@@ -187,10 +187,10 @@ documentation.
 ## Long-run projections
 
 Across countries the adult-mortality gradient is more negative at higher
-national income (r = −0.75); a doubling of income per capita corresponds to
+national income (r = −0.76); a doubling of income per capita corresponds to
 about −0.30 in the gradient. Within countries the evidence is limited and
 mixed: South Africa's gradient steepened between its 2001 and 2007 censuses
-(−1.16 to −1.77) as income rose, but India's was −0.83, −0.81 and −0.79 in
+(−1.16 to −1.75) as income rose, but India's was −0.83, −0.81 and −0.79 in
 1999, 2015 and 2020 while GDP
 per capita (PPP) rose from about $3,000 to $7,200. A model projecting several decades ahead
 can hold the gradient fixed or let it follow the income relationship; report
@@ -285,8 +285,11 @@ scripts, and the documentation is generated — respect that architecture.
   2001; DHS; Lovaton Dávila et al. 2022 for IPUMS-I) of household 0/1
   indicators, one per asset and one per TOILET category, household-weighted
   correlation matrix, oriented to rise with assets owned (`scripts/asset_index.py`,
-  shared by all four census scripts). Groups are cut at the person-weighted
-  quintiles of all persons in the asset universe; groups under 10% are merged
+  shared by all four census scripts). Groups are cut at the boundary between
+  distinct scores nearest each person-weighted quintile of all persons in the
+  asset universe (ruled 2026-11-16, replacing the score at the quintile,
+  which could land at the far edge of a tie block); `share1`–`share5` publish
+  each group's share; groups under 10% are merged
   into the smaller neighbour; `MIN_GROUPS = 3`. Ruled 2026-11-11, replacing an
   additive count that had mis-coded INTERNET/WASHER (scored on "no"), TV (only
   code 20) and latrines (scored as flush). The IPUMS yes-codes are documented
@@ -388,8 +391,8 @@ scripts, and the documentation is generated — respect that architecture.
   biases steep by ~0.3) and mz2007a (0.89/1.09/0.97/1.05 - biases flat by
   ~0.15). za2007a has MORTNUM and passes; za2001a and ci1998a have none.
 - Gradient steepness tracks national income, not region:
-  `gradient ~ 2.96 - 0.431*ln(GDP per capita, PPP, constant 2021 intl $)`,
-  r = -0.75 over 19 observations (15 censuses + India NFHS-2/-4/-5 +
+  `gradient ~ 2.97 - 0.432*ln(GDP per capita, PPP, constant 2021 intl $)`,
+  r = -0.76 over 19 observations (15 censuses + India NFHS-2/-4/-5 +
   Bangladesh BMMS 2016; survey rows enter the rule on the same footing as
   censuses, ruled 2026-11-12; Colombia 2018, Bangladesh 2016 and Cambodia
   2008 added and Malawi 1998 withdrawn 2026-11-16).
@@ -400,15 +403,15 @@ scripts, and the documentation is generated — respect that architecture.
   Same fit quality (LOCO MAE 0.175 vs 0.176, on the 17 observations of the
   time). Constant-price GNI (US$ or PPP) was rejected: WDI lacked it for 7 of
   those 17. Inference is
-  classical OLS with n - 2 df (ruled 2026-11-12): slope SE 0.092,
-  clustered-by-country SE 0.099; publish the 95% prediction interval (~±0.7)
+  classical OLS with n - 2 df (ruled 2026-11-12): slope SE 0.091,
+  clustered-by-country SE 0.098; publish the 95% prediction interval (~±0.7)
   with any value read off the rule. Income is pinned in
   `data/income_census_years.csv` (WDI revises history; each ICP round revises
   PPPs), with Atlas GNI kept for reference; refresh only with
   `--refresh-income`, deliberately. On the earlier index, excluding South Africa, the
   gradient-vs-HIV-prevalence correlation was +0.00; not re-run since.
   Borrowing tables should key on income level. Within-country change is
-  NOT established: South Africa steepened 2001->2007 (-1.16 -> -1.77), India stayed flat
+  NOT established: South Africa steepened 2001->2007 (-1.16 -> -1.75), India stayed flat
   (-0.83/-0.81/-0.79, 1999-2020, GDP pc PPP $2,954->$7,187). Present "fixed" and
   "follows the income rule" as a range for long OG transitions.
 - **DHS household-deaths modules** (`scripts/build_adult_mortality_survey.py`,
@@ -435,8 +438,9 @@ scripts, and the documentation is generated — respect that architecture.
   −0.12; rural and urban both near zero; the gradient flattens with time since
   death (−0.16/+0.02/+0.14 by year back), within sampling error.
 - The gradient fades with age in every census and survey measured at 15-29
-  and an older band (14/14, mean drift +0.92 from 15-29 to the oldest band), and in 4
-  censuses, all with GDP pc PPP <= $4,446 (Ethiopia, Uganda, Zambia, Sudan), it becomes
+  and an older band (14/14, mean drift +0.94 from 15-29 to the oldest band), and in 5
+  censuses, all with GDP pc PPP <= $5,093 (Ethiopia, Uganda, Zambia, Sudan,
+  Côte d'Ivoire), it becomes
   positive at older ages -
   measured mortality is higher in wealthier households at 45+. Real
   (low income compresses survival differences) and artefactual (frail elders
@@ -471,13 +475,16 @@ scripts, and the documentation is generated — respect that architecture.
   long-form 20% subsample only (its weights already inflate to national
   totals — do not re-scale). NIU households otherwise sort into the bottom
   group as false paupers.
-- Quantile cuts landing on the distribution's minimum create a structurally
-  empty first group and silently zero the whole sample (et2007a: 46% of
-  persons hold no assets). Drop a cut at the minimum; KEEP a cut at the
-  maximum — households equal to a cut go to the group above, so it isolates
-  a real top group (dropping it, as the code did until 2026-11-13, merged
-  Colombia 2018 to 2 groups and changed Malawi 1998's grouping; Malawi 1998
-  is no longer published). A census
+- Cut placement history, so it is not reintroduced:
+  - A cut at the distribution's minimum creates a structurally empty first
+    group and silently zeroes the sample (et2007a: 46% of persons hold no
+    assets).
+  - Dropping a cut at the maximum merged a real top group (until
+    2026-11-13; Colombia 2018 fell to 2 groups).
+  - Taking the score at the quintile could land at the far edge of a tie
+    block (until 2026-11-16; Sierra Leone had 3 groups, now 5).
+  - The current rule cuts between distinct scores, at the boundary nearest
+    each quintile, so neither failure can occur. A census
   supports however many groups it supports (Ethiopia supports 3; Rwanda
   2002 only 2, so it is not published).
 - Supplement serial schemes are not always the extract's: sv2007a appends a

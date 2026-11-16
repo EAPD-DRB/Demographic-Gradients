@@ -96,15 +96,17 @@ MIN_GROUP_SHARE = 0.10  # half a quintile; smaller groups are merged into a neig
 def wealth_groups(score, weight):
     """Wealth groups at the population quintiles of the score.
 
-    Cut points are placed at the score values closest to the 20th, 40th, 60th
-    and 80th percentiles of the person-weighted distribution. A household whose
-    score equals a cut belongs to the group above it. Coinciding cuts are
-    dropped, and so is a cut at the minimum score, which would leave the lowest
-    group empty; a cut at the maximum is kept, since it separates the
-    households with the highest score into a group of their own (ruled
-    2026-11-13; dropping it had merged a real top group in Colombia 2018 and
-    Malawi 1998). Where many households
-    share a score, a group can still be very small; any group holding less than
+    Many households share a score, so a group boundary can only fall between
+    two distinct score values. For each of the 20th, 40th, 60th and 80th
+    percentiles of the person-weighted distribution, the boundary is the one
+    between distinct scores whose population share below it is closest to the
+    percentile (ruled 2026-11-16, review item 6; it replaced taking the score
+    at the percentile, which could put the boundary at the far edge of a block
+    of tied scores). A household belongs to the group above any boundary its
+    score is above; the cut is the first score above the boundary, so a
+    household whose score equals a cut belongs to the group above it.
+    Coinciding boundaries are dropped. Where many households share a score, a
+    group can still be very small; any group holding less than
     MIN_GROUP_SHARE of the population is merged into its smaller neighbour,
     repeatedly, so every group is large enough to give a stable rate.
 
@@ -113,9 +115,11 @@ def wealth_groups(score, weight):
     """
     d = pd.DataFrame({"s": np.asarray(score, dtype=float),
                       "w": np.asarray(weight, dtype=float)}).sort_values("s")
-    cum = d["w"].cumsum() / d["w"].sum()
-    cuts = sorted({float(d["s"].iloc[int((cum - q).abs().values.argmin())]) for q in QUANTILES})
-    cuts = [c for c in cuts if c > d["s"].min()]
+    blocks = d.groupby("s")["w"].sum().sort_index()       # one entry per distinct score
+    below = (blocks.cumsum() / blocks.sum()).values[:-1]   # share below each boundary
+    above = blocks.index.values[1:]                       # first score above each boundary
+    cuts = (sorted({float(above[int(np.abs(below - q).argmin())]) for q in QUANTILES})
+            if len(above) else [])
 
     def shares(cuts):
         g = np.searchsorted(cuts, d["s"].values, side="right")

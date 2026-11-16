@@ -79,7 +79,7 @@ ROSTER_MAX = 99  # roster slots probed: hv102_01 ... (only those present are rea
 BOOT_REPS, BOOT_SEED = 200, 1
 # column order of the published file, as in build_adult_mortality.py
 COLUMNS = ["indicator", "country", "year", "sex", "measure", "age_lo", "age_hi", "slope", "se", "ratio",
-           "q1", "q2", "q3", "q4", "q5", "n_deaths", "ranking", "source", "groups", "linked_share"]
+           "q1", "q2", "q3", "q4", "q5", "share1", "share2", "share3", "share4", "share5", "n_deaths", "ranking", "source", "groups", "linked_share"]
 SRC_PREFIX = "The DHS Program"
 
 # Per-survey layout of the household-deaths module; `{i}` is the death slot.
@@ -447,6 +447,8 @@ def row(cfg, sex, measure, a0, a1, vals, n, src, se):
              ratio=round(float(vals[0] / vals[-1]), 3))
     for i in range(5):
         r[f"q{i+1}"] = round(float(1000 * vals[i]), 3)
+    for i in range(5):
+        r[f"share{i+1}"] = 0.2  # quintiles of the de jure population
     r.update(n_deaths=int(n), ranking=cfg.get("ranking", "dhs_wealth_index"), source=src,
              groups=5, linked_share=1.0)
     return r

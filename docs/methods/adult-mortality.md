@@ -68,18 +68,25 @@ characteristics, divided into quintiles of the household population.
 
 ## Estimation
 
-In censuses, wealth groups are formed by cutting the index at the values closest to the
-20th, 40th, 60th and 80th percentiles of its distribution over the household
-population; a household whose score equals a cut point belongs to the group
-above it. Where many households share a score, cut points can coincide, and
-are then dropped; so is a cut at the minimum score, which would leave the
-lowest group empty. A cut at the maximum is kept: it separates the households
-with the highest score into a group of their own. A group holding less than 10
-percent of the population is merged with its smaller neighbour. The number of
+In censuses, wealth groups are formed by cutting the index into quintiles of
+the household population. Many households share the same score, so a group
+boundary can only fall between two distinct scores: for each of the 20th,
+40th, 60th and 80th percentiles, the boundary used is the one whose population
+share below it is closest to the percentile. Where two percentiles fall at the
+same boundary, one cut is used. A group holding less than 10 percent of the
+population is merged with its smaller neighbour. Each group's population share
+is published (`share1`–`share5`), so the gradient can be recomputed from the
+data file: each group is placed at the midpoint of its share. The number of
 groups therefore depends on the asset distribution (`groups` column): fewer
 than five where many households share the same index value, as where most own
 none of the recorded assets. A census yielding fewer than three groups is not
 published. Survey estimates use the five DHS wealth quintiles.
+
+The 45q15 gradient is computed from the death rates of three 15-year age
+bands. Computing it instead from nine 5-year bands, which would remove any
+difference in age composition within a band between wealth groups, changes the
+census gradients by less than the standard error in all but one case and in no
+consistent direction.
 
 For each group, the age-specific death rate (`mx`) for 15–29, 30–44, 45–59 and
 60–74 is the weighted number of deaths at those ages divided by the weighted

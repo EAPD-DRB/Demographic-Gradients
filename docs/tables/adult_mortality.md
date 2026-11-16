@@ -61,132 +61,132 @@ Rates are per 1,000.
 | Country | Year | Source | Sex | Ages | Measure | Gradient | Standard error | Low/high ratio | Deaths | Linked |
 |---|---|---|---|---|---|---|---|---|---|---|
 | South Africa | 2001 | census | all | 15–29 | mx | −1.04 | 0.05 | 2.32 | 5,939 | 100% |
-| South Africa | 2001 | census | all | 30–44 | mx | −1.45 | 0.04 | 3.35 | 8,504 | 100% |
+| South Africa | 2001 | census | all | 30–44 | mx | −1.46 | 0.04 | 3.35 | 8,504 | 100% |
 | South Africa | 2001 | census | all | 45–59 | mx | −0.98 | 0.05 | 2.29 | 5,750 | 100% |
-| South Africa | 2001 | census | all | 60–74 | mx | −0.34 | 0.05 | 1.40 | 5,489 | 100% |
+| South Africa | 2001 | census | all | 60–74 | mx | −0.33 | 0.05 | 1.40 | 5,489 | 100% |
 | South Africa | 2001 | census | all | 15–59 | 45q15 | −1.16 | 0.03 | 2.20 | 20,193 | 100% |
-| South Africa | 2001 | census | male | 15–29 | mx | −0.88 | 0.07 | 2.03 | 2,835 | 100% |
-| South Africa | 2001 | census | male | 30–44 | mx | −1.42 | 0.06 | 3.36 | 4,564 | 100% |
-| South Africa | 2001 | census | male | 45–59 | mx | −0.95 | 0.06 | 2.28 | 3,558 | 100% |
+| South Africa | 2001 | census | male | 15–29 | mx | −0.89 | 0.07 | 2.03 | 2,835 | 100% |
+| South Africa | 2001 | census | male | 30–44 | mx | −1.43 | 0.06 | 3.36 | 4,564 | 100% |
+| South Africa | 2001 | census | male | 45–59 | mx | −0.96 | 0.06 | 2.28 | 3,558 | 100% |
 | South Africa | 2001 | census | male | 60–74 | mx | −0.52 | 0.06 | 1.61 | 2,983 | 100% |
-| South Africa | 2001 | census | male | 15–59 | 45q15 | −1.11 | 0.04 | 2.06 | 10,957 | 100% |
-| South Africa | 2001 | census | female | 15–29 | mx | −1.21 | 0.08 | 2.69 | 3,104 | 100% |
-| South Africa | 2001 | census | female | 30–44 | mx | −1.49 | 0.07 | 3.40 | 3,940 | 100% |
+| South Africa | 2001 | census | male | 15–59 | 45q15 | −1.12 | 0.04 | 2.06 | 10,957 | 100% |
+| South Africa | 2001 | census | female | 15–29 | mx | −1.20 | 0.08 | 2.69 | 3,104 | 100% |
+| South Africa | 2001 | census | female | 30–44 | mx | −1.51 | 0.07 | 3.40 | 3,940 | 100% |
 | South Africa | 2001 | census | female | 45–59 | mx | −1.05 | 0.08 | 2.40 | 2,192 | 100% |
-| South Africa | 2001 | census | female | 60–74 | mx | −0.26 | 0.07 | 1.31 | 2,506 | 100% |
-| South Africa | 2001 | census | female | 15–59 | 45q15 | −1.25 | 0.04 | 2.41 | 9,236 | 100% |
-| South Africa | 2007 | census | all | 15–29 | mx | −1.63 | 0.10 | 3.89 | 2,421 | 100% |
-| South Africa | 2007 | census | all | 30–44 | mx | −2.00 | 0.07 | 5.17 | 4,353 | 100% |
-| South Africa | 2007 | census | all | 45–59 | mx | −1.58 | 0.07 | 3.76 | 2,693 | 100% |
-| South Africa | 2007 | census | all | 60–74 | mx | −0.69 | 0.08 | 1.95 | 1,963 | 100% |
-| South Africa | 2007 | census | all | 15–59 | 45q15 | −1.77 | 0.05 | 2.82 | 9,467 | 100% |
-| South Africa | 2007 | census | male | 15–29 | mx | −1.36 | 0.13 | 3.05 | 1,071 | 100% |
-| South Africa | 2007 | census | male | 30–44 | mx | −1.94 | 0.10 | 4.87 | 2,207 | 100% |
-| South Africa | 2007 | census | male | 45–59 | mx | −1.52 | 0.09 | 3.50 | 1,603 | 100% |
-| South Africa | 2007 | census | male | 60–74 | mx | −0.81 | 0.11 | 2.08 | 1,061 | 100% |
-| South Africa | 2007 | census | male | 15–59 | 45q15 | −1.67 | 0.06 | 2.45 | 4,881 | 100% |
-| South Africa | 2007 | census | female | 15–29 | mx | −1.92 | 0.14 | 5.03 | 1,350 | 100% |
-| South Africa | 2007 | census | female | 30–44 | mx | −2.06 | 0.10 | 5.52 | 2,146 | 100% |
-| South Africa | 2007 | census | female | 45–59 | mx | −1.71 | 0.12 | 4.38 | 1,090 | 100% |
-| South Africa | 2007 | census | female | 60–74 | mx | −0.66 | 0.12 | 1.98 | 902 | 100% |
-| South Africa | 2007 | census | female | 15–59 | 45q15 | −1.92 | 0.07 | 3.37 | 4,586 | 100% |
-| Ethiopia | 2007 | census | all | 15–29 | mx | −0.83 | 0.09 | 1.77 | 1,957 | 100% |
-| Ethiopia | 2007 | census | all | 30–44 | mx | 0.00 | 0.09 | 0.93 | 1,472 | 100% |
-| Ethiopia | 2007 | census | all | 45–59 | mx | 0.42 | 0.12 | 0.66 | 900 | 100% |
-| Ethiopia | 2007 | census | all | 60–74 | mx | 0.44 | 0.12 | 0.75 | 957 | 100% |
-| Ethiopia | 2007 | census | all | 15–59 | 45q15 | 0.01 | 0.06 | 0.92 | 4,329 | 100% |
-| Ethiopia | 2007 | census | male | 15–29 | mx | −0.91 | 0.12 | 1.88 | 974 | 100% |
-| Ethiopia | 2007 | census | male | 15–59 | 45q15 | −0.26 | 0.09 | 1.07 | 2,247 | 100% |
-| Ethiopia | 2007 | census | female | 15–29 | mx | −0.77 | 0.12 | 1.68 | 983 | 100% |
-| Ethiopia | 2007 | census | female | 15–59 | 45q15 | 0.31 | 0.09 | 0.78 | 2,082 | 100% |
-| Zambia | 2010 | census | all | 15–29 | mx | −0.51 | 0.08 | 1.53 | 2,354 | 100% |
-| Zambia | 2010 | census | all | 30–44 | mx | −0.26 | 0.07 | 1.20 | 2,899 | 100% |
-| Zambia | 2010 | census | all | 45–59 | mx | −0.00 | 0.10 | 0.97 | 1,433 | 100% |
-| Zambia | 2010 | census | all | 60–74 | mx | 0.59 | 0.11 | 0.67 | 1,147 | 100% |
-| Zambia | 2010 | census | all | 15–59 | 45q15 | −0.19 | 0.05 | 1.10 | 6,686 | 100% |
-| Zambia | 2010 | census | male | 15–29 | mx | −0.53 | 0.11 | 1.50 | 1,147 | 100% |
-| Zambia | 2010 | census | male | 30–44 | mx | −0.32 | 0.09 | 1.22 | 1,652 | 100% |
-| Zambia | 2010 | census | male | 15–59 | 45q15 | −0.36 | 0.07 | 1.16 | 3,630 | 100% |
-| Zambia | 2010 | census | female | 15–29 | mx | −0.50 | 0.11 | 1.55 | 1,207 | 100% |
-| Zambia | 2010 | census | female | 30–44 | mx | −0.20 | 0.10 | 1.18 | 1,247 | 100% |
-| Zambia | 2010 | census | female | 15–59 | 45q15 | −0.02 | 0.08 | 1.04 | 3,056 | 100% |
-| Malawi | 2008 | census | all | 15–29 | mx | −0.96 | 0.08 | 1.98 | 1,941 | 99% |
-| Malawi | 2008 | census | all | 30–44 | mx | −0.83 | 0.08 | 1.72 | 2,243 | 99% |
-| Malawi | 2008 | census | all | 45–59 | mx | −0.26 | 0.11 | 1.08 | 1,059 | 99% |
-| Malawi | 2008 | census | all | 15–59 | 45q15 | −0.60 | 0.06 | 1.32 | 5,243 | 99% |
-| Malawi | 2008 | census | male | 30–44 | mx | −1.21 | 0.10 | 2.20 | 1,198 | 99% |
-| Malawi | 2008 | census | male | 15–59 | 45q15 | −1.03 | 0.08 | 1.61 | 2,724 | 99% |
-| Malawi | 2008 | census | female | 15–29 | mx | −0.83 | 0.11 | 1.80 | 1,054 | 99% |
-| Malawi | 2008 | census | female | 30–44 | mx | −0.44 | 0.11 | 1.32 | 1,045 | 99% |
-| Malawi | 2008 | census | female | 15–59 | 45q15 | −0.21 | 0.09 | 1.08 | 2,519 | 99% |
-| Uganda | 2002 | census | all | 15–29 | mx | −0.20 | 0.06 | 1.13 | 3,905 | 100% |
-| Uganda | 2002 | census | all | 30–44 | mx | 0.30 | 0.06 | 0.72 | 4,511 | 100% |
-| Uganda | 2002 | census | all | 45–59 | mx | 0.25 | 0.08 | 0.75 | 2,054 | 100% |
-| Uganda | 2002 | census | all | 60–74 | mx | 0.39 | 0.09 | 0.73 | 1,905 | 100% |
-| Uganda | 2002 | census | all | 15–59 | 45q15 | 0.18 | 0.04 | 0.84 | 10,470 | 100% |
-| Uganda | 2002 | census | male | 15–29 | mx | −0.46 | 0.09 | 1.46 | 1,827 | 100% |
-| Uganda | 2002 | census | male | 30–44 | mx | 0.10 | 0.08 | 0.85 | 2,461 | 100% |
-| Uganda | 2002 | census | male | 45–59 | mx | 0.10 | 0.11 | 0.83 | 1,227 | 100% |
-| Uganda | 2002 | census | male | 60–74 | mx | −0.04 | 0.11 | 0.96 | 1,105 | 100% |
-| Uganda | 2002 | census | male | 15–59 | 45q15 | −0.00 | 0.06 | 0.94 | 5,515 | 100% |
-| Uganda | 2002 | census | female | 15–29 | mx | 0.04 | 0.08 | 0.89 | 2,078 | 100% |
-| Uganda | 2002 | census | female | 30–44 | mx | 0.54 | 0.09 | 0.59 | 2,050 | 100% |
-| Uganda | 2002 | census | female | 15–59 | 45q15 | 0.39 | 0.06 | 0.73 | 4,955 | 100% |
-| Senegal | 2002 | census | all | 15–29 | mx | −0.81 | 0.11 | 1.82 | 1,086 | 100% |
-| Senegal | 2002 | census | all | 30–44 | mx | −0.51 | 0.11 | 1.57 | 1,086 | 100% |
-| Senegal | 2002 | census | all | 60–74 | mx | −0.27 | 0.10 | 1.18 | 1,311 | 100% |
-| Senegal | 2002 | census | all | 15–59 | 45q15 | −0.40 | 0.07 | 1.29 | 3,039 | 100% |
-| Senegal | 2002 | census | male | 15–59 | 45q15 | −0.41 | 0.11 | 1.33 | 1,311 | 100% |
-| Senegal | 2002 | census | female | 15–59 | 45q15 | −0.38 | 0.10 | 1.25 | 1,725 | 100% |
-| Sierra Leone | 2004 | census | all | 15–29 | mx | −0.74 | 0.11 | 1.66 | 1,182 | 100% |
-| Sierra Leone | 2004 | census | all | 30–44 | mx | −0.19 | 0.11 | 1.14 | 1,057 | 100% |
-| Sierra Leone | 2004 | census | all | 60–74 | mx | −0.13 | 0.12 | 1.06 | 918 | 100% |
-| Sierra Leone | 2004 | census | all | 15–59 | 45q15 | −0.35 | 0.08 | 1.19 | 3,056 | 100% |
-| Sierra Leone | 2004 | census | male | 15–59 | 45q15 | −0.51 | 0.11 | 1.30 | 1,487 | 100% |
-| Sierra Leone | 2004 | census | female | 15–59 | 45q15 | −0.16 | 0.11 | 1.08 | 1,569 | 100% |
-| Lesotho | 2006 | census | all | 30–44 | mx | −0.86 | 0.11 | 2.01 | 1,186 | 100% |
-| Lesotho | 2006 | census | all | 15–59 | 45q15 | −0.73 | 0.08 | 1.34 | 2,572 | 100% |
-| Lesotho | 2006 | census | male | 15–59 | 45q15 | −0.62 | 0.11 | 1.28 | 1,270 | 100% |
-| Lesotho | 2006 | census | female | 15–59 | 45q15 | −0.86 | 0.12 | 1.41 | 1,302 | 100% |
-| Benin | 2013 | census | all | 15–59 | 45q15 | −0.63 | 0.11 | 1.75 | 1,555 | 100% |
-| Cambodia | 2008 | census | all | 15–59 | 45q15 | −0.76 | 0.11 | 1.78 | 1,250 | 100% |
-| Cote d'Ivoire | 1998 | census | all | 15–29 | mx | −0.90 | 0.08 | 2.31 | 2,128 | 100% |
-| Cote d'Ivoire | 1998 | census | all | 30–44 | mx | −0.73 | 0.08 | 1.94 | 2,240 | 100% |
-| Cote d'Ivoire | 1998 | census | all | 45–59 | mx | −0.35 | 0.09 | 1.34 | 1,561 | 100% |
-| Cote d'Ivoire | 1998 | census | all | 60–74 | mx | −0.02 | 0.09 | 1.00 | 1,621 | 100% |
-| Cote d'Ivoire | 1998 | census | all | 15–59 | 45q15 | −0.57 | 0.05 | 1.51 | 5,929 | 100% |
-| Cote d'Ivoire | 1998 | census | male | 15–29 | mx | −0.88 | 0.12 | 2.26 | 909 | 100% |
-| Cote d'Ivoire | 1998 | census | male | 30–44 | mx | −0.79 | 0.10 | 2.17 | 1,185 | 100% |
-| Cote d'Ivoire | 1998 | census | male | 15–59 | 45q15 | −0.62 | 0.07 | 1.63 | 2,990 | 100% |
-| Cote d'Ivoire | 1998 | census | female | 15–29 | mx | −0.93 | 0.10 | 2.35 | 1,219 | 100% |
-| Cote d'Ivoire | 1998 | census | female | 30–44 | mx | −0.69 | 0.11 | 1.75 | 1,055 | 100% |
-| Cote d'Ivoire | 1998 | census | female | 15–59 | 45q15 | −0.55 | 0.08 | 1.41 | 2,939 | 100% |
-| Sudan | 2008 | census | all | 15–29 | mx | −1.09 | 0.06 | 2.19 | 7,995 | 100% |
-| Sudan | 2008 | census | all | 30–44 | mx | −0.75 | 0.06 | 1.72 | 5,739 | 100% |
-| Sudan | 2008 | census | all | 45–59 | mx | −0.10 | 0.06 | 1.09 | 3,980 | 100% |
-| Sudan | 2008 | census | all | 60–74 | mx | 0.41 | 0.05 | 0.77 | 4,544 | 100% |
-| Sudan | 2008 | census | all | 15–59 | 45q15 | −0.49 | 0.04 | 1.36 | 17,714 | 100% |
-| Sudan | 2008 | census | male | 15–29 | mx | −1.02 | 0.08 | 2.08 | 4,262 | 100% |
-| Sudan | 2008 | census | male | 30–44 | mx | −0.94 | 0.09 | 2.00 | 3,259 | 100% |
-| Sudan | 2008 | census | male | 45–59 | mx | −0.07 | 0.08 | 1.04 | 2,205 | 100% |
-| Sudan | 2008 | census | male | 60–74 | mx | 0.39 | 0.07 | 0.80 | 2,709 | 100% |
-| Sudan | 2008 | census | male | 15–59 | 45q15 | −0.52 | 0.05 | 1.37 | 9,726 | 100% |
-| Sudan | 2008 | census | female | 15–29 | mx | −1.18 | 0.09 | 2.33 | 3,733 | 100% |
-| Sudan | 2008 | census | female | 30–44 | mx | −0.56 | 0.09 | 1.44 | 2,480 | 100% |
-| Sudan | 2008 | census | female | 45–59 | mx | −0.15 | 0.09 | 1.14 | 1,775 | 100% |
-| Sudan | 2008 | census | female | 60–74 | mx | 0.42 | 0.08 | 0.73 | 1,835 | 100% |
-| Sudan | 2008 | census | female | 15–59 | 45q15 | −0.47 | 0.06 | 1.35 | 7,988 | 100% |
-| South Sudan | 2008 | census | all | 15–29 | mx | −0.97 | 0.10 | 1.77 | 1,857 | 100% |
-| South Sudan | 2008 | census | all | 15–59 | 45q15 | 0.10 | 0.09 | 0.95 | 2,859 | 100% |
-| South Sudan | 2008 | census | male | 15–29 | mx | −1.36 | 0.13 | 2.23 | 1,092 | 100% |
-| South Sudan | 2008 | census | male | 15–59 | 45q15 | −0.40 | 0.11 | 1.19 | 1,724 | 100% |
-| South Sudan | 2008 | census | female | 15–59 | 45q15 | 0.73 | 0.14 | 0.70 | 1,135 | 100% |
+| South Africa | 2001 | census | female | 60–74 | mx | −0.25 | 0.07 | 1.31 | 2,506 | 100% |
+| South Africa | 2001 | census | female | 15–59 | 45q15 | −1.26 | 0.04 | 2.41 | 9,236 | 100% |
+| South Africa | 2007 | census | all | 15–29 | mx | −1.62 | 0.10 | 3.88 | 2,421 | 100% |
+| South Africa | 2007 | census | all | 30–44 | mx | −1.97 | 0.07 | 5.14 | 4,353 | 100% |
+| South Africa | 2007 | census | all | 45–59 | mx | −1.56 | 0.07 | 3.74 | 2,693 | 100% |
+| South Africa | 2007 | census | all | 60–74 | mx | −0.70 | 0.08 | 1.96 | 1,963 | 100% |
+| South Africa | 2007 | census | all | 15–59 | 45q15 | −1.75 | 0.05 | 2.81 | 9,467 | 100% |
+| South Africa | 2007 | census | male | 15–29 | mx | −1.34 | 0.13 | 3.05 | 1,071 | 100% |
+| South Africa | 2007 | census | male | 30–44 | mx | −1.89 | 0.10 | 4.81 | 2,207 | 100% |
+| South Africa | 2007 | census | male | 45–59 | mx | −1.50 | 0.09 | 3.48 | 1,603 | 100% |
+| South Africa | 2007 | census | male | 60–74 | mx | −0.81 | 0.11 | 2.09 | 1,061 | 100% |
+| South Africa | 2007 | census | male | 15–59 | 45q15 | −1.64 | 0.06 | 2.43 | 4,881 | 100% |
+| South Africa | 2007 | census | female | 15–29 | mx | −1.91 | 0.14 | 5.04 | 1,350 | 100% |
+| South Africa | 2007 | census | female | 30–44 | mx | −2.05 | 0.10 | 5.52 | 2,146 | 100% |
+| South Africa | 2007 | census | female | 45–59 | mx | −1.70 | 0.12 | 4.35 | 1,090 | 100% |
+| South Africa | 2007 | census | female | 60–74 | mx | −0.68 | 0.12 | 1.98 | 902 | 100% |
+| South Africa | 2007 | census | female | 15–59 | 45q15 | −1.90 | 0.07 | 3.37 | 4,586 | 100% |
+| Ethiopia | 2007 | census | all | 15–29 | mx | −0.76 | 0.08 | 1.77 | 1,957 | 100% |
+| Ethiopia | 2007 | census | all | 30–44 | mx | 0.08 | 0.09 | 0.93 | 1,472 | 100% |
+| Ethiopia | 2007 | census | all | 45–59 | mx | 0.47 | 0.12 | 0.66 | 900 | 100% |
+| Ethiopia | 2007 | census | all | 60–74 | mx | 0.41 | 0.12 | 0.75 | 957 | 100% |
+| Ethiopia | 2007 | census | all | 15–59 | 45q15 | 0.07 | 0.06 | 0.92 | 4,329 | 100% |
+| Ethiopia | 2007 | census | male | 15–29 | mx | −0.80 | 0.12 | 1.88 | 974 | 100% |
+| Ethiopia | 2007 | census | male | 15–59 | 45q15 | −0.18 | 0.09 | 1.07 | 2,247 | 100% |
+| Ethiopia | 2007 | census | female | 15–29 | mx | −0.72 | 0.12 | 1.68 | 983 | 100% |
+| Ethiopia | 2007 | census | female | 15–59 | 45q15 | 0.35 | 0.09 | 0.78 | 2,082 | 100% |
+| Zambia | 2010 | census | all | 15–29 | mx | −0.59 | 0.07 | 1.67 | 2,354 | 100% |
+| Zambia | 2010 | census | all | 30–44 | mx | −0.32 | 0.06 | 1.37 | 2,899 | 100% |
+| Zambia | 2010 | census | all | 45–59 | mx | −0.03 | 0.09 | 1.21 | 1,433 | 100% |
+| Zambia | 2010 | census | all | 60–74 | mx | 0.63 | 0.11 | 0.67 | 1,147 | 100% |
+| Zambia | 2010 | census | all | 15–59 | 45q15 | −0.24 | 0.05 | 1.24 | 6,686 | 100% |
+| Zambia | 2010 | census | male | 15–29 | mx | −0.58 | 0.10 | 1.60 | 1,147 | 100% |
+| Zambia | 2010 | census | male | 30–44 | mx | −0.38 | 0.09 | 1.47 | 1,652 | 100% |
+| Zambia | 2010 | census | male | 15–59 | 45q15 | −0.43 | 0.07 | 1.36 | 3,630 | 100% |
+| Zambia | 2010 | census | female | 15–29 | mx | −0.59 | 0.10 | 1.74 | 1,207 | 100% |
+| Zambia | 2010 | census | female | 30–44 | mx | −0.26 | 0.10 | 1.28 | 1,247 | 100% |
+| Zambia | 2010 | census | female | 15–59 | 45q15 | −0.07 | 0.07 | 1.13 | 3,056 | 100% |
+| Malawi | 2008 | census | all | 15–29 | mx | −0.95 | 0.08 | 1.92 | 1,941 | 99% |
+| Malawi | 2008 | census | all | 30–44 | mx | −0.82 | 0.08 | 1.73 | 2,243 | 99% |
+| Malawi | 2008 | census | all | 45–59 | mx | −0.26 | 0.11 | 1.16 | 1,059 | 99% |
+| Malawi | 2008 | census | all | 15–59 | 45q15 | −0.60 | 0.06 | 1.36 | 5,243 | 99% |
+| Malawi | 2008 | census | male | 30–44 | mx | −1.22 | 0.10 | 2.28 | 1,198 | 99% |
+| Malawi | 2008 | census | male | 15–59 | 45q15 | −1.04 | 0.08 | 1.67 | 2,724 | 99% |
+| Malawi | 2008 | census | female | 15–29 | mx | −0.84 | 0.11 | 1.79 | 1,054 | 99% |
+| Malawi | 2008 | census | female | 30–44 | mx | −0.40 | 0.11 | 1.30 | 1,045 | 99% |
+| Malawi | 2008 | census | female | 15–59 | 45q15 | −0.20 | 0.09 | 1.10 | 2,519 | 99% |
+| Uganda | 2002 | census | all | 15–29 | mx | −0.24 | 0.06 | 1.40 | 3,905 | 100% |
+| Uganda | 2002 | census | all | 30–44 | mx | 0.27 | 0.06 | 0.77 | 4,511 | 100% |
+| Uganda | 2002 | census | all | 45–59 | mx | 0.26 | 0.08 | 0.70 | 2,054 | 100% |
+| Uganda | 2002 | census | all | 60–74 | mx | 0.52 | 0.09 | 0.50 | 1,905 | 100% |
+| Uganda | 2002 | census | all | 15–59 | 45q15 | 0.18 | 0.04 | 0.85 | 10,470 | 100% |
+| Uganda | 2002 | census | male | 15–29 | mx | −0.49 | 0.08 | 1.79 | 1,827 | 100% |
+| Uganda | 2002 | census | male | 30–44 | mx | 0.06 | 0.07 | 0.97 | 2,461 | 100% |
+| Uganda | 2002 | census | male | 45–59 | mx | 0.11 | 0.11 | 0.77 | 1,227 | 100% |
+| Uganda | 2002 | census | male | 60–74 | mx | 0.13 | 0.12 | 0.64 | 1,105 | 100% |
+| Uganda | 2002 | census | male | 15–59 | 45q15 | −0.01 | 0.06 | 0.97 | 5,515 | 100% |
+| Uganda | 2002 | census | female | 15–29 | mx | −0.01 | 0.08 | 1.11 | 2,078 | 100% |
+| Uganda | 2002 | census | female | 30–44 | mx | 0.52 | 0.08 | 0.58 | 2,050 | 100% |
+| Uganda | 2002 | census | female | 15–59 | 45q15 | 0.38 | 0.07 | 0.73 | 4,955 | 100% |
+| Senegal | 2002 | census | all | 15–29 | mx | −0.80 | 0.11 | 1.81 | 1,086 | 100% |
+| Senegal | 2002 | census | all | 30–44 | mx | −0.52 | 0.11 | 1.60 | 1,086 | 100% |
+| Senegal | 2002 | census | all | 60–74 | mx | −0.27 | 0.10 | 1.19 | 1,311 | 100% |
+| Senegal | 2002 | census | all | 15–59 | 45q15 | −0.39 | 0.07 | 1.28 | 3,039 | 100% |
+| Senegal | 2002 | census | male | 15–59 | 45q15 | −0.41 | 0.11 | 1.34 | 1,311 | 100% |
+| Senegal | 2002 | census | female | 15–59 | 45q15 | −0.37 | 0.10 | 1.23 | 1,725 | 100% |
+| Sierra Leone | 2004 | census | all | 15–29 | mx | −0.76 | 0.10 | 2.19 | 1,182 | 100% |
+| Sierra Leone | 2004 | census | all | 30–44 | mx | −0.28 | 0.11 | 1.49 | 1,057 | 100% |
+| Sierra Leone | 2004 | census | all | 60–74 | mx | −0.15 | 0.12 | 1.22 | 918 | 100% |
+| Sierra Leone | 2004 | census | all | 15–59 | 45q15 | −0.42 | 0.08 | 1.45 | 3,056 | 100% |
+| Sierra Leone | 2004 | census | male | 15–59 | 45q15 | −0.54 | 0.11 | 1.49 | 1,487 | 100% |
+| Sierra Leone | 2004 | census | female | 15–59 | 45q15 | −0.28 | 0.11 | 1.42 | 1,569 | 100% |
+| Lesotho | 2006 | census | all | 30–44 | mx | −0.85 | 0.11 | 2.35 | 1,186 | 100% |
+| Lesotho | 2006 | census | all | 15–59 | 45q15 | −0.73 | 0.08 | 1.39 | 2,572 | 100% |
+| Lesotho | 2006 | census | male | 15–59 | 45q15 | −0.61 | 0.11 | 1.31 | 1,270 | 100% |
+| Lesotho | 2006 | census | female | 15–59 | 45q15 | −0.86 | 0.11 | 1.48 | 1,302 | 100% |
+| Benin | 2013 | census | all | 15–59 | 45q15 | −0.56 | 0.11 | 1.74 | 1,555 | 100% |
+| Cambodia | 2008 | census | all | 15–59 | 45q15 | −0.79 | 0.11 | 1.81 | 1,250 | 100% |
+| Cote d'Ivoire | 1998 | census | all | 15–29 | mx | −0.94 | 0.08 | 2.45 | 2,128 | 100% |
+| Cote d'Ivoire | 1998 | census | all | 30–44 | mx | −0.71 | 0.08 | 1.96 | 2,240 | 100% |
+| Cote d'Ivoire | 1998 | census | all | 45–59 | mx | −0.28 | 0.09 | 1.26 | 1,561 | 100% |
+| Cote d'Ivoire | 1998 | census | all | 60–74 | mx | 0.05 | 0.09 | 0.98 | 1,621 | 100% |
+| Cote d'Ivoire | 1998 | census | all | 15–59 | 45q15 | −0.53 | 0.05 | 1.48 | 5,929 | 100% |
+| Cote d'Ivoire | 1998 | census | male | 15–29 | mx | −0.90 | 0.11 | 2.25 | 909 | 100% |
+| Cote d'Ivoire | 1998 | census | male | 30–44 | mx | −0.76 | 0.10 | 2.11 | 1,185 | 100% |
+| Cote d'Ivoire | 1998 | census | male | 15–59 | 45q15 | −0.58 | 0.07 | 1.54 | 2,990 | 100% |
+| Cote d'Ivoire | 1998 | census | female | 15–29 | mx | −0.97 | 0.10 | 2.61 | 1,219 | 100% |
+| Cote d'Ivoire | 1998 | census | female | 30–44 | mx | −0.68 | 0.11 | 1.84 | 1,055 | 100% |
+| Cote d'Ivoire | 1998 | census | female | 15–59 | 45q15 | −0.50 | 0.08 | 1.45 | 2,939 | 100% |
+| Sudan | 2008 | census | all | 15–29 | mx | −1.05 | 0.06 | 2.38 | 7,995 | 100% |
+| Sudan | 2008 | census | all | 30–44 | mx | −0.77 | 0.06 | 1.89 | 5,739 | 100% |
+| Sudan | 2008 | census | all | 45–59 | mx | −0.09 | 0.06 | 1.07 | 3,980 | 100% |
+| Sudan | 2008 | census | all | 60–74 | mx | 0.42 | 0.05 | 0.74 | 4,544 | 100% |
+| Sudan | 2008 | census | all | 15–59 | 45q15 | −0.48 | 0.04 | 1.41 | 17,714 | 100% |
+| Sudan | 2008 | census | male | 15–29 | mx | −0.97 | 0.07 | 2.22 | 4,262 | 100% |
+| Sudan | 2008 | census | male | 30–44 | mx | −0.94 | 0.08 | 2.20 | 3,259 | 100% |
+| Sudan | 2008 | census | male | 45–59 | mx | −0.06 | 0.08 | 1.06 | 2,205 | 100% |
+| Sudan | 2008 | census | male | 60–74 | mx | 0.36 | 0.07 | 0.82 | 2,709 | 100% |
+| Sudan | 2008 | census | male | 15–59 | 45q15 | −0.51 | 0.05 | 1.44 | 9,726 | 100% |
+| Sudan | 2008 | census | female | 15–29 | mx | −1.14 | 0.08 | 2.59 | 3,733 | 100% |
+| Sudan | 2008 | census | female | 30–44 | mx | −0.58 | 0.08 | 1.60 | 2,480 | 100% |
+| Sudan | 2008 | census | female | 45–59 | mx | −0.12 | 0.09 | 1.09 | 1,775 | 100% |
+| Sudan | 2008 | census | female | 60–74 | mx | 0.49 | 0.08 | 0.66 | 1,835 | 100% |
+| Sudan | 2008 | census | female | 15–59 | 45q15 | −0.46 | 0.05 | 1.38 | 7,988 | 100% |
+| South Sudan | 2008 | census | all | 15–29 | mx | −1.03 | 0.10 | 2.11 | 1,857 | 100% |
+| South Sudan | 2008 | census | all | 15–59 | 45q15 | 0.07 | 0.09 | 1.01 | 2,859 | 100% |
+| South Sudan | 2008 | census | male | 15–29 | mx | −1.39 | 0.13 | 2.64 | 1,092 | 100% |
+| South Sudan | 2008 | census | male | 15–59 | 45q15 | −0.39 | 0.11 | 1.24 | 1,724 | 100% |
+| South Sudan | 2008 | census | female | 15–59 | 45q15 | 0.64 | 0.14 | 0.77 | 1,135 | 100% |
 | Brazil | 2010 | census | all | 15–29 | mx | −1.36 | 0.05 | 3.02 | 8,735 | 100% |
 | Brazil | 2010 | census | all | 30–44 | mx | −1.43 | 0.04 | 3.32 | 10,613 | 100% |
 | Brazil | 2010 | census | all | 45–59 | mx | −0.85 | 0.03 | 2.07 | 18,119 | 100% |
 | Brazil | 2010 | census | all | 60–74 | mx | −0.21 | 0.02 | 1.17 | 28,588 | 100% |
 | Brazil | 2010 | census | all | 15–59 | 45q15 | −1.07 | 0.02 | 2.33 | 37,467 | 100% |
-| Brazil | 2010 | census | male | 15–29 | mx | −1.45 | 0.06 | 3.23 | 6,859 | 100% |
+| Brazil | 2010 | census | male | 15–29 | mx | −1.45 | 0.06 | 3.24 | 6,859 | 100% |
 | Brazil | 2010 | census | male | 30–44 | mx | −1.47 | 0.05 | 3.44 | 7,310 | 100% |
 | Brazil | 2010 | census | male | 45–59 | mx | −0.71 | 0.04 | 1.85 | 11,238 | 100% |
 | Brazil | 2010 | census | male | 60–74 | mx | −0.12 | 0.03 | 1.09 | 16,440 | 100% |

@@ -23,6 +23,7 @@ All files in [`data/`](../data/) are CSV and are rebuilt by the scripts in
 | `slope` | Wealth gradient |
 | `ratio` | Low/high ratio: rate in the lowest wealth group divided by the rate in the highest |
 | `q1` … `q5` | Rate in each wealth group, lowest first. Units: births per woman (TFR), deaths per 1,000 live births (IMR, U5MR), deaths per 1,000 children aged one (CMR), deaths per 1,000 (adult mortality: annual rate for `mx`, probability for `45q15`), proportion dead (census child mortality). Blank where a census supports fewer than five groups |
+| `share1` … `share5` | Population share of each wealth group (adult and census child mortality files). Each group sits at the midpoint of its share on the 0–1 wealth rank, which is how the gradient is fitted; 0.2 each for survey quintiles. Blank where a census supports fewer than five groups |
 
 `gradient_library*.csv` also contain `source` (`DHS` or `MICS`).
 

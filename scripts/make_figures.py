@@ -321,7 +321,7 @@ def adult_mortality_vs_income():
     ax.set_ylabel("wealth gradient in adult mortality (15–59)")
     adjust_text(texts, x=pts["gni"].values, y=pts["tilt_45q15"].values, ax=ax,
                 target_x=tx, target_y=ty,
-                expand=(1.3, 1.8), force_text=(0.6, 0.9), force_static=(0.6, 0.8),
+                expand=(1.4, 2.2), force_text=(0.8, 1.2), force_static=(0.8, 1.0),
                 # a fixed iteration count, not adjustText's default 1-second time limit,
                 # so the layout does not depend on machine speed and the figure reproduces
                 iter_lim=2000,

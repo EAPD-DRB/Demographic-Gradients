@@ -9,7 +9,7 @@ Wealth gradients in fertility and mortality: the values for an OG-Core calibrati
 |---|---|---|
 | `fert_gradient` | −0.96, by age as below | DHS 2024, TFR, plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | 0.25 | DHS 2024, infant mortality rate |
-| `mort_gradient` | −0.19 (standard error 0.05) | census 2010, 45q15 |
+| `mort_gradient` | −0.24 (standard error 0.05) | census 2010, 45q15 |
 | `imm_pctiles` | not provided | — |
 
 Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are passed to OG-Core, each is divided by 100 × (1 − p), where p is OG-Core's rate at that age ([details](../methods/ogcore-units.md)).
@@ -24,7 +24,7 @@ Values are [wealth gradients](../glossary.md#wealth-gradient). Before they are p
 
 | 1–4 | 5–14 | 15–29 | 30–44 | 45–59 | 60–74 | 75+ |
 |---|---|---|---|---|---|---|
-| −0.48 (DHS 2024) | −0.57 | −0.57 | −0.34 | 0.01 | 0.01 at 60, falling to 0 at 75 | 0 |
+| −0.48 (DHS 2024) | −0.64 | −0.64 | −0.42 | −0.03 | −0.03 at 60, falling to 0 at 75 | 0 |
 
 Ages 1–4 use the country's own gradient in child mortality at ages 1–4 (DHS), or, where there is none, its under-five gradient plus a pooled offset ([details](../methods/general-gradient.md#age-pattern)). Infant mortality (age 0) is `infmort_gradient`, above.
 
@@ -47,6 +47,6 @@ Wealth gradients in 45q15 and in age-specific death rates, both sexes ([`adult_m
 
 | Source | 45q15 | 15–29 | 30–44 | 45–59 | 60–74 | Wealth groups | Deaths |
 |---|---|---|---|---|---|---|---|
-| Census 2010 | −0.19 | −0.51 | −0.26 | −0.00 | 0.59 | 4 | 6,686 |
+| Census 2010 | −0.24 | −0.59 | −0.32 | −0.03 | 0.63 | 5 | 6,686 |
 
 Source: IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Central Statistical Office, Zambia.

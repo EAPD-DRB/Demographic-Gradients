@@ -89,9 +89,9 @@ under-five mortality rate in the Brazil 1996 DHS survey.
 |---|---|---|---|---|
 | 1991 | 4 | −1.81 | 4.16 | 9.9 |
 | 2000 | 4 | −1.40 | 3.01 | 5.8 |
-| 2010 | 5 | −0.96 | 2.26 | 2.5 |
+| 2010 | 5 | −0.93 | 2.11 | 2.3 |
 
-The gradient changed from −1.81 in 1991 to −0.96 in
+The gradient changed from −1.81 in 1991 to −0.93 in
 2010: child mortality fell in all groups, and most in the poorest. On an
 index restricted to the 5 assets recorded in all three censuses,
 the 1991–2000 change is 0.46, compared with 0.41 on the
@@ -135,8 +135,8 @@ during a recent period, usually the previous year, and, for India and
 Bangladesh, household surveys that record them for the previous two years
 ([methods](docs/methods/adult-mortality.md); [all estimates](docs/tables/adult_mortality.md)).
 Across the 19 censuses and surveys with an income estimate, the gradient in
-45q15 is steeper in richer countries (r = −0.75): the fitted
-gradient is −0.32 at a GDP per capita (PPP, constant 2021
+45q15 is steeper in richer countries (r = −0.76): the fitted
+gradient is −0.31 at a GDP per capita (PPP, constant 2021
 international $) of $2,000 and
 −1.01 at $10,000. This relationship, the general gradient,
 provides values for countries without their own estimate
@@ -151,8 +151,8 @@ per capita rose by a factor of 2.4.
 
 In all 14 censuses and surveys with estimates at ages 15–29
 and at least one older band, the gradient is weaker at the oldest band measured
-than at ages 15–29. In 4 censuses, all with GDP per capita (PPP) of
-$4,446 or less, it is positive at the oldest band: recorded
+than at ages 15–29. In 5 censuses, all with GDP per capita (PPP) of
+$5,093 or less, it is positive at the oldest band: recorded
 death rates rise with household wealth. Two explanations are consistent with
 this: small survival differences where most households are poor, and elderly
 people in poor health moving into better-off households before death. The
