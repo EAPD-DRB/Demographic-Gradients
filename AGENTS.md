@@ -66,179 +66,108 @@ scripts, and the documentation is generated — respect that architecture.
 
 ## Method rulings (validated — don't relitigate without new evidence)
 
-- The gradient = slope of ln(rate) on wealth rank 0–1. DHS quintiles: OLS at
-  0.1…0.9. Census groups: each at its REALIZED population midpoint, WLS
-  weighted by group population share (`asset_index.gradient`). Many households
-  share an index value, so cuts tie; a census supports however many groups it
-  supports — record it in the `groups` column. Ruled 2026-11-11.
-- **Census wealth index = first principal component** (Filmer & Pritchett
-  2001; DHS; Lovaton Dávila et al. 2022 for IPUMS-I) of household 0/1
-  indicators, one per asset and one per TOILET category, household-weighted
-  correlation matrix, oriented to rise with assets owned (`scripts/asset_index.py`,
-  shared by all four census scripts). Groups are cut at the boundary between
-  distinct scores nearest each person-weighted quintile of all persons in the
-  asset universe (ruled 2026-11-16, replacing the score at the quintile,
-  which could land at the far edge of a tie block); `share1`–`share5` publish
-  each group's share; groups under 10% are merged
-  into the smaller neighbour; `MIN_GROUPS = 3`. Ruled 2026-11-11, replacing an
-  additive count that had mis-coded INTERNET/WASHER (scored on "no"), TV (only
-  code 20) and latrines (scored as flush). The IPUMS yes-codes are documented
-  in `asset_index.py` from the .cbk files — check any new variable there.
-- ogcore (>= 0.18.0) consumes **gradient / (100 × (1 − p))**: ÷100 because its
-  gradients are per centered percentile point, ÷(1 − p) because it reads a
-  log-odds slope where the library publishes a log-rate one (p = ogcore's own
-  rate at that age, on its scale). Verified by `scripts/check_ogcore_units.py`,
-  which runs every DHS quintile set (IMR, U5MR, ASFR) through ogcore's pinned
-  `_mean_preserving_logit_rates`; rerun it when ogcore's demographics change.
-  The published `slope` stays the log-rate gradient — it is the measured,
-  scale-free quantity; the conversion needs the model's p. The grouping is
-  ogcore's job — any lambdas vector works with the same gradient.
-- Fertility enters by age as **TFR gradient + pooled age offset**
-  (`fertility_age_offsets.csv`, built from DHS age-specific rates by wealth
-  quintile in `build_gradient_library.py`). Validated: 5 × Σ ASFR reproduces
-  DHS's TFR per quintile within rounding; a backtest over consecutive surveys
-  shows a country's own age shape predicts about as well overall (better
-  under 30, worse from 35), while the pooled offsets have no gaps at 45–49.
-  Ruled 2026-11-05 — offsets, not per-country age gradients.
-- **Mortality at ages 1–4 uses the country's own CMR gradient** (DHS
-  `CM_ECMR_C_CMR`, 4q1), falling back to U5MR + the pooled offset
-  (`child_mortality_offset.csv`, −0.53). Ruled 2026-11-16.
-  - (1 − IMR)(1 − CMR) reproduces DHS's U5MR per quintile within rounding.
-  - CMR is steeper than U5MR in 85% of 74 countries.
-  - Backtest over 203 consecutive-survey pairs: own previous CMR 0.43,
-    U5MR + offset 0.38, U5MR alone 0.55. The pooled route predicts the next
-    survey slightly better. Own CMR was ruled as the measured value for the
-    survey in use, as for IMR.
-- **MICS is a second survey source** for TFR, IMR and U5MR (ruled 2026-11-13):
-  every MICS survey goes into `gradient_library.csv` with `source`; the latest
-  file takes the newest survey of either kind (DHS on a same-year tie). MICS
-  mortality only from direct (FBH) estimates: UNICEF's CME classification,
-  matched by overlapping fieldwork years (the World Bank and UNICEF label some
-  surveys differently: Congo 2015-16 vs 2014-15), else the report
-  (`mics_methods_reports.csv`); undocumented methods excluded. Every exclusion
-  was checked against the MICS reports (2026-11-13; copies at
-  mics.ipums.org/mics/resources/enum_materials_pdf/report_<iso2><year>a_<lang>.pdf,
-  since mics.unicef.org and its S3 bucket refuse scripted downloads). Findings
-  and rulings: the World Bank file holds the adolescent birth rate column under
-  TFR for CAR, Chad, Guinea-Bissau, Honduras, São Tomé, Algeria 2019 and
-  Tunisia 2018 — true TFR by quintile transcribed from the reports
-  (`mics_tfr_from_reports.csv`, with table and page; Honduras's report is only
-  on mics.unicef.org, read in a browser after its human check);
-  sets with a quintile rate of 3 or less per 1,000 (Paraguay 2016, Tonga 2019,
-  Belize 2016) are correct but excluded as too imprecise; the WDI-based TFR
-  check flags but does not exclude (North Macedonia 2019 is correct; its survey
-  TFR is 1.9); surveys high income in the survey year are out of scope
-  (Barbados). Fertility age offsets stay DHS-only. MICS inputs are pinned;
-  refresh only with `scripts/fetch_mics.py`, deliberately.
-- Adult mortality ranks households by an **asset index**, never post-death
-  household income (reverse causation; São Paulo validation: assets monotonic,
-  income jagged). Asset components vary by census and are recorded per sample
-  in `scripts/build_adult_mortality.py`.
-- Deaths are weighted by the supplementary file's own weight where provided,
-  else by the linked household's HHWT. Census under-reporting cancels in the
-  gradient if wealth-uniform; levels are never published claims.
-- Where a sample links only some deaths (za2011a: ~10%), record
-  `linked_share` and run the linked-vs-unlinked composition check (province,
-  urban, sex, age) before trusting the gradient.
-- `MIN_BAND_DEATHS = 900` gates publication of an age-band gradient and of
-  45q15 (records at 15–59). Ruled 2026-11-11.
-- **Every adult-mortality row carries `se`** (ruled 2026-11-16, review A5).
-  - Surveys: cluster bootstrap (PSUs within strata, 200 replicates, seed 1;
-    `bootstrap_se` in the survey script).
-  - Censuses: Poisson approximation from unweighted death records per wealth
-    group (`asset_index.gradient_se`; delta method for 45q15).
-  - It measures sampling only, not index or recording error. 45q15 SEs run
-    0.015 (Colombia) to 0.11 (Cambodia, Benin), all far below the rule's
-    residual SE (0.32), so equal weighting in the rule stays.
-- **The 45q15 gradient is fitted on the death-rate scale**:
-  slope of ln(−ln(1 − 45q15)) on wealth rank (`asset_index.q45_gradient`,
-  used by all four adult-mortality scripts), ruled 2026-11-16.
-  - Why: 45q15 is a probability near its ceiling where adult mortality is
-    high, so ln(45q15) compressed the gradient (South Africa 2007 −1.23 on
-    ln 45q15, −1.77 on this scale, band slopes −1.63/−2.00/−1.58; Lesotho
-    −0.36 vs −0.73). OG-Core applies the gradient to annual death rates,
-    where this scale is the right one, and uniform under-recording cancels
-    on it.
-  - The q1..q5 columns still report 45q15 per 1,000; `ratio` is still q1/q5
-    of 45q15.
-  - Age-band (mx) gradients were always on the rate scale and did not change.
-  - The income rule and age offsets were refitted. In-sample, the offsets
-    reproduced band gradients better (median error 0.089, was 0.116, on the
-    20 observations of the time; leaving each country out, the current figure
-    is 0.14). The rule fits less tightly (r −0.77, residual SE 0.31), mainly
-    because South Africa 2007 moved.
-- **The MORTNUM check gates publication of any new sample.** Compare the
-  supplementary per-death file against the same households' own reported
-  death counts (MORTNUM in the extract) *within each wealth group*. Even
-  record loss cancels out of a gradient; wealth-skewed loss biases it. Flat to
-  within a percent or two = publish. This caught br2010a (IPUMS ships 48% of
-  the deaths the census reports, loss concentrated in wealthy households),
-  np2001a (0.77/0.79/0.90/1.13 - biases flat) and sv2007a (0.96 down to 0.58
-  - biases steep). Mark rejects `publish=False` with the evidence in the
-  config; never delete the config entry. `estimate` prints the comparison
-  (relative to the mean) for every sample with MORTNUM. On the PCA index it
-  also rejected za2011a (0.066/0.073/0.064/0.059/0.055 linked/reported -
-  biases steep by ~0.3) and mz2007a (0.89/1.09/0.97/1.05 - biases flat by
-  ~0.15). za2007a has MORTNUM and passes; za2001a and ci1998a have none.
-- Gradient steepness tracks national income, not region: the general
-  gradient is linear in ln(GDP per capita, PPP, constant 2021 intl $), over
-  every census and survey estimate (current coefficients and fit statistics:
-  `data/general_gradient.csv` and the generated general-gradient page; do not
-  copy them here). Survey rows enter the rule on the same footing as
-  censuses (ruled 2026-11-12). Changes to the set of observations are logged
-  in CHANGELOG.md.
-  Income measure ruled 2026-11-13: GDP per capita PPP constant
-  (NY.GDP.PCAP.PP.KD), the standard for cross-country living-standard and
-  health-income comparisons; it replaced Atlas GNI in current US$, which mixed
-  price years (applied to recent GNI it made predictions ~0.1 too steep).
-  Same fit quality (LOCO MAE 0.175 vs 0.176, on the 17 observations of the
-  time). Constant-price GNI (US$ or PPP) was rejected: WDI lacked it for 7 of
-  those 17. Inference is
-  classical OLS with n - 2 df (ruled 2026-11-12): slope SE 0.091,
-  clustered-by-country SE 0.098; publish the 95% prediction interval (~±0.7)
-  with any value read off the rule. Income is pinned in
-  `data/income_census_years.csv` (WDI revises history; each ICP round revises
-  PPPs), with Atlas GNI kept for reference; refresh only with
-  `--refresh-income`, deliberately. On the earlier index, excluding South Africa, the
-  gradient-vs-HIV-prevalence correlation was +0.00; not re-run since.
-  Borrowing tables should key on income level. Within-country change is
-  NOT established: South Africa steepened 2001->2007 (-1.16 -> -1.75), India stayed flat
-  (-0.83/-0.81/-0.79, 1999-2020, GDP pc PPP $2,954->$7,187). Present "fixed" and
-  "follows the income rule" as a range for long OG transitions.
-- **DHS household-deaths modules** (`scripts/build_adult_mortality_survey.py`,
-  ruled 2026-11-12) are the census design in a survey, not sibling
-  histories: deaths of usual members in the 24 months before interview over
-  2 × the de jure population, DHS wealth quintiles (OLS at 0.1…0.9), hv005
-  weights, the same 900-record minimum; rows go into
-  `adult_mortality_gradients.csv` with `source` starting "The DHS Program"
-  and `ranking == "dhs_wealth_index"`. Year = the DHS API's survey year
-  (NFHS-5 is 2020). The script prints the survey analogues of the census
-  gates: records vs the household's own death count, year-2/year-1 recall by
-  quintile, unknown date/age by quintile, heaping and a boundary-split
-  sensitivity, national 45q15 against WDI, cluster-bootstrap SE. Of the DHS,
-  only India qualifies; every Asian DHS since 1997 and every DHS tagged for
-  causes of death was scanned (2026-11-12).
-- **Bangladesh BMMS 2016** (ruled 2026-11-16: publish under the survey rules)
-  goes through the same script (loader "bmms"), with the survey's own wealth
-  quintiles and `qhweightoverall`; rows have `ranking ==
-  "survey_wealth_index"`. Survey rows are told from census rows by `ranking`
-  (anything but "asset_index"), not by source text. Its member file
-  (BMMS16_HM) is truncated at 1,048,575 rows in both Dataverse formats —
-  persons come from the household file's roster, which matches `dejure`
-  exactly. 45q15 gradient −0.07 (bootstrap SE 0.07); own census-style index
-  −0.12; rural and urban both near zero; the gradient flattens with time since
-  death (−0.16/+0.02/+0.14 by year back), within sampling error.
-- The gradient fades with age in every census and survey measured at 15-29
-  and an older band (14/14, mean drift +0.94 from 15-29 to the oldest band), and in 5
-  censuses, all with GDP pc PPP <= $5,093 (Ethiopia, Uganda, Zambia, Sudan,
-  Côte d'Ivoire), it becomes
-  positive at older ages -
-  measured mortality is higher in wealthier households at 45+. Real
-  (low income compresses survival differences) and artefactual (frail elders
-  move into better-off households before dying) explanations both fit; no
-  within-census check separates them. Say so rather than smoothing it.
+Each is the rule, the reason, and the date ruled. Evidence and the history of
+changes are in CHANGELOG.md and in the sample configurations; current values
+are in `data/` and the generated pages (do not copy numbers here).
+
+**Gradients**
+- Gradient = slope of ln(rate) on wealth rank 0–1. Survey quintiles: OLS at
+  0.1…0.9. Census groups: WLS at their realized midpoints, weighted by
+  population share (`asset_index.gradient`). 2026-11-11.
+- The 45q15 gradient is fitted to −ln(1 − 45q15) (`asset_index.q45_gradient`),
+  not to ln(45q15): 45q15 saturates where adult mortality is high, and OG-Core
+  applies the gradient to death rates. `q1`–`q5` still report 45q15.
+  2026-11-16.
+- An age band or 45q15 is published only from 900 death records
+  (`MIN_BAND_DEATHS`). 2026-11-11.
+- Every adult-mortality row carries `se`: cluster bootstrap for surveys,
+  Poisson approximation for censuses (`asset_index.gradient_se`). Sampling
+  only; the rule's equal weighting stays because these are far below its
+  residual error. 2026-11-16.
+
+**Census wealth ranking**
+- Rank by an asset index, never by post-death household income (reverse
+  causation).
+- Index = first principal component of 0/1 indicators, one per asset and one
+  per TOILET category, on the household-weighted correlation matrix, oriented
+  to rise with assets (`scripts/asset_index.py`; Filmer and Pritchett 2001;
+  DHS; Lovaton Dávila et al. 2022). The IPUMS yes-codes are documented there
+  from the .cbk files — check any new variable. 2026-11-11.
+- Groups: cut at the boundary between distinct scores nearest each
+  person-weighted quintile; merge groups under 10% into the smaller
+  neighbour; publish only with at least 3 groups (`MIN_GROUPS`); publish each
+  group's share (`share1`–`share5`). 2026-11-16.
+- Housing items (floor, walls, water…) stay out of the index; revisit only if
+  a country cannot form 3 groups without them. 2026-11-13.
+
+**Census completeness gates** (any new sample)
+- MORTNUM check: compare the per-death file with the households' own death
+  counts within each wealth group. Flat to within a percent or two: publish.
+  Otherwise mark `publish=False` with the evidence in the config, and never
+  delete the config entry. Uniform loss cancels in a gradient; wealth-skewed
+  loss biases it.
+- Deaths are weighted by the death file's own weight, else the household's
+  HHWT. Census levels are never published claims.
+- Partial linkage: record `linked_share` and compare linked with unlinked
+  deaths (province, urban, sex, age) before trusting the gradient.
+- A thin index (few asset items): test it on a richer census of the same
+  country before publishing (see the gotchas below).
+
+**Surveys**
+- Household-death modules (India's NFHS, Bangladesh's BMMS) follow the census
+  design: deaths of usual members in the 24 months before the interview over
+  2 × the de jure population, the survey's own wealth quintiles and weights,
+  the same 900-record minimum. Survey rows are told from census rows by
+  `ranking` (anything but `asset_index`). 2026-11-12; BMMS 2026-11-16.
+- MICS is a second source for TFR, IMR and U5MR; the latest file takes the
+  newest survey of either kind (DHS on a same-year tie). Mortality only from
+  direct (full birth history) estimates; sets with a quintile rate of 3 or
+  less per 1,000 are excluded as imprecise; surveys of countries that were
+  high income in the survey year are out of scope; fertility age offsets stay
+  DHS-only. MICS inputs are pinned; refresh only with `scripts/fetch_mics.py`,
+  deliberately. 2026-11-13.
+
+**OG-Core inputs**
+- Convert with gradient / (100 × (1 − p)), p = OG-Core's own rate at that age
+  and period; verified by `scripts/check_ogcore_units.py` (rerun when OG-Core's
+  demographics change). The library keeps publishing the log-rate gradient.
+  No consumer package. 2026-11-05.
+- Fertility by age = TFR gradient + pooled age offsets, not per-country age
+  gradients. 2026-11-05.
+- Mortality by age: 1–4 own CMR gradient, else U5MR + pooled offset; 5–14 the
+  15–29 value; 15–59 the 45q15 gradient + pooled band offsets (not the
+  country's own bands); 60–74 tapered from the 45–59 value to 0 at 75; 75+ and
+  the final age 0. 2026-11-16.
+
+**General gradient**
+- Linear in ln(GDP per capita, PPP, constant 2021 international $,
+  `NY.GDP.PCAP.PP.KD`) over every census and survey estimate, equal weights,
+  classical OLS with n − 2 df. Publish the 95% prediction interval with any
+  value, and never extrapolate beyond the fitted income range (country pages
+  give no value outside it). 2026-11-12 and 2026-11-13.
+- Income is pinned (`income_census_years.csv`, `income_latest.csv`): the World
+  Bank revises history and each ICP round revises PPPs. Refresh only with
+  `--refresh-income`, deliberately.
+- No income-based fallback for fertility or infant mortality (the guide
+  computes why); use regional medians, reported as borrowed.
+- Within-country change is not established; present "held fixed" and "follows
+  the income rule" as a range for long projections.
+
+**Interpretation**
+- The gradient fades with age, and in several low-income censuses turns
+  positive at older ages. Real and artefactual explanations both fit and no
+  check separates them: say so rather than smoothing it.
 
 ## Per-sample gotchas already paid for
+
+- Sources that block or truncate: mics.unicef.org and its S3 bucket refuse
+  scripted downloads (MICS reports are mirrored at
+  mics.ipums.org/mics/resources/enum_materials_pdf/report_<iso2><year>a_<lang>.pdf);
+  DANE's census files sit behind a reCAPTCHA (download by hand); the BMMS 2016
+  member file is cut off at 1,048,575 rows in both Dataverse formats (use the
+  household file's roster). The World Bank's MICS compilation mislabels
+  adolescent birth rates as TFR for several 2018–19 surveys
+  (`mics_tfr_from_reports.csv` holds the true values).
 
 - DHS recode gotchas: NFHS-1 (IAHR23) ships the age-at-death number blank for
   every record (the .FRQ file confirms) - unusable; Pakistan 2006-07
@@ -330,12 +259,10 @@ scripts, and the documentation is generated — respect that architecture.
 1. Extract's weighted population reproduces the census total.
 2. Linkage rate measured and recorded; composition check if < 1.
 3. MORTNUM wealth-uniformity check passes (see the method rulings above).
-4. Envelope check: weighted supplement deaths against the national death
-   count (World Bank crude death rate x population). Wealth-uniform
-   under-reporting is fine and cancels; record the capture rate as a caveat
-   (bj2013a 35% publishes; note its ~16-month window). kh2008a (48%) passes
-   every check and was published by ruling 2026-11-16, after being held
-   through the new-source review (see CHANGELOG.md).
+4. Envelope check: weighted deaths against the national death count (World
+   Bank crude death rate × population). Even under-recording cancels; record
+   the capture rate as a caveat (Benin 2013 and Cambodia 2008 publish at 35%
+   and 48%).
 5. Gradient cross-checked against the library's existing range and any published
    national evidence.
 6. The shipped script — not session code — produces the committed rows,
