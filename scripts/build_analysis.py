@@ -636,8 +636,9 @@ each estimate's band gradient and its 45q15 gradient:
 |---|---|---|
 {gg_agerows}
 
-Applied to the estimates' own 45q15 gradients, the offsets reproduce the
-measured band gradients with a median absolute error of {gg_agemae:.2f}. The
+Estimated without each country in turn and added to that country's own 45q15
+gradient, the offsets reproduce its measured band gradients with a median
+absolute error of {gg_agemae:.2f}. The
 offsets for ages 45–59 and 60–74 are the least reliable values in the library:
 they are positive because, in several low-income censuses, recorded mortality
 at older ages rises with household wealth (see below). Where working-age

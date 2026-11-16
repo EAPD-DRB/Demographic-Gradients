@@ -120,21 +120,21 @@ AMR,South Sudan,2008,all,45q15,15,59,0.0986,0.0866,0.954,347.895,352.996,364.493
 AMR,South Sudan,2008,male,mx,15,29,-1.3551,0.1298,2.226,20.162,15.293,9.058,,,1092,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Southern Sudan Centre for Census, Statistics and Evaluation",3,1.0
 AMR,South Sudan,2008,male,45q15,15,59,-0.3995,0.1121,1.19,452.136,415.219,380.086,,,1724,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Southern Sudan Centre for Census, Statistics and Evaluation",3,1.0
 AMR,South Sudan,2008,female,45q15,15,59,0.7253,0.1368,0.703,243.823,286.126,346.766,,,1135,asset_index,"IPUMS International (Ruggles et al., doi:10.18128/D020.V7.7); original data: Southern Sudan Centre for Census, Statistics and Evaluation",3,1.0
-AMR,Brazil,2010,all,mx,15,29,-1.3627,0.0476,3.018,2.277,1.985,1.878,1.184,0.755,8735,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,all,mx,30,44,-1.4327,0.0416,3.324,3.698,2.883,2.526,1.812,1.113,10613,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,all,mx,45,59,-0.8517,0.0284,2.068,7.098,7.079,6.76,5.51,3.432,18119,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,all,mx,60,74,-0.2121,0.0227,1.174,17.437,19.259,18.922,17.359,14.856,28588,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,all,45q15,15,59,-1.0742,0.0211,2.333,178.502,164.447,154.55,120.017,76.511,37467,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,male,mx,15,29,-1.4464,0.0551,3.231,3.532,3.255,3.026,1.883,1.093,6859,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,male,mx,30,44,-1.4708,0.0529,3.44,5.035,4.081,3.576,2.546,1.464,7310,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,male,mx,45,59,-0.7118,0.0357,1.854,8.477,8.854,9.118,7.337,4.572,11238,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,male,mx,60,74,-0.1152,0.0298,1.088,19.595,23.642,25.88,22.267,18.007,16440,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,male,45q15,15,59,-1.0331,0.026,2.227,226.237,216.224,210.685,162.183,101.576,25407,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,female,mx,15,29,-0.991,0.0951,2.203,0.929,0.764,0.761,0.511,0.422,1876,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,female,mx,30,44,-1.1958,0.0685,2.725,2.218,1.693,1.536,1.149,0.814,3303,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,female,mx,45,59,-1.0189,0.0468,2.364,5.65,5.424,4.77,3.946,2.39,6881,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,female,mx,60,74,-0.3336,0.0349,1.297,15.404,15.575,13.768,13.417,11.881,12148,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
-AMR,Brazil,2010,female,45q15,15,59,-1.0577,0.0363,2.338,123.88,111.715,100.751,80.772,52.982,12060,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,1.0
+AMR,Brazil,2010,all,mx,15,29,-1.3627,0.0476,3.018,2.277,1.985,1.878,1.184,0.755,8735,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,all,mx,30,44,-1.4327,0.0416,3.324,3.698,2.883,2.526,1.812,1.113,10613,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,all,mx,45,59,-0.8517,0.0284,2.068,7.098,7.079,6.76,5.51,3.432,18119,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,all,mx,60,74,-0.2121,0.0227,1.174,17.437,19.259,18.922,17.359,14.856,28588,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,all,45q15,15,59,-1.0742,0.0211,2.333,178.502,164.447,154.55,120.017,76.511,37467,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,male,mx,15,29,-1.4464,0.0551,3.231,3.532,3.255,3.026,1.883,1.093,6859,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,male,mx,30,44,-1.4708,0.0529,3.44,5.035,4.081,3.576,2.546,1.464,7310,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,male,mx,45,59,-0.7118,0.0357,1.854,8.477,8.854,9.118,7.337,4.572,11238,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,male,mx,60,74,-0.1152,0.0298,1.088,19.595,23.642,25.88,22.267,18.007,16440,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,male,45q15,15,59,-1.0331,0.026,2.227,226.237,216.224,210.685,162.183,101.576,25407,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,female,mx,15,29,-0.991,0.0951,2.203,0.929,0.764,0.761,0.511,0.422,1876,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,female,mx,30,44,-1.1958,0.0685,2.725,2.218,1.693,1.536,1.149,0.814,3303,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,female,mx,45,59,-1.0189,0.0468,2.364,5.65,5.424,4.77,3.946,2.39,6881,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,female,mx,60,74,-0.3336,0.0349,1.297,15.404,15.575,13.768,13.417,11.881,12148,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
+AMR,Brazil,2010,female,45q15,15,59,-1.0577,0.0363,2.338,123.88,111.715,100.751,80.772,52.982,12060,asset_index,"IBGE Census 2010 sample microdata, household deaths module",5,0.999
 AMR,Colombia,2018,all,mx,15,29,-1.4757,0.0286,2.478,2.53,2.282,1.021,,,20618,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
 AMR,Colombia,2018,all,mx,30,44,-1.4791,0.0286,2.483,3.018,2.725,1.215,,,19529,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0
 AMR,Colombia,2018,all,mx,45,59,-1.0478,0.0219,1.885,5.318,5.225,2.822,,,30967,asset_index,"DANE, Censo Nacional de Población y Vivienda 2018, microdata (household deaths in 2017)",3,1.0

@@ -369,10 +369,11 @@ scripts, and the documentation is generated — respect that architecture.
   - The q1..q5 columns still report 45q15 per 1,000; `ratio` is still q1/q5
     of 45q15.
   - Age-band (mx) gradients were always on the rate scale and did not change.
-  - The income rule and age offsets were refitted. The offsets now reproduce
-    band gradients better (median error 0.089, was 0.116, on the 20
-    observations of the time); the rule fits less tightly (r −0.77, residual
-    SE 0.31), mainly because South Africa 2007 moved.
+  - The income rule and age offsets were refitted. In-sample, the offsets
+    reproduced band gradients better (median error 0.089, was 0.116, on the
+    20 observations of the time; leaving each country out, the current figure
+    is 0.14). The rule fits less tightly (r −0.77, residual SE 0.31), mainly
+    because South Africa 2007 moved.
 - **The MORTNUM check gates publication of any new sample.** Compare the
   supplementary per-death file against the same households' own reported
   death counts (MORTNUM in the extract) *within each wealth group*. Even

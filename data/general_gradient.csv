@@ -18,7 +18,7 @@ age_offset,15-29,-0.3878,add to the 45q15 tilt to get this band's tilt
 age_offset,30-44,-0.1579,add to the 45q15 tilt to get this band's tilt
 age_offset,45-59,0.1979,add to the 45q15 tilt to get this band's tilt
 age_offset,60-74,0.4292,add to the 45q15 tilt to get this band's tilt
-validation,age_offset_mae,0.0993,median abs error of (45q15 tilt + offset) vs a measured band tilt
+validation,age_offset_mae,0.1413,"median abs error of (45q15 tilt + offset) vs a measured band tilt, offsets estimated leaving the country out"
 validation,loo_mae_rule_constant,0.3928,
 validation,loo_mae_rule_income,0.2697,
 validation,loo_mae_rule_region,0.4219,

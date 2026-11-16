@@ -112,7 +112,7 @@ def state_dirs(workdir):
 def household_patterns(st, DL):
     """Asset indicators for each household in the asset module, and its weight."""
     dom = read_fwf(glob.glob(os.path.join(st, "Amostra_Domicilios_*.txt"))[0], DL,
-                   ["V0300", "V0010", "V0205"] + list(DURABLES))
+                   ["V0300", "V0010", "V0205", "V0701"] + list(DURABLES))
     dom = dom[dom["V0213"].notna()].copy()       # private permanent dwellings only
     X = pd.DataFrame({name: (dom[v] == "1").astype(np.int8) for v, name in DURABLES.items()})
     nb = pd.to_numeric(dom["V0205"], errors="coerce").fillna(0).clip(0, 4).astype(int)
@@ -120,7 +120,7 @@ def household_patterns(st, DL):
         X[name] = (nb == k).astype(np.int8)
     X["pattern"] = X.astype(str).agg("".join, axis=1)
     return pd.DataFrame({"V0300": dom["V0300"].values, "hw": dom["V0010"].astype(float).values,
-                         "pattern": X["pattern"].values})
+                         "died": (dom["V0701"] == "1").values, "pattern": X["pattern"].values})
 
 
 def main():
@@ -136,6 +136,11 @@ def main():
     # (all ages, for the wealth groups) and by pattern x sex x band (exposure);
     # weighted deaths and death records by pattern x sex x band
     hw, pw, expo, dths, nrec = {}, {}, {}, {}, {}
+    # completeness: weighted households reporting a death (V0701 = yes), and
+    # those of them with at least one death record; records in households
+    # reporting none; imputed ages (M7051) among records at 15-59
+    rep, rep_rec, imp, adult = {}, {}, {}, {}
+    n_all = n_linked = n_in_no = 0
 
     def add(d, key, val):
         d[key] = d.get(key, 0.0) + val
@@ -151,9 +156,21 @@ def main():
         for p, w in per.groupby("pattern")["w"].sum().items():
             add(pw, p, w)
         mor = read_fwf(glob.glob(os.path.join(st, "Amostra_Mortalidade_*.txt"))[0], ML,
-                       ["V0300", "V0010", "V0704", "V7051"]).merge(hh[["V0300", "pattern"]], on="V0300")
+                       ["V0300", "V0010", "V0704", "V7051", "M7051"])
+        n_all += len(mor)
+        mor = mor.merge(hh[["V0300", "pattern", "died"]], on="V0300")
+        n_linked += len(mor)
+        n_in_no += int((~mor["died"]).sum())
+        has = hh.assign(rec=hh["V0300"].isin(mor["V0300"]))
+        for p, g in has[has["died"]].groupby("pattern"):
+            add(rep, p, g["hw"].sum())
+            add(rep_rec, p, g.loc[g["rec"], "hw"].sum())
         mor["w"] = mor["V0010"].astype(float)
         mor["age"] = pd.to_numeric(mor["V7051"], errors="coerce")
+        ad = mor[mor["age"].between(15, 59)]
+        for p, g in ad.groupby("pattern"):
+            add(adult, p, len(g))
+            add(imp, p, int((g["M7051"] == "1").sum()))
         for bi, (a0, a1) in enumerate(BANDS):
             p_b = per[per["age"].between(a0, a1)]
             m_b = mor[mor["age"].between(a0, a1)]
@@ -177,6 +194,19 @@ def main():
     G = len(mids)
     gof = {p: int(group([sc[p]])[0]) for p in pats}
     print(f"{G} wealth groups, shares {np.round(shares, 3)}")
+    linked_share = n_linked / n_all
+
+    def by_group(d):
+        out = np.zeros(G)
+        for p, v in d.items():
+            out[gof[p]] += v
+        return out
+    print(f"death records: {n_all}, {n_linked} in an asset-module household "
+          f"(linked_share {linked_share:.3f}); {n_in_no} in households reporting no death")
+    print("households reporting a death that have a death record, by wealth group:",
+          np.round(by_group(rep_rec) / by_group(rep), 4))
+    print("imputed age (M7051) share of records at 15-59, by wealth group:",
+          np.round(by_group(imp) / by_group(adult), 4))
 
     def table(d, sexes):
         t = np.zeros((len(BANDS), G))
@@ -192,11 +222,11 @@ def main():
         for bi, (a0, a1) in enumerate(BANDS):
             if n[bi].sum() >= MIN_BAND_DEATHS and np.all(rates[bi] > 0):
                 rows.append(row(lab, "mx", a0, a1, rates[bi], mids, shares, n[bi].sum(), G,
-                                ai.gradient_se(mids, shares, rates[bi], n[bi])))
+                                ai.gradient_se(mids, shares, rates[bi], n[bi]), linked_share))
         q45 = 1 - np.prod((1 - rates[:3]) ** 15, axis=0)
         if n[:3].sum() >= MIN_BAND_DEATHS and np.all(q45 > 0):
             rows.append(row(lab, "45q15", 15, 59, q45, mids, shares, n[:3].sum(), G,
-                            ai.gradient_se(mids, shares, rates[:3], n[:3])))
+                            ai.gradient_se(mids, shares, rates[:3], n[:3]), linked_share))
 
     new = pd.DataFrame(rows)
     old = pd.read_csv(OUT) if os.path.exists(OUT) else pd.DataFrame()
@@ -211,7 +241,7 @@ def main():
     print(f"wrote {os.path.normpath(OUT)} ({len(new)} Brazil rows)")
 
 
-def row(sex, measure, a0, a1, vals, mids, shares, n, G, se):
+def row(sex, measure, a0, a1, vals, mids, shares, n, G, se, linked_share):
     r = dict(indicator="AMR", country="Brazil", year=2010, sex=sex, measure=measure,
              age_lo=a0, age_hi=a1,
              slope=round((ai.q45_gradient if measure == "45q15" else ai.gradient)(mids, vals, shares), 4),
@@ -219,7 +249,8 @@ def row(sex, measure, a0, a1, vals, mids, shares, n, G, se):
              ratio=round(float(vals[0] / vals[-1]), 3))
     for i in range(5):
         r[f"q{i + 1}"] = round(float(1000 * vals[i]), 3) if i < G else ""
-    r.update(n_deaths=int(n), ranking="asset_index", source=SRC, groups=G, linked_share=1.0)
+    r.update(n_deaths=int(n), ranking="asset_index", source=SRC, groups=G,
+             linked_share=round(linked_share, 3))
     return r
 
 

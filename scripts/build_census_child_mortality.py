@@ -123,7 +123,7 @@ def load_extract(xml):
 def assets_available(xml):
     """Which asset variables an extract carries, from the DDI alone (cheap)."""
     cols = _cols(xml)
-    return [c for c in list(YES) if c in cols]
+    return [c for c in list(YES) + ["TOILET"] if c in cols]
 
 
 def wealth_groups(per, keep=None):

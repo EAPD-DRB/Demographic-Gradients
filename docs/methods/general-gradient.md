@@ -88,8 +88,9 @@ each estimate's band gradient and its 45q15 gradient:
 | 45–59 | 0.20 | least reliable |
 | 60–74 | 0.43 | least reliable |
 
-Applied to the estimates' own 45q15 gradients, the offsets reproduce the
-measured band gradients with a median absolute error of 0.10. The
+Estimated without each country in turn and added to that country's own 45q15
+gradient, the offsets reproduce its measured band gradients with a median
+absolute error of 0.14. The
 offsets for ages 45–59 and 60–74 are the least reliable values in the library:
 they are positive because, in several low-income censuses, recorded mortality
 at older ages rises with household wealth (see below). Where working-age
