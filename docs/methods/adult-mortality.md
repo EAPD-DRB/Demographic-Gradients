@@ -193,6 +193,15 @@ pre-pandemic one (see the [India page](../countries/india.md)).
 |---|---|
 | India NFHS-1, 1992–93 | The released data file contains no age at death |
 | Pakistan 2006–07 | Deaths were recorded in all households, but assets only in the subsample given the full questionnaire; that subsample has too few adult deaths, most of them of women |
+| Peru ENDES, 2018–2024 | No annual round reaches the minimum number of adult deaths in the two-year window, and pooling rounds is not part of the method. The rounds whose windows precede or follow the COVID-19 pandemic differ from one another by more than sampling error, and their national 45q15 ranges from close to World Bank estimates to well below them; rounds whose windows cover the pandemic give a gradient near zero. The household's own count of its deaths is not released, so the records check cannot be made |
+
+Peru's continuous DHS (ENDES), distributed by INEI rather than the DHS
+Program, has recorded deaths of usual household members in the previous five
+years, with sex, age and month and year of death, since 2017 (released from
+2018). The design meets the survey rules, and the wealth quintile is the
+reporting household's own. It may qualify once enough rounds outside the
+pandemic accumulate and a rule for pooling rounds is adopted; until then
+Peru uses the general gradient.
 
 The DHS surveys of the Philippines, Indonesia, Bangladesh, Cambodia, Nepal and
 other Asian countries were examined and have no module recording deaths at all
