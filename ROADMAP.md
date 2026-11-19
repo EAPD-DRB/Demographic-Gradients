@@ -1,14 +1,14 @@
 # Roadmap
 
-Open work and items awaiting a ruling. Finished work, rulings and changes to
+Open work and items awaiting a decision. Finished work, rulings and changes to
 published values are in [CHANGELOG.md](CHANGELOG.md); method rulings are also
 recorded in [AGENTS.md](AGENTS.md#method-rulings-validated--dont-relitigate-without-new-evidence).
 The roadmap as it stood before 2026-11-16, with the detail of every finished
 item, is in the git history.
 
-Status: `[ ]` open · `[R]` awaiting Marcelo's ruling
+Status: `[ ]` open · `[R]` awaiting a decision
 
-## Awaiting a ruling
+## Awaiting a decision
 
 - [R] **Brazil `infmort_gradient`.** The country page uses the 2010 census
   child-mortality gradient, an under-five-type measure that probably
@@ -26,21 +26,16 @@ Status: `[ ]` open · `[R]` awaiting Marcelo's ruling
 - [ ] **`imm_pctiles`.** The lifetime-income distribution of new immigrants,
   OG-Core's fourth demographic input, is not provided. Scope before building
   (IPUMS censuses record immigrant status alongside assets).
-- [ ] **Compare with Marcelo's improved wealth index** (Wittenberg and
-  Leibbrandt 2015 and related materials, in `~/Downloads/Inequality`; move
-  them into a readable folder first) and decide which index to use.
+- [ ] **Alternative wealth indices.** Compare the census asset index with
+  index designs that are comparable over time (Wittenberg and Leibbrandt
+  2017 and related work) and decide whether either should replace it.
 - [ ] **Sources not yet examined:**
   - Bangladesh BMMS 2010 (same design as 2016): does the flat adult-mortality
     gradient repeat?
-  - DHS household-death modules in Africa (only Asia and Latin America have
-    been scanned).
   - MICS surveys after the World Bank's 2022 compilation, which would have to
     be read from the survey reports.
   - The MICS child-mortality method of Guinea-Bissau 2010, Myanmar 2009–10
     and Sudan 2006 (reports not found; excluded meanwhile).
-- [ ] **Documentation review of 2026-11-16:** remaining items in
-  `REVIEW-2026-11-16.md` (stale statements, glossary gaps). Delete that file
-  when they are done.
 
 ## Downstream: other repositories
 

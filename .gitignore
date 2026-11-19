@@ -2,3 +2,6 @@
 .secrets/
 .DS_Store
 __pycache__/
+
+# Claude Code app settings and session worktrees (local)
+.claude/
