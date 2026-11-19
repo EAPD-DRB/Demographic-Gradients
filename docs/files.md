@@ -96,13 +96,13 @@ Bangladesh (open).
 
 | File | Shows |
 |---|---|
-| `what_is_a_gradient.png` | How a wealth gradient is fitted to five quintile rates |
-| `by_wealth.png` | Fertility and infant mortality by wealth quintile, every country's latest survey |
-| `by_region.png` | Low/high ratios by region |
-| `over_time.png` | Low/high ratios by survey year |
-| `fertility_by_age.png` | The fertility gradient by age of mother |
-| `adult_mortality_vs_income.png` | The adult-mortality gradient against GDP per capita, with the general gradient |
-| `adult_mortality_by_age.png` | The adult-mortality gradient at ages 15–29 and at older ages |
+| `the_gap.png` | Poorest fifth ÷ richest fifth for births, teen births, infant and adult deaths, every country's latest estimate |
+| `what_is_a_gradient.png` | How a wealth gradient summarises five quintile rates in one number |
+| `by_region.png` | The gap in births and infant deaths by region |
+| `over_time.png` | The gap in births and infant deaths by survey year |
+| `fertility_by_age.png` | The gap in births by age of mother |
+| `adult_mortality_vs_income.png` | The gap in adult deaths against GDP per capita, with the income rule |
+| `adult_mortality_by_age.png` | The gap in adult deaths at ages 15–29 and 60–74 |
 
 ## Research archive
 

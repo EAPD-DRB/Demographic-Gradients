@@ -7,10 +7,12 @@ values are for calibrating [OG-Core](https://github.com/PSLmodels/OG-Core)
 models in which demographic rates differ by income. All data and code are
 open.
 
+![Poorer households have more births and more deaths: poorest fifth ÷ richest fifth by country](figures/the_gap.png)
+
 Each difference is summarized by a **wealth gradient**, the slope of the log
 rate on household wealth rank (0 = poorest, 1 = richest).
 
-![Total fertility rate by household wealth quintile, Philippines, DHS 2022](figures/what_is_a_gradient.png)
+![A wealth gradient summarises the five wealth groups in one number: births per woman, Philippines, DHS 2022](figures/what_is_a_gradient.png)
 
 ## Coverage
 

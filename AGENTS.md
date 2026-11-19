@@ -57,12 +57,18 @@ scripts, and the documentation is generated — respect that architecture.
   detail belongs on the method pages; new terms go in `docs/glossary.md`.
   Hand-written pages keep counts qualitative so they cannot drift.
 - **Figure standard** (`scripts/make_figures.py`, styling in
-  `scripts/figures.mplstyle`): standard matplotlib; a descriptive title naming
-  the indicator, population and survey; a *Note:* line explaining what is drawn
-  and a *Source:* line; plain axis labels with units; low/high ratios on a log
-  scale for comparisons, the gradient itself for the library's own estimates;
-  point labels placed with `adjustText`, not hand-tuned offsets. Render every
-  figure and check every number and label against the data before committing.
+  `scripts/figures.mplstyle`): standard matplotlib; one message per figure,
+  readable without the text around it. A short title stating the finding in
+  plain words; one subtitle line naming the measure, population and data; short
+  axis labels; a one-line *Source:*, and a *Note:* only when the figure cannot
+  be read without it. The gap between wealth groups is shown as poorest ÷
+  richest (the low/high ratio, or exp(−0.8 × gradient) read from the fitted
+  line), on a log scale with 1× marked; no project terms (gradient, 45q15,
+  offset) in titles or axes. Blue for the library's estimates, orange for
+  another source, grey for context; direct labels before legends; point labels
+  placed with `adjustText`, not hand-tuned offsets. Draw nothing beyond the
+  data's range. Render every figure and check every number and label against
+  the data before committing (ruled 2026-11-19).
 
 ## Method rulings (validated — don't relitigate without new evidence)
 

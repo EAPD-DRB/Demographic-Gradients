@@ -55,7 +55,7 @@ the income figures, with the dates they were retrieved and GNI per capita
 (Atlas method, current US$) for reference, are in
 [`data/income_census_years.csv`](../../data/income_census_years.csv).
 
-![Wealth gradient in adult mortality and income per capita](../../figures/adult_mortality_vs_income.png)
+![The gap in adult deaths and income per capita](../../figures/adult_mortality_vs_income.png)
 
 ## Choice of rule
 

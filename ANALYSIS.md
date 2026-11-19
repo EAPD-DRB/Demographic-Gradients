@@ -19,7 +19,7 @@ and the infant mortality rate in 80 of 88. The median low/high
 ratio is 1.88 for the total fertility rate and 1.66 for
 the infant mortality rate.
 
-![Total fertility rate and infant mortality rate by wealth quintile](figures/by_wealth.png)
+![Poorer households have more births and more deaths: poorest fifth ÷ richest fifth by country](figures/the_gap.png)
 
 ## Regional medians
 
@@ -27,7 +27,7 @@ Among regions with at least three countries, the median low/high ratio is highes
 country without a survey, the regional median gradient can be used, with the
 interquartile range as a sensitivity range.
 
-![Low/high ratios by region](figures/by_region.png)
+![The gap by region: poorest fifth ÷ richest fifth of births and infant deaths](figures/by_region.png)
 
 **Total fertility rate**
 
@@ -73,7 +73,7 @@ differential is small relative to the variation between countries. Individual
 countries can change considerably, as the Brazilian census series below
 shows.
 
-![Low/high ratios by survey year](figures/over_time.png)
+![The gap in births and infant deaths by survey year, 1990 onward](figures/over_time.png)
 
 ### Child mortality in Brazil, 1991–2010
 
@@ -114,7 +114,7 @@ countries because country-specific age patterns are no more accurate overall
 and cannot be estimated at older ages in many surveys
 ([details](docs/methods/fertility-by-age.md)).
 
-![Wealth differentials in fertility by age of mother](figures/fertility_by_age.png)
+![The gap in births by age of mother](figures/fertility_by_age.png)
 
 ## Infant and under-five mortality
 
@@ -146,7 +146,7 @@ is limited and mixed: South Africa's gradient steepened between its 2001 and
 2007 censuses, while India's changed little between 1999 and 2020 as its income
 per capita rose by a factor of 2.4.
 
-![Wealth gradient in adult mortality and income per capita](figures/adult_mortality_vs_income.png)
+![The gap in adult deaths and income per capita](figures/adult_mortality_vs_income.png)
 
 ## Adult mortality by age
 
@@ -160,4 +160,4 @@ people in poor health moving into better-off households before death. The
 data do not distinguish between them, and the older-age estimates are
 the least certain in the library.
 
-![Wealth gradient in adult mortality by age](figures/adult_mortality_by_age.png)
+![The gap in adult deaths at ages 15–29 and 60–74](figures/adult_mortality_by_age.png)

@@ -13,7 +13,7 @@ surveys. The gradient at age *a* for a country is
 
     gradient(a) = country's TFR gradient + offset(a)
 
-![Wealth differentials in fertility by age of mother](../../figures/fertility_by_age.png)
+![The gap in births by age of mother](../../figures/fertility_by_age.png)
 
 ## The offsets
 
