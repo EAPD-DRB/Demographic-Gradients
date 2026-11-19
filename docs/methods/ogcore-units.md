@@ -81,5 +81,5 @@ or E + S) or a period-by-age array, and are applied by age and period with the
 UN mean rate preserved; `infmort_gradient` is a scalar for each period. In the
 mortality array returned by `get_mort`, element *i* is the death rate at age
 *i* + 1 (infant mortality is returned separately), so a `mort_gradient`
-vector is indexed the same way; the [README example](../../README.md) builds
+vector is indexed the same way; the [worked example](../calibration-guide.md#worked-example-south-africa) builds
 all three inputs and has been run against OG-Core.

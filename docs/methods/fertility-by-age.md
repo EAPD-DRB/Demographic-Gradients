@@ -83,7 +83,7 @@ ages, where a single survey often cannot be fitted.
 
 How to apply the offsets in a calibration: the
 [calibration guide](../calibration-guide.md#fertility-by-age) and the
-[README example](../../README.md#use-in-an-og-core-calibration).
+[worked example](../calibration-guide.md#worked-example-south-africa).
 
 Source: DHS Program indicator API, age-specific fertility rates
 (`FE_FRTR_W_A15` … `FE_FRTR_W_A45`) by wealth quintile.

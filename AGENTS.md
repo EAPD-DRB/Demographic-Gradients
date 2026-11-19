@@ -34,7 +34,7 @@ scripts, and the documentation is generated — respect that architecture.
 
 ## Non-negotiables
 
-- **Never hand-edit the generated docs** — `ANALYSIS.md`,
+- **Never hand-edit the generated docs** — `docs/results.md`,
   `docs/calibration-guide.md`, the README's marked coverage table, the marked line-fit table in `docs/methods/survey-gradients.md`, `docs/methods/general-gradient.md`,
   `docs/methods/ogcore-units.md`, `docs/methods/fertility-by-age.md`,
   `docs/tables/adult_mortality.md`, and

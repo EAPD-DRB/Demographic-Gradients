@@ -8,7 +8,7 @@ Values for an OG-Core calibration, then the estimates behind them. How to use th
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
 | `fert_gradient` | −0.67, by age as below | MICS 2019, TFR, plus [age offsets](../methods/fertility-by-age.md) |
-| `infmort_gradient` | −0.72 | no survey with infant mortality by wealth quintile; median of the 3 countries of Oceania (interquartile range −0.79 to −0.63; [table](../../ANALYSIS.md#regional-medians)) |
+| `infmort_gradient` | −0.72 | no survey with infant mortality by wealth quintile; median of the 3 countries of Oceania (interquartile range −0.79 to −0.63; [table](../results.md#regional-medians)) |
 | `mort_gradient` | −0.88 (95% prediction interval −1.57 to −0.18) | [general gradient](../methods/general-gradient.md) at GDP per capita (PPP, constant 2021 international $) of $7,413 (2025, World Bank) |
 | `imm_pctiles` | not provided | — |
 

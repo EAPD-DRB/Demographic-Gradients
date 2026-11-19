@@ -7,7 +7,7 @@ Values for an OG-Core calibration, then the estimates behind them. How to use th
 
 | OG-Core input | Wealth gradient | Source |
 |---|---|---|
-| `fert_gradient` | −0.83, by age as below | no survey with fertility by wealth quintile; median of the 40 countries of Sub-Saharan Africa (interquartile range −0.94 to −0.64; [table](../../ANALYSIS.md#regional-medians)), plus [age offsets](../methods/fertility-by-age.md) |
+| `fert_gradient` | −0.83, by age as below | no survey with fertility by wealth quintile; median of the 40 countries of Sub-Saharan Africa (interquartile range −0.94 to −0.64; [table](../results.md#regional-medians)), plus [age offsets](../methods/fertility-by-age.md) |
 | `infmort_gradient` | −0.82 | MICS 2014, infant mortality rate |
 | `mort_gradient` | −0.48 (standard error 0.04) | census 2008, 45q15 |
 | `imm_pctiles` | not provided | — |

@@ -77,7 +77,7 @@ census; `common`, assets recorded in all three censuses); `n_mothers`;
 | `build_census_child_mortality.py` | Child mortality by wealth from IPUMS census samples (Brazil) | `census_child_mortality.csv` |
 | `build_general_gradient.py` | Fits the income relationship for adult mortality and the age offsets; fetches missing income figures from the World Bank (pinned; `--refresh-income` re-fetches) | `general_gradient*.csv`, `income_census_years.csv`, `income_latest.csv` |
 | `make_figures.py` (style: `figures.mplstyle`) | Draws the figures | `figures/*.png` |
-| `build_analysis.py` | Writes every generated page | `ANALYSIS.md`, the README coverage table, `docs/countries/`, `docs/tables/`, the generated method pages |
+| `build_analysis.py` | Writes every generated page | `docs/results.md`, the README coverage table, `docs/countries/`, `docs/tables/`, the generated method pages |
 | `refresh.py` | Runs `build_gradient_library.py` (and `check_ogcore_units.py` after a DHS pull), `make_figures.py` and `build_analysis.py` in order | — |
 | `build_adult_mortality_dhs.py` | Not used: adult mortality from DHS sibling survival histories, a method tested and rejected (the wealth gradients come out with the wrong sign; see [adult mortality](methods/adult-mortality.md)). Kept as the record of that test | — |
 

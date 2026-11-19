@@ -7,7 +7,7 @@
 Outputs (all overwritten on each run; never edit them by hand):
 
     README.md                        coverage table and coverage line (between markers)
-    ANALYSIS.md                      main results, with figures and regional tables
+    docs/results.md                  main results, with figures and regional tables
     docs/methods/general-gradient.md the income rule for adult mortality and its validation
     docs/methods/ogcore-units.md     converting a gradient to OG-Core's units
     docs/methods/fertility-by-age.md the fertility age offsets and their checks
@@ -831,7 +831,7 @@ or E + S) or a period-by-age array, and are applied by age and period with the
 UN mean rate preserved; `infmort_gradient` is a scalar for each period. In the
 mortality array returned by `get_mort`, element *i* is the death rate at age
 *i* + 1 (infant mortality is returned separately), so a `mort_gradient`
-vector is indexed the same way; the [README example](../../README.md) builds
+vector is indexed the same way; the [worked example](../calibration-guide.md#worked-example-south-africa) builds
 all three inputs and has been run against OG-Core.
 """
     (DOCS / "methods" / "ogcore-units.md").write_text(doc)
@@ -953,7 +953,7 @@ ages, where a single survey often cannot be fitted.
 
 How to apply the offsets in a calibration: the
 [calibration guide](../calibration-guide.md#fertility-by-age) and the
-[README example](../../README.md#use-in-an-og-core-calibration).
+[worked example](../calibration-guide.md#worked-example-south-africa).
 
 Source: DHS Program indicator API, age-specific fertility rates
 (`FE_FRTR_W_A15` … `FE_FRTR_W_A45`) by wealth quintile.
@@ -990,6 +990,9 @@ def income_fallback_test(latest):
         out[ind] = {"n": len(d), "const": float(np.mean(e_c)), "income": float(np.mean(e_i)),
                     "r": float(np.corrcoef(d["lg"], d["slope"])[0, 1])}
     return out
+
+
+WORKED_EXAMPLE = '\n## Worked example: South Africa\n\nAll three inputs for a country with its own estimates (South Africa), with `p`\nthe model\'s `Specifications` object and 100 model ages. Checked against OG-Core\n0.24.1:\n\n```python\nimport numpy as np\nimport pandas as pd\nfrom ogcore import demographics\n\nBASE = "https://raw.githubusercontent.com/EAPD-DRB/Demographic-Gradients/main/data/"\nlib = pd.read_csv(BASE + "gradient_library_latest.csv")\namr = pd.read_csv(BASE + "adult_mortality_gradients.csv")\nfert_off = pd.read_csv(BASE + "fertility_age_offsets.csv").set_index("age_lo")["offset"]\ngg = pd.read_csv(BASE + "general_gradient.csv").set_index(["component", "key"])["value"]\nchild_off = pd.read_csv(BASE + "child_mortality_offset.csv")["offset"].iloc[0]\n\ncountry, un_code = "South Africa", "710"\ndef survey(ind):\n    return lib.query("country == @country and indicator == @ind")["slope"]\n\n# Fertility by age (element i is age i)\nages = np.arange(p.E + p.S)\nfert = demographics.get_fert(p.E + p.S, 0, 99, country_id=un_code)\nfert_gradient = ((survey("TFR").iloc[0] + fert_off.loc[np.clip(ages // 5 * 5, 15, 45)].values)\n                 / (100 * (1 - fert[0])))\n\n# Infant mortality\nmort, infmort = demographics.get_mort(p.E + p.S, 0, 99, country_id=un_code)\ninfmort_gradient = survey("IMR").iloc[0] / (100 * (1 - infmort[0]))\n\n# Mortality by age (element i is age i + 1, as in get_mort)\nq45 = (amr.query("country == @country and measure == \'45q15\' and sex == \'all\'")\n       .sort_values("year")["slope"].iloc[-1])\noff = {b: gg[("age_offset", b)] for b in ("15-29", "30-44", "45-59")}\ncmr = survey("CMR").iloc[0] if len(survey("CMR")) else survey("U5MR").iloc[0] + child_off\na = np.arange(1, p.E + p.S + 1)\nby_age = np.select([a <= 4, a <= 29, a <= 44, a <= 59, a <= 74],\n                   [cmr, q45 + off["15-29"], q45 + off["30-44"], q45 + off["45-59"],\n                    (q45 + off["45-59"]) * (75 - a) / 15], 0.0)\nmort_gradient = np.where(mort[0] < 1, by_age / (100 * (1 - mort[0])), 0.0)\n\npop = demographics.get_pop_objs(p.E, p.S, p.T, 0, 99, country_id=un_code,\n                                income_percentiles=list(p.lambdas),\n                                fert_gradient=fert_gradient,\n                                mort_gradient=mort_gradient,\n                                infmort_gradient=infmort_gradient)\n```\n\nFor a country without its own adult estimate, `q45` is the general gradient at\nits GDP per capita, given on its country page with the prediction interval.\n'
 
 
 def write_calibration_guide(lib, latest, amr, ccm_df, off):
@@ -1206,7 +1209,7 @@ capita of $X in year Y", with its prediction interval, or "regional median,
 borrowed"), the conversion applied, and for mortality the treatment by age.
 Cite the source in each row's `source` column ([citation list](sources.md#citation)).
 """
-    (DOCS / "calibration-guide.md").write_text(doc)
+    (DOCS / "calibration-guide.md").write_text(doc + WORKED_EXAMPLE)
 
 
 def write_adult_table_page(amr):
@@ -1268,7 +1271,7 @@ IND_NAME = {"TFR": "Total fertility rate (births per woman)",
             "U5MR": "Under-five mortality rate (per 1,000 live births)",
             "CMR": "Child mortality, ages 1–4 (per 1,000 children aged 1)"}
 STALE_YEAR = 2005  # surveys older than this get an explicit warning
-REGION_ANCHOR = "regional-medians"  # ANALYSIS.md heading that carries the regional tables
+REGION_ANCHOR = "regional-medians"  # docs/results.md heading that carries the regional tables
 
 
 def own_adult(amr, country):
@@ -1300,7 +1303,7 @@ def what_to_use(c, latest, amr, ccm_df, off, regions):
         med, q25, q75, n = rm
         return med, (f"no survey with {what} by wealth quintile; median of the {n} countries of "
                      f"{region} (interquartile range {fmt(q25)} to {fmt(q75)}; "
-                     f"[table](../../ANALYSIS.md#{REGION_ANCHOR}))")
+                     f"[table](../results.md#{REGION_ANCHOR}))")
     if len(tfr):
         t, y = float(tfr["slope"].iloc[0]), int(tfr["year"].iloc[0])
         rows.append(f"| `fert_gradient` | {fmt(t)}, by age as below | {tfr['source'].iloc[0]} "
@@ -1559,7 +1562,7 @@ def write_country_pages(latest, amr, ccm):
            "estimates behind them. Countries without their own estimate of adult mortality "
            "use the [general gradient](../methods/general-gradient.md). Countries not listed "
            "have no DHS or MICS survey with a wealth breakdown; regional medians are given in "
-           f"[the main results](../../ANALYSIS.md#{REGION_ANCHOR}).\n\n"
+           f"[the main results](../results.md#{REGION_ANCHOR}).\n\n"
            "| Country | Region | Fertility survey | Infant-mortality survey | Adult mortality "
            "| Census, child mortality |\n|---|---|---|---|---|---|\n"
            + "\n".join(index_rows) + "\n")
@@ -1621,18 +1624,18 @@ def main():
     readme_path = ROOT / "README.md"
     readme = readme_path.read_text()
     table = (
-        "| Indicator | OG-Core input | Source | Countries | Median low/high ratio |\n"
+        "| Rate | OG-Core input | Source | Countries | Typical gap, poorest ÷ richest |\n"
         "|---|---|---|---|---|\n"
-        f"| Fertility, by age of mother | `fert_gradient` | DHS, MICS | {tfr['n']} | "
-        f"{tfr['ratio']:.2f} (TFR)"
-        + (f"; {ar.loc[15]:.2f} at ages 15–19" if ar is not None else "") + " |\n"
-        f"| Infant mortality | `infmort_gradient` | DHS, MICS | {imr['n']} | {imr['ratio']:.2f} |\n"
+        f"| Births, by age of mother | `fert_gradient` | DHS, MICS | {tfr['n']} | "
+        f"{tfr['ratio']:.1f}× (all ages)"
+        + (f"; {ar.loc[15]:.1f}× at ages 15–19" if ar is not None else "") + " |\n"
+        f"| Infant deaths | `infmort_gradient` | DHS, MICS | {imr['n']} | {imr['ratio']:.1f}× |\n"
     )
     if amr_h:
-        table += (f"| Adult mortality (45q15) | `mort_gradient` | household-death records "
-                  f"(censuses; household surveys for India and Bangladesh) | {amr_h['n']}; other countries through the general gradient | "
-                  f"{amr_h['ratio']:.2f} |\n")
-    table += "| Income distribution of immigrants | `imm_pctiles` | not provided | — | — |"
+        table += (f"| Adult deaths, ages 15–59 | `mort_gradient` | deaths recorded by households "
+                  f"(censuses; surveys in India and Bangladesh) | {amr_h['n']}; others predicted "
+                  f"from national income | {amr_h['ratio']:.1f}× |\n")
+    table += "| Income of immigrants | `imm_pctiles` | not provided | — | — |"
     readme = replace_between(
         readme,
         "<!-- AUTO-GENERATED by scripts/build_analysis.py — do not edit by hand -->",
@@ -1642,10 +1645,12 @@ def main():
     # keep the coverage line in step with the data too
     readme = re.sub(r"\d[\d,]* surveys, \d+ countries",
                     f"{n_surveys:,} surveys, {n_countries} countries", readme)
+    n_all = len(set(latest["country"]) | (set(amr["country"]) if amr is not None else set()))
+    readme = re.sub(r"\d+ countries in all", f"{n_all} countries in all", readme)
     readme_path.write_text(readme)
     print(f"updated README coverage table ({n_surveys} surveys, {n_countries} countries)")
 
-    # --- ANALYSIS.md: main results (fully generated) ---
+    # --- docs/results.md: main results (fully generated) ---
     cmp_ = imr_vs_u5mr(lib)
     both = latest.pivot_table(index="country", columns="indicator", values=["q1", "q5"])
     fert_hi = int((both[("q1", "TFR")] > both[("q5", "TFR")]).sum())
@@ -1827,8 +1832,13 @@ the least certain in the library.
 
 ![The gap in adult deaths at ages 15–29 and 60–74](figures/adult_mortality_by_age.png)
 """
-    (ROOT / "ANALYSIS.md").write_text(doc)
-    print("wrote ANALYSIS.md")
+    # written for the repository root, served from docs/: rewrite the links
+    for a, b in [("](figures/", "](../figures/"), ("](docs/", "]("), ("](data/", "](../data/"),
+                 ("](scripts/", "](../scripts/"), ("](ROADMAP.md", "](../ROADMAP.md"),
+                 ("](CHANGELOG.md", "](../CHANGELOG.md"), ("](README.md", "](../README.md")]:
+        doc = doc.replace(a, b)
+    (DOCS / "results.md").write_text(doc)
+    print("wrote docs/results.md")
 
     # --- docs/ pages ---
     mp = DOCS / "methods" / "survey-gradients.md"

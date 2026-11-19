@@ -5,11 +5,11 @@ Wealth differentials in fertility and mortality, summarized from the library's
 data. Differentials are reported as the **low/high ratio**, the rate in the
 lowest wealth quintile divided by the rate in the highest, and as the
 **wealth gradient**, the slope of the log rate on wealth rank (see the
-[glossary](docs/glossary.md)). The data cover 332 Demographic and Health
+[glossary](glossary.md)). The data cover 332 Demographic and Health
 Surveys (DHS) and 77 Multiple Indicator Cluster Surveys (MICS) with a
 complete wealth-quintile breakdown in 97 countries, and, for adult
 mortality, household-death records from censuses and household surveys. All figures and numbers are
-computed from the files in [`data/`](data/).
+computed from the files in [`data/`](../data/).
 
 ## Fertility and infant mortality by wealth quintile
 
@@ -19,7 +19,7 @@ and the infant mortality rate in 80 of 88. The median low/high
 ratio is 1.88 for the total fertility rate and 1.66 for
 the infant mortality rate.
 
-![Poorer households have more births and more deaths: poorest fifth ÷ richest fifth by country](figures/the_gap.png)
+![Poorer households have more births and more deaths: poorest fifth ÷ richest fifth by country](../figures/the_gap.png)
 
 ## Regional medians
 
@@ -27,7 +27,7 @@ Among regions with at least three countries, the median low/high ratio is highes
 country without a survey, the regional median gradient can be used, with the
 interquartile range as a sensitivity range.
 
-![The gap by region: poorest fifth ÷ richest fifth of births and infant deaths](figures/by_region.png)
+![The gap by region: poorest fifth ÷ richest fifth of births and infant deaths](../figures/by_region.png)
 
 **Total fertility rate**
 
@@ -73,14 +73,14 @@ differential is small relative to the variation between countries. Individual
 countries can change considerably, as the Brazilian census series below
 shows.
 
-![The gap in births and infant deaths by survey year, 1990 onward](figures/over_time.png)
+![The gap in births and infant deaths by survey year, 1990 onward](../figures/over_time.png)
 
 ### Child mortality in Brazil, 1991–2010
 
 Brazil's most recent DHS survey is from 1996. Child mortality by wealth is
 therefore also estimated from the 1991, 2000 and 2010 censuses, using the
 proportion of children ever born who have died among mothers aged 25–29
-([`census_child_mortality.csv`](data/census_child_mortality.csv)). The levels
+([`census_child_mortality.csv`](../data/census_child_mortality.csv)). The levels
 are not comparable with survey mortality rates, but the gradients are: the
 2000 census gives −1.40, against −1.46 for the
 under-five mortality rate in the Brazil 1996 DHS survey.
@@ -99,7 +99,7 @@ the full index, so the change does not stem from the larger asset set of later
 censuses. Brazil's country page uses the 2010 census value for
 `infmort_gradient`, provisionally: it resembles under-five mortality and
 probably overstates the infant gradient, and the alternative, the 1996 DHS
-infant gradient, is awaiting a ruling ([ROADMAP](ROADMAP.md)).
+infant gradient, is awaiting a ruling ([ROADMAP](../ROADMAP.md)).
 
 ## Fertility by age of mother
 
@@ -112,9 +112,9 @@ in completed fertility but not in the timing of births. The library publishes
 age offsets to add to a country's TFR gradient; they are pooled across
 countries because country-specific age patterns are no more accurate overall
 and cannot be estimated at older ages in many surveys
-([details](docs/methods/fertility-by-age.md)).
+([details](methods/fertility-by-age.md)).
 
-![The gap in births by age of mother](figures/fertility_by_age.png)
+![The gap in births by age of mother](../figures/fertility_by_age.png)
 
 ## Infant and under-five mortality
 
@@ -134,19 +134,19 @@ Adult mortality by wealth requires deaths recorded against the deceased's own
 household. The library uses censuses that record deaths of household members
 during a recent period, usually the previous year, and, for India and
 Bangladesh, household surveys that record them for the previous two years
-([methods](docs/methods/adult-mortality.md); [all estimates](docs/tables/adult_mortality.md)).
+([methods](methods/adult-mortality.md); [all estimates](tables/adult_mortality.md)).
 Across the 19 censuses and surveys with an income estimate, the gradient in
 45q15 is steeper in richer countries (r = −0.76): the fitted
 gradient is −0.31 at a GDP per capita (PPP, constant 2021
 international $) of $2,000 and
 −1.01 at $10,000. This relationship, the general gradient,
 provides values for countries without their own estimate
-([details](docs/methods/general-gradient.md)). Within countries the evidence
+([details](methods/general-gradient.md)). Within countries the evidence
 is limited and mixed: South Africa's gradient steepened between its 2001 and
 2007 censuses, while India's changed little between 1999 and 2020 as its income
 per capita rose by a factor of 2.4.
 
-![The gap in adult deaths and income per capita](figures/adult_mortality_vs_income.png)
+![The gap in adult deaths and income per capita](../figures/adult_mortality_vs_income.png)
 
 ## Adult mortality by age
 
@@ -160,4 +160,4 @@ people in poor health moving into better-off households before death. The
 data do not distinguish between them, and the older-age estimates are
 the least certain in the library.
 
-![The gap in adult deaths at ages 15–29 and 60–74](figures/adult_mortality_by_age.png)
+![The gap in adult deaths at ages 15–29 and 60–74](../figures/adult_mortality_by_age.png)
