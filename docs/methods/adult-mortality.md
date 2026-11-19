@@ -194,6 +194,8 @@ pre-pandemic one (see the [India page](../countries/india.md)).
 | India NFHS-1, 1992–93 | The released data file contains no age at death |
 | Pakistan 2006–07 | Deaths were recorded in all households, but assets only in the subsample given the full questionnaire; that subsample has too few adult deaths, most of them of women |
 | Peru ENDES, 2018–2024 | No annual round reaches the minimum number of adult deaths in the two-year window, and pooling rounds is not part of the method. The rounds whose windows precede or follow the COVID-19 pandemic differ from one another by more than sampling error, and their national 45q15 ranges from close to World Bank estimates to well below them; rounds whose windows cover the pandemic give a gradient near zero. The household's own count of its deaths is not released, so the records check cannot be made |
+| Kenya 2025, Dominican Republic 2013, Nicaragua 1997–98 and 2001, Ghana 2007 (maternal health survey), Rwanda 2005, Malawi 1992, Jordan 1990 | Each records deaths of household members with age and date, but each holds far fewer than the minimum number of adult deaths in the two-year window; the largest, Kenya 2025, holds less than half of it |
+| Colombia 2015, Ukraine 2007, South Africa 1998 | Record only the number of deaths in the household, without age at death |
 
 Peru's continuous DHS (ENDES), distributed by INEI rather than the DHS
 Program, has recorded deaths of usual household members in the previous five
